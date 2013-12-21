@@ -1,6 +1,9 @@
 mode     : selfcontained
 framework: purus
-
+github:
+  user: stla
+  repo: stlapblog
+  
 # HIGHLIGHTER SETTINGS
 highlighter: prettify
 hitheme: twitter-bootstrap
