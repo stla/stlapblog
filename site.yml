@@ -1,0 +1,17 @@
+title: stlaPblog
+tagline: a blog about Mathematics, R, Statistics, ...
+logo: assets/img/07-10-06_2241.jpg 
+
+# Choose url: / for local development
+url: http://stla.github.com/stlapblog/
+rawurl: https://raw.github.com/stla/stlapblog/gh-pages/
+# url: /
+URL: http://github.com/stla/stlapblog
+navigation: 
+  - {item: Home, href: index.html}
+  - {item: About, href: about.html}
+  
+# WIDGETS
+disqus:
+  shortname: stlapblog
+
