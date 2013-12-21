@@ -77,4 +77,23 @@ pre li {
 }
 code, pre {
   line-height: 18px;
+
+}
+
+/* background code blocks */ 
+ol.linenums li {
+  background-color: seaShell; 
+}
+
+/* font size code blocks */
+pre code {
+	font-size: 16px;
+    background-color: seaShell;
+}
+
+/* inline code */
+code {
+	font-size: 18px;
+	background-color: seaShell;
+	border: 0px;
 }
