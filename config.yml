@@ -1,0 +1,16 @@
+mode     : selfcontained
+framework: purus
+
+# HIGHLIGHTER SETTINGS
+highlighter: prettify
+hitheme: twitter-bootstrap
+prettify:
+  linenums: true
+
+# WIDGETS
+widgets: [disqus, mathjax]
+disqus:
+  shortname: stlapblog
+
+
+

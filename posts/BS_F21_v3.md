@@ -404,8 +404,7 @@ bs.gmp <- function(u, v, m = 7, value = "eval") {
     }
     Sn <- alpha/beta + 1
     eval.Sn <- format(as.numeric(Sn), digits = 22)
-    out <- switch(value, eval = eval.Sn, exact = Sn, both = list(Sn = Sn, 
-        eval.Sn = eval.Sn))
+    out <- switch(value, eval = eval.Sn, exact = Sn, both = list(Sn = Sn, eval.Sn = eval.Sn))
     return(out)
 }
 ```
@@ -434,11 +433,9 @@ This is performed by the R function below
 
 
 ```r
-## rational approximation of 2F1(a1/a2, b1/b2, c1/c2; p/q)
-## with gmp ##
+## rational approximation of 2F1(a1/a2, b1/b2, c1/c2; p/q) with gmp ##
 hypergeo_bs <- function(a1, a2, b1, b2, c1, c2, p, q, m) {
-    u <- function(i) c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * 
-        b2) * p
+    u <- function(i) c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * b2) * p
     v <- function(i) a2 * b2 * i * (c1 + (i - 1) * c2) * q
     bs.gmp(u, v, m)
 }
@@ -524,8 +521,8 @@ Hypergeometric2F1 <- function(a, b, c, z, m = 7, rnd.params = max(n.decimals(c(a
         cv <- x == out
         out <- list(result = out, convergence = cv)
         if (!cv) {
-            out$convergence <- paste(out$convergence, " - m=", 
-                m, " need to be increased", sep = "")
+            out$convergence <- paste(out$convergence, " - m=", m, " need to be increased", 
+                sep = "")
         }
     }
     return(out)

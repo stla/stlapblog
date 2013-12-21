@@ -403,8 +403,7 @@ bs.exp.gmp &lt;- function(p, q, m) {
     }
     Sn &lt;- alpha/beta + 1
     eval.Sn &lt;- format(as.numeric(Sn), digits = 22)
-    out &lt;- switch(value, eval = eval.Sn, exact = Sn, both = list(Sn = Sn, 
-        eval.Sn = eval.Sn))
+    out &lt;- switch(value, eval = eval.Sn, exact = Sn, both = list(Sn = Sn, eval.Sn = eval.Sn))
     return(out)
 }
 </code></pre>
@@ -423,11 +422,9 @@ to represent the \(n\)-th ascending factorial of \(a\). . </p>
 \(\alpha,\beta,\gamma, z\) by manipulating only integer numbers. 
 This is performed by the R function below</p>
 
-<pre><code class="r">## rational approximation of 2F1(a1/a2, b1/b2, c1/c2; p/q)
-## with gmp ##
+<pre><code class="r">## rational approximation of 2F1(a1/a2, b1/b2, c1/c2; p/q) with gmp ##
 hypergeo_bs &lt;- function(a1, a2, b1, b2, c1, c2, p, q, m) {
-    u &lt;- function(i) c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * 
-        b2) * p
+    u &lt;- function(i) c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * b2) * p
     v &lt;- function(i) a2 * b2 * i * (c1 + (i - 1) * c2) * q
     bs.gmp(u, v, m)
 }
@@ -502,8 +499,8 @@ irred.frac &lt;- function(x, rnd = n.decimals(x)) {
         cv &lt;- x == out
         out &lt;- list(result = out, convergence = cv)
         if (!cv) {
-            out$convergence &lt;- paste(out$convergence, &quot; - m=&quot;, 
-                m, &quot; need to be increased&quot;, sep = &quot;&quot;)
+            out$convergence &lt;- paste(out$convergence, &quot; - m=&quot;, m, &quot; need to be increased&quot;, 
+                sep = &quot;&quot;)
         }
     }
     return(out)
@@ -569,7 +566,7 @@ hyperg_2F1(a, b, c, z)
   <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
   <script>
       var disqus_developer = 1;
-      var disqus_shortname = ''; 
+      var disqus_shortname = 'stlapblog'; 
       // required: replace example with your forum shortname
       /* * * DON'T EDIT BELOW THIS LINE * * */
       (function() {
