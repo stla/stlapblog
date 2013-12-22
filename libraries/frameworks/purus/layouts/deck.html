@@ -3,6 +3,9 @@
 <head>
   {{> head }}
   <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
 	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
 	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
 	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
@@ -24,7 +27,7 @@
               <span>{{ page.date }}</span><br/>
                <a class='label label-success' href='{{site.rawurl}}{{page.file}}'>Source</a>
               {{{page.content}}}
-              <div id="disqus_thread" style="margin-top: 40px"></div>
+              <div id="disqus_thread"></div>
             </li>
           </ol>
           <div class="pagination">
