@@ -6,6 +6,7 @@ date : 2012-11-30
 
 
 ```{r setup, echo=FALSE}
+opts_chunk$set(fig.path="assets/fig/BS2F1-")
 options(width=60)
 ```
 
