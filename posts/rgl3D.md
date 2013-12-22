@@ -4,6 +4,9 @@ author: Stéphane Laurent
 date : 2012-11-30
 --- &lead
 
+
+
+
 I posted [a question on StackOverflow](http://stackoverflow.com/questions/14879210/including-a-interactive-3d-figure-with-knitr): *how to embed an interactive 3D figure created with the `rgl` package into an html report created with `knitr` ?* The next day, Yihui Xie has posted a solution. He has updated `knitr` to include this possibility. 
 
 
@@ -14,7 +17,6 @@ Below is the rendering of the example given by Yihui.
 
 
 ```r
-opts_chunk$set(fig.path = "assets/fig/rglknitr-")
 library(rgl)
 knit_hooks$set(webgl = hook_webgl)
 ```
