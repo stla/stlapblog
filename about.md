@@ -7,7 +7,7 @@ framework: purus
 mode: selfcontained
 --- &lead
 
-This blog hosted on Github is created and managed by [poirot](http://github.com/ramnathv/blogify).
+This blog hosted on Github is created and managed by [poirot](http://github.com/ramnathv/poirot).
 
 ---
 

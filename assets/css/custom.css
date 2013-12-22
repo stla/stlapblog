@@ -97,3 +97,10 @@ code {
 	background-color: seaShell;
 	border: 0px;
 }
+
+.sidebar-nav-fixed {
+	width: 300px;
+}
+#content #post-wrapper {
+margin-left: 300px;
+}
