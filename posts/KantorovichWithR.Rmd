@@ -91,7 +91,7 @@ $$ M_2 = \begin{pmatrix}
 With the terminology of the [cddlibb library](http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf), ${\cal J}(\mu, \nu)$ is a *convex polyhedron* and the linear constraints above define its *H-representation*. 
 Schematically, one can imagine ${\cal J}(\mu, \nu)$ as a convex polyhedra embedded in a higher dimensional space:
 
-```{r, echo=FALSE, webgl=TRUE}
+```{r rglkantorovich1, echo=FALSE, webgl=TRUE}
 M <- rbind(
   c(0,0,0),
   c(-1,4,0),
@@ -116,7 +116,7 @@ Then $x$ is a convex combination of the vertices $a$, $b$, $c$, $d$, and therefo
 See figure below, where the polyhedron is in the $xy$-plane and the value of 
 $\ell$ is given on the $z$-axis. 
 
-```{r, echo=FALSE, webgl=TRUE}
+```{r rglkantorovich2, echo=FALSE, webgl=TRUE}
 a <-  M[1,-3]
 b <-  M[2,-3]
 c <-  M[3,-3]
