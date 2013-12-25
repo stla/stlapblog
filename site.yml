@@ -10,7 +10,6 @@ URL: http://github.com/stla/stlapblog
 navigation: 
   - {item: Home, href: index.html}
   - {item: About, href: about.html}
-  - {item: Slidify, href: "http://slidify.org"}
   
 # WIDGETS
 disqus:

@@ -1,7 +1,7 @@
 ---
 title: Including an interactive 3D `rgl` graphic in a html report with `knitr`
 author: Stéphane Laurent
-date : 2012-11-30
+date : 2013-03-08
 --- &lead
 
 ```{r setup0, echo=FALSE}

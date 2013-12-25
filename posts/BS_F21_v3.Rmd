@@ -20,7 +20,6 @@ by performing the *binary splitting algorithm* with the `gmp` package.
 
 The *binary splitting algorithm* fastly calculates the partial sums of a rational hypergeometric series by manipulating only integer numbers. But these integer numbers are generally gigantic hence they cannot be handled by ordinary arithmetic computing. After describing the binary splitting algorithm we will show how to implement it in R with the `gmp` package which allows *arithmetic without limitation*. Our main application is the evaluation of the Gauss hypergeometric function.
 
-This article was first published in [stla.overblog.com/](http://stla.overblog.com/).
 
 
 Introductory example: Euler's approximation of $\pi$

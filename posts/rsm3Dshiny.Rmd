@@ -1,0 +1,104 @@
+---
+title: A reactive sliced 3D surface response
+date : 2013-03-15
+--- &lead
+
+```{r setup0, echo=FALSE}
+opts_chunk$set(fig.path="assets/fig/rsmShiny")
+```
+
+In [my previous article](http://stla.github.io/stlapblog/posts/rgl_knitr.html) I showed an interactive 3D surface response fitted from a model with two continous predictors. But when there is more than two continuous predictors, since we can use only two predictors at time in the image, we can only show a surface plot depending on the fixed values of the other predictors. Here we will build a `Shiny` application allowing to visualize a surface plot *reactive* to the values of the other predictors.
+
+For our illustration we use the (coded) dataset `heli` available in the `rsm` package. 
+The variables are coded variables `x1`, `x2`, `x3`, `x4`, which respectively are: linear functions of wing area
+`A`, wing length ratio `R`, body width `W`, and body length `L`. The experiment was run in two
+blocks, and the response variable is `ave`, the average flight time in seconds.
+
+```{r}
+library(rsm)
+print(heli)
+print(heli, decode=FALSE)
+```
+
+
+A second-order response-surface model for these data is fitted using
+```{r, message=FALSE}
+heli.rsm <- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli) 
+```
+
+The fitted surface response is shown below as a function of `x3` and `x4` with 
+the values of `x1` and `x2` both fixed at $0$:  
+
+```{r}
+persp(heli.rsm, ~x3+x4, at=list(x1=0,x2=0), col = rainbow(50), contours = "colors")
+```
+
+Now we build a `Shiny` application which does the same plot with *reactive* values of `x1` and `x2`. 
+
+**ui.R file** defining the user interface:
+```{r, eval=FALSE}
+library(shiny)
+library(rsm)
+
+shinyUI(pageWithSidebar(
+  
+  # Application title
+  headerPanel("Sliced 3D plot"),
+  
+  # Sidebar with two slider inputs
+  sidebarPanel(
+    sliderInput("Aslice", 
+                "A:", 
+                min = 11.8, 
+                max = 13, 
+                value = 12.4),
+    sliderInput("Rslice", 
+               "R:", 
+                min = 2.26, 
+                max = 2.78, 
+                value = 2.52)
+  ),
+  
+  # Show plot 
+  mainPanel(
+    plotOutput("surfPlot")
+  )
+))
+```
+
+**server.R file** drawing the surface:
+```{r, eval=FALSE}
+library(shiny)
+library(rsm)
+
+heli.rsm <- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli)
+
+shinyServer(function(input, output){
+  output$surfPlot <- renderPlot({
+    x1 <- (input$Aslice - 12.4)/0.6
+    x2 <- (input$Rslice - 2.52)/0.26
+    persp(heli.rsm, ~x3+x4, at=list(x1=x1,x2=x2), col = rainbow(50), contours = "colors")
+    })
+})
+```
+This `Shiny` application you see below is actually hosted at my  *Shiny beta hosting account* and 
+is accessible at [http://glimmer.rstudio.com/stla/3Dsliced/](http://glimmer.rstudio.com/stla/3Dsliced/). 
+I have embedded it here by typing the following html code: 
+
+```
+<iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 500px; height: 700px"></iframe>
+```
+
+<iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 500px; height: 700px"></iframe>
+
+
+
+An interactive and reactive 3D plot ? 
+---------------------------------------------
+
+Similarly to interactive plots, reactive 3D plots embedded into a html report are great. Now, how to embed an interactive *and* reactive 3D plot ? 
+There is [an open discussion](https://groups.google.com/forum/#!msg/shiny-discuss/VV-vw3VFpj0/bszBuHkgtS8J) about this possibility in the Shiny Google group. It's just a matter of time. 
+How could we be able to afford to press the R developers who freely provide these wonderful tools ? 
+
+
+
