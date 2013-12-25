@@ -86,7 +86,7 @@ is accessible at [http://glimmer.rstudio.com/stla/3Dsliced/](http://glimmer.rstu
 I have embedded it here by typing the following html code: 
 
 ```
-<iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 500px; height: 700px"></iframe>
+<iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 1100px; height: 600px"></iframe>
 ```
 
 <iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 1100px; height: 600px"></iframe>
