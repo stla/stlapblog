@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>A blog about Mathematics, R, Statistics, ...</title>
+  <title>Schematizing the variance as a moment of inertia</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="" />
   <meta name="author" content="">
   <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
   <link rel="alternate" type="application/rss+xml" href="">
-  <link href="libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
-  <link href="libraries/frameworks/purus/css/main.css" rel="stylesheet" />
-  <link href="libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
   <!-- IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,8 +29,8 @@
 	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
     p {text-align: justify;}
   </style>
-  <link rel="stylesheet" href = "assets/css/custom.css">
-<link rel="stylesheet" href = "assets/css/ribbons.css">
+  <link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
 
 </head>
 <body>
@@ -76,67 +76,44 @@
           <ol id="posts">
             <li class="post">
               <h3>
-                <a href="#">A blog about Mathematics, R, Statistics, ...</a>
+                <a href="#">Schematizing the variance as a moment of inertia</a>
               </h3>
-              <span></span><br/>
-               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/index.Rmd'>Source</a>
-              
-<style>
-ul.posts {
-  margin-top: 15px;
-}
-ul.posts li {
-  list-style: none
-}
-ul.posts hr {
-  margin: 5px 5px;
-}
-ul.posts span {
-  font-size: 12px;
-  color: #999;
-}
-</style>
+              <span>2013-10-06</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Variance_inertia.Rmd'>Source</a>
+              <div class='lead'>
+<p>In order to make a presentation, I was wondering how to display the variance of a distribution or the variance of a sample on a graphic. Finally, I&#39;ve found this solution:</p>
 
-<ul class="posts">
-   
- <li>
-  <span class='pull-right'>2012-11-30</span> 
-  <a href="http://stla.github.com/stlapblog/posts/BS_F21_v3.html">The binary splitting with the R `gmp` package - Application to the Gauss hypergeometric function</a>
-  <hr/>
- </li>
- 
- <li>
-  <span class='pull-right'>2013-07-02</span> 
-  <a href="http://stla.github.com/stlapblog/posts/KantorovichWithR.html">Using R to compute the Kantorovich distance</a>
-  <hr/>
- </li>
- 
- <li>
-  <span class='pull-right'>2013-03-08</span> 
-  <a href="http://stla.github.com/stlapblog/posts/rgl_knitr.html">Including an interactive 3D `rgl` graphic in a html report with `knitr`</a>
-  <hr/>
- </li>
- 
- <li>
-  <span class='pull-right'>2013-03-15</span> 
-  <a href="http://stla.github.com/stlapblog/posts/rsm3Dshiny.html">A reactive sliced 3D surface response</a>
-  <hr/>
- </li>
- 
- <li>
-  <span class='pull-right'>2013-04-13</span> 
-  <a href="http://stla.github.com/stlapblog/posts/samplesize_mean.html">Sample size determination for a Gaussian mean</a>
-  <hr/>
- </li>
- 
- <li>
-  <span class='pull-right'>2013-10-06</span> 
-  <a href="http://stla.github.com/stlapblog/posts/Variance_inertia.html">Schematizing the variance as a moment of inertia</a>
-  <hr/>
- </li>
+<p><img src="assets/fig/varinertia-gaussian.png" alt="plot of chunk gaussian"> </p>
 
-</ul>
+<p>What is this &quot;ellipse&quot; with an arrow ? This is a picture commonly used in classical mechanics to represent the moment of inertia of a body spinning around an axis of rotation. The variance of a distribution has an interpretation as a moment of inertia: the body is a very thin sheet of metal whose shape is the area under the graph of the density and whose mass is \(1\), and the axis of rotation is the vertical axis through the mean of the distribution. Thus the variance measures how hard it is to spin this metal sheet. Under this interpretation, the standard deviation is termed as <em>gyroscopic radius</em>, or <em>radius of gyration</em>, of the metal sheet. </p>
 
+<h3>Drawing the ellipse in R</h3>
+
+<p>I have written my own function <code>inertia()</code> to draw this picture. Its main arguments are shown in the following figure (made with R and then converted to a TikZ LaTeX picture with the awesome <a href="https://github.com/yihui/tikzDevice">tikzDevice</a> package):</p>
+
+<pre><code class="r">inertia(x0, y0, a, b, r, l, d, s, w)
+</code></pre>
+
+<p><object data="assets/fig/inertiaellipse.pdf" type="application/pdf" width="550px" height="400px"></p>
+
+<p><p>It appears you don&#39;t have a PDF plugin for this browser.
+  No biggie... you can <a href="assets/fig/inertiaellipse.pdf">click here to
+  download the PDF file.</a></p></p>
+
+<p></object></p>
+
+<h3>Application: decomposition of variance</h3>
+
+<p>As shown in the first figure, the ellipse is useful to display the variance of a theoretical distribution. 
+In my presentation, I have also used it to explain the decomposition of the sample variance: </p>
+
+<p><img src="assets/fig/varinertia-dsv.png" alt="plot of chunk dsv"> </p>
+
+<p>And I have also used the moment of inertia representation to explain the one-way random effect ANOVA model, which is commonly used to model the decomposition of variance:</p>
+
+<p><img src="assets/fig/varinertia-anovarandommodel.png" alt="plot of chunk anovarandommodel"> </p>
+
+</div>
               <div id="disqus_thread"></div>
             </li>
           </ol>
@@ -150,7 +127,7 @@ ul.posts span {
 		</div>
   </div>
 </body>
-  <script src='libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
   <script>
       var disqus_developer = 1;
       var disqus_shortname = 'stlapblog'; 
@@ -177,11 +154,11 @@ ul.posts span {
   <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script> -->
-  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
 </script>
 <!-- Google Prettify -->
   <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
-  <script src='libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
   <script>
     var pres = document.getElementsByTagName("pre");
     for (var i=0; i < pres.length; ++i) {

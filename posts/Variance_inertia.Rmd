@@ -1,0 +1,197 @@
+---
+title: Schematizing the variance as a moment of inertia
+date : 2013-10-06
+--- &lead
+
+```{r setup0, echo=FALSE}
+opts_chunk$set(fig.path="assets/fig/varinertia-")
+```
+
+```{r setup, echo=FALSE}
+source('assets/Rfunctions/inertia_macro_v1.R', encoding='UTF-8')
+source('assets/Rfunctions/polyCurve_v1.R', encoding='UTF-8')
+library(scales)
+mytextempty <- function (mid, lab = "", adj = c(0.5, 0.5), box.col = "white", 
+    cex = 1, heps=0, veps=0, ...) 
+{
+    text.width <- max(strwidth(lab, units = "user", cex = cex))
+    text.height <- strheight(lab, units = "user", cex = cex)
+    rect(mid[1] - text.width * adj[1] - heps, mid[2] - text.height * 
+        adj[2] - veps , mid[1] + text.width * (1 - adj[1]) + heps, mid[2] + 
+        text.height * (1 - adj[2]) + veps, col = box.col, border = NA)
+    diagram::textplain(mid = mid, height = text.height, lab = lab, adj = adj, 
+        cex = cex, ...)
+}
+```
+
+
+In order to make a presentation, I was wondering how to display the variance of a distribution or the variance of a sample on a graphic. Finally, I've found this solution:
+
+
+```{r gaussian, fig.width=7, fig.height=5, echo=FALSE}
+cex.params <- 2
+cex.axis <- 1.5
+xx <- seq(-4.2,4.2,length=150)
+yy <- dnorm(xx)
+rgba <- col2rgb("gray")
+tgray <- rgb(rgba[1,1], rgba[2,1], rgba[3,1], alpha=95, maxColorValue=255)
+par(mar=c(1,3,1,3))
+plot(xx, yy, type = "l", lwd=3, col="blue", ylim=c(-0.16,0.44), 
+     panel.first =
+       polyCurve(xx, yy, from = -4, to = 4,
+                 col = tgray, border = tgray), 
+     ylab=NA, xlab=NA, 
+     axes=FALSE)
+abline(v=0, lty=4, col="blue", lwd=2)
+ats <- seq(-4,4,by=2)
+labs <- c(expression(mu-4~sigma), expression(mu-2~sigma), "",  expression(mu+2~sigma),  expression(mu+4~sigma))
+axis(1, at=ats, labels=labs, pos=0, cex.axis=cex.axis)
+mytextempty(mid=c(0,-0.01), lab=expression(mu), cex=cex.params, adj=c(0.5,1.5), heps=0, veps=0.005)
+#axis(1,pos=0,at=NULL,labels=NA,lwd.ticks=0)
+inertia(x0=0, y0=-0.11, a=1, b=0.02, lwd=2, l=0.26, d=20, s=0.02, w=0.1)
+text(1.3,-0.13, expression(sigma^2), cex=cex.params)
+```
+
+What is this "ellipse" with an arrow ? This is a picture commonly used in classical mechanics to represent the moment of inertia of a body spinning around an axis of rotation. The variance of a distribution has an interpretation as a moment of inertia: the body is a very thin sheet of metal whose shape is the area under the graph of the density and whose mass is $1$, and the axis of rotation is the vertical axis through the mean of the distribution. Thus the variance measures how hard it is to spin this metal sheet. Under this interpretation, the standard deviation is termed as *gyroscopic radius*, or *radius of gyration*, of the metal sheet. 
+
+
+### Drawing the ellipse in R
+
+I have written my own function `inertia()` to draw this picture. Its main arguments are shown in the following figure (made with R and then converted to a TikZ LaTeX picture with the awesome [tikzDevice](https://github.com/yihui/tikzDevice) package):
+
+```{r, eval=FALSE}
+inertia(x0,y0,a,b,r,l,d,s,w)
+```
+
+<object data="assets/fig/inertiaellipse.pdf" type="application/pdf" width="550px" height="400px">
+ 
+  <p>It appears you don't have a PDF plugin for this browser.
+  No biggie... you can <a href="assets/fig/inertiaellipse.pdf">click here to
+  download the PDF file.</a></p>
+  
+</object>
+
+
+### Application: decomposition of variance 
+
+As shown in the first figure, the ellipse is useful to display the variance of a theoretical distribution. 
+In my presentation, I have also used it to explain the decomposition of the sample variance: 
+
+
+```{r dsv_init, echo=FALSE}
+# initialisation :
+set.seed(314) 
+mu <- 24
+delta <- 1.2
+sigma <- 0.8
+I <- 3
+J <- 4
+factor <- factor(rep(c("A","B","C"),rep(J,3)))
+mu1 <- rnorm(1, mu, delta)
+mu2 <- rnorm(1, mu, delta)
+mu3 <- rnorm(1, mu, delta)
+results <- c(
+  rnorm(J, mu1, sigma), rnorm(J, mu2, sigma), rnorm(J, mu3, sigma)
+)  
+dat <- data.frame(factor=factor, result=results)
+grandmean <- mean(dat$result)
+omeans <- aggregate(result~factor, data=dat, FUN=mean)[,"result"]
+#
+fplot <- function(dat, results=dat$result, ocolors=length(levels(dat$opeator)), cols=rep("black",nrow(dat)), lcol="white", ylab, labs, cex=1.3, col.yaxis="black", cex.axis=1, cex.xlab=1.7, cex.ylab=1.7, padj=0){
+  plot(c(17.5, 29.5), c(0.7, 5.8), type="n", axes=FALSE, 
+       xlab="result", ylab=NA, cex.lab=cex.xlab)
+  axis(1, cex.axis=cex.axis, padj=padj)
+  axis(2, labels=labs, at=c(3,2,1), lwd=0, cex.axis=1.7, col.axis = col.yaxis)
+  mtext(ylab, 2, adj=0.23, padj=-3, cex=cex.ylab)
+  h <- 4.5 # plateau du haut 
+  abline(h=h)
+  points(results, rep(h,length(results)), col=cols, pch=19, cex=cex)
+  abline(h=1:3, col=lcol)
+  k <- 1
+  op <- levels(dat$factor)[k]
+  x <- dat$result[dat$factor==op]
+  points(x, rep(k,length(x)), col=ocolors[k], pch=19, cex=cex)
+  k <- 2
+  op <- levels(dat$factor)[k]
+  x <- dat$result[dat$factor==op]
+  points(x, rep(k,length(x)), col=ocolors[k], pch=19, cex=cex)
+  k <- 3
+  op <- levels(dat$factor)[k]
+  x <- dat$result[dat$factor==op]
+  points(x, rep(k,length(x)), col=ocolors[k], pch=19, cex=cex)
+}
+ocolors <- alpha(c("red","blue","green"),0.5)
+cols <- ocolors[as.numeric(factor)]
+h <- 4.5
+cex.axis <- 1.8
+ml <- 8
+```
+
+```{r dsv, echo=FALSE, fig.width=11, fig.height=4.3}
+# FRAME 4
+layout(t(c(1,2)))
+# frame 4 left 
+par(mar=c(5.9,ml,1,1))
+fplot(dat, ocolors=ocolors, cols=cols, lcol="black", 
+      ylab="factor", labs=c("C","B","A"))
+inertia(x0=mean(dat$result), y0=5.2, a=2.5, b=0.35, lwd=2.5, l=0.3, w=0.08, s=0.025)
+segments(grandmean, h, grandmean, h+3, lty="dotted") 
+# frame 4 right 
+par(mar=c(5.9,ml,1,1))
+fplot(dat, results=omeans, ocolors=ocolors, cols=ocolors, lcol="black", 
+      ylab=NA, labs=c("C","B","A"))
+segments(grandmean, h, grandmean, h+3, lty="dotted")
+k <- 1
+segments(omeans[k],h,omeans[k],k,col="red",lty=3)
+k <- 2
+segments(omeans[k],h,omeans[k],k,col="blue",lty=3)
+k <- 3
+segments(omeans[k],h,omeans[k],k,col="green",lty=3)
+k <- 1
+inertia(x0=omeans[k], y0=k+0.5, a=1.4, b=0.2, lwd=2.5, l=0.22, w=0.1, col="red")
+k <- 2
+inertia(x0=omeans[k], y0=k+0.5, a=1.4, b=0.2, lwd=2.5, l=0.22, w=0.1, col="blue")
+k <- 3
+inertia(x0=omeans[k], y0=k+0.5, a=1.4, b=0.2, lwd=2.5, l=0.22, w=0.1, col="green")
+inertia(x0=mean(dat$result), y0=5.2, a=1.7, b=0.3, lwd=2.5, l=0.26, w=0.05, col=c("green","blue","red"))
+```
+
+And I have also used the moment of inertia representation to explain the one-way random effect ANOVA model, which is commonly used to model the decomposition of variance:
+
+```{r anovarandommodel, echo=FALSE, fig.width=9, fig.height=7}
+par(mar=c(5.9,ml,0,1))
+K <- 1.8 # scale for gaussian curve
+fplot(dat, results=omeans, ocolors=ocolors, cols=ocolors, lcol="black", 
+      ylab=NA, labs=c("C","B","A"))
+curve(K*dnorm(x,grandmean,delta)+h, add=TRUE, lwd=2, col=1)
+text(grandmean, h-0.2, labels=expression(mu), cex=1.4, col=1) 
+k <- 1
+segments(omeans[k],h,omeans[k],k,col="red",lty=3)
+k <- 2
+segments(omeans[k],h,omeans[k],k,col="blue",lty=3)
+k <- 3
+segments(omeans[k],h,omeans[k],k,col="green",lty=3)
+k <- 1
+curve(K*dnorm(x,omeans[k],sigma)+h-1.5-(3-k), add=TRUE, lwd=2, col="red")
+text(omeans[k], h-1.5-(3-k)-0.2, labels=expression(mu[1]), cex=1.4, col="red") 
+k <- 2
+curve(K*dnorm(x,omeans[k],sigma)+h-1.5-(3-k), add=TRUE, lwd=2, col="blue")
+text(omeans[k], h-1.5-(3-k)-0.2, labels=expression(mu[2]), cex=1.4, col="blue")  
+k <- 3
+curve(K*dnorm(x,omeans[k],sigma)+h-1.5-(3-k), add=TRUE, lwd=2, col="green")
+text(omeans[k], h-1.5-(3-k)-0.2, labels=expression(mu[3]), cex=1.4, col="green")
+width <- shift <- 0.05
+inertia(x0=grandmean, y0=h-0.35, a=1.6, b=0.15, lwd=2, l=0.25, col=c("green","blue","red"), w=width, s=shift)
+a <- 1.1
+b <- 0.11
+vadj <- 0.3  
+r <- 1/4
+width <- shift <- 0.05
+k <- 1
+inertia(x0=omeans[k], y0=k-vadj, a=a, b=b, lwd=2, l=0.2, col="red", r=r, w=width, s=shift)
+k <- 2
+inertia(x0=omeans[k], y0=k-vadj, a=a, b=b, lwd=2, l=0.2, col="blue", r=r, w=width, s=shift)
+k <- 3
+inertia(x0=omeans[k], y0=k-vadj, a=a, b=b, lwd=2, l=0.2, col="green", r=r, w=width, s=shift)
+```
+
