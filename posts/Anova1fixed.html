@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The geometry of the balanced ANOVA model (with fixed effects)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">The geometry of the balanced ANOVA model (with fixed effects)</a>
+              </h3>
+              <span>2014-01-14</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Anova1fixed.Rmd'>Source</a>
+              <div class='lead'>
+<p>Most usually, the mathematical treatment of Gaussian linear models starts with 
+the matricial writing \(Y=X\beta+\sigma G\), where \(Y\) is a random vector modelling the 
+\(n\) response values, \(X\) is a known matrix, \(\beta\) is 
+a vector of unknown parameters, and \(G\) has the standard normal distribution on 
+\(\mathbb{R}^n\). </p>
+
+<p>There are good reasons to use this matricial writing, however it is cleaner to treat 
+the theory with the equivalent vector space notation \(Y = \mu + \sigma G\), where 
+\(\mu\) is assumed to lie in a linear subspace \(W\) of \(\mathbb{R}^n\), 
+corresponding to \(\text{Im}(X)\) in the matricial notation. </p>
+
+<p>The vector space notation \(Y = \mu + \sigma G\) is cleaner to derive the general 
+principles of the theory, as well as some examples, such as the balanced one-way ANOVA model, 
+which is the topic of this article. </p>
+
+<h2>Standard normal distribution on a vector space</h2>
+
+<p>The main tool used to treat the theory of Gaussian linear models is the 
+standard normal distribution on a linear space.</p>
+
+<div class="title_box">
+  <div id="title" style="color:blue;font-size:30px;">Theorem and definition</div>
+  <div id="content">Let $X$ be a $\mathbb{R}^n$-valued random vector, and $W \subset \mathbb{R}^n$ be a linear space. Say that $X$ has the standard normal distribution on the vector space $W$, and then note $X \sim SN(W)$, if it takes its values in $W$ and its characteristic function is given by $$\mathbb{E} \textrm{e}^{i\langle \alpha, X \rangle} = \textrm{e}^{-\frac12{\Vert w \Vert}^2} \quad \text{for all } w \in W.$$ The three following assertions are equivalent (and this is easy to prove): <br/> 1. $X \sim SN(W)$; <br/> 2. the coordinates of $X$ in some orthonormal basis of $W$ are i.i.d. standard normal random variables; <br/> 3.  the coordinates of $X$ in any orthonormal basis of $W$ are i.i.d. standard normal random variables.  </div>
+</div>
+
+<p>Of course we retrieve the standard normal distribution on \(\mathbb{R}^n\) when taking \(W=\mathbb{R}^n\). </p>
+
+<p>From this definition-theorem, the so-called <em>Cochran&#39;s theorem</em> is an obvious statement. 
+More precisely, if \(U \subset W\) is a linear space, and \(Z=U^\perp \cap W\) is the orthogonal complement of \(U\) in \(W\), then the projection \(P_UX\) of \(X\) on \(U\) has the standard normal distribution on \(U\), similarly the projection \(P_ZX\) of \(X\) on \(Z\) has the standard normal distribution on \(Z\), and moreover \(P_UX\) and \(P_ZX\) are independent. 
+This is straightforward to see from the definition-theorem of \(SN(W)\), and it is also easy to see that \({\Vert P_UX\Vert}^2 \sim \chi^2_{\dim(U)}\).</p>
+
+<h2>Gaussian linear model in pure vector space language</h2>
+
+<p>When the model is written \(Y = \mu + \sigma G\), \(\mu \in W\), the least-squares 
+estimate \(\hat\mu\) of \(\mu\) is simply given by \(\hat\mu=P_Wy\), and the residuals are 
+\(P_W^\perp y\), denoting by \(P^\perp_W\) the projection on the orthogonal complement of 
+\(W\). </p>
+
+<h2>The balanced ANOVA model</h2>
+
+<p>The balanced ANOVA model is used to model a sample \(y=(y_{ij})\) with a tabular structure:
+\[y=\begin{pmatrix}
+y_{11} & \ldots & y_{1J} \\
+\vdots & y_{ij} & \vdots \\
+y_{I1} & \ldots & y_{IJ}
+\end{pmatrix},
+\]
+\(y_{ij}\) denoting the \(j\)-th measurement in group \(i\). 
+It is assumed that the \(y_{ij}\) are independent and the population mean depends on the group index \(i\). More precisely, the \(y_{ij}\) are modelled by random variables \(Y_{ij} \sim_{\text{iid}} {\cal N}(\mu_i, \sigma^2)\). </p>
+
+<p>So, how to write this model as \(Y=\mu + \sigma G\) where \(G \sim SN(\mathbb{R}^n)\) and \(\mu\) lies in a linear space \(W \subset \mathbb{R}^n\) ? </p>
+
+<h2>Tensor product</h2>
+
+<p>Here \(n=IJ\) and one should consider \(Y\) as the vector obtained by stacking the \(Y_{ij}\). 
+For example if \(I=2\) and \(J=3\), we should write 
+\[Y={(Y_{11}, Y_{12}, Y_{13}, Y_{21}, Y_{22}, Y_{23})}'.\]</p>
+
+<p>Actually this is not a good idea to loose the tabular structure. 
+The appropriate approach for writing the balanced ANOVA model involves the <em>tensor product</em>. 
+We keep the tabular structure of the data:
+\[Y = \begin{pmatrix} 
+Y_{11} & Y_{12} & Y_{13} \\
+Y_{21} & Y_{22} & Y_{23}
+\end{pmatrix}\]
+and we take \[G \sim SN(\mathbb{R}^I\otimes\mathbb{R}^J)\] 
+where the <em>tensor poduct</em> \(\mathbb{R}^I\otimes\mathbb{R}^J\) of \(\mathbb{R}^I\) and \(\mathbb{R}^J\) is nothing but the space of matrices with \(I\) rows and \(J\) columns.
+Here 
+\[\mu = \begin{pmatrix} 
+\mu_1 & \mu_1 & \mu_1 \\
+\mu_2 & \mu_2 & \mu_2 
+\end{pmatrix},\]
+lies in a linear space \(W \subset \mathbb{R}^I\otimes\mathbb{R}^J\) which is convenient to define with the help of the <em>tensor product</em> \(x \otimes y\) of two vectors \(x \in \mathbb{R}^I\) and \(y \in \mathbb{R}^J\), defined as the element of \(\mathbb{R}^I\otimes\mathbb{R}^J\) given by 
+\[{x \otimes y}_{ij}=x_iy_j.\]
+Indeed, one has 
+\[\mu = (\mu_1, \mu_2) \otimes (1,1,1),\]
+and then the linear space \(W\) in which \(\mu\) is assumed to lie is 
+\[W = \mathbb{R}^I\otimes{\bf 1}_J.\]</p>
+
+<p>Moreover, there is a nice orthogonal decomposition of \(W\) corresponding to the usual other parameterization of the model:
+\[\boxed{\mu_i = m + \alpha_i} \quad \text{with } \sum_{i=1}^I\alpha_i=0.\]
+Indeed, writing \(\mathbb{R}^I=[{\bf 1}_I] \oplus {[{\bf 1}_I]}^\perp\) yields the following decomposition of \(\mu\):
+$$\begin{align*}
+\mu = (\mu_1, \ldots, \mu_I) \otimes {\bf 1}_J &amp; = 
+\begin{pmatrix} 
+m &amp; m &amp; m \
+m &amp; m &amp; m 
+\end{pmatrix} + 
+\begin{pmatrix} 
+\alpha_1 &amp; \alpha_1 &amp; \alpha_1 \
+\alpha_2 &amp; \alpha_2 &amp; \alpha_2 
+\end{pmatrix} \ 
+&amp; = \underset{\in \bigl([{\bf 1}_I]\otimes[{\bf 1}_J]\bigr)}{\underbrace{m({\bf 1}_I\otimes{\bf 1}_J)}} </p>
+
+<ul>
+<li>\underset{\in \bigl([{\bf 1}_I]<sup>{\perp}\otimes[{\bf</sup> 1}_J] \bigr)}{\underbrace{(\alpha_1,\ldots,\alpha_I)\otimes{\bf 1}_J}} 
+\end{align*}
+$$</li>
+</ul>
+
+<h2>Least-squares estimates</h2>
+
+<p>With the theory introduced above,  the least-squares estimates of 
+ \(m\) and the \(\alpha_i\) are  given by 
+\(\hat m({\bf 1}_I\otimes{\bf 1}_J) = P_U y\) and 
+  \(\hat\alpha\otimes{\bf 1}_J = P_Zy\)  where \(U = [{\bf 1}_I]\otimes[{\bf 1}_J]\) 
+and \(Z = {[{\bf 1}_I]}^{\perp}\otimes[{\bf 1}_J] = U^\perp \cap W\), and 
+we also know that \(\hat m\) and the \(\hat\alpha_i\) are independent. 
+The least-squares estimates of the \(\mu_i\) are given by \(\hat\mu_i=\hat m +\hat\alpha_i\). 
+Deriving the expression of these estimates and their distribution is left 
+as an exercise to the reader. </p>
+
+</div>
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
