@@ -33,7 +33,7 @@ standard normal distribution on a linear space.
 
 <div class="title_box">
   <div id="title" style="color:blue;font-size:30px;">Theorem and definition</div>
-  <div id="content">Let $X$ be a $\mathbb{R}^n$-valued random vector, and $W \subset \mathbb{R}^n$ be a linear space. Say that $X$ has the standard normal distribution on the vector space $W$, and then note $X \sim SN(W)$, if it takes its values in $W$ and its characteristic function is given by $$\mathbb{E} \textrm{e}^{i\langle \alpha, X \rangle} = \textrm{e}^{-\frac12{\Vert w \Vert}^2} \quad \text{for all } w \in W.$$ The three following assertions are equivalent (and this is easy to prove): <br/> 1. $X \sim SN(W)$; <br/> 2. the coordinates of $X$ in some orthonormal basis of $W$ are i.i.d. standard normal random variables; <br/> 3.  the coordinates of $X$ in any orthonormal basis of $W$ are i.i.d. standard normal random variables.  </div>
+  <div id="content">Let $X$ be a $\mathbb{R}^n$-valued random vector, and $W \subset \mathbb{R}^n$ be a linear space. Say that $X$ has the standard normal distribution on the vector space $W$, and then note $X \sim SN(W)$, if it takes its values in $W$ and its characteristic function is given by $$\mathbb{E} \textrm{e}^{i\langle w, X \rangle} = \textrm{e}^{-\frac12{\Vert w \Vert}^2} \quad \text{for all } w \in W.$$ The three following assertions are equivalent (and this is easy to prove): <br/> 1. $X \sim SN(W)$; <br/> 2. the coordinates of $X$ in some orthonormal basis of $W$ are i.i.d. standard normal random variables; <br/> 3.  the coordinates of $X$ in any orthonormal basis of $W$ are i.i.d. standard normal random variables.  </div>
 </div>
 
 
