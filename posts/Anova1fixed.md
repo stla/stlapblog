@@ -108,8 +108,7 @@ m & m & m
 \alpha_1 & \alpha_1 & \alpha_1 \\
 \alpha_2 & \alpha_2 & \alpha_2 
 \end{pmatrix} \\ 
-& = \underset{\in \bigl([{\bf 1}_I]\otimes[{\bf 1}_J]\bigr)}{\underbrace{m({\bf 1}_I\otimes{\bf 1}_J)}} 
-+ \underset{\in \bigl([{\bf 1}_I]^{\perp}\otimes[{\bf 1}_J] \bigr)}{\underbrace{(\alpha_1,\ldots,\alpha_I)\otimes{\bf 1}_J}} 
+& = \underset{\in \bigl([{\bf 1}_I]\otimes[{\bf 1}_J]\bigr)}{\underbrace{m({\bf 1}_I\otimes{\bf 1}_J)}} + \underset{\in \bigl([{\bf 1}_I]^{\perp}\otimes[{\bf 1}_J] \bigr)}{\underbrace{(\alpha_1,\ldots,\alpha_I)\otimes{\bf 1}_J}} 
 \end{align*}
 $$
 
