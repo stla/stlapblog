@@ -2,6 +2,18 @@
 title: A blog about Mathematics, R, Statistics, ...
 ---
 
+<script type='text/x-mathjax-config'>
+  MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      indic: "{\\bf 1}",
+      perpoplus: "\\overset{\\perp}{\\oplus}",
+      RR: "\\mathbb{R}"
+    }
+  }
+  });
+</script>
+
 <style>
 ul.posts {
   margin-top: 15px;

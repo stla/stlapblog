@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>The balanced ANOVA model with random effects</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+</head>
+
+<body>
+<hr/>
+
+<p>title: The balanced ANOVA model with random effects 
+date : 2014-04-06
+&mdash; &amp;lead</p>
+
+<p><strong>(article still under construction)</strong></p>
+
+<script type='text/x-mathjax-config'>
+  MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      indic: "{\\bf 1}",
+      perpoplus: "\\overset{\\perp}{\\oplus}",
+      RR: "\\mathbb{R}"
+    }
+  }
+  });
+</script>
+
+<h2>The balanced ANOVA model with random effects</h2>
+
+<p>The balanced ANOVA model is used to model a sample \( y=(y_{ij}) \) with a tabular structure:
+\[ y=\begin{pmatrix}
+y_{11} & \ldots & y_{1J} \\
+\vdots & y_{ij} & \vdots \\
+y_{I1} & \ldots & y_{IJ}
+\end{pmatrix},
+ \]
+\( y_{ij} \) denoting the \( j \)-th response in group \( i \). 
+It is assumed that the responses \( y_{ij} \) are generated in two steps. 
+Firstly, the group means \( \mu_i \) are independently generated according to a Gaussian 
+distribution \( {\cal N}(\mu, \sigma^2_b) \) where \( \mu \) is the overall mean and 
+\( \sigma^2_b \) is the so-called <em>between variance</em>. 
+Secondly, the responses \( y_{ij} \), \( j =1,\ldots,J \), for a fixed group index 
+\( i \), are independently distributed according to  a normal distribution 
+\( {\cal N}(\mu_i, \sigma^2_w) \) with <em>within variance</em> \( \sigma^2_w \) and mean
+\( \mu_i \). Shortly, the model can be written:
+ \[ \begin{cases}
+ (y_{ij} \mid \mu_i) \sim_{\text{iid}} {\cal N}(\mu_i, \sigma^2_w) & j=1,\ldots,J \\ 
+\mu_i \sim_{\text{iid}} {\cal N}(\mu, \sigma^2_b) & i=1,\ldots,I
+\end{cases}. \]</p>
+
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAogAAAGwCAMAAAAdVmTVAAABRFBMVEX9/v0AAAAAADkAAGUAAIAAAMAAAP4AAP8AOY8AZrUAZv4AgAAAwAAA/wAA/zkA/2UA/48A/7U5AAA5ADk5AGU5AP85OQA5OWU5OY85Of85j9o5j/05/wA5/2U5/9o/P/8//z9lAABlADllAGVlAP9lOQBlOY9lZgBltf1l/v1l/wBl/zlm/wB+f/5+/36AAACPOQCPOTmPOf+PZgCPtY+P29qP2/2P/v2Q2wC1ZgC1Zjm1ZmW1Zv61Zv+1/rW1/v21/wC1/zm1/2W2tgDAAADajznaj4/aj/7aj//a24/a/v3a/zna/4/wAAD9j4/9tWX9tf7924/92/79/mX9/o/9/rX9/tr9/v39/v7+AAD+ADn+OTn+ZgD+Zjn+ZmX+f37+tY/+tf3+2/3+/v3/AAD/ADn/AGX/Dw//OQD/Pz//ZrX/j9r8/FvKAAAAbHRSTlP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////8A///////////////////////////tOt6RAAAACXBIWXMAAAsSAAALEgHS3X78AAATpUlEQVR4nO3d64Pb2FmA8TrJ4k2zBhpogbSQzFLoLJBkWugsBsJsaYaWlDJNW4/aEghLDcvA//8dy/JFsnR0bu+RXknP82HHGUvH8vi3OvL9SxmRgr7U9wYQ5QGRVAREUhEQSUVAJBUBkVQERFIREElFQCQVAZFUBERSERBJRUAkFQGRVAREUhEQSUVAJBUBkVQERFIREElFQCQVAZFUBERSERBJRUAkFQGRVAREUhEQSUVAJBUBkVQERFIREElFQCQVAZFUBERSERBJRUAkFQGRVAREUhEQSUVAJBUBkVQERFIREElFQCQVAZFUBERSERBJRUAkFQGRVAREUhEQSUVAJBUBkVQERFIREFM1a6jvbVIcEBPUZBCN7QFRuhZwaDQHRNnszKDYGBDl8hCGxdOAKJTvjo4dYzUgihSECoqlgBhfjCcs7gJibLGUoLgNiFHJKMIiEKOSAwRFIAYnbGfiEoEYmjycSVMEYlhJ0Ex5fgZiSMnETPdYEYj+JcUyVYpA9KwDKJOkCESvOtpfTZAiEN3rctac3AwNRNe6pjExikB0qxcVU5IIRKf6IjEdikB0qEcOk5mfgWir72O1vi+/o4DYngYGGrYheUA0p+il/Hq2JFVANDRTxDBP2/ZIB8TGVN7oo6YIxHqab2/N2xYVEE/TflPPxjlJA7HUUG7ioWynT0Asms2GtqcZ1MbaA2IZYd9b4tdAN7u5iUMcqsF9Q9/+Y9OFOLzJ2NSsWt+bE9bUIM5kb7W7u7v8x7NnzwS2zdzTp08tSwhfr+4bP8TTm0jytrp7//79RuKzFy9epJT49Pnz5zaJh1Je34RpgWj880knudG5w43E3GFKiblDD4l5nf05XbNucR8Q+/6jiPX65cv1y5evP3r0aPHo0UfJLuaDBw/mDx58kGz8nuof4mja7BHXxR5xkXiPOPfcIw4vIMak8RhxoAExKjX3mgcfEONaFz8WiS9mnnj8/gNiXEAUCoikIiCSioAYl3VqXj7MstXZeeTFMDVTe0AUCoiJk4E4/oCYOCC6BcS4qlPz4th+gTrE+SH3i2FqpvbWC0P7BWoQ54ZaLwaIZKid37Hl/atsOTv/x6vaOSEgxxsQvbPaq/Q3X5vNzpezJ5bFJs8RiD7VAVofvvnb+q6wLYPG8cMEonON+0AbxNtvXwZcVM0iEKnIbR6ut/o4BOK2ac3SQHQqCGFeBMS86UgEokMtDJO/DKyQOH6MQLTXtjfs4PWIuUQg0gbbetqX30lAdKhnCUCkorWZQvqpeXvhTM2Ut97WeE7xIxHE9f6CgUjb1uu1GWPiy+zwInsMiM6tPTWGG/K9pDEERK/W5ba/KH7fNDWHSKqNv4upmeqtaxmOEV0p1sc7DYhkrO6xBqmZVcuKE5qLTwKiQG2ynOr7CigIiHE1HiPKu2NqpvZsjyMK7fGASDEx8ToHxITB0D0gxiX8OKIppmZqrx2i2MUAkWy5v7OUWgJiVPY32JNbQIzoiG9x+GeaS2JqJmNbdw0fwpTisoBIpprNMUMHBsSwzNyQGBQQgzpga3z4Rl4iUzM1dZTW/Dii+E4RiNSQnRnTs29A9M8JGRL9AqJ3FWLmp/hEJTI100knk27Lc82SEoFI1XwO/pidPQKiV362kOgeEH2qy2p/q4CYRKZmKtXgyvKeFSmJQKRjIaqYnR0DonNhppDoFhBdaxZl/1g6EYlMzbTL4Mnh8xElJAKRimI0MTs7BESn4iwB0R4QnYr8npVoiUzNlGeG5AoxUiIQKZM4yOMw0RYQ7UkoQqIlIFprNeT89RZxEpmaqV2Q+/esREkE4uSTm1OZndsCYnuSepDYEhBbs9rx+gq0cIlMzdPOLsfvu/iCJQJx0snPpczOpoBoLoUaJBoCojEnM95fkxsmkal5urmJ8f++5iCJQJxs6eZQPhenKSA2lxILEhsCYmPOVPynZq/h9zE1TzN3KGEQvSUCcYp1MXUyPZ8ExFrdGEFiNSCe5gckcGr2vSCm5qnlu6OKgOhzWUCcWN1OmEzPx4BYqnsYUNwHxH1h3xkVMzXvL9VhMabmqRT61WWxEB0pAnEi9TlF8p1peUDM+j9S45skgZgXoyB+aj5sQttGMDWPvEXszkgIYmaxCMQxt1hEOxRN1cZ03XQhqrzZVW5UJ00N4qJcy3LPnj1zGm8/NZcXr6/rOppxA5mah9/CVNtKz168eOFkp4D4bFFavL6u82gRWzz0tEA0/vGlc9qaXI6Hncri9XU9RzvW2R8lfdbr2gfEWb2Uf4OGi7P10aO8j4IWr6/rOZqxlH+k1DVcnf4h6s99H7auLS64RzzGMeJE8z1GfCF5jNgQEKeax/3c2uJR95qnGhBJRUCMa93NxTA1U3vpIc6PJb+sHgOi6uYn9b096QJiXJ99JctWf/ZJmsFP8I2aIhDj+n46iGV38/qvRhYQ4zpA/Nli8VtXkiNXd4aNvx1TQPTv8LxVdpyaf/6HV9mPvlI7OzgzuJFSBKJz9SdQs+oxYo6x8ZUK/pfVpm2c8zMQHWpxVT5G3O0Rm1fy4liTNj89e3QSgWjJAun7mwPDzxaf/PNV9vNv/OantiEcMdad1f49OopAbMvO53vfWCw++WzxR/np1Z9/ah/LwaILstFJBGJLDm7+oXxP+TPbwzhOFB2JjUwiEI257L5u//rT4sTPfvuNZY/oOGjzrq7J3LgkAtGYyyy6+otPd6d+tFiYjhF9hjVMuY3kRiURiMacIDrsBH2G9bM1JolANBb9oLRpUPO5vrJGJBGI5hzu5npRtY5ndmX8/WgkArE12yOArjtNp0cS255NCVhnWAHRVvvTIzZcHs+thJkai0QgOlV7vu5gqyrMvJy1UFEjkQhEn4zOzLkO3e6p9bxRSARiVMHuTrNoaj9zDBKBGFscwF1xloBIIgyj92kjkAjEqEQYOji0nD+CyRmIUUkwdGFkhTp4iUDsPRFEg5cIxL4TIjR0iUCMK/ojR9wAOSwzcIlAjCsWouvLseWGUhoQe00Uz6AlArHPhOkMWSIQ44qbmp3hOC43YIlAjCsKojsbZ7CDlZgO4k3+FQb3LpONP/xSqBmsxFQQV2e7b9P48E2iSxh8acwMVWIqiMvZw/zHxuOTRJego+Cp2e+jGnwWHabERBBXZw/3J8a9SwyF6PmRIZ5vMh0gxWQQz3enlvdFP75yJCW1MkiJiSDeXkxkjxhWaikDlJjuzsoW4Ops5DvEkKk5YI/lvfzgJCabmitfRDlejQEQQ2ZO/xWGRhGIXdeRkKFJ5JmVjuvOx7AkAjEuz6k5dD8VttKQJKafmsc9LftBDJ4vx/8hEEDssM5hDEhi4qn58Hgi9fL1KMO5y5L6GHF1xnPNeZFfLhq85mC+1DT5nZXluJ9ZcYQYqyFi5YFQTA3x9oJjxN4nyL4v36XUEG94QaIGBwo2wVL6e82TPkacC02M0SPMpbYkVckhjtthK8S53K0v86EkminyzEqqVN7sKjdqGxBlm5czLPP06dOwwY8rHk55j+WygX2U+F18Y5+ZN1Pz3JRplafPnz/3lTivrng4FTKW/xZ3USqItxd+7+Iz/nGGlvWa5na89cwrKx5OBY1VGlXRnyUVxOviOebGd/HN6nX4JxGv4eq09cGDvA8816qseDgVPFZjHf+ROoF4eByb96ycFrwXk98jair120nH/i6+gLcKBB3XVVeMO0ZUGXvEuELePNXrvWat9XGMSFRLy73mQbbe1vdWjKPUjyOe2xccaOtKfW/N4OOZlbD2/NYZFEVK/ZEj46wmL5nEV1/Osl98c7zzyqHkD9+MsMYdYCKKQIzr9mK8d1Iq5NbNvxbrAPGnX53Px+wx3YcwjXSXeOJtbT4ruMPzYtkR4i++ebmxeHl69njifc1+tWKLktjwBG12hPiTL+f/ODcuN/iA6JVNWpjEFlflY8R8r2hcaegcefjGp7qz2r99JVogvfqNq+zV/PwH+f/N3/m6ZYQhYwSie413ll0WMmbn8+oPNvdRXs2/nu8Pmx1WhxqsxS4+H3Ekd6AdiblLdHHzd/sDm59+1X6fecgSO/mgzlEcJrrv6RyXdDLznd1hoYvD3aDDlJju4Zvdq2/uXWbXsxE8lGPQ1fxLF4lOYg73T3643dm5YARipWXp9YhjeHTbZMvwWweJfhDdA2K56iu0h/8qbd87w44Sk3wXHxBLHb7WIj8x/A9i8n940FWixY0Xq0HfbU73XXz7V2g/zN4+HvjU3KLKfIbjcWK7HldYQ3/wppNXaN8M/eWxrc/qBa1Vrv3ZEZuu0Ty30sErtG8G/raV0CeQAx7Zrnci0bzc0OOZFVvhL2TwX9PozFzgtqkLiJYsmtrPjH5Z2Gjd1QJie9aX20St7dLIAe4DYmuxkqIlToQhENuL36NFjjAVhkBsz67IvkCUxKkwBGJrDoYcluAtzy4B0ZwQISS6BERjYoCQ6BAQTTm+HtttqMhtmUBANOS4G3MjhkRrQGxOdjplcrYGxMak5SDRFhCb8nijlPiIEw2IDXmocV8Qia0BsV4aM0hsDYi1UolBYltAPM3Pi9eySDQHxJM8tfgtjERjQKyU+FPZ+dB3Y0AslxwKEk0BsVSAEv8VkNgYEA8F7a0C1kBiU0Dc19msyfTcFBCLutSBxIaAuC3YRvCHQECxGhCzKBeB6yHxNCD2pAKK1YDYlwi+0rTS5CFGcohaF4rHJg4xmkL0J5JAsWjKENcKHGjYBhVNF6IWAlq2o+cmCXG9Frv1pT4LYvIWpwZxfUxmPJFRMtmNGmJTgihn8IsvvtifvLu7K59z8k+PpP8XGVhjhbg2JTH4FxtuO4l379+/L9E7+ad3STdbdVogGm8ByYS2NXe4k3i3fl+mlzuMk5jXyd+i46xXug+Is3ry17zhQqT68eu8H+cnX69fbnq9P+f1y8o/5ZL/+3Rcw3XqH+LQK+8R3yfYI04yIAaU7hhxugExpBT3miceEElFQCQVAZFUBERSERADe/e/Wbb65ed9b8ZoAmJgQJQNiIGVIL7971/3vTXDD4geHZ6wysoQb9Y7iOWzyTMg2qs/c5qVIL77r/8oIDY8w9rzhg8pILbVAss8NcMxJCCaskB6t9H3bv35v/y65RgRjO4BsTE7n3/7n/X683fr/8tsd1aw6BQQG3Jx8+9HfA73mqFoC4j1XMjc/ut/Hk47PXwDxPaAWM9FzOpXnhD5itL2gFjPF6LgsNMNiPWSHM8xNbcHxIYc7uZ6seJusz0gNmd7BNAVFo8kOgZEY+1Pj9hw8dyKX0Bsr/Z83YHWiTDzguQSEJ0yMWup700eWEAMCnjSATE4/EkGxMBgKBsQw4KhcEAMC4bCAZFUpBii/KcMUlRJb23NEBlv1ONVAyLj9TReNSAyXk/jVQMi4/U0XjUgMl5P41UDIuP1NF41IDJeT+NVUwyRphQQSUVAJBUBkVQERFIREElFQCQVAZFUBERSkVKIb3/3avOfx7P7VyKjPZ7NzrNsdTb78I3geLsfYuNl2e2F5Hi3F7N7l4Ljid0eTemEeJNf49XHl9m1hJx8oLe/c5nfytcP44fbj7f7ITbe5tS1COz9eMvz7Ebw7yd2ezSmEuLy3l9t9ohvf/9Ntvpjgf8Fb3J9y/N8rO2eVmi83Q+x8Ta7nN/7EwmIpesr0m48sdujMZUQi6lZ9P/AzWDbP+THInNVth9IdLzbb39XZmrOdtf3L4Wm5mK8Ce4Rd8eIYsd0+eHSk+00JQUnH+/4Q2i86ydCx4jFeG8fn29nFanxJG+Peooh5oc5NzJHx6uzzd9RcI+4He/wQ2i8zfZJQUxyfQVvj4YUQ5Tbg+X7hiwTO0bcjbf/ITXe9fY9mxK0d9f3T2X/fpIzSj3FEMX+D9yByacXkXvNaRzmyewR9+Mthabm/fWd6h4xu5nJHGwXu5pzsWOc3Xj7YaXGy6Qglq6viJv9eFK3R2NKIdLUAiKpCIikIiCSioBIKgIiqQiIpCIgkoqASCoCIqkIiKQiIJKKgEgqAiKpCIikIiCSioBIKgIiqQiIol3f//uz7av+l4f3QeWntu9QWN6/2pzevXg//23+/pnbiw//6fFu0cOS5dWnEhBFu77/rRzT6mz7No9c1XJ7Kue3zM8r3vaxO3/z29uL2f7Ne8clS6tPJiCKdl28vWi53Z3l/12dFRqLneT2vw/z/2x+uzH4MP/P5uT1Fm9pySeHQaYSEEW73uJZnW3ftbqZdt+8fXx4I91y90a9+1ers+0v8x+3F8UesrxkafXur0FfAVG04uO88o9x282z26m3ALUsoC3vXb59XLy9enMyd1lAPC5ZWr23K9J5QBStgHgzO0oqDgLz3d4O4maRRojHJcurTyYgirbfI1Y+UOKm2NVZ9ojHJU9Wn0ZAFK2AuDsGPLbltjycVzlGLEOsHEJOKyCKtvvI1+294s3+7cM3N9tTbx/ne8R82t3eVa7ca95DrCy5X73v69NdQBRtB3H3QGABb//JNst7Xzt5oHB7CFm5szLbf9j3/sByMgFRtP2HYJfvLO9JLe9996J4OiUrP7NynJoPS5ZXn0pA7KzlpPZwvgGxs4DYFhA7C4htAbGzgNgWEElFQCQVAZFUBERSERBJRUAkFQGRVAREUhEQSUVAJBUBkVQERFIREElFQCQVAZFUBERSERBJRUAkFQGRVAREUhEQSUVAJBUBkVQERFIREElFQCQV/T/9vYM96wbSCAAAAABJRU5ErkJggg==" alt="plot of chunk anovarandommodel"/> </p>
+
+<p>An equivalent writing of this model, and from now on using capital letters for random 
+variables, is 
+\[ Y_{ij} = \mu + \sigma_bA_{i} + \sigma_wG_{ij}, \]
+where all random variables \( A_i \) and \( G_{ij} \) are independent and \( \sim {\cal N}(0,1) \). </p>
+
+<h2>The three summary statistics \( \bar{Y}_{\bullet\bullet} \), \( SS_b(Y) \), \( SS_w(Y) \)</h2>
+
+<p>Using the tensor product language,  the model can be written 
+\[ Y = \mu({\bf 1}_I\otimes{\bf 1}_J) + \sigma_b A\otimes\indic_J +\sigma_wG, 
+\qquad A \sim SN(\RR^J), \quad G \sim SN(\RR^I\otimes\RR^J). \]</p>
+
+<p>The overall mean \( \bar{Y}_{\bullet\bullet} \) is given by the projection of \( Y \) on the subspace 
+\( [{\bf 1}_I]\otimes[{\bf 1}_J] \):<br/>
+\[ P_{[{\bf 1}_I]\otimes[{\bf 1}_J]} Y = \bar{Y}_{\bullet\bullet}({\bf 1}_I\otimes{\bf 1}_J). \]</p>
+
+<p>Then the variations \( Y_{ij}-\bar{Y}_{\bullet\bullet} \) around the overall mean are given by the projection on the orthogonal complement \( {\Bigl([\indic_I]\otimes[\indic_J]\Bigr)}^\perp \). 
+Knowing that 
+\[  \RR^I \otimes \RR^J  = 
+\Bigl([\indic_I]\otimes[\indic_J]\Bigr) 
+\perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]\Bigr) 
+\perpoplus \Bigl([\indic_I]\otimes[\indic_J]^\perp\Bigr) 
+\perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]^\perp\Bigr), \]
+one gets
+\[ 
+\begin{align}
+\underset{\text{'total'}}{\underbrace{{\Bigl([\indic_I]\otimes[\indic_J]\Bigr)}^\perp}}  & = 
+\Bigl([\indic_I]^\perp\otimes[\indic_J]\Bigr) 
+\perpoplus \Bigl([\indic_I]\otimes[\indic_J]^\perp\Bigr) 
+\perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]^\perp\Bigr) \\
+& =  \underset{\text{'between'}}{\underbrace{\Bigl([\indic_I]^\perp\otimes[\indic_J]\Bigr)}} 
+\perpoplus 
+\underset{\text{'within'}}{\underbrace{\Bigl(\RR^I\otimes[\indic_J]^\perp\Bigr)}},
+\end{align}
+ \]
+thereby yielding the decomposition of the total variation:
+\[ P^\perp_{[\indic_I]\otimes[\indic_J]}Y = 
+P_{[\indic_I]^\perp\otimes[\indic_J]}Y 
++ P_{\RR^I\otimes[\indic_J]^\perp}Y, \]
+whose component formulae are: </p>
+
+<ul>
+<li><p>\( {\bigl(P^\perp_{[\indic_I]\otimes[\indic_J]}Y\bigr)}_{ij}=Y_{ij}-\bar{Y}_{\bullet\bullet} \)</p></li>
+<li><p>\( {\bigl(P_{[\indic_I]^\perp\otimes[\indic_J]}Y \bigr)}_{ij} = \bar{Y}_{i\bullet}-\bar{Y}_{\bullet\bullet} \) </p></li>
+<li><p>\( {\bigl(P_{\RR^I\otimes[\indic_J]^\perp}Y\bigr)}_{ij} = Y_{ij}-\bar{Y}_{i\bullet} \) </p></li>
+</ul>
+
+<p>We immediately get that the three summary statistics 
+\[ \bar{Y}_{\bullet\bullet}, \quad 
+SS_b(Y):={\Vert P_{[\indic_I]^\perp\otimes[\indic_J]}Y  \Vert}^2, \quad 
+SS_w(Y):={\Vert P_{\RR^I\otimes[\indic_J]^\perp}Y \Vert}^2, \]
+are independent random variables. 
+It is easy to derive \( \bar{Y}_{\bullet\bullet} \sim {\cal N}\left(\mu, \frac{\sigma^2}{IJ}\right) \) with \( \sigma^2=J\sigma^2_b+\sigma^2_w \). 
+It is also easy to get \( SS_w(Y) \sim \sigma^2_w\chi^2_{I(J-1)} \) because of 
+\( P_{\RR^I\otimes[\indic_J]^\perp}Y = \sigma_wP_{\RR^I\otimes[\indic_J]^\perp}G \). 
+Deriving the law of \( SS_b(Y) \) requires a little bit more of algebra. 
+The projection on the &#39;between space&#39; \( [\indic_I]^\perp\otimes[\indic_J] \) of the first component \( \mu({\bf 1}_I\otimes{\bf 1}_J) \) of \( Y \) is zero. 
+For the second component one has 
+\[ P_{[\indic_I]^\perp\otimes[\indic_J]}(A\otimes\indic_J)
+= (P^\perp_{[\indic_I]} A)\otimes\indic_J \]
+and for the third component one has 
+\[ 
+\begin{align}
+P_{[\indic_I]^\perp\otimes[\indic_J]} G 
+& = \begin{pmatrix} 
+\bar{G}_{1\bullet} - \bar{G}_{\bullet\bullet} & \ldots & \bar{G}_{1\bullet} - \bar{G}_{\bullet\bullet} \\
+\vdots & \vdots & \vdots \\
+\bar{G}_{I\bullet} - \bar{G}_{\bullet\bullet} & \ldots & \bar{G}_{I\bullet} - \bar{G}_{\bullet\bullet} 
+\end{pmatrix} \\
+& = (P^\perp_{[\indic_I]}G_{\text{row}}) \otimes \indic_J
+\end{align} \]
+where \( G_{\text{row}} = (\bar{G}_{i\bullet}) \) is the vector of row means of \( G \). 
+Finally 
+\[ P_{[\indic_I]^\perp\otimes[\indic_J]} Y 
+= \bigl(P^\perp_{[\indic_I]}(\sigma_b A + \sigma_w G_{\text{row}})\bigr) \otimes \indic_J \]
+and it is easy to see that the components of \( \sigma_b A + \sigma_w G_{\text{row}} \) are 
+\( \sim_{\text{iid}} {\cal N}(0, \sigma^2) \). 
+Consequently, \( SS_b(Y) \sim \sigma^2\chi^2_{J-1} \). </p>
+
+<h2>Confidence interval for the overall mean</h2>
+
+<p>By our previous derivations, 
+\[  \frac{\bar Y_{\bullet\bullet}  - \mu}{\frac{1}{\sqrt{I}}\sqrt{\frac{SS_b}{J(I-1)}}} \]
+has a Student \( t \) distribution with \( I-1 \) degrees of freedom, wherefrom it is easy to get an exact confidence interval about \( \mu \).</p>
+
+</body>
+
+</html>
+
