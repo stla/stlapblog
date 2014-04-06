@@ -91,11 +91,15 @@ a vector of unknown parameters, and \(G\) has the standard normal distribution o
 <p>There are good reasons to use this matricial writing, however it is cleaner to treat 
 the theory with the equivalent vector space notation \(Y = \mu + \sigma G\), where 
 \(\mu\) is assumed to lie in a linear subspace \(W\) of \(\mathbb{R}^n\), 
-corresponding to \(\text{Im}(X)\) in the matricial notation. </p>
-
-<p>The vector space notation \(Y = \mu + \sigma G\) is cleaner to derive the general 
-principles of the theory, as well as some examples, such as the balanced one-way ANOVA model, 
-which is the topic of this article. </p>
+corresponding to \(\text{Im}(X)\) in the matricial notation. 
+For example, denoting by \(P_W\) the orthogonal projection on \(W\), the least-squares 
+estimate \(\hat\mu\) of \(\mu\) is simply given by \(\hat\mu=P_Wy\) and the residuals are 
+\(P_W^\perp y\), denoting by \(P^\perp_W\) the projection on the orthogonal complement of 
+\(W\), and there is no 
+need to consider \(W=\text{Im}(X)\) to derive 
+the general principles of the theory. 
+The balanced one-way ANOVA model, 
+which is the topic of this article, illustrates this approach. </p>
 
 <h2>Standard normal distribution on a vector space</h2>
 
@@ -112,13 +116,6 @@ standard normal distribution on a linear space.</p>
 <p>From this definition-theorem, the so-called <em>Cochran&#39;s theorem</em> is an obvious statement. 
 More precisely, if \(U \subset W\) is a linear space, and \(Z=U^\perp \cap W\) is the orthogonal complement of \(U\) in \(W\), then the projection \(P_UX\) of \(X\) on \(U\) has the standard normal distribution on \(U\), similarly the projection \(P_ZX\) of \(X\) on \(Z\) has the standard normal distribution on \(Z\), and moreover \(P_UX\) and \(P_ZX\) are independent. 
 This is straightforward to see from the definition-theorem of \(SN(W)\), and it is also easy to see that \({\Vert P_UX\Vert}^2 \sim \chi^2_{\dim(U)}\).</p>
-
-<h2>Gaussian linear model in pure vector space language</h2>
-
-<p>When the model is written \(Y = \mu + \sigma G\), \(\mu \in W\), the least-squares 
-estimate \(\hat\mu\) of \(\mu\) is simply given by \(\hat\mu=P_Wy\), and the residuals are 
-\(P_W^\perp y\), denoting by \(P^\perp_W\) the projection on the orthogonal complement of 
-\(W\). </p>
 
 <h2>The balanced ANOVA model</h2>
 
