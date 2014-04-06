@@ -132,7 +132,7 @@ print(heli)
 ## x4 ~ (L - 2)/0.5
 </code></pre>
 
-<pre><code class="r">print(heli, decode = FALSE)
+<pre><code class="r">print(heli, decode=FALSE)
 </code></pre>
 
 <pre><code>##    block x1 x2 x3 x4 ave logSD
@@ -176,13 +176,13 @@ print(heli)
 
 <p>A second-order response-surface model for these data is fitted using</p>
 
-<pre><code class="r">heli.rsm &lt;- rsm(ave ~ block + SO(x1, x2, x3, x4), data = heli)
+<pre><code class="r">heli.rsm &lt;- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli) 
 </code></pre>
 
 <p>The fitted surface response is shown below as a function of <code>x3</code> and <code>x4</code> with 
 the values of <code>x1</code> and <code>x2</code> both fixed at \(0\):  </p>
 
-<pre><code class="r">persp(heli.rsm, ~x3 + x4, at = list(x1 = 0, x2 = 0), col = rainbow(50), contours = &quot;colors&quot;)
+<pre><code class="r">persp(heli.rsm, ~x3+x4, at=list(x1=0,x2=0), col = rainbow(50), contours = &quot;colors&quot;)
 </code></pre>
 
 <p><img src="assets/fig/rsmShinyunnamed-chunk-3.png" alt="plot of chunk unnamed-chunk-3"> </p>
@@ -225,14 +225,13 @@ shinyUI(pageWithSidebar(
 <pre><code class="r">library(shiny)
 library(rsm)
 
-heli.rsm &lt;- rsm(ave ~ block + SO(x1, x2, x3, x4), data = heli)
+heli.rsm &lt;- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli)
 
-shinyServer(function(input, output) {
-    output$surfPlot &lt;- renderPlot({
-        x1 &lt;- (input$Aslice - 12.4)/0.6
-        x2 &lt;- (input$Rslice - 2.52)/0.26
-        persp(heli.rsm, ~x3 + x4, at = list(x1 = x1, x2 = x2), col = rainbow(50), 
-            contours = &quot;colors&quot;)
+shinyServer(function(input, output){
+  output$surfPlot &lt;- renderPlot({
+    x1 &lt;- (input$Aslice - 12.4)/0.6
+    x2 &lt;- (input$Rslice - 2.52)/0.26
+    persp(heli.rsm, ~x3+x4, at=list(x1=x1,x2=x2), col = rainbow(50), contours = &quot;colors&quot;)
     })
 })
 </code></pre>

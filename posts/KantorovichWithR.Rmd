@@ -4,7 +4,7 @@ date : 2013-07-02
 --- &lead
 
 ```{r setup0, echo=FALSE}
-opts_chunk$set(fig.path="assets/fig/KantorovichWithR")
+opts_chunk$set(fig.path="assets/fig/KantorovichWithR", tidy=FALSE)
 ```
 
 ```{r setup, echo=FALSE, message=FALSE}

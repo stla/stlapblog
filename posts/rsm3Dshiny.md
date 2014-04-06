@@ -60,7 +60,7 @@ print(heli)
 ```
 
 ```r
-print(heli, decode = FALSE)
+print(heli, decode=FALSE)
 ```
 
 ```
@@ -108,7 +108,7 @@ print(heli, decode = FALSE)
 A second-order response-surface model for these data is fitted using
 
 ```r
-heli.rsm <- rsm(ave ~ block + SO(x1, x2, x3, x4), data = heli)
+heli.rsm <- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli) 
 ```
 
 
@@ -117,7 +117,7 @@ the values of `x1` and `x2` both fixed at $0$:
 
 
 ```r
-persp(heli.rsm, ~x3 + x4, at = list(x1 = 0, x2 = 0), col = rainbow(50), contours = "colors")
+persp(heli.rsm, ~x3+x4, at=list(x1=0,x2=0), col = rainbow(50), contours = "colors")
 ```
 
 ![plot of chunk unnamed-chunk-3](assets/fig/rsmShinyunnamed-chunk-3.png) 
@@ -164,14 +164,13 @@ shinyUI(pageWithSidebar(
 library(shiny)
 library(rsm)
 
-heli.rsm <- rsm(ave ~ block + SO(x1, x2, x3, x4), data = heli)
+heli.rsm <- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli)
 
-shinyServer(function(input, output) {
-    output$surfPlot <- renderPlot({
-        x1 <- (input$Aslice - 12.4)/0.6
-        x2 <- (input$Rslice - 2.52)/0.26
-        persp(heli.rsm, ~x3 + x4, at = list(x1 = x1, x2 = x2), col = rainbow(50), 
-            contours = "colors")
+shinyServer(function(input, output){
+  output$surfPlot <- renderPlot({
+    x1 <- (input$Aslice - 12.4)/0.6
+    x2 <- (input$Rslice - 2.52)/0.26
+    persp(heli.rsm, ~x3+x4, at=list(x1=x1,x2=x2), col = rainbow(50), contours = "colors")
     })
 })
 ```

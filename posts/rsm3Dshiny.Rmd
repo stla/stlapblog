@@ -4,7 +4,7 @@ date : 2013-03-15
 --- &lead
 
 ```{r setup0, echo=FALSE}
-opts_chunk$set(fig.path="assets/fig/rsmShiny")
+opts_chunk$set(fig.path="assets/fig/rsmShiny", tidy=FALSE)
 ```
 
 In [<u>my previous article</u>](http://stla.github.io/stlapblog/posts/rgl_knitr.html) I showed an interactive 3D surface response fitted from a model with two continous predictors. But when there is more than two continuous predictors, since we can use only two predictors at time in the image, we can only show a surface plot depending on the fixed values of the other predictors. Here we will build a `Shiny` application allowing to visualize a surface plot *reactive* to the values of the other predictors.
