@@ -52,7 +52,7 @@ where all random variables $A_i$ and $G_{ij}$ are independent and $\sim {\cal N}
 
 Using the tensor product language,  the model can be written 
 $$Y = \mu({\bf 1}_I\otimes{\bf 1}_J) + \sigma_b A\otimes\indic_J +\sigma_wG, 
-\qquad A \sim SN(\RR^J), \quad G \sim SN(\RR^I\otimes\RR^J).$$
+\qquad A \sim SN(\RR^I), \quad G \sim SN(\RR^I\otimes\RR^J).$$
 
 
 The overall mean $\bar{Y}_{\bullet\bullet}$ is given by the projection of $Y$ on the subspace 
@@ -80,7 +80,7 @@ $$
 \underset{\text{'within'}}{\underbrace{\Bigl(\RR^I\otimes[\indic_J]^\perp\Bigr)}},
 \end{align}
 $$
-thereby yielding the decomposition of the total variation:
+thereby yielding the decomposition of the variations:
 $$
 P^\perp_{[\indic_I]\otimes[\indic_J]}Y = 
 P_{[\indic_I]^\perp\otimes[\indic_J]}Y + P_{\RR^I\otimes[\indic_J]^\perp}Y,
@@ -129,5 +129,5 @@ Consequently, $SS_b(Y) \sim \sigma^2\chi^2_{J-1}$.
 ## Confidence interval for the overall mean 
 
 By our previous derivations, 
-$$ \frac{\bar Y_{\bullet\bullet}  - \mu}{\frac{1}{\sqrt{I}}\sqrt{\frac{SS_b}{J(I-1)}}}$$
+$$ \frac{\bar Y_{\bullet\bullet}  - \mu}{\frac{1}{\sqrt{I}}\sqrt{\frac{SS_b(Y)}{J(I-1)}}}$$
 has a Student $t$ distribution with $I-1$ degrees of freedom, wherefrom it is easy to get an exact confidence interval about $\mu$.
