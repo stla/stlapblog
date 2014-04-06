@@ -6,7 +6,7 @@ title: A blog about Mathematics, R, Statistics, ...
   MathJax.Hub.Config({
   TeX: {
     Macros: {
-      indic: "{\\bf 1}",
+      indic: "\\mathbf{1}"
       perpoplus: "\\overset{\\perp}{\\oplus}",
       RR: "\\mathbb{R}"
     }
