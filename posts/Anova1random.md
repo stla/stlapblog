@@ -1,4 +1,4 @@
----
+--- 
 title: The balanced ANOVA model with random effects 
 date : 2014-04-06
 --- &lead
@@ -9,8 +9,12 @@ date : 2014-04-06
 
 
 
+\(\newcommand{\indic}{\mathbf{1}}\)
+\(\newcommand{\perpoplus}{\overset{\perp}{\oplus}}\)
+\(\newcommand{\RR}{\mathbb{R}}\)
 
 ## The balanced ANOVA model with random effects  
+
 
 The balanced ANOVA model is used to model a sample $y=(y_{ij})$ with a tabular structure:
 $$y=\begin{pmatrix}
@@ -57,15 +61,17 @@ $$P_{[{\bf 1}_I]\otimes[{\bf 1}_J]} Y = \bar{Y}_{\bullet\bullet}({\bf 1}_I\otime
 
 Then the variations $Y_{ij}-\bar{Y}_{\bullet\bullet}$ around the overall mean are given by the projection on the orthogonal complement ${\Bigl([\indic_I]\otimes[\indic_J]\Bigr)}^\perp$. 
 Knowing that 
-$$ \RR^I \otimes \RR^J  = 
+$$
+\RR^I \otimes \RR^J  = 
 \Bigl([\indic_I]\otimes[\indic_J]\Bigr) 
 \perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]\Bigr) 
 \perpoplus \Bigl([\indic_I]\otimes[\indic_J]^\perp\Bigr) 
-\perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]^\perp\Bigr),$$
+\perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]^\perp\Bigr),
+$$
 one gets
 $$
 \begin{align}
-\underset{\text{'total'}}{\underbrace{{\Bigl([\indic_I]\otimes[\indic_J]\Bigr)}^\perp}}  & = 
+\underset{\text{'total'}}{\underbrace{ {\Bigl([\indic_I]\otimes[\indic_J]\Bigr)}^\perp} }  & = 
 \Bigl([\indic_I]^\perp\otimes[\indic_J]\Bigr) 
 \perpoplus \Bigl([\indic_I]\otimes[\indic_J]^\perp\Bigr) 
 \perpoplus \Bigl([\indic_I]^\perp\otimes[\indic_J]^\perp\Bigr) \\
@@ -75,16 +81,17 @@ $$
 \end{align}
 $$
 thereby yielding the decomposition of the total variation:
-$$P^\perp_{[\indic_I]\otimes[\indic_J]}Y = 
-P_{[\indic_I]^\perp\otimes[\indic_J]}Y 
-+ P_{\RR^I\otimes[\indic_J]^\perp}Y,$$
+$$
+P^\perp_{[\indic_I]\otimes[\indic_J]}Y = 
+P_{[\indic_I]^\perp\otimes[\indic_J]}Y + P_{\RR^I\otimes[\indic_J]^\perp}Y,
+$$
 whose component formulae are: 
 
-* ${\bigl(P^\perp_{[\indic_I]\otimes[\indic_J]}Y\bigr)}_{ij}=Y_{ij}-\bar{Y}_{\bullet\bullet}$
+- ${\bigl(P^\perp_{[\indic_I]\otimes[\indic_J]}Y\bigr)}_{ij}=Y_{ij}-\bar{Y}_{\bullet\bullet}$
 
-* ${\bigl(P_{[\indic_I]^\perp\otimes[\indic_J]}Y \bigr)}_{ij} = \bar{Y}_{i\bullet}-\bar{Y}_{\bullet\bullet}$ 
+- ${\bigl(P_{[\indic_I]^\perp\otimes[\indic_J]}Y \bigr)}_{ij} = \bar{Y}_{i\bullet}-\bar{Y}_{\bullet\bullet}$ 
 
-* ${\bigl(P_{\RR^I\otimes[\indic_J]^\perp}Y\bigr)}_{ij} = Y_{ij}-\bar{Y}_{i\bullet}$ 
+- ${\bigl(P_{\RR^I\otimes[\indic_J]^\perp}Y\bigr)}_{ij} = Y_{ij}-\bar{Y}_{i\bullet}$ 
 
 We immediately get that the three summary statistics 
 $$\bar{Y}_{\bullet\bullet}, \quad 

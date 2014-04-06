@@ -159,9 +159,9 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
 <img src="rglkantorovich1snapshot.png" alt="rglkantorovich1snapshot" width=505/><br>
     Your browser does not support the HTML5 canvas element.</canvas></p>
 
-<!-- ****** points object 6 ****** -->
+<!-- ****** points object 64 ****** -->
 
-<script id="rglkantorovich1vshader6" type="x-shader/x-vertex">
+<script id="rglkantorovich1vshader64" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -176,7 +176,7 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
     }
 </script>
 
-<script id="rglkantorovich1fshader6" type="x-shader/x-fragment"> 
+<script id="rglkantorovich1fshader64" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -189,9 +189,9 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
     }
 </script> 
 
-<!-- ****** quads object 7 ****** -->
+<!-- ****** quads object 65 ****** -->
 
-<script id="rglkantorovich1vshader7" type="x-shader/x-vertex">
+<script id="rglkantorovich1vshader65" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -209,7 +209,7 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
     }
 </script>
 
-<script id="rglkantorovich1fshader7" type="x-shader/x-fragment"> 
+<script id="rglkantorovich1fshader65" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -237,9 +237,9 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
     }
 </script> 
 
-<!-- ****** text object 8 ****** -->
+<!-- ****** text object 66 ****** -->
 
-<script id="rglkantorovich1vshader8" type="x-shader/x-vertex">
+<script id="rglkantorovich1vshader66" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -258,7 +258,7 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
     }
 </script>
 
-<script id="rglkantorovich1fshader8" type="x-shader/x-fragment"> 
+<script id="rglkantorovich1fshader66" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -419,60 +419,60 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
                  widths:widths, textHeight:textHeight,
                  offset:offset, skip:skip};
        }
-       // ****** points object 6 ******
-       var prog6  = gl.createProgram();
-       gl.attachShader(prog6, getShader( gl, "rglkantorovich1vshader6" ));
-       gl.attachShader(prog6, getShader( gl, "rglkantorovich1fshader6" ));
+       // ****** points object 64 ******
+       var prog64  = gl.createProgram();
+       gl.attachShader(prog64, getShader( gl, "rglkantorovich1vshader64" ));
+       gl.attachShader(prog64, getShader( gl, "rglkantorovich1fshader64" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog6, 0, "aPos");
-       gl.bindAttribLocation(prog6, 1, "aCol");
-       gl.linkProgram(prog6);
+       gl.bindAttribLocation(prog64, 0, "aPos");
+       gl.bindAttribLocation(prog64, 1, "aCol");
+       gl.linkProgram(prog64);
        var v=new Float32Array([
         0, 0, 0,
         -1, 4, 0,
         4, 9, 0,
         6, 3, 0
        ]);
-       var buf6 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf6);
+       var buf64 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf64);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc6 = gl.getUniformLocation(prog6,"mvMatrix");
-       var prMatLoc6 = gl.getUniformLocation(prog6,"prMatrix");
-       // ****** quads object 7 ******
-       var prog7  = gl.createProgram();
-       gl.attachShader(prog7, getShader( gl, "rglkantorovich1vshader7" ));
-       gl.attachShader(prog7, getShader( gl, "rglkantorovich1fshader7" ));
+       var mvMatLoc64 = gl.getUniformLocation(prog64,"mvMatrix");
+       var prMatLoc64 = gl.getUniformLocation(prog64,"prMatrix");
+       // ****** quads object 65 ******
+       var prog65  = gl.createProgram();
+       gl.attachShader(prog65, getShader( gl, "rglkantorovich1vshader65" ));
+       gl.attachShader(prog65, getShader( gl, "rglkantorovich1fshader65" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog7, 0, "aPos");
-       gl.bindAttribLocation(prog7, 1, "aCol");
-       gl.linkProgram(prog7);
+       gl.bindAttribLocation(prog65, 0, "aPos");
+       gl.bindAttribLocation(prog65, 1, "aCol");
+       gl.linkProgram(prog65);
        var v=new Float32Array([
         0, 0, 0, 0, 0, -1,
         -1, 4, 0, 0, 0, -1,
         4, 9, 0, 0, 0, -1,
         6, 3, 0, 0, 0, -1
        ]);
-       var normLoc7 = gl.getAttribLocation(prog7, "aNorm");
+       var normLoc65 = gl.getAttribLocation(prog65, "aNorm");
        var f=new Uint16Array([
         0, 1, 2, 0, 2, 3
        ]);
-       var buf7 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf7);
+       var buf65 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf65);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf7 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf7);
+       var ibuf65 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf65);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc7 = gl.getUniformLocation(prog7,"mvMatrix");
-       var prMatLoc7 = gl.getUniformLocation(prog7,"prMatrix");
-       var normMatLoc7 = gl.getUniformLocation(prog7,"normMatrix");
-       // ****** text object 8 ******
-       var prog8  = gl.createProgram();
-       gl.attachShader(prog8, getShader( gl, "rglkantorovich1vshader8" ));
-       gl.attachShader(prog8, getShader( gl, "rglkantorovich1fshader8" ));
+       var mvMatLoc65 = gl.getUniformLocation(prog65,"mvMatrix");
+       var prMatLoc65 = gl.getUniformLocation(prog65,"prMatrix");
+       var normMatLoc65 = gl.getUniformLocation(prog65,"normMatrix");
+       // ****** text object 66 ******
+       var prog66  = gl.createProgram();
+       gl.attachShader(prog66, getShader( gl, "rglkantorovich1vshader66" ));
+       gl.attachShader(prog66, getShader( gl, "rglkantorovich1fshader66" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog8, 0, "aPos");
-       gl.bindAttribLocation(prog8, 1, "aCol");
-       gl.linkProgram(prog8);
+       gl.bindAttribLocation(prog66, 0, "aPos");
+       gl.bindAttribLocation(prog66, 1, "aCol");
+       gl.linkProgram(prog66);
        var texts = [
         "a",
         "b",
@@ -480,13 +480,13 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
         "d"
        ];
        var texinfo = drawTextToCanvas(texts, 1);     
-       var canvasX8 = texinfo.canvasX;
-       var canvasY8 = texinfo.canvasY;
-       var ofsLoc8 = gl.getAttribLocation(prog8, "aOfs");
-       var texture8 = gl.createTexture();
-       var texLoc8 = gl.getAttribLocation(prog8, "aTexcoord");
-       var sampler8 = gl.getUniformLocation(prog8,"uSampler");
-           handleLoadedTexture(texture8, document.getElementById("rglkantorovich1textureCanvas"));
+       var canvasX66 = texinfo.canvasX;
+       var canvasY66 = texinfo.canvasY;
+       var ofsLoc66 = gl.getAttribLocation(prog66, "aOfs");
+       var texture66 = gl.createTexture();
+       var texLoc66 = gl.getAttribLocation(prog66, "aTexcoord");
+       var sampler66 = gl.getUniformLocation(prog66,"uSampler");
+           handleLoadedTexture(texture66, document.getElementById("rglkantorovich1textureCanvas"));
        var v=new Float32Array([
         0, 0, -0.5, 0, -0.5, 0.5, 0.5,
         0, 0, -0.5, 1, -0.5, 0.5, 0.5,
@@ -520,14 +520,14 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
         8, 9, 10, 8, 10, 11,
         12, 13, 14, 12, 14, 15
        ]);
-       var buf8 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf8);
+       var buf66 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf66);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf8 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf8);
+       var ibuf66 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf66);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc8 = gl.getUniformLocation(prog8,"mvMatrix");
-       var prMatLoc8 = gl.getUniformLocation(prog8,"prMatrix");
+       var mvMatLoc66 = gl.getUniformLocation(prog66,"mvMatrix");
+       var prMatLoc66 = gl.getUniformLocation(prog66,"prMatrix");
        gl.enable(gl.DEPTH_TEST);
        gl.depthFunc(gl.LEQUAL);
        gl.clearDepth(1.0);
@@ -562,46 +562,46 @@ Schematically, one can imagine \({\cal J}(\mu, \nu)\) as a convex polyhedra embe
          normMatrix.scale( 1, 1, 1 );   
          normMatrix.multRight( userMatrix );
          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-         // ****** points object 6 *******
-         gl.useProgram(prog6);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf6);
-         gl.uniformMatrix4fv( prMatLoc6, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc6, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** points object 64 *******
+         gl.useProgram(prog64);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf64);
+         gl.uniformMatrix4fv( prMatLoc64, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc64, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 1, 0, 0, 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.POINTS, 0, 4);
-         // ****** quads object 7 *******
-         gl.useProgram(prog7);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf7);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf7);
-         gl.uniformMatrix4fv( prMatLoc7, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc7, false, new Float32Array(mvMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( normMatLoc7, false, new Float32Array(normMatrix.getAsArray()) );
+         // ****** quads object 65 *******
+         gl.useProgram(prog65);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf65);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf65);
+         gl.uniformMatrix4fv( prMatLoc65, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc65, false, new Float32Array(mvMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( normMatLoc65, false, new Float32Array(normMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 1, 0, 1 );
-         gl.enableVertexAttribArray( normLoc7 );
-         gl.vertexAttribPointer(normLoc7, 3, gl.FLOAT, false, 24, 12);
+         gl.enableVertexAttribArray( normLoc65 );
+         gl.vertexAttribPointer(normLoc65, 3, gl.FLOAT, false, 24, 12);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 24,  0);
          gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-         // ****** text object 8 *******
-         gl.useProgram(prog8);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf8);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf8);
-         gl.uniformMatrix4fv( prMatLoc8, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc8, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** text object 66 *******
+         gl.useProgram(prog66);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf66);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf66);
+         gl.uniformMatrix4fv( prMatLoc66, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc66, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 1, 0, 1 );
-         gl.enableVertexAttribArray( texLoc8 );
-         gl.vertexAttribPointer(texLoc8, 2, gl.FLOAT, false, 28, 12);
+         gl.enableVertexAttribArray( texLoc66 );
+         gl.vertexAttribPointer(texLoc66, 2, gl.FLOAT, false, 28, 12);
          gl.activeTexture(gl.TEXTURE0);
-         gl.bindTexture(gl.TEXTURE_2D, texture8);
-         gl.uniform1i( sampler8, 0);
-         gl.enableVertexAttribArray( ofsLoc8 );
-         gl.vertexAttribPointer(ofsLoc8, 2, gl.FLOAT, false, 28, 20);
+         gl.bindTexture(gl.TEXTURE_2D, texture66);
+         gl.uniform1i( sampler66, 0);
+         gl.enableVertexAttribArray( ofsLoc66 );
+         gl.vertexAttribPointer(ofsLoc66, 2, gl.FLOAT, false, 28, 20);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 28,  0);
          gl.drawElements(gl.TRIANGLES, 24, gl.UNSIGNED_SHORT, 0);
          gl.flush ();
@@ -751,9 +751,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
 <img src="rglkantorovich2snapshot.png" alt="rglkantorovich2snapshot" width=505/><br>
     Your browser does not support the HTML5 canvas element.</canvas></p>
 
-<!-- ****** lines object 10 ****** -->
+<!-- ****** lines object 68 ****** -->
 
-<script id="rglkantorovich2vshader10" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader68" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -767,7 +767,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader10" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader68" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -780,9 +780,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** lines object 11 ****** -->
+<!-- ****** lines object 69 ****** -->
 
-<script id="rglkantorovich2vshader11" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader69" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -796,7 +796,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader11" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader69" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -809,9 +809,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** text object 12 ****** -->
+<!-- ****** text object 70 ****** -->
 
-<script id="rglkantorovich2vshader12" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader70" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -830,7 +830,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader12" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader70" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -849,9 +849,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** text object 13 ****** -->
+<!-- ****** text object 71 ****** -->
 
-<script id="rglkantorovich2vshader13" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader71" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -870,7 +870,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader13" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader71" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -889,9 +889,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** text object 14 ****** -->
+<!-- ****** text object 72 ****** -->
 
-<script id="rglkantorovich2vshader14" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader72" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -910,7 +910,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader14" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader72" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -929,9 +929,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** surface object 15 ****** -->
+<!-- ****** surface object 73 ****** -->
 
-<script id="rglkantorovich2vshader15" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader73" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -949,7 +949,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader15" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader73" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -977,9 +977,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** lines object 16 ****** -->
+<!-- ****** lines object 74 ****** -->
 
-<script id="rglkantorovich2vshader16" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader74" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -993,7 +993,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader16" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader74" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1006,9 +1006,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** points object 17 ****** -->
+<!-- ****** points object 75 ****** -->
 
-<script id="rglkantorovich2vshader17" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader75" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1023,7 +1023,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader17" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader75" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1036,9 +1036,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** quads object 18 ****** -->
+<!-- ****** quads object 76 ****** -->
 
-<script id="rglkantorovich2vshader18" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader76" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1056,7 +1056,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader18" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader76" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1084,9 +1084,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** points object 19 ****** -->
+<!-- ****** points object 77 ****** -->
 
-<script id="rglkantorovich2vshader19" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader77" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1101,7 +1101,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader19" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader77" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1114,9 +1114,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** lines object 20 ****** -->
+<!-- ****** lines object 78 ****** -->
 
-<script id="rglkantorovich2vshader20" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader78" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1130,7 +1130,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader20" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader78" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1143,9 +1143,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** lines object 21 ****** -->
+<!-- ****** lines object 79 ****** -->
 
-<script id="rglkantorovich2vshader21" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader79" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1159,7 +1159,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader21" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader79" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1172,39 +1172,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** points object 22 ****** -->
+<!-- ****** points object 80 ****** -->
 
-<script id="rglkantorovich2vshader22" type="x-shader/x-vertex">
-    attribute vec3 aPos;
-    attribute vec4 aCol;
-    uniform mat4 mvMatrix;
-    uniform mat4 prMatrix;
-    varying vec4 vCol;
-    varying vec4 vPosition;
-    void main(void) {
-      vPosition = mvMatrix * vec4(aPos, 1.);
-      gl_Position = prMatrix * vPosition;
-      gl_PointSize = 8.;
-      vCol = aCol;
-    }
-</script>
-
-<script id="rglkantorovich2fshader22" type="x-shader/x-fragment"> 
-    #ifdef GL_ES
-    precision highp float;
-    #endif
-    varying vec4 vCol; // carries alpha
-    varying vec4 vPosition;
-    void main(void) {
-      vec4 colDiff = vCol;
-      vec4 lighteffect = colDiff;
-      gl_FragColor = lighteffect;
-    }
-</script> 
-
-<!-- ****** points object 23 ****** -->
-
-<script id="rglkantorovich2vshader23" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader80" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1219,7 +1189,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader23" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader80" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1232,9 +1202,39 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** linestrip object 24 ****** -->
+<!-- ****** points object 81 ****** -->
 
-<script id="rglkantorovich2vshader24" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader81" type="x-shader/x-vertex">
+    attribute vec3 aPos;
+    attribute vec4 aCol;
+    uniform mat4 mvMatrix;
+    uniform mat4 prMatrix;
+    varying vec4 vCol;
+    varying vec4 vPosition;
+    void main(void) {
+      vPosition = mvMatrix * vec4(aPos, 1.);
+      gl_Position = prMatrix * vPosition;
+      gl_PointSize = 8.;
+      vCol = aCol;
+    }
+</script>
+
+<script id="rglkantorovich2fshader81" type="x-shader/x-fragment"> 
+    #ifdef GL_ES
+    precision highp float;
+    #endif
+    varying vec4 vCol; // carries alpha
+    varying vec4 vPosition;
+    void main(void) {
+      vec4 colDiff = vCol;
+      vec4 lighteffect = colDiff;
+      gl_FragColor = lighteffect;
+    }
+</script> 
+
+<!-- ****** linestrip object 82 ****** -->
+
+<script id="rglkantorovich2vshader82" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1248,7 +1248,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader24" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader82" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1261,9 +1261,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** text object 25 ****** -->
+<!-- ****** text object 83 ****** -->
 
-<script id="rglkantorovich2vshader25" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader83" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1282,7 +1282,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader25" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader83" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1301,9 +1301,9 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script> 
 
-<!-- ****** text object 26 ****** -->
+<!-- ****** text object 84 ****** -->
 
-<script id="rglkantorovich2vshader26" type="x-shader/x-vertex">
+<script id="rglkantorovich2vshader84" type="x-shader/x-vertex">
     attribute vec3 aPos;
     attribute vec4 aCol;
     uniform mat4 mvMatrix;
@@ -1322,7 +1322,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
     }
 </script>
 
-<script id="rglkantorovich2fshader26" type="x-shader/x-fragment"> 
+<script id="rglkantorovich2fshader84" type="x-shader/x-fragment"> 
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -1483,63 +1483,63 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
                  widths:widths, textHeight:textHeight,
                  offset:offset, skip:skip};
        }
-       // ****** lines object 10 ******
-       var prog10  = gl.createProgram();
-       gl.attachShader(prog10, getShader( gl, "rglkantorovich2vshader10" ));
-       gl.attachShader(prog10, getShader( gl, "rglkantorovich2fshader10" ));
+       // ****** lines object 68 ******
+       var prog68  = gl.createProgram();
+       gl.attachShader(prog68, getShader( gl, "rglkantorovich2vshader68" ));
+       gl.attachShader(prog68, getShader( gl, "rglkantorovich2fshader68" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog10, 0, "aPos");
-       gl.bindAttribLocation(prog10, 1, "aCol");
-       gl.linkProgram(prog10);
+       gl.bindAttribLocation(prog68, 0, "aPos");
+       gl.bindAttribLocation(prog68, 1, "aCol");
+       gl.linkProgram(prog68);
        var v=new Float32Array([
         -3, -3, -19,
         -3, -3, -19,
         9, 12, 119,
         9, 12, 119
        ]);
-       var buf10 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf10);
+       var buf68 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf68);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc10 = gl.getUniformLocation(prog10,"mvMatrix");
-       var prMatLoc10 = gl.getUniformLocation(prog10,"prMatrix");
-       // ****** lines object 11 ******
-       var prog11  = gl.createProgram();
-       gl.attachShader(prog11, getShader( gl, "rglkantorovich2vshader11" ));
-       gl.attachShader(prog11, getShader( gl, "rglkantorovich2fshader11" ));
+       var mvMatLoc68 = gl.getUniformLocation(prog68,"mvMatrix");
+       var prMatLoc68 = gl.getUniformLocation(prog68,"prMatrix");
+       // ****** lines object 69 ******
+       var prog69  = gl.createProgram();
+       gl.attachShader(prog69, getShader( gl, "rglkantorovich2vshader69" ));
+       gl.attachShader(prog69, getShader( gl, "rglkantorovich2fshader69" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog11, 0, "aPos");
-       gl.bindAttribLocation(prog11, 1, "aCol");
-       gl.linkProgram(prog11);
+       gl.bindAttribLocation(prog69, 0, "aPos");
+       gl.bindAttribLocation(prog69, 1, "aCol");
+       gl.linkProgram(prog69);
        var v=new Float32Array([
         -3, -3, -22,
         -3, -3, -22,
         9, 12, 122,
         9, 12, 122
        ]);
-       var buf11 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf11);
+       var buf69 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf69);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc11 = gl.getUniformLocation(prog11,"mvMatrix");
-       var prMatLoc11 = gl.getUniformLocation(prog11,"prMatrix");
-       // ****** text object 12 ******
-       var prog12  = gl.createProgram();
-       gl.attachShader(prog12, getShader( gl, "rglkantorovich2vshader12" ));
-       gl.attachShader(prog12, getShader( gl, "rglkantorovich2fshader12" ));
+       var mvMatLoc69 = gl.getUniformLocation(prog69,"mvMatrix");
+       var prMatLoc69 = gl.getUniformLocation(prog69,"prMatrix");
+       // ****** text object 70 ******
+       var prog70  = gl.createProgram();
+       gl.attachShader(prog70, getShader( gl, "rglkantorovich2vshader70" ));
+       gl.attachShader(prog70, getShader( gl, "rglkantorovich2fshader70" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog12, 0, "aPos");
-       gl.bindAttribLocation(prog12, 1, "aCol");
-       gl.linkProgram(prog12);
+       gl.bindAttribLocation(prog70, 0, "aPos");
+       gl.bindAttribLocation(prog70, 1, "aCol");
+       gl.linkProgram(prog70);
        var texts = [
         ""
        ];
        var texinfo = drawTextToCanvas(texts, 1);     
-       var canvasX12 = texinfo.canvasX;
-       var canvasY12 = texinfo.canvasY;
-       var ofsLoc12 = gl.getAttribLocation(prog12, "aOfs");
-       var texture12 = gl.createTexture();
-       var texLoc12 = gl.getAttribLocation(prog12, "aTexcoord");
-       var sampler12 = gl.getUniformLocation(prog12,"uSampler");
-           handleLoadedTexture(texture12, document.getElementById("rglkantorovich2textureCanvas"));
+       var canvasX70 = texinfo.canvasX;
+       var canvasY70 = texinfo.canvasY;
+       var ofsLoc70 = gl.getAttribLocation(prog70, "aOfs");
+       var texture70 = gl.createTexture();
+       var texLoc70 = gl.getAttribLocation(prog70, "aTexcoord");
+       var sampler70 = gl.getUniformLocation(prog70,"uSampler");
+           handleLoadedTexture(texture70, document.getElementById("rglkantorovich2textureCanvas"));
        var v=new Float32Array([
         3, -5.5425, -46.408, 0, -0.5, 0.5, 0.5,
         3, -5.5425, -46.408, 1, -0.5, 0.5, 0.5,
@@ -1558,33 +1558,33 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
        var f=new Uint16Array([
         0, 1, 2, 0, 2, 3
        ]);
-       var buf12 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf12);
+       var buf70 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf70);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf12 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf12);
+       var ibuf70 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf70);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc12 = gl.getUniformLocation(prog12,"mvMatrix");
-       var prMatLoc12 = gl.getUniformLocation(prog12,"prMatrix");
-       // ****** text object 13 ******
-       var prog13  = gl.createProgram();
-       gl.attachShader(prog13, getShader( gl, "rglkantorovich2vshader13" ));
-       gl.attachShader(prog13, getShader( gl, "rglkantorovich2fshader13" ));
+       var mvMatLoc70 = gl.getUniformLocation(prog70,"mvMatrix");
+       var prMatLoc70 = gl.getUniformLocation(prog70,"prMatrix");
+       // ****** text object 71 ******
+       var prog71  = gl.createProgram();
+       gl.attachShader(prog71, getShader( gl, "rglkantorovich2vshader71" ));
+       gl.attachShader(prog71, getShader( gl, "rglkantorovich2fshader71" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog13, 0, "aPos");
-       gl.bindAttribLocation(prog13, 1, "aCol");
-       gl.linkProgram(prog13);
+       gl.bindAttribLocation(prog71, 0, "aPos");
+       gl.bindAttribLocation(prog71, 1, "aCol");
+       gl.linkProgram(prog71);
        var texts = [
         ""
        ];
        var texinfo = drawTextToCanvas(texts, 1);     
-       var canvasX13 = texinfo.canvasX;
-       var canvasY13 = texinfo.canvasY;
-       var ofsLoc13 = gl.getAttribLocation(prog13, "aOfs");
-       var texture13 = gl.createTexture();
-       var texLoc13 = gl.getAttribLocation(prog13, "aTexcoord");
-       var sampler13 = gl.getUniformLocation(prog13,"uSampler");
-           handleLoadedTexture(texture13, document.getElementById("rglkantorovich2textureCanvas"));
+       var canvasX71 = texinfo.canvasX;
+       var canvasY71 = texinfo.canvasY;
+       var ofsLoc71 = gl.getAttribLocation(prog71, "aOfs");
+       var texture71 = gl.createTexture();
+       var texLoc71 = gl.getAttribLocation(prog71, "aTexcoord");
+       var sampler71 = gl.getUniformLocation(prog71,"uSampler");
+           handleLoadedTexture(texture71, document.getElementById("rglkantorovich2textureCanvas"));
        var v=new Float32Array([
         -5.034, 4.5, -46.408, 0, -0.5, 0.5, 0.5,
         -5.034, 4.5, -46.408, 1, -0.5, 0.5, 0.5,
@@ -1603,33 +1603,33 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
        var f=new Uint16Array([
         0, 1, 2, 0, 2, 3
        ]);
-       var buf13 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf13);
+       var buf71 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf71);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf13 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf13);
+       var ibuf71 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf71);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc13 = gl.getUniformLocation(prog13,"mvMatrix");
-       var prMatLoc13 = gl.getUniformLocation(prog13,"prMatrix");
-       // ****** text object 14 ******
-       var prog14  = gl.createProgram();
-       gl.attachShader(prog14, getShader( gl, "rglkantorovich2vshader14" ));
-       gl.attachShader(prog14, getShader( gl, "rglkantorovich2fshader14" ));
+       var mvMatLoc71 = gl.getUniformLocation(prog71,"mvMatrix");
+       var prMatLoc71 = gl.getUniformLocation(prog71,"prMatrix");
+       // ****** text object 72 ******
+       var prog72  = gl.createProgram();
+       gl.attachShader(prog72, getShader( gl, "rglkantorovich2vshader72" ));
+       gl.attachShader(prog72, getShader( gl, "rglkantorovich2fshader72" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog14, 0, "aPos");
-       gl.bindAttribLocation(prog14, 1, "aCol");
-       gl.linkProgram(prog14);
+       gl.bindAttribLocation(prog72, 0, "aPos");
+       gl.bindAttribLocation(prog72, 1, "aCol");
+       gl.linkProgram(prog72);
        var texts = [
         ""
        ];
        var texinfo = drawTextToCanvas(texts, 1);     
-       var canvasX14 = texinfo.canvasX;
-       var canvasY14 = texinfo.canvasY;
-       var ofsLoc14 = gl.getAttribLocation(prog14, "aOfs");
-       var texture14 = gl.createTexture();
-       var texLoc14 = gl.getAttribLocation(prog14, "aTexcoord");
-       var sampler14 = gl.getUniformLocation(prog14,"uSampler");
-           handleLoadedTexture(texture14, document.getElementById("rglkantorovich2textureCanvas"));
+       var canvasX72 = texinfo.canvasX;
+       var canvasY72 = texinfo.canvasY;
+       var ofsLoc72 = gl.getAttribLocation(prog72, "aOfs");
+       var texture72 = gl.createTexture();
+       var texLoc72 = gl.getAttribLocation(prog72, "aTexcoord");
+       var sampler72 = gl.getUniformLocation(prog72,"uSampler");
+           handleLoadedTexture(texture72, document.getElementById("rglkantorovich2textureCanvas"));
        var v=new Float32Array([
         -5.034, -5.5425, 50, 0, -0.5, 0.5, 0.5,
         -5.034, -5.5425, 50, 1, -0.5, 0.5, 0.5,
@@ -1648,22 +1648,22 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
        var f=new Uint16Array([
         0, 1, 2, 0, 2, 3
        ]);
-       var buf14 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf14);
+       var buf72 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf72);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf14 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf14);
+       var ibuf72 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf72);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc14 = gl.getUniformLocation(prog14,"mvMatrix");
-       var prMatLoc14 = gl.getUniformLocation(prog14,"prMatrix");
-       // ****** surface object 15 ******
-       var prog15  = gl.createProgram();
-       gl.attachShader(prog15, getShader( gl, "rglkantorovich2vshader15" ));
-       gl.attachShader(prog15, getShader( gl, "rglkantorovich2fshader15" ));
+       var mvMatLoc72 = gl.getUniformLocation(prog72,"mvMatrix");
+       var prMatLoc72 = gl.getUniformLocation(prog72,"prMatrix");
+       // ****** surface object 73 ******
+       var prog73  = gl.createProgram();
+       gl.attachShader(prog73, getShader( gl, "rglkantorovich2vshader73" ));
+       gl.attachShader(prog73, getShader( gl, "rglkantorovich2fshader73" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog15, 0, "aPos");
-       gl.bindAttribLocation(prog15, 1, "aCol");
-       gl.linkProgram(prog15);
+       gl.bindAttribLocation(prog73, 0, "aPos");
+       gl.bindAttribLocation(prog73, 1, "aCol");
+       gl.linkProgram(prog73);
        var v=new Float32Array([
         -3, -3, -19, -0.5494424, -0.8241634, 0.1373606,
         -2.586207, -3, -17.34483, -0.5494424, -0.8241633, 0.1373606,
@@ -2566,8 +2566,8 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         8.586206, 12, 117.3448, -0.5494429, -0.8241631, 0.1373606,
         9, 12, 119, -0.5494425, -0.8241633, 0.1373606
        ]);
-       var normLoc15 = gl.getAttribLocation(prog15, "aNorm");
-       var centers15 = new Float32Array([
+       var normLoc73 = gl.getAttribLocation(prog73, "aNorm");
+       var centers73 = new Float32Array([
         -2.793103, -2.741379, -16.62069,
         -2.37931, -2.741379, -14.96552,
         -1.965517, -2.741379, -13.31034,
@@ -3410,7 +3410,7 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         8.379311, 11.74138, 114.9655,
         8.793103, 11.74138, 116.6207
        ]);
-       var f15=new Uint16Array([
+       var f73=new Uint16Array([
         0, 30, 31, 0, 31, 1,
         30, 60, 61, 30, 61, 31,
         60, 90, 91, 60, 91, 61,
@@ -4253,105 +4253,105 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         838, 868, 869, 838, 869, 839,
         868, 898, 899, 868, 899, 869
        ]);
-       var buf15 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf15);
+       var buf73 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf73);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf15 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf15);
-       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f15, gl.DYNAMIC_DRAW);
-       var mvMatLoc15 = gl.getUniformLocation(prog15,"mvMatrix");
-       var prMatLoc15 = gl.getUniformLocation(prog15,"prMatrix");
-       var normMatLoc15 = gl.getUniformLocation(prog15,"normMatrix");
-       // ****** lines object 16 ******
-       var prog16  = gl.createProgram();
-       gl.attachShader(prog16, getShader( gl, "rglkantorovich2vshader16" ));
-       gl.attachShader(prog16, getShader( gl, "rglkantorovich2fshader16" ));
+       var ibuf73 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf73);
+       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f73, gl.DYNAMIC_DRAW);
+       var mvMatLoc73 = gl.getUniformLocation(prog73,"mvMatrix");
+       var prMatLoc73 = gl.getUniformLocation(prog73,"prMatrix");
+       var normMatLoc73 = gl.getUniformLocation(prog73,"normMatrix");
+       // ****** lines object 74 ******
+       var prog74  = gl.createProgram();
+       gl.attachShader(prog74, getShader( gl, "rglkantorovich2vshader74" ));
+       gl.attachShader(prog74, getShader( gl, "rglkantorovich2fshader74" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog16, 0, "aPos");
-       gl.bindAttribLocation(prog16, 1, "aCol");
-       gl.linkProgram(prog16);
+       gl.bindAttribLocation(prog74, 0, "aPos");
+       gl.bindAttribLocation(prog74, 1, "aCol");
+       gl.linkProgram(prog74);
        var v=new Float32Array([
         0, 0, 0,
         0, 0, 80
        ]);
-       var buf16 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf16);
+       var buf74 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf74);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc16 = gl.getUniformLocation(prog16,"mvMatrix");
-       var prMatLoc16 = gl.getUniformLocation(prog16,"prMatrix");
-       // ****** points object 17 ******
-       var prog17  = gl.createProgram();
-       gl.attachShader(prog17, getShader( gl, "rglkantorovich2vshader17" ));
-       gl.attachShader(prog17, getShader( gl, "rglkantorovich2fshader17" ));
+       var mvMatLoc74 = gl.getUniformLocation(prog74,"mvMatrix");
+       var prMatLoc74 = gl.getUniformLocation(prog74,"prMatrix");
+       // ****** points object 75 ******
+       var prog75  = gl.createProgram();
+       gl.attachShader(prog75, getShader( gl, "rglkantorovich2vshader75" ));
+       gl.attachShader(prog75, getShader( gl, "rglkantorovich2fshader75" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog17, 0, "aPos");
-       gl.bindAttribLocation(prog17, 1, "aCol");
-       gl.linkProgram(prog17);
+       gl.bindAttribLocation(prog75, 0, "aPos");
+       gl.bindAttribLocation(prog75, 1, "aCol");
+       gl.linkProgram(prog75);
        var v=new Float32Array([
         0, 0, 0,
         -1, 4, 0,
         4, 9, 0,
         6, 3, 0
        ]);
-       var buf17 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf17);
+       var buf75 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf75);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc17 = gl.getUniformLocation(prog17,"mvMatrix");
-       var prMatLoc17 = gl.getUniformLocation(prog17,"prMatrix");
-       // ****** quads object 18 ******
-       var prog18  = gl.createProgram();
-       gl.attachShader(prog18, getShader( gl, "rglkantorovich2vshader18" ));
-       gl.attachShader(prog18, getShader( gl, "rglkantorovich2fshader18" ));
+       var mvMatLoc75 = gl.getUniformLocation(prog75,"mvMatrix");
+       var prMatLoc75 = gl.getUniformLocation(prog75,"prMatrix");
+       // ****** quads object 76 ******
+       var prog76  = gl.createProgram();
+       gl.attachShader(prog76, getShader( gl, "rglkantorovich2vshader76" ));
+       gl.attachShader(prog76, getShader( gl, "rglkantorovich2fshader76" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog18, 0, "aPos");
-       gl.bindAttribLocation(prog18, 1, "aCol");
-       gl.linkProgram(prog18);
+       gl.bindAttribLocation(prog76, 0, "aPos");
+       gl.bindAttribLocation(prog76, 1, "aCol");
+       gl.linkProgram(prog76);
        var v=new Float32Array([
         0, 0, 0, 0, 0, -1,
         -1, 4, 0, 0, 0, -1,
         4, 9, 0, 0, 0, -1,
         6, 3, 0, 0, 0, -1
        ]);
-       var normLoc18 = gl.getAttribLocation(prog18, "aNorm");
+       var normLoc76 = gl.getAttribLocation(prog76, "aNorm");
        var f=new Uint16Array([
         0, 1, 2, 0, 2, 3
        ]);
-       var buf18 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf18);
+       var buf76 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf76);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf18 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf18);
+       var ibuf76 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf76);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc18 = gl.getUniformLocation(prog18,"mvMatrix");
-       var prMatLoc18 = gl.getUniformLocation(prog18,"prMatrix");
-       var normMatLoc18 = gl.getUniformLocation(prog18,"normMatrix");
-       // ****** points object 19 ******
-       var prog19  = gl.createProgram();
-       gl.attachShader(prog19, getShader( gl, "rglkantorovich2vshader19" ));
-       gl.attachShader(prog19, getShader( gl, "rglkantorovich2fshader19" ));
+       var mvMatLoc76 = gl.getUniformLocation(prog76,"mvMatrix");
+       var prMatLoc76 = gl.getUniformLocation(prog76,"prMatrix");
+       var normMatLoc76 = gl.getUniformLocation(prog76,"normMatrix");
+       // ****** points object 77 ******
+       var prog77  = gl.createProgram();
+       gl.attachShader(prog77, getShader( gl, "rglkantorovich2vshader77" ));
+       gl.attachShader(prog77, getShader( gl, "rglkantorovich2fshader77" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog19, 0, "aPos");
-       gl.bindAttribLocation(prog19, 1, "aCol");
-       gl.linkProgram(prog19);
+       gl.bindAttribLocation(prog77, 0, "aPos");
+       gl.bindAttribLocation(prog77, 1, "aCol");
+       gl.linkProgram(prog77);
        var v=new Float32Array([
         0, 0, 11,
         -1, 4, 31,
         4, 9, 81,
         6, 3, 53
        ]);
-       var buf19 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf19);
+       var buf77 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf77);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc19 = gl.getUniformLocation(prog19,"mvMatrix");
-       var prMatLoc19 = gl.getUniformLocation(prog19,"prMatrix");
-       // ****** lines object 20 ******
-       var prog20  = gl.createProgram();
-       gl.attachShader(prog20, getShader( gl, "rglkantorovich2vshader20" ));
-       gl.attachShader(prog20, getShader( gl, "rglkantorovich2fshader20" ));
+       var mvMatLoc77 = gl.getUniformLocation(prog77,"mvMatrix");
+       var prMatLoc77 = gl.getUniformLocation(prog77,"prMatrix");
+       // ****** lines object 78 ******
+       var prog78  = gl.createProgram();
+       gl.attachShader(prog78, getShader( gl, "rglkantorovich2vshader78" ));
+       gl.attachShader(prog78, getShader( gl, "rglkantorovich2fshader78" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog20, 0, "aPos");
-       gl.bindAttribLocation(prog20, 1, "aCol");
-       gl.linkProgram(prog20);
+       gl.bindAttribLocation(prog78, 0, "aPos");
+       gl.bindAttribLocation(prog78, 1, "aCol");
+       gl.linkProgram(prog78);
        var v=new Float32Array([
         0, 0, 0,
         0, 0, 11,
@@ -4362,19 +4362,19 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         6, 3, 0,
         6, 3, 53
        ]);
-       var buf20 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf20);
+       var buf78 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf78);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc20 = gl.getUniformLocation(prog20,"mvMatrix");
-       var prMatLoc20 = gl.getUniformLocation(prog20,"prMatrix");
-       // ****** lines object 21 ******
-       var prog21  = gl.createProgram();
-       gl.attachShader(prog21, getShader( gl, "rglkantorovich2vshader21" ));
-       gl.attachShader(prog21, getShader( gl, "rglkantorovich2fshader21" ));
+       var mvMatLoc78 = gl.getUniformLocation(prog78,"mvMatrix");
+       var prMatLoc78 = gl.getUniformLocation(prog78,"prMatrix");
+       // ****** lines object 79 ******
+       var prog79  = gl.createProgram();
+       gl.attachShader(prog79, getShader( gl, "rglkantorovich2vshader79" ));
+       gl.attachShader(prog79, getShader( gl, "rglkantorovich2fshader79" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog21, 0, "aPos");
-       gl.bindAttribLocation(prog21, 1, "aCol");
-       gl.linkProgram(prog21);
+       gl.bindAttribLocation(prog79, 0, "aPos");
+       gl.bindAttribLocation(prog79, 1, "aCol");
+       gl.linkProgram(prog79);
        var v=new Float32Array([
         0, 0, 11,
         0, 0, 11,
@@ -4385,74 +4385,74 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         6, 3, 53,
         0, 0, 53
        ]);
-       var buf21 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf21);
+       var buf79 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf79);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc21 = gl.getUniformLocation(prog21,"mvMatrix");
-       var prMatLoc21 = gl.getUniformLocation(prog21,"prMatrix");
-       // ****** points object 22 ******
-       var prog22  = gl.createProgram();
-       gl.attachShader(prog22, getShader( gl, "rglkantorovich2vshader22" ));
-       gl.attachShader(prog22, getShader( gl, "rglkantorovich2fshader22" ));
+       var mvMatLoc79 = gl.getUniformLocation(prog79,"mvMatrix");
+       var prMatLoc79 = gl.getUniformLocation(prog79,"prMatrix");
+       // ****** points object 80 ******
+       var prog80  = gl.createProgram();
+       gl.attachShader(prog80, getShader( gl, "rglkantorovich2vshader80" ));
+       gl.attachShader(prog80, getShader( gl, "rglkantorovich2fshader80" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog22, 0, "aPos");
-       gl.bindAttribLocation(prog22, 1, "aCol");
-       gl.linkProgram(prog22);
+       gl.bindAttribLocation(prog80, 0, "aPos");
+       gl.bindAttribLocation(prog80, 1, "aCol");
+       gl.linkProgram(prog80);
        var v=new Float32Array([
         2.25, 4, 0,
         2.25, 4, 44,
         0, 0, 44
        ]);
-       var buf22 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf22);
+       var buf80 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf80);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc22 = gl.getUniformLocation(prog22,"mvMatrix");
-       var prMatLoc22 = gl.getUniformLocation(prog22,"prMatrix");
-       // ****** points object 23 ******
-       var prog23  = gl.createProgram();
-       gl.attachShader(prog23, getShader( gl, "rglkantorovich2vshader23" ));
-       gl.attachShader(prog23, getShader( gl, "rglkantorovich2fshader23" ));
+       var mvMatLoc80 = gl.getUniformLocation(prog80,"mvMatrix");
+       var prMatLoc80 = gl.getUniformLocation(prog80,"prMatrix");
+       // ****** points object 81 ******
+       var prog81  = gl.createProgram();
+       gl.attachShader(prog81, getShader( gl, "rglkantorovich2vshader81" ));
+       gl.attachShader(prog81, getShader( gl, "rglkantorovich2fshader81" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog23, 0, "aPos");
-       gl.bindAttribLocation(prog23, 1, "aCol");
-       gl.linkProgram(prog23);
+       gl.bindAttribLocation(prog81, 0, "aPos");
+       gl.bindAttribLocation(prog81, 1, "aCol");
+       gl.linkProgram(prog81);
        var v=new Float32Array([
         0, 0, 11,
         0, 0, 31,
         0, 0, 81,
         0, 0, 53
        ]);
-       var buf23 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf23);
+       var buf81 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf81);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc23 = gl.getUniformLocation(prog23,"mvMatrix");
-       var prMatLoc23 = gl.getUniformLocation(prog23,"prMatrix");
-       // ****** linestrip object 24 ******
-       var prog24  = gl.createProgram();
-       gl.attachShader(prog24, getShader( gl, "rglkantorovich2vshader24" ));
-       gl.attachShader(prog24, getShader( gl, "rglkantorovich2fshader24" ));
+       var mvMatLoc81 = gl.getUniformLocation(prog81,"mvMatrix");
+       var prMatLoc81 = gl.getUniformLocation(prog81,"prMatrix");
+       // ****** linestrip object 82 ******
+       var prog82  = gl.createProgram();
+       gl.attachShader(prog82, getShader( gl, "rglkantorovich2vshader82" ));
+       gl.attachShader(prog82, getShader( gl, "rglkantorovich2fshader82" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog24, 0, "aPos");
-       gl.bindAttribLocation(prog24, 1, "aCol");
-       gl.linkProgram(prog24);
+       gl.bindAttribLocation(prog82, 0, "aPos");
+       gl.bindAttribLocation(prog82, 1, "aCol");
+       gl.linkProgram(prog82);
        var v=new Float32Array([
         2.25, 4, 0,
         2.25, 4, 44,
         0, 0, 44
        ]);
-       var buf24 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf24);
+       var buf82 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf82);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var mvMatLoc24 = gl.getUniformLocation(prog24,"mvMatrix");
-       var prMatLoc24 = gl.getUniformLocation(prog24,"prMatrix");
-       // ****** text object 25 ******
-       var prog25  = gl.createProgram();
-       gl.attachShader(prog25, getShader( gl, "rglkantorovich2vshader25" ));
-       gl.attachShader(prog25, getShader( gl, "rglkantorovich2fshader25" ));
+       var mvMatLoc82 = gl.getUniformLocation(prog82,"mvMatrix");
+       var prMatLoc82 = gl.getUniformLocation(prog82,"prMatrix");
+       // ****** text object 83 ******
+       var prog83  = gl.createProgram();
+       gl.attachShader(prog83, getShader( gl, "rglkantorovich2vshader83" ));
+       gl.attachShader(prog83, getShader( gl, "rglkantorovich2fshader83" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog25, 0, "aPos");
-       gl.bindAttribLocation(prog25, 1, "aCol");
-       gl.linkProgram(prog25);
+       gl.bindAttribLocation(prog83, 0, "aPos");
+       gl.bindAttribLocation(prog83, 1, "aCol");
+       gl.linkProgram(prog83);
        var texts = [
         "a",
         "b",
@@ -4461,13 +4461,13 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         "x"
        ];
        var texinfo = drawTextToCanvas(texts, 1);     
-       var canvasX25 = texinfo.canvasX;
-       var canvasY25 = texinfo.canvasY;
-       var ofsLoc25 = gl.getAttribLocation(prog25, "aOfs");
-       var texture25 = gl.createTexture();
-       var texLoc25 = gl.getAttribLocation(prog25, "aTexcoord");
-       var sampler25 = gl.getUniformLocation(prog25,"uSampler");
-           handleLoadedTexture(texture25, document.getElementById("rglkantorovich2textureCanvas"));
+       var canvasX83 = texinfo.canvasX;
+       var canvasY83 = texinfo.canvasY;
+       var ofsLoc83 = gl.getAttribLocation(prog83, "aOfs");
+       var texture83 = gl.createTexture();
+       var texLoc83 = gl.getAttribLocation(prog83, "aTexcoord");
+       var sampler83 = gl.getUniformLocation(prog83,"uSampler");
+           handleLoadedTexture(texture83, document.getElementById("rglkantorovich2textureCanvas"));
        var v=new Float32Array([
         0, 0, -6, 1, 0, 0, 1, 0, -0.5, 0.5, 0.5,
         0, 0, -6, 1, 0, 0, 1, 1, -0.5, 0.5, 0.5,
@@ -4506,22 +4506,22 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         12, 13, 14, 12, 14, 15,
         16, 17, 18, 16, 18, 19
        ]);
-       var buf25 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf25);
+       var buf83 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf83);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf25 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf25);
+       var ibuf83 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf83);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc25 = gl.getUniformLocation(prog25,"mvMatrix");
-       var prMatLoc25 = gl.getUniformLocation(prog25,"prMatrix");
-       // ****** text object 26 ******
-       var prog26  = gl.createProgram();
-       gl.attachShader(prog26, getShader( gl, "rglkantorovich2vshader26" ));
-       gl.attachShader(prog26, getShader( gl, "rglkantorovich2fshader26" ));
+       var mvMatLoc83 = gl.getUniformLocation(prog83,"mvMatrix");
+       var prMatLoc83 = gl.getUniformLocation(prog83,"prMatrix");
+       // ****** text object 84 ******
+       var prog84  = gl.createProgram();
+       gl.attachShader(prog84, getShader( gl, "rglkantorovich2vshader84" ));
+       gl.attachShader(prog84, getShader( gl, "rglkantorovich2fshader84" ));
        //  Force aPos to location 0, aCol to location 1 
-       gl.bindAttribLocation(prog26, 0, "aPos");
-       gl.bindAttribLocation(prog26, 1, "aCol");
-       gl.linkProgram(prog26);
+       gl.bindAttribLocation(prog84, 0, "aPos");
+       gl.bindAttribLocation(prog84, 1, "aCol");
+       gl.linkProgram(prog84);
        var texts = [
         "l(a)",
         "l(b)",
@@ -4530,13 +4530,13 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         "l(x)"
        ];
        var texinfo = drawTextToCanvas(texts, 1);     
-       var canvasX26 = texinfo.canvasX;
-       var canvasY26 = texinfo.canvasY;
-       var ofsLoc26 = gl.getAttribLocation(prog26, "aOfs");
-       var texture26 = gl.createTexture();
-       var texLoc26 = gl.getAttribLocation(prog26, "aTexcoord");
-       var sampler26 = gl.getUniformLocation(prog26,"uSampler");
-           handleLoadedTexture(texture26, document.getElementById("rglkantorovich2textureCanvas"));
+       var canvasX84 = texinfo.canvasX;
+       var canvasY84 = texinfo.canvasY;
+       var ofsLoc84 = gl.getAttribLocation(prog84, "aOfs");
+       var texture84 = gl.createTexture();
+       var texLoc84 = gl.getAttribLocation(prog84, "aTexcoord");
+       var sampler84 = gl.getUniformLocation(prog84,"uSampler");
+           handleLoadedTexture(texture84, document.getElementById("rglkantorovich2textureCanvas"));
        var v=new Float32Array([
         -0.35, -0.35, 11, 1, 0, 0, 1, 0, -0.5, 0.5, 0.5,
         -0.35, -0.35, 11, 1, 0, 0, 1, 1, -0.5, 0.5, 0.5,
@@ -4575,14 +4575,14 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
         12, 13, 14, 12, 14, 15,
         16, 17, 18, 16, 18, 19
        ]);
-       var buf26 = gl.createBuffer();
-       gl.bindBuffer(gl.ARRAY_BUFFER, buf26);
+       var buf84 = gl.createBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, buf84);
        gl.bufferData(gl.ARRAY_BUFFER, v, gl.STATIC_DRAW);
-       var ibuf26 = gl.createBuffer();
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf26);
+       var ibuf84 = gl.createBuffer();
+       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf84);
        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.STATIC_DRAW);
-       var mvMatLoc26 = gl.getUniformLocation(prog26,"mvMatrix");
-       var prMatLoc26 = gl.getUniformLocation(prog26,"prMatrix");
+       var mvMatLoc84 = gl.getUniformLocation(prog84,"mvMatrix");
+       var prMatLoc84 = gl.getUniformLocation(prog84,"prMatrix");
        gl.enable(gl.DEPTH_TEST);
        gl.depthFunc(gl.LEQUAL);
        gl.clearDepth(1.0);
@@ -4620,214 +4620,214 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
          prmvMatrix.load(mvMatrix);
          prmvMatrix.multRight( prMatrix );
          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-         // ****** lines object 10 *******
-         gl.useProgram(prog10);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf10);
-         gl.uniformMatrix4fv( prMatLoc10, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc10, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** lines object 68 *******
+         gl.useProgram(prog68);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf68);
+         gl.uniformMatrix4fv( prMatLoc68, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc68, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 0, 0, 1 );
          gl.lineWidth( 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.LINES, 0, 4);
-         // ****** lines object 11 *******
-         gl.useProgram(prog11);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf11);
-         gl.uniformMatrix4fv( prMatLoc11, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc11, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** lines object 69 *******
+         gl.useProgram(prog69);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf69);
+         gl.uniformMatrix4fv( prMatLoc69, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc69, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 0, 0, 1 );
          gl.lineWidth( 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.LINES, 0, 4);
-         // ****** text object 12 *******
-         gl.useProgram(prog12);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf12);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf12);
-         gl.uniformMatrix4fv( prMatLoc12, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc12, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** text object 70 *******
+         gl.useProgram(prog70);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf70);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf70);
+         gl.uniformMatrix4fv( prMatLoc70, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc70, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 0, 0, 1 );
-         gl.enableVertexAttribArray( texLoc12 );
-         gl.vertexAttribPointer(texLoc12, 2, gl.FLOAT, false, 28, 12);
+         gl.enableVertexAttribArray( texLoc70 );
+         gl.vertexAttribPointer(texLoc70, 2, gl.FLOAT, false, 28, 12);
          gl.activeTexture(gl.TEXTURE0);
-         gl.bindTexture(gl.TEXTURE_2D, texture12);
-         gl.uniform1i( sampler12, 0);
-         gl.enableVertexAttribArray( ofsLoc12 );
-         gl.vertexAttribPointer(ofsLoc12, 2, gl.FLOAT, false, 28, 20);
+         gl.bindTexture(gl.TEXTURE_2D, texture70);
+         gl.uniform1i( sampler70, 0);
+         gl.enableVertexAttribArray( ofsLoc70 );
+         gl.vertexAttribPointer(ofsLoc70, 2, gl.FLOAT, false, 28, 20);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 28,  0);
          gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-         // ****** text object 13 *******
-         gl.useProgram(prog13);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf13);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf13);
-         gl.uniformMatrix4fv( prMatLoc13, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc13, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** text object 71 *******
+         gl.useProgram(prog71);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf71);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf71);
+         gl.uniformMatrix4fv( prMatLoc71, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc71, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 0, 0, 1 );
-         gl.enableVertexAttribArray( texLoc13 );
-         gl.vertexAttribPointer(texLoc13, 2, gl.FLOAT, false, 28, 12);
+         gl.enableVertexAttribArray( texLoc71 );
+         gl.vertexAttribPointer(texLoc71, 2, gl.FLOAT, false, 28, 12);
          gl.activeTexture(gl.TEXTURE0);
-         gl.bindTexture(gl.TEXTURE_2D, texture13);
-         gl.uniform1i( sampler13, 0);
-         gl.enableVertexAttribArray( ofsLoc13 );
-         gl.vertexAttribPointer(ofsLoc13, 2, gl.FLOAT, false, 28, 20);
+         gl.bindTexture(gl.TEXTURE_2D, texture71);
+         gl.uniform1i( sampler71, 0);
+         gl.enableVertexAttribArray( ofsLoc71 );
+         gl.vertexAttribPointer(ofsLoc71, 2, gl.FLOAT, false, 28, 20);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 28,  0);
          gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-         // ****** text object 14 *******
-         gl.useProgram(prog14);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf14);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf14);
-         gl.uniformMatrix4fv( prMatLoc14, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc14, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** text object 72 *******
+         gl.useProgram(prog72);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf72);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf72);
+         gl.uniformMatrix4fv( prMatLoc72, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc72, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 0, 0, 1 );
-         gl.enableVertexAttribArray( texLoc14 );
-         gl.vertexAttribPointer(texLoc14, 2, gl.FLOAT, false, 28, 12);
+         gl.enableVertexAttribArray( texLoc72 );
+         gl.vertexAttribPointer(texLoc72, 2, gl.FLOAT, false, 28, 12);
          gl.activeTexture(gl.TEXTURE0);
-         gl.bindTexture(gl.TEXTURE_2D, texture14);
-         gl.uniform1i( sampler14, 0);
-         gl.enableVertexAttribArray( ofsLoc14 );
-         gl.vertexAttribPointer(ofsLoc14, 2, gl.FLOAT, false, 28, 20);
+         gl.bindTexture(gl.TEXTURE_2D, texture72);
+         gl.uniform1i( sampler72, 0);
+         gl.enableVertexAttribArray( ofsLoc72 );
+         gl.vertexAttribPointer(ofsLoc72, 2, gl.FLOAT, false, 28, 20);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 28,  0);
          gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-         // ****** lines object 16 *******
-         gl.useProgram(prog16);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf16);
-         gl.uniformMatrix4fv( prMatLoc16, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc16, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** lines object 74 *******
+         gl.useProgram(prog74);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf74);
+         gl.uniformMatrix4fv( prMatLoc74, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc74, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 0, 0, 1 );
          gl.lineWidth( 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.LINES, 0, 2);
-         // ****** points object 17 *******
-         gl.useProgram(prog17);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf17);
-         gl.uniformMatrix4fv( prMatLoc17, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc17, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** points object 75 *******
+         gl.useProgram(prog75);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf75);
+         gl.uniformMatrix4fv( prMatLoc75, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc75, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 1, 0, 0, 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.POINTS, 0, 4);
-         // ****** quads object 18 *******
-         gl.useProgram(prog18);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf18);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf18);
-         gl.uniformMatrix4fv( prMatLoc18, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc18, false, new Float32Array(mvMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( normMatLoc18, false, new Float32Array(normMatrix.getAsArray()) );
+         // ****** quads object 76 *******
+         gl.useProgram(prog76);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf76);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf76);
+         gl.uniformMatrix4fv( prMatLoc76, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc76, false, new Float32Array(mvMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( normMatLoc76, false, new Float32Array(normMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 1, 0, 1 );
-         gl.enableVertexAttribArray( normLoc18 );
-         gl.vertexAttribPointer(normLoc18, 3, gl.FLOAT, false, 24, 12);
+         gl.enableVertexAttribArray( normLoc76 );
+         gl.vertexAttribPointer(normLoc76, 3, gl.FLOAT, false, 24, 12);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 24,  0);
          gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
-         // ****** points object 19 *******
-         gl.useProgram(prog19);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf19);
-         gl.uniformMatrix4fv( prMatLoc19, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc19, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** points object 77 *******
+         gl.useProgram(prog77);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf77);
+         gl.uniformMatrix4fv( prMatLoc77, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc77, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 1, 0, 0, 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.POINTS, 0, 4);
-         // ****** lines object 20 *******
-         gl.useProgram(prog20);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf20);
-         gl.uniformMatrix4fv( prMatLoc20, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc20, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** lines object 78 *******
+         gl.useProgram(prog78);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf78);
+         gl.uniformMatrix4fv( prMatLoc78, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc78, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 1, 0, 0, 1 );
          gl.lineWidth( 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.LINES, 0, 8);
-         // ****** lines object 21 *******
-         gl.useProgram(prog21);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf21);
-         gl.uniformMatrix4fv( prMatLoc21, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc21, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** lines object 79 *******
+         gl.useProgram(prog79);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf79);
+         gl.uniformMatrix4fv( prMatLoc79, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc79, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 1, 0, 0, 1 );
          gl.lineWidth( 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.LINES, 0, 8);
-         // ****** points object 22 *******
-         gl.useProgram(prog22);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf22);
-         gl.uniformMatrix4fv( prMatLoc22, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc22, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** points object 80 *******
+         gl.useProgram(prog80);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf80);
+         gl.uniformMatrix4fv( prMatLoc80, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc80, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 1, 0, 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.POINTS, 0, 3);
-         // ****** points object 23 *******
-         gl.useProgram(prog23);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf23);
-         gl.uniformMatrix4fv( prMatLoc23, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc23, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** points object 81 *******
+         gl.useProgram(prog81);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf81);
+         gl.uniformMatrix4fv( prMatLoc81, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc81, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 1, 0, 0, 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.POINTS, 0, 4);
-         // ****** linestrip object 24 *******
-         gl.useProgram(prog24);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf24);
-         gl.uniformMatrix4fv( prMatLoc24, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc24, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** linestrip object 82 *******
+         gl.useProgram(prog82);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf82);
+         gl.uniformMatrix4fv( prMatLoc82, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc82, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0, 1, 0, 1 );
          gl.lineWidth( 1 );
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 12,  0);
          gl.drawArrays(gl.LINE_STRIP, 0, 3);
-         // ****** text object 25 *******
-         gl.useProgram(prog25);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf25);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf25);
-         gl.uniformMatrix4fv( prMatLoc25, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc25, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** text object 83 *******
+         gl.useProgram(prog83);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf83);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf83);
+         gl.uniformMatrix4fv( prMatLoc83, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc83, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.enableVertexAttribArray( colLoc );
          gl.vertexAttribPointer(colLoc, 4, gl.FLOAT, false, 44, 12);
-         gl.enableVertexAttribArray( texLoc25 );
-         gl.vertexAttribPointer(texLoc25, 2, gl.FLOAT, false, 44, 28);
+         gl.enableVertexAttribArray( texLoc83 );
+         gl.vertexAttribPointer(texLoc83, 2, gl.FLOAT, false, 44, 28);
          gl.activeTexture(gl.TEXTURE0);
-         gl.bindTexture(gl.TEXTURE_2D, texture25);
-         gl.uniform1i( sampler25, 0);
-         gl.enableVertexAttribArray( ofsLoc25 );
-         gl.vertexAttribPointer(ofsLoc25, 2, gl.FLOAT, false, 44, 36);
+         gl.bindTexture(gl.TEXTURE_2D, texture83);
+         gl.uniform1i( sampler83, 0);
+         gl.enableVertexAttribArray( ofsLoc83 );
+         gl.vertexAttribPointer(ofsLoc83, 2, gl.FLOAT, false, 44, 36);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 44,  0);
          gl.drawElements(gl.TRIANGLES, 30, gl.UNSIGNED_SHORT, 0);
-         // ****** text object 26 *******
-         gl.useProgram(prog26);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf26);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf26);
-         gl.uniformMatrix4fv( prMatLoc26, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc26, false, new Float32Array(mvMatrix.getAsArray()) );
+         // ****** text object 84 *******
+         gl.useProgram(prog84);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf84);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf84);
+         gl.uniformMatrix4fv( prMatLoc84, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc84, false, new Float32Array(mvMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          gl.enableVertexAttribArray( colLoc );
          gl.vertexAttribPointer(colLoc, 4, gl.FLOAT, false, 44, 12);
-         gl.enableVertexAttribArray( texLoc26 );
-         gl.vertexAttribPointer(texLoc26, 2, gl.FLOAT, false, 44, 28);
+         gl.enableVertexAttribArray( texLoc84 );
+         gl.vertexAttribPointer(texLoc84, 2, gl.FLOAT, false, 44, 28);
          gl.activeTexture(gl.TEXTURE0);
-         gl.bindTexture(gl.TEXTURE_2D, texture26);
-         gl.uniform1i( sampler26, 0);
-         gl.enableVertexAttribArray( ofsLoc26 );
-         gl.vertexAttribPointer(ofsLoc26, 2, gl.FLOAT, false, 44, 36);
+         gl.bindTexture(gl.TEXTURE_2D, texture84);
+         gl.uniform1i( sampler84, 0);
+         gl.enableVertexAttribArray( ofsLoc84 );
+         gl.vertexAttribPointer(ofsLoc84, 2, gl.FLOAT, false, 44, 36);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 44,  0);
          gl.drawElements(gl.TRIANGLES, 30, gl.UNSIGNED_SHORT, 0);
          // ***** Transparent objects next ****
@@ -4835,41 +4835,41 @@ See figure below, where the polyhedron is in the \(xy\)-plane and the value of
          gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA,
                               gl.ONE, gl.ONE);
          gl.enable(gl.BLEND);
-         // ****** surface object 15 *******
-         gl.useProgram(prog15);
-         gl.bindBuffer(gl.ARRAY_BUFFER, buf15);
-         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf15);
-         gl.uniformMatrix4fv( prMatLoc15, false, new Float32Array(prMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( mvMatLoc15, false, new Float32Array(mvMatrix.getAsArray()) );
-         gl.uniformMatrix4fv( normMatLoc15, false, new Float32Array(normMatrix.getAsArray()) );
+         // ****** surface object 73 *******
+         gl.useProgram(prog73);
+         gl.bindBuffer(gl.ARRAY_BUFFER, buf73);
+         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibuf73);
+         gl.uniformMatrix4fv( prMatLoc73, false, new Float32Array(prMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( mvMatLoc73, false, new Float32Array(mvMatrix.getAsArray()) );
+         gl.uniformMatrix4fv( normMatLoc73, false, new Float32Array(normMatrix.getAsArray()) );
          gl.enableVertexAttribArray( posLoc );
          var depths = new Float32Array(841);
          var faces = new Array(841);
          for(var i=0; i<841; i++) {
-           var z = prmvMatrix.m13*centers15[3*i] 
-                 + prmvMatrix.m23*centers15[3*i+1]
-                 + prmvMatrix.m33*centers15[3*i+2]
+           var z = prmvMatrix.m13*centers73[3*i] 
+                 + prmvMatrix.m23*centers73[3*i+1]
+                 + prmvMatrix.m33*centers73[3*i+2]
                  + prmvMatrix.m43;
-           var w = prmvMatrix.m14*centers15[3*i] 
-                 + prmvMatrix.m24*centers15[3*i+1]
-                 + prmvMatrix.m34*centers15[3*i+2]
+           var w = prmvMatrix.m14*centers73[3*i] 
+                 + prmvMatrix.m24*centers73[3*i+1]
+                 + prmvMatrix.m34*centers73[3*i+2]
                  + prmvMatrix.m44;
            depths[i] = z/w;
            faces[i] = i;
          }
          var depthsort = function(i,j) { return depths[j] - depths[i] }
          faces.sort(depthsort);
-         var f = new Uint16Array(f15.length);
+         var f = new Uint16Array(f73.length);
          for (var i=0; i<841; i++) {
            for (var j=0; j<6; j++) {
-             f[6*i + j] = f15[6*faces[i] + j];
+             f[6*i + j] = f73[6*faces[i] + j];
            }
          }       
          gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, f, gl.DYNAMIC_DRAW);
          gl.disableVertexAttribArray( colLoc );
          gl.vertexAttrib4f( colLoc, 0.6784314, 0.8470588, 0.9019608, 0.4980392 );
-         gl.enableVertexAttribArray( normLoc15 );
-         gl.vertexAttribPointer(normLoc15, 3, gl.FLOAT, false, 24, 12);
+         gl.enableVertexAttribArray( normLoc73 );
+         gl.vertexAttribPointer(normLoc73, 3, gl.FLOAT, false, 24, 12);
          gl.vertexAttribPointer(posLoc,  3, gl.FLOAT, false, 24,  0);
          gl.drawElements(gl.TRIANGLES, 5046, gl.UNSIGNED_SHORT, 0);
          gl.flush ();
