@@ -161,7 +161,7 @@ $$\frac{1}{\sigma^2} \sim {\cal G}\left(\frac{n_0-1}{2},\frac{(n_0-1)sd^2(y_0)}{
 
 Thus the posterior predictive distribution of $sd(y^{\text{new}})$ is very easy to simulate:
 ```{r,fig.height=4, fig.width=7, cache=TRUE}
-nsims <- 12
+nsims <- 100000
 sdnew.sims <- array(NA,dim=c(nsims,length(n.range)))
 colnames(sdnew.sims) <- names(n.range)
 for(i in 1:nsims){

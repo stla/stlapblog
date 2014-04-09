@@ -70,13 +70,15 @@ p_{11} & p_{12} & p_{13} &
 p_{21} & p_{22} & p_{23} &
 p_{31} & p_{32} & p_{33} 
 \end{pmatrix}}'$$
-then the first  set ${\rm (1a)}$ of linear equality constraints is $M_1 P = 0$ with 
+then the first  set ${\rm (1a)}$ of linear equality constraints is 
+$M_1 P = \begin{pmatrix} \mu(a_1) \\ \mu(a_2) \\ \mu(a_3) \end{pmatrix}$ with 
 $$ M_1 = \begin{pmatrix}
 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
  0 & 0 & 0 & 1 & 1 & 1  & 0 & 0 & 0 \\
  0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1  
 \end{pmatrix} $$
-and the second set ${\rm (1b)}$ of linear equality constraints is $M_2 P = 0$ with 
+and the second set ${\rm (1b)}$ of linear equality constraints is 
+$M_2 P = \begin{pmatrix} \nu(a_1) \\ \nu(a_2) \\ \nu(a_3) \end{pmatrix}$ with 
 $$ M_2 = \begin{pmatrix}
 1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
  0 & 1 & 0 & 0 & 1 & 0  & 0 & 1 & 0 \\
@@ -5008,7 +5010,7 @@ Then call `min()` to get the Kantorovich distance $d(\mu,\nu)$
 
 Are you satisfied ? I'm not: my probability measures $\mu$ and $\nu$ have rational weights, and then the coordinates of the vertices should be rational too. 
 
-How to get the vertices in exact rational arithmetic ? Remember [my article about the Gauss hypergeometric function](http://stla.overblog.com/the-binary-splitting-with-the-r-gmp-package-application-to-gauss-hypergeometric-function). 
+How to get the vertices in exact rational arithmetic ? Remember [my article about the Gauss hypergeometric function](http://stla.github.io/stlapblog/posts/BS_F21_v3.html). 
 Let's load the `gmp` package:
 
 ```r
