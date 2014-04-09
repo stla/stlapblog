@@ -82,8 +82,6 @@
               <span>2014-04-06</span><br/>
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Anova1random.Rmd'>Source</a>
               <div class='lead'>
-<p><strong>(article still under construction)</strong></p>
-
 <p>\(\newcommand{\indic}{\mathbf{1}}\)
 \(\newcommand{\perpoplus}{\overset{\perp}{\oplus}}\)
 \(\newcommand{\RR}{\mathbb{R}}\)</p>
@@ -98,12 +96,13 @@ y_{I1} & \ldots & y_{IJ}
 \end{pmatrix},
 \]
 \(y_{ij}\) denoting the \(j\)-th response in group \(i\). 
-It is assumed that the responses \(y_{ij}\) are generated in two steps. 
-Firstly, the group means \(\mu_i\) are independently generated according to a Gaussian 
+In the model with <em>random effects</em>, 
+it is assumed that the responses \(y_{ij}\) are generated in two steps. 
+First, the group means \(\mu_i\) are independently generated according to a Gaussian 
 distribution \({\cal N}(\mu, \sigma^2_b)\) where \(\mu\) is the overall mean and 
 \(\sigma^2_b\) is the so-called <em>between variance</em>. 
-Secondly, the responses \(y_{ij}\), \(j =1,\ldots,J\), for a fixed group index 
-\(i\), are independently distributed according to  a normal distribution 
+Second, the responses \(y_{ij}\), \(j =1,\ldots,J\), for each group<br>
+\(i\), are independently distributed according to  a Gaussian distribution 
 \({\cal N}(\mu_i, \sigma^2_w)\) with <em>within variance</em> \(\sigma^2_w\) and mean
 \(\mu_i\). Shortly, the model can be written:
  \[\begin{cases}
@@ -120,7 +119,7 @@ where all random variables \(A_i\) and \(G_{ij}\) are independent and \(\sim {\c
 
 <h2>The three summary statistics \(\bar{Y}_{\bullet\bullet}\), \(SS_b(Y)\), \(SS_w(Y)\)</h2>
 
-<p>Using the tensor product language,  the model can be written 
+<p>Using the tensor product language introduced in <a href="http://stla.github.io/stlapblog/posts/Anova1fixed.html">this article</a>, the model can be written 
 \[Y = \mu({\bf 1}_I\otimes{\bf 1}_J) + \sigma_b A\otimes\indic_J +\sigma_wG, 
 \qquad A \sim SN(\RR^I), \quad G \sim SN(\RR^I\otimes\RR^J).\]</p>
 
@@ -162,16 +161,16 @@ whose component formulae are: </p>
 <li><p>\({\bigl(P_{\RR^I\otimes[\indic_J]^\perp}Y\bigr)}_{ij} = Y_{ij}-\bar{Y}_{i\bullet}\) </p></li>
 </ul>
 
-<p>We immediately get that the three summary statistics 
+<p>We immediately get that the three summary statistics (<em>overall mean</em>, <em>between sum of squares</em>, <em>within sum of squares</em>)
 \[\bar{Y}_{\bullet\bullet}, \quad 
 SS_b(Y):={\Vert P_{[\indic_I]^\perp\otimes[\indic_J]}Y  \Vert}^2, \quad 
 SS_w(Y):={\Vert P_{\RR^I\otimes[\indic_J]^\perp}Y \Vert}^2,\]
 are independent random variables. 
 It is easy to derive \(\bar{Y}_{\bullet\bullet} \sim {\cal N}\left(\mu, \frac{\sigma^2}{IJ}\right)\) with \(\sigma^2=J\sigma^2_b+\sigma^2_w\). 
 It is also easy to get \(SS_w(Y) \sim \sigma^2_w\chi^2_{I(J-1)}\) because of 
-\(P_{\RR^I\otimes[\indic_J]^\perp}Y = \sigma_wP_{\RR^I\otimes[\indic_J]^\perp}G\). 
+\[P_{\RR^I\otimes[\indic_J]^\perp}Y = \sigma_wP_{\RR^I\otimes[\indic_J]^\perp}G.\] 
 Deriving the law of \(SS_b(Y)\) requires a little bit more of algebra. 
-The projection on the &#39;between space&#39; \([\indic_I]^\perp\otimes[\indic_J]\) of the first component \(\mu({\bf 1}_I\otimes{\bf 1}_J)\) of \(Y\) is zero. 
+The projection on the &#39;between space&#39; \([\indic_I]^\perp\otimes[\indic_J]\) of the first component \(\mu({\bf 1}_I\otimes{\bf 1}_J)\) of \(Y\) is zero by orthogonality.<br>
 For the second component one has 
 \[P_{[\indic_I]^\perp\otimes[\indic_J]}(A\otimes\indic_J)
 = (P^\perp_{[\indic_I]} A)\otimes\indic_J\]
@@ -196,9 +195,9 @@ Consequently, \(SS_b(Y) \sim \sigma^2\chi^2_{J-1}\). </p>
 
 <h2>Confidence interval for the overall mean</h2>
 
-<p>By our previous derivations, 
+<p>By our previous derivations, the statistic 
 \[ \frac{\bar Y_{\bullet\bullet}  - \mu}{\frac{1}{\sqrt{I}}\sqrt{\frac{SS_b(Y)}{J(I-1)}}}\]
-has a Student \(t\) distribution with \(I-1\) degrees of freedom, wherefrom it is easy to get an exact confidence interval about \(\mu\).</p>
+has a Student \(t\) distribution with \(I-1\) degrees of freedom, wherefrom it is easy to get an exact confidence interval about the overall mean \(\mu\).</p>
 
 </div>
               <div id="disqus_thread"></div>

@@ -3,8 +3,6 @@ title: The balanced ANOVA model with random effects
 date : 2014-04-06
 --- &lead
 
-**(article still under construction)**
-
 
 ```{r setup0, echo=FALSE}
 opts_chunk$set(fig.path="assets/fig/AV1random-")
@@ -30,12 +28,13 @@ y_{I1} & \ldots & y_{IJ}
 \end{pmatrix},
 $$
 $y_{ij}$ denoting the $j$-th response in group $i$. 
-It is assumed that the responses $y_{ij}$ are generated in two steps. 
-Firstly, the group means $\mu_i$ are independently generated according to a Gaussian 
+In the model with *random effects*, 
+it is assumed that the responses $y_{ij}$ are generated in two steps. 
+First, the group means $\mu_i$ are independently generated according to a Gaussian 
 distribution ${\cal N}(\mu, \sigma^2_b)$ where $\mu$ is the overall mean and 
 $\sigma^2_b$ is the so-called *between variance*. 
-Secondly, the responses $y_{ij}$, $j =1,\ldots,J$, for a fixed group index 
-$i$, are independently distributed according to  a normal distribution 
+Second, the responses $y_{ij}$, $j =1,\ldots,J$, for each group  
+$i$, are independently distributed according to  a Gaussian distribution 
 ${\cal N}(\mu_i, \sigma^2_w)$ with *within variance* $\sigma^2_w$ and mean
 $\mu_i$. Shortly, the model can be written:
  $$\begin{cases}
@@ -135,7 +134,7 @@ where all random variables $A_i$ and $G_{ij}$ are independent and $\sim {\cal N}
 
 ## The three summary statistics $\bar{Y}_{\bullet\bullet}$, $SS_b(Y)$, $SS_w(Y)$
 
-Using the tensor product language,  the model can be written 
+Using the tensor product language introduced in [this article](http://stla.github.io/stlapblog/posts/Anova1fixed.html), the model can be written 
 $$Y = \mu({\bf 1}_I\otimes{\bf 1}_J) + \sigma_b A\otimes\indic_J +\sigma_wG, 
 \qquad A \sim SN(\RR^I), \quad G \sim SN(\RR^I\otimes\RR^J).$$
 
@@ -178,16 +177,16 @@ whose component formulae are:
 
 - ${\bigl(P_{\RR^I\otimes[\indic_J]^\perp}Y\bigr)}_{ij} = Y_{ij}-\bar{Y}_{i\bullet}$ 
 
-We immediately get that the three summary statistics 
+We immediately get that the three summary statistics (*overall mean*, *between sum of squares*, *within sum of squares*)
 $$\bar{Y}_{\bullet\bullet}, \quad 
 SS_b(Y):={\Vert P_{[\indic_I]^\perp\otimes[\indic_J]}Y  \Vert}^2, \quad 
 SS_w(Y):={\Vert P_{\RR^I\otimes[\indic_J]^\perp}Y \Vert}^2,$$
 are independent random variables. 
 It is easy to derive $\bar{Y}_{\bullet\bullet} \sim {\cal N}\left(\mu, \frac{\sigma^2}{IJ}\right)$ with $\sigma^2=J\sigma^2_b+\sigma^2_w$. 
 It is also easy to get $SS_w(Y) \sim \sigma^2_w\chi^2_{I(J-1)}$ because of 
-$P_{\RR^I\otimes[\indic_J]^\perp}Y = \sigma_wP_{\RR^I\otimes[\indic_J]^\perp}G$. 
+$$P_{\RR^I\otimes[\indic_J]^\perp}Y = \sigma_wP_{\RR^I\otimes[\indic_J]^\perp}G.$$ 
 Deriving the law of $SS_b(Y)$ requires a little bit more of algebra. 
-The projection on the 'between space' $[\indic_I]^\perp\otimes[\indic_J]$ of the first component $\mu({\bf 1}_I\otimes{\bf 1}_J)$ of $Y$ is zero. 
+The projection on the 'between space' $[\indic_I]^\perp\otimes[\indic_J]$ of the first component $\mu({\bf 1}_I\otimes{\bf 1}_J)$ of $Y$ is zero by orthogonality.  
 For the second component one has 
 $$P_{[\indic_I]^\perp\otimes[\indic_J]}(A\otimes\indic_J)
 = (P^\perp_{[\indic_I]} A)\otimes\indic_J$$
@@ -213,6 +212,6 @@ Consequently, $SS_b(Y) \sim \sigma^2\chi^2_{J-1}$.
 
 ## Confidence interval for the overall mean 
 
-By our previous derivations, 
+By our previous derivations, the statistic 
 $$ \frac{\bar Y_{\bullet\bullet}  - \mu}{\frac{1}{\sqrt{I}}\sqrt{\frac{SS_b(Y)}{J(I-1)}}}$$
-has a Student $t$ distribution with $I-1$ degrees of freedom, wherefrom it is easy to get an exact confidence interval about $\mu$.
+has a Student $t$ distribution with $I-1$ degrees of freedom, wherefrom it is easy to get an exact confidence interval about the overall mean $\mu$.
