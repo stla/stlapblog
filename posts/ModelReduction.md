@@ -208,7 +208,15 @@ for $\cal M$:
 
 
 ```r
-mean(power1); mean(power2)
+mean(power1)
+```
+
+```
+## [1] 0.9947
+```
+
+```r
+mean(power2)
 ```
 
 ```
@@ -271,7 +279,7 @@ which is here:
 
 
 ```r
-anova(update(fit1, y~factor1*factor2)) # c'est 4 fois table précédente
+anova(update(fit1, y~factor1*factor2)) 
 ```
 
 ```

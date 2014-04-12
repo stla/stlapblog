@@ -171,7 +171,8 @@ thereby showing that the confidence interval  is more likely wider
 for $\cal M$:
 
 ```{r}
-mean(power1); mean(power2)
+mean(power1)
+mean(power2)
 ```
 
 Note that $H_0$ means that the first factor has no effect, and actually it can 
@@ -199,7 +200,7 @@ $$
 which is here:
 
 ```{r}
-anova(update(fit1, y~factor1*factor2)) # c'est 4 fois table précédente
+anova(update(fit1, y~factor1*factor2)) 
 ```
 
 The first three mean squares are exactly $K=4$ times the sum of squares in 

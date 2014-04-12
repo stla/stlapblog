@@ -154,7 +154,7 @@ GLPK.load_matrix(lp, sparse(A))
 GLPK.simplex(lp);
 ```
 
-and get the solution; 
+and get the solution:
 
 ```{r, eval=FALSE}
 julia> GLPK.get_obj_val(lp)

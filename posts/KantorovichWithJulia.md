@@ -175,7 +175,7 @@ GLPK.simplex(lp);
 ```
 
 
-and get the solution; 
+and get the solution:
 
 
 ```r
