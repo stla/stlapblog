@@ -27,7 +27,7 @@ Recall that the Kantorovich distance is defined from an initial distance which w
 
 ```r
 n = length(mu)
-D = 1-eye(n);
+D = 1.-eye(n);
 ```
 
 
@@ -42,6 +42,25 @@ julia> D
 
 
 Thus, the Julia `eye` function is similar to the R `diag` function. 
+Note that we have defined $D$ by `1.-eye(n)` and not `1-eye(n)` which 
+is ambiguous in Julia, because of type compatibility:
+
+
+```r
+julia> eye(n)
+3x3 Array{Float64,2}:
+ 1.0  0.0  0.0
+ 0.0  1.0  0.0
+ 0.0  0.0  1.0
+
+julia> typeof(1)
+Int64
+
+julia> typeof(1.)
+Float64
+```
+
+
 
 ## Constraint matrix
 
@@ -90,26 +109,8 @@ julia> A
 ```
 
 
-In order to process the constraints matrix $A$ with `GLPK` we have to represent it using three vectors `ia`, `ja`, and `ar`, respectively giving the index of the row, the index of the columns, and the value of the corresponding entry of $A$:
 
-
-```r
-ia = zeros(Int32,length(A));
-ja = zeros(Int32,length(A));
-ar = zeros(Float64,length(A));
-k=0
-for i in 1:size(A,1)
-    for j in 1:size(A,2)
-        k=k+1
-        ia[k] = i
-        ja[k] = j
-        ar[k] = A[i,j]
-    end
-end
-```
-
-
-Recall that the constraints are the linear equality constraints 
+Recall that the constraints of our problem are the linear equality constraints 
 $$M_1 P = \begin{pmatrix} \mu(a_1) \\ \mu(a_2) \\ \mu(a_3) \end{pmatrix} 
 \qquad \text{and} \qquad 
 M_2 P = \begin{pmatrix} \nu(a_1) \\ \nu(a_2) \\ \nu(a_3) \end{pmatrix}$$ 
@@ -121,7 +122,7 @@ First load the package, initialize the problem, and give it a name:
 
 
 ```r
-using GLPK 
+import GLPK 
 lp = GLPK.Prob()
 GLPK.set_prob_name(lp, "kanto")
 ```
@@ -151,18 +152,16 @@ end
 ```
 
 
-Now we specify the positivy constraints $p_{ij} \geq 0$ about the variables $p_{ij}$ corresponding to the columns of the constraint matrix:
+Now we specify the positivity constraints $p_{ij} \geq 0$ about the variables $p_{ij}$ corresponding to the columns of the constraint matrix:
 
 
 ```r
 GLPK.add_cols(lp, size(A,2))
 k=0
-for i in 1:n
-    for j in 1:n
-        k = k+1
-        GLPK.set_col_bnds(lp, k, GLPK.LO, 0.0, 0.0)
-        GLPK.set_obj_coef(lp, k, D[i,j])
-    end
+for i in 1:n, j in 1:n
+    k = k+1
+    GLPK.set_col_bnds(lp, k, GLPK.LO, 0.0, 0.0)
+    GLPK.set_obj_coef(lp, k, D[i,j])
 end
 ```
 
@@ -171,7 +170,7 @@ We are ready ! Load the matrix, run the algorithm :
 
 
 ```r
-GLPK.load_matrix(lp, ia, ja, ar)
+GLPK.load_matrix(lp, sparse(A))
 GLPK.simplex(lp);
 ```
 
@@ -185,17 +184,42 @@ julia> GLPK.get_obj_val(lp)
 ```
 
 
-
-## How to get the exact result ?
-
 As we have seen in the [previous article](http://stla.github.io/stlapblog/posts/KantorovichWithR.html), the exact Kantorovich distance between $\mu$ and $\nu$ is $\dfrac{3}{28}$:
 
 
 ```r
-> 3/28
-[1] 0.1071429
+julia> 3/28
+0.10714285714285714
 ```
 
 
-There's a function `GLPK.exact` in the Julia `GLPK` package allowing to get this exact result, but currently I have not been able to make it work. 
+Have you noticed the results are *not* exactly the same:
+
+
+```r
+julia> GLPK.get_obj_val(lp) - 3/28
+1.3877787807814457e-17
+```
+
+
+Thus, the `GLPK.simplex` method does not achieve 
+the best approximation of $3/28$ in the 64 bit precision. A better 
+precision is achieved by the  `GLPK.exact` function:
+
+
+```r
+GLPK.exact(lp);
+```
+
+
+
+```r
+julia> GLPK.get_obj_val(lp) - 3/28
+0.0
+```
+
+
+However, unfortunately, it is not possible to get the rational number $3/28$ 
+with `GLPK`. 
+
 

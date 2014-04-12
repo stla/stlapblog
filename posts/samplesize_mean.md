@@ -190,7 +190,7 @@ $$\frac{1}{\sigma^2} \sim {\cal G}\left(\frac{n_0-1}{2},\frac{(n_0-1)sd^2(y_0)}{
 Thus the posterior predictive distribution of $sd(y^{\text{new}})$ is very easy to simulate:
 
 ```r
-nsims <- 1e+05
+nsims <- 60000
 sdnew.sims <- array(NA, dim = c(nsims, length(n.range)))
 colnames(sdnew.sims) <- names(n.range)
 for (i in 1:nsims) {
@@ -228,11 +228,11 @@ apply(sdnew.sims, 2, FUN = function(x) quantile(x, probs = 80/100))
 
 ```
 ##   n=3   n=4   n=5   n=6   n=7   n=8   n=9  n=10  n=11  n=12  n=13  n=14 
-## 2.828 2.815 2.820 2.823 2.810 2.814 2.811 2.813 2.798 2.802 2.811 2.805 
+## 2.832 2.817 2.818 2.814 2.807 2.804 2.802 2.801 2.790 2.798 2.805 2.793 
 ##  n=15  n=16  n=17  n=18  n=19  n=20  n=21  n=22  n=23  n=24  n=25  n=26 
-## 2.801 2.802 2.805 2.802 2.805 2.799 2.804 2.795 2.797 2.795 2.794 2.798 
+## 2.795 2.795 2.801 2.793 2.792 2.796 2.799 2.784 2.789 2.793 2.788 2.788 
 ##  n=27  n=28  n=29  n=30 
-## 2.793 2.798 2.794 2.794
+## 2.786 2.788 2.784 2.788
 ```
 
 But wait, instead of using simulations, we will use exact calculations.

@@ -96,7 +96,7 @@ nu = [1/4, 1/4, 1/2]
 <p>Recall that the Kantorovich distance is defined from an initial distance which we take to be the \(0-1\) distance, and is represented in the \(D\) matrix defined as follows with Julia:</p>
 
 <pre><code class="r">n = length(mu)
-D = 1-eye(n);
+D = 1.-eye(n);
 </code></pre>
 
 <pre><code class="r">julia&gt; D
@@ -106,7 +106,22 @@ D = 1-eye(n);
  1.0  1.0  0.0
 </code></pre>
 
-<p>Thus, the Julia <code>eye</code> function is similar to the R <code>diag</code> function. </p>
+<p>Thus, the Julia <code>eye</code> function is similar to the R <code>diag</code> function. 
+Note that we have defined \(D\) by <code>1.-eye(n)</code> and not <code>1-eye(n)</code> which 
+is ambiguous in Julia, because of type compatibility:</p>
+
+<pre><code class="r">julia&gt; eye(n)
+3x3 Array{Float64,2}:
+ 1.0  0.0  0.0
+ 0.0  1.0  0.0
+ 0.0  0.0  1.0
+
+julia&gt; typeof(1)
+Int64
+
+julia&gt; typeof(1.)
+Float64
+</code></pre>
 
 <h2>Constraint matrix</h2>
 
@@ -149,23 +164,7 @@ A=vcat(M1,M2);
  0.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0
 </code></pre>
 
-<p>In order to process the constraints matrix \(A\) with <code>GLPK</code> we have to represent it using three vectors <code>ia</code>, <code>ja</code>, and <code>ar</code>, respectively giving the index of the row, the index of the columns, and the value of the corresponding entry of \(A\):</p>
-
-<pre><code class="r">ia = zeros(Int32,length(A));
-ja = zeros(Int32,length(A));
-ar = zeros(Float64,length(A));
-k=0
-for i in 1:size(A,1)
-    for j in 1:size(A,2)
-        k=k+1
-        ia[k] = i
-        ja[k] = j
-        ar[k] = A[i,j]
-    end
-end
-</code></pre>
-
-<p>Recall that the constraints are the linear equality constraints 
+<p>Recall that the constraints of our problem are the linear equality constraints 
 \[M_1 P = \begin{pmatrix} \mu(a_1) \\ \mu(a_2) \\ \mu(a_3) \end{pmatrix} 
 \qquad \text{and} \qquad 
 M_2 P = \begin{pmatrix} \nu(a_1) \\ \nu(a_2) \\ \nu(a_3) \end{pmatrix}\] 
@@ -175,7 +174,7 @@ where \(P\) is the vector formed by the variables \(p_{ij} \geq 0\).</p>
 
 <p>First load the package, initialize the problem, and give it a name:</p>
 
-<pre><code class="r">using GLPK 
+<pre><code class="r">import GLPK 
 lp = GLPK.Prob()
 GLPK.set_prob_name(lp, &quot;kanto&quot;)
 </code></pre>
@@ -198,22 +197,20 @@ for i in 1:n
 end
 </code></pre>
 
-<p>Now we specify the positivy constraints \(p_{ij} \geq 0\) about the variables \(p_{ij}\) corresponding to the columns of the constraint matrix:</p>
+<p>Now we specify the positivity constraints \(p_{ij} \geq 0\) about the variables \(p_{ij}\) corresponding to the columns of the constraint matrix:</p>
 
 <pre><code class="r">GLPK.add_cols(lp, size(A,2))
 k=0
-for i in 1:n
-    for j in 1:n
-        k = k+1
-        GLPK.set_col_bnds(lp, k, GLPK.LO, 0.0, 0.0)
-        GLPK.set_obj_coef(lp, k, D[i,j])
-    end
+for i in 1:n, j in 1:n
+    k = k+1
+    GLPK.set_col_bnds(lp, k, GLPK.LO, 0.0, 0.0)
+    GLPK.set_obj_coef(lp, k, D[i,j])
 end
 </code></pre>
 
 <p>We are ready ! Load the matrix, run the algorithm :</p>
 
-<pre><code class="r">GLPK.load_matrix(lp, ia, ja, ar)
+<pre><code class="r">GLPK.load_matrix(lp, sparse(A))
 GLPK.simplex(lp);
 </code></pre>
 
@@ -223,15 +220,31 @@ GLPK.simplex(lp);
 0.10714285714285715
 </code></pre>
 
-<h2>How to get the exact result ?</h2>
-
 <p>As we have seen in the <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">previous article</a>, the exact Kantorovich distance between \(\mu\) and \(\nu\) is \(\dfrac{3}{28}\):</p>
 
-<pre><code class="r">&gt; 3/28
-[1] 0.1071429
+<pre><code class="r">julia&gt; 3/28
+0.10714285714285714
 </code></pre>
 
-<p>There&#39;s a function <code>GLPK.exact</code> in the Julia <code>GLPK</code> package allowing to get this exact result, but currently I have not been able to make it work. </p>
+<p>Have you noticed the results are <em>not</em> exactly the same:</p>
+
+<pre><code class="r">julia&gt; GLPK.get_obj_val(lp) - 3/28
+1.3877787807814457e-17
+</code></pre>
+
+<p>Thus, the <code>GLPK.simplex</code> method does not achieve 
+the best approximation of \(3/28\) in the 64 bit precision. A better 
+precision is achieved by the  <code>GLPK.exact</code> function:</p>
+
+<pre><code class="r">GLPK.exact(lp);
+</code></pre>
+
+<pre><code class="r">julia&gt; GLPK.get_obj_val(lp) - 3/28
+0.0
+</code></pre>
+
+<p>However, unfortunately, it is not possible to get the rational number \(3/28\) 
+with <code>GLPK</code>. </p>
 
 </div>
               <div id="disqus_thread"></div>
