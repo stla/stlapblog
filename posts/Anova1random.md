@@ -92,20 +92,32 @@ whose component formulae are:
 
 - ${\bigl(P_{\RR^I\otimes[\indic_J]^\perp}Y\bigr)}_{ij} = Y_{ij}-\bar{Y}_{i\bullet}$ 
 
-We immediately get that the three summary statistics (*overall mean*, *between sum of squares*, *within sum of squares*)
+Now we can see that the three summary statistics (*overall mean*, *between sum of squares*, *within sum of squares*)
 $$\bar{Y}_{\bullet\bullet}, \quad 
 SS_b(Y):={\Vert P_{[\indic_I]^\perp\otimes[\indic_J]}Y  \Vert}^2, \quad 
 SS_w(Y):={\Vert P_{\RR^I\otimes[\indic_J]^\perp}Y \Vert}^2,$$
-are independent random variables. 
+are independent random variables.
+Indeed, the overall mean $\bar{Y}_{\bullet\bullet}$ is given by 
+$$\begin{align}
+P_{[{\bf 1}_I]\otimes[{\bf 1}_J]} Y &= \bar{Y}_{\bullet\bullet}({\bf 1}_I\otimes{\bf 1}_J) \\
+& =  
+\mu({\bf 1}_I\otimes{\bf 1}_J) + \sigma_b(P_{[{\bf 1}_I]}A)\otimes\indic_J +\sigma_wP_{[{\bf 1}_I]\otimes[{\bf 1}_J]}G,
+\end{align}$$
+the between variations are 
+$$P_{[\indic_I]^\perp\otimes[\indic_J]}Y 
+= \sigma_b(P^\perp_{[\indic_I]} A)\otimes\indic_J 
++ \sigma_w P_{[\indic_I]^\perp\otimes[\indic_J]} G,$$
+and the within variations are 
+$$P_{\RR^I\otimes[\indic_J]^\perp}Y 
+= \sigma_wP_{\RR^I\otimes[\indic_J]^\perp} G.$$
+Independence follows from the independence b between $G$ and $A$ and 
+from the orthogonality between the  ranges of the different projections.
+
 It is easy to derive $\bar{Y}_{\bullet\bullet} \sim {\cal N}\left(\mu, \frac{\sigma^2}{IJ}\right)$ with $\sigma^2=J\sigma^2_b+\sigma^2_w$. 
 It is also easy to get $SS_w(Y) \sim \sigma^2_w\chi^2_{I(J-1)}$ because of 
 $$P_{\RR^I\otimes[\indic_J]^\perp}Y = \sigma_wP_{\RR^I\otimes[\indic_J]^\perp}G.$$ 
-Deriving the law of $SS_b(Y)$ requires a little bit more of algebra. 
-The projection on the 'between space' $[\indic_I]^\perp\otimes[\indic_J]$ of the first component $\mu({\bf 1}_I\otimes{\bf 1}_J)$ of $Y$ is zero by orthogonality.  
-For the second component one has 
-$$P_{[\indic_I]^\perp\otimes[\indic_J]}(A\otimes\indic_J)
-= (P^\perp_{[\indic_I]} A)\otimes\indic_J$$
-and for the third component one has 
+To derive the law of $SS_b(Y)$, 
+note that 
 $$
 \begin{align}
 P_{[\indic_I]^\perp\otimes[\indic_J]} G 
@@ -116,13 +128,12 @@ P_{[\indic_I]^\perp\otimes[\indic_J]} G
 \end{pmatrix} \\
 & = (P^\perp_{[\indic_I]}G_{\text{row}}) \otimes \indic_J
 \end{align}$$
-where $G_{\text{row}} = (\bar{G}_{i\bullet})$ is the vector of row means of $G$. 
-Finally 
+where $G_{\text{row}} = (\bar{G}_{i\bullet})$ is the vector of row means of $G$, and then one can write  
 $$P_{[\indic_I]^\perp\otimes[\indic_J]} Y 
-= \bigl(P^\perp_{[\indic_I]}(\sigma_b A + \sigma_w G_{\text{row}})\bigr) \otimes \indic_J$$
-and it is easy to see that the components of $\sigma_b A + \sigma_w G_{\text{row}}$ are 
-$\sim_{\text{iid}} {\cal N}(0, \sigma^2)$. 
-Consequently, $SS_b(Y) \sim \sigma^2\chi^2_{J-1}$. 
+= \bigl(P^\perp_{[\indic_I]}(\sigma_b A + \sigma_w G_{\text{row}})\bigr) \otimes \indic_J.$$
+Now it is easy to see that the components of $\sigma_b A + \sigma_w G_{\text{row}}$ are 
+$\sim_{\text{iid}} {\cal N}(0, \sigma^2)$, and 
+consequently $SS_b(Y) \sim \sigma^2\chi^2_{J-1}$. 
 
 
 ## Confidence interval for the overall mean 

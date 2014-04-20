@@ -162,7 +162,7 @@ $H_0\colon\{\alpha_1=0\}$ derived from the confidence interval.
 
 
 ```r
-nsims <- 3000
+nsims <- 2000
 confint1 <- confint2 <- NULL
 power1 <- power2 <- rep(NA,nsims)
 local({
@@ -212,7 +212,7 @@ mean(power1)
 ```
 
 ```
-## [1] 0.9947
+## [1] 0.9965
 ```
 
 ```r
@@ -220,7 +220,7 @@ mean(power2)
 ```
 
 ```
-## [1] 0.7123
+## [1] 0.6995
 ```
 
 
@@ -329,4 +329,7 @@ $$
 thereby showing that the reducel model ${\cal M}'$ yields a less 
 powerful test. 
 
- 
+
+## Why does it work for the random effects one-way ANOVA model ?
+
+

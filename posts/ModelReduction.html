@@ -258,7 +258,7 @@ objects <code>dat</code>, <code>fit1</code>, and <code>fit2</code>.
 We also evaluate, for each model the power of the test for 
 \(H_0\colon\{\alpha_1=0\}\) derived from the confidence interval.</p>
 
-<pre><code class="r">nsims &lt;- 3000
+<pre><code class="r">nsims &lt;- 2000
 confint1 &lt;- confint2 &lt;- NULL
 power1 &lt;- power2 &lt;- rep(NA,nsims)
 local({
@@ -304,13 +304,13 @@ for \(\cal M\):</p>
 <pre><code class="r">mean(power1)
 </code></pre>
 
-<pre><code>## [1] 0.9947
+<pre><code>## [1] 0.9965
 </code></pre>
 
 <pre><code class="r">mean(power2)
 </code></pre>
 
-<pre><code>## [1] 0.7123
+<pre><code>## [1] 0.6995
 </code></pre>
 
 <p>Note that \(H_0\) means that the first factor has no effect, and actually it can 
@@ -402,6 +402,8 @@ F = \frac{MS_A(y)}{MS_{{(1+A+B)}^\perp}(y)}
 \]
 thereby showing that the reducel model \({\cal M}'\) yields a less 
 powerful test. </p>
+
+<h2>Why does it work for the random effects one-way ANOVA model ?</h2>
 
 </div>
               <div id="disqus_thread"></div>

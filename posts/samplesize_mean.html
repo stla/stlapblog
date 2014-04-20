@@ -236,7 +236,7 @@ over the posterior distribution of \(\sigma\) which is given by
 
 <p>Thus the posterior predictive distribution of \(sd(y^{\text{new}})\) is very easy to simulate:</p>
 
-<pre><code class="r">nsims &lt;- 60000
+<pre><code class="r">nsims &lt;- 6000
 sdnew.sims &lt;- array(NA, dim = c(nsims, length(n.range)))
 colnames(sdnew.sims) &lt;- names(n.range)
 for (i in 1:nsims) {
@@ -271,11 +271,11 @@ legend(&quot;topright&quot;, legend = c(&quot;posterior sigma&quot;, legend1, le
 </code></pre>
 
 <pre><code>##   n=3   n=4   n=5   n=6   n=7   n=8   n=9  n=10  n=11  n=12  n=13  n=14 
-## 2.832 2.817 2.818 2.814 2.807 2.804 2.802 2.801 2.790 2.798 2.805 2.793 
+## 2.872 2.789 2.775 2.778 2.746 2.785 2.793 2.772 2.818 2.785 2.785 2.774 
 ##  n=15  n=16  n=17  n=18  n=19  n=20  n=21  n=22  n=23  n=24  n=25  n=26 
-## 2.795 2.795 2.801 2.793 2.792 2.796 2.799 2.784 2.789 2.793 2.788 2.788 
+## 2.757 2.811 2.789 2.783 2.785 2.769 2.768 2.746 2.758 2.778 2.763 2.778 
 ##  n=27  n=28  n=29  n=30 
-## 2.786 2.788 2.784 2.788
+## 2.779 2.765 2.742 2.772
 </code></pre>
 
 <p>But wait, instead of using simulations, we will use exact calculations.</p>
