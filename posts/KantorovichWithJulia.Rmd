@@ -37,21 +37,31 @@ julia> D
 ```
 
 Thus, the Julia `eye` function is similar to the R `diag` function. 
-Note that we have defined $D$ by `1.-eye(n)` and not `1-eye(n)` which 
-is ambiguous in Julia, because of type compatibility:
+
+Note that we have defined $D$ by typing "`1.-eye(n)`" and not "`1-eye(n)`" which 
+is ambiguous because "`1`" and "`eye(n)`" have not the same size...  
+I'm afraid you are puzzled because you don't know whether "`1.-eye(n)`" is 
+```{r, eval=FALSE}
+1. - eye(n)
+```
+or
+```{r, eval=FALSE}
+1 .- eye(n)
+```
+? Don't worry, this is very easy to know with Julia, you can get the structure of "`1.-eye(n)`" as an 
+expression:
 
 ```{r, eval=FALSE}
-julia> eye(n)
-3x3 Array{Float64,2}:
- 1.0  0.0  0.0
- 0.0  1.0  0.0
- 0.0  0.0  1.0
+julia> :(1.-eye(n))
+:(.-(1,eye(n)))
+```
 
-julia> typeof(1)
-Int64
+That means the operator "`.-`" acts on the integer "`1`" and the matrix "`eye(n)`", whereas "`1. - eye(n)`" is the expression 
+for the operator "`-`"  acting on the float "`1.`" and "`eye(n)`":
 
-julia> typeof(1.)
-Float64
+```{r, eval=FALSE}
+julia> :(1. - eye(n))
+:(-(1.0,eye(n)))
 ```
 
 

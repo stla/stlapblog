@@ -106,21 +106,32 @@ D = 1.-eye(n);
  1.0  1.0  0.0
 </code></pre>
 
-<p>Thus, the Julia <code>eye</code> function is similar to the R <code>diag</code> function. 
-Note that we have defined \(D\) by <code>1.-eye(n)</code> and not <code>1-eye(n)</code> which 
-is ambiguous in Julia, because of type compatibility:</p>
+<p>Thus, the Julia <code>eye</code> function is similar to the R <code>diag</code> function. </p>
 
-<pre><code class="r">julia&gt; eye(n)
-3x3 Array{Float64,2}:
- 1.0  0.0  0.0
- 0.0  1.0  0.0
- 0.0  0.0  1.0
+<p>Note that we have defined \(D\) by typing &quot;<code>1.-eye(n)</code>&quot; and not &quot;<code>1-eye(n)</code>&quot; which 
+is ambiguous because &quot;<code>1</code>&quot; and &quot;<code>eye(n)</code>&quot; have not the same size...<br>
+I&#39;m afraid you are puzzled because you don&#39;t know whether &quot;<code>1.-eye(n)</code>&quot; is </p>
 
-julia&gt; typeof(1)
-Int64
+<pre><code class="r">1. - eye(n)
+</code></pre>
 
-julia&gt; typeof(1.)
-Float64
+<p>or</p>
+
+<pre><code class="r">1 .- eye(n)
+</code></pre>
+
+<p>? Don&#39;t worry, this is very easy to know with Julia, you can get the structure of &quot;<code>1.-eye(n)</code>&quot; as an 
+expression:</p>
+
+<pre><code class="r">julia&gt; :(1.-eye(n))
+:(.-(1,eye(n)))
+</code></pre>
+
+<p>That means the operator &quot;<code>.-</code>&quot; acts on the integer &quot;<code>1</code>&quot; and the matrix &quot;<code>eye(n)</code>&quot;, whereas &quot;<code>1. - eye(n)</code>&quot; is the expression 
+for the operator &quot;<code>-</code>&quot;  acting on the float &quot;<code>1.</code>&quot; and &quot;<code>eye(n)</code>&quot;:</p>
+
+<pre><code class="r">julia&gt; :(1. - eye(n))
+:(-(1.0,eye(n)))
 </code></pre>
 
 <h2>Constraint matrix</h2>
