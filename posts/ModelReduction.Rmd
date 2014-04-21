@@ -7,7 +7,6 @@ date : 2014-04-12
 opts_chunk$set(fig.path="assets/fig/ModelReduction", tidy=FALSE)
 ```
 
-**This article is still under construction**
 
 ```{r options, echo=FALSE, message=FALSE}
 library(pander)
