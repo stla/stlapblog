@@ -129,7 +129,7 @@ $H_0\colon\{\alpha_1=0\}$ derived from the confidence interval.
 
 
 ```{r, fig.width=7, fig.height=5}
-nsims <- 2000
+nsims <- 4000
 confint1 <- confint2 <- NULL
 power1 <- power2 <- rep(NA,nsims)
 local({
@@ -190,12 +190,12 @@ factor $1$ over the residual mean square.
 The residual sum of squares  in the 
 decomposition of the variation provided by `anova(fit1)`:
 $$ 
-SS(y) = SS_A(y) + SS_B(y) + SS_{{(1+A+B)}^\perp}(y)
+SS(y) = SS_A(y) + SS_B(y) + SS_{ {(1+A+B)}^\perp}(y)
 $$
 can be itself decomposed by including the interaction term, thereby 
 yielding a new decomposition :
 $$ 
-SS(y) = SS_A(y) + SS_B(y) + SS_{AB} + SS_{{(1+A+B+AB)}^\perp}(y)
+SS(y) = SS_A(y) + SS_B(y) + SS_{AB} + SS_{ {(1+A+B+AB)}^\perp}(y)
 $$
 which is here:
 
@@ -214,14 +214,14 @@ K*anova(fit2)[,2:3]
 Thus, we have the following equality about the classical Fisher statistic $F'$ 
 for $H_0\colon\{\alpha_1=0\}$ in the reduced model ${\cal M}'$:
 $$
-F' := \frac{MS_A(z)}{MS_{{(1+A+B)}^\perp}(z)} 
+F' := \frac{MS_A(z)}{MS_{ {(1+A+B)}^\perp}(z)} 
 = \frac{MS_A(y)}{MS_{AB}(y)} 
 \sim F_{I-1, (I-1)(J-1)}
 $$ 
 whereas the  classical Fisher statistic $F$ 
 for $H_0\colon\{\alpha_1=0\}$ in the unreduced model ${\cal M}$ is:
 $$
-F = \frac{MS_A(y)}{MS_{{(1+A+B)}^\perp}(y)}
+F = \frac{MS_A(y)}{MS_{ {(1+A+B)}^\perp}(y)}
 \sim F_{I-1, (I-1)(J-1) + IJ(K-1)}
 $$
 thereby showing that the reducel model ${\cal M}'$ yields a less 
@@ -229,5 +229,53 @@ powerful test.
 
 
 ## Why does it work for the random effects one-way ANOVA model ?
+
+
+Using the hierarchical writing of the model
+$$\begin{cases}
+ (y_{ij} \mid \mu_i) \sim_{\text{iid}} {\cal N}(\mu_i, \sigma^2_w) & j=1,\ldots,J \\ 
+\mu_i \sim_{\text{iid}} {\cal N}(\mu, \sigma^2_b) & i=1,\ldots,I
+\end{cases},$$
+it is quite easy to write down the joint distribution of the $y_{ij}$ and the $\mu_i$. 
+Integrating over the $\mu_i$ yields the likelihood
+$$
+L\bigl(\mu, \sigma_b, \sigma_w \mid \{y_{ij}\}\bigr) \propto 
+{(\sigma_w^2)}^{-\frac{I(J-1)}{2}}{(\sigma^2)}^{-\frac{I}{2}}
+\exp\left[-\frac{1}{2}\left(
+\frac{IJ{(\bar{y}_{\bullet\bullet}-\mu)}^2}{\sigma^2} + \frac{SS_b(y)}{\sigma^2} + \frac{SS_w(y)}{\sigma^2_w}
+\right)\right],
+$$
+thereby showing that the triple of the three summary statistics 
+$\bigl\{\bar{y}_{\bullet\bullet}, SS_b(y), SS_w(y)\bigr\}$ is sufficient.
+
+Moreover, because of the equality 
+$$IJ{(\bar{y}_{\bullet\bullet}-\mu)}^2 + SS_b(y) 
+= J\sum_{i=1}^I {(\bar{y}_{i\bullet}-\mu)}^2,$$
+the likelihood can also be written 
+$$
+\begin{align}
+L\bigl(\mu, \sigma_b, \sigma_w \mid \{y_{ij}\}\bigr) & \propto 
+{(\sigma_w^2)}^{-\frac{I(J-1)}{2}}{(\sigma^2)}^{-\frac{I}{2}}
+\exp\left[-\frac{1}{2}\left(
+\frac{J\sum_{i=1}^I {(\bar{y}_{i\bullet}-\mu)}^2}{\sigma^2} + \frac{SS_w(y)}{\sigma^2_w}
+\right)\right] \\ 
+& \propto
+\left({(\sigma_w^2)}^{-\frac{I(J-1)}{2}}
+\exp\left[-\frac{1}{2}
+ \frac{SS_w(y)}{\sigma^2_w}
+\right]\right)
+\left( 
+{(\sigma^2)}^{-\frac{I}{2}}
+\exp\left[-\frac{1}{2}
+\frac{J\sum_{i=1}^I {(\bar{y}_{i\bullet}-\mu)}^2}{\sigma^2}
+\right] 
+\right).
+\end{align}
+$$
+
+That shows that the group means $\bar{y}_{i\bullet}$ are sufficient for 
+$(\mu, \sigma^2)$. 
+
+
 
 
