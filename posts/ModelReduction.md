@@ -20,15 +20,15 @@ $$({\cal M})\colon \qquad \begin{cases}
 \mu_i \sim_{\text{iid}} {\cal N}(\mu, \sigma^2_b) & i=1,\ldots,I
 \end{cases}.$$
 Let us derive the distribution of the observed group means $\bar{y}_{i\bullet}$:
-$$(\bar{y}_{i\bullet} \mid \mu_i) \sim {\cal N}\left(\mu_i, \frac{\sigma^2_w}{I}\right)$$ 
+$$(\bar{y}_{i\bullet} \mid \mu_i) \sim {\cal N}\left(\mu_i, \frac{\sigma^2_w}{J}\right)$$ 
 for every $i=1,\ldots,I$, and finally 
-$$\bar{y}_{i\bullet}\sim_{\text{iid}} {\cal N}\left(\mu, \sigma^2_b+\frac{\sigma^2_w}{I}\right) \qquad i=1,\ldots,I.$$
+$$\bar{y}_{i\bullet}\sim_{\text{iid}} {\cal N}\left(\mu, \sigma^2_b+\frac{\sigma^2_w}{J}\right) \qquad i=1,\ldots,I.$$
 
 Denote $z_i=\bar{y}_{i\bullet}$ for more clarity. Thus ${(z_i)}_{i=1}^I$ is a sample 
 of *iid* Gaussian distributions:
 $$({\cal M}')\colon \qquad
 z_i \sim_{\text{iid}} {\cal N}\left(\mu, \delta^2\right), \quad i=1,\ldots,I$$ 
-with $\delta^2=\sigma^2_b+\frac{\sigma^2_w}{I}$. 
+with $\delta^2=\sigma^2_b+\frac{\sigma^2_w}{J}$. 
 
 Thus, we have a new model ${\cal M}'$ derived from $\cal M$ and for which there is 
 a well-known $100(1-\alpha)\%$-confidence interval around $\mu$:
@@ -162,7 +162,7 @@ $H_0\colon\{\alpha_1=0\}$ derived from the confidence interval.
 
 
 ```r
-nsims <- 4000
+nsims <- 5000
 confint1 <- confint2 <- NULL
 power1 <- power2 <- rep(NA,nsims)
 local({
@@ -212,7 +212,7 @@ mean(power1)
 ```
 
 ```
-## [1] 0.9948
+## [1] 0.9954
 ```
 
 ```r
@@ -220,7 +220,7 @@ mean(power2)
 ```
 
 ```
-## [1] 0.712
+## [1] 0.7116
 ```
 
 
@@ -339,7 +339,7 @@ $$\begin{cases}
 \mu_i \sim_{\text{iid}} {\cal N}(\mu, \sigma^2_b) & i=1,\ldots,I
 \end{cases},$$
 it is quite easy to write down the joint distribution of the $y_{ij}$ and the $\mu_i$. 
-Integrating over the $\mu_i$ yields the likelihood
+Setting $\sigma^2=J\sigma^2_b+\sigma^2_w$ and integrating over the $\mu_i$ yields the likelihood
 $$
 L\bigl(\mu, \sigma_b, \sigma_w \mid \{y_{ij}\}\bigr) \propto 
 {(\sigma_w^2)}^{-\frac{I(J-1)}{2}}{(\sigma^2)}^{-\frac{I}{2}}
@@ -348,7 +348,8 @@ L\bigl(\mu, \sigma_b, \sigma_w \mid \{y_{ij}\}\bigr) \propto
 \right)\right],
 $$
 thereby showing that the triple of the three summary statistics 
-$\bigl\{\bar{y}_{\bullet\bullet}, SS_b(y), SS_w(y)\bigr\}$ is sufficient.
+$\bigl\{\bar{y}_{\bullet\bullet}, SS_b(y), SS_w(y)\bigr\}$ is sufficient 
+for $(\mu, \sigma_b, \sigma_w)$.
 
 Moreover, because of the equality 
 $$IJ{(\bar{y}_{\bullet\bullet}-\mu)}^2 + SS_b(y) 
@@ -376,7 +377,7 @@ L\bigl(\mu, \sigma_b, \sigma_w \mid \{y_{ij}\}\bigr) & \propto
 $$
 
 That shows that the group means $\bar{y}_{i\bullet}$ are sufficient for 
-$(\mu, \sigma^2)$. 
+$(\mu, \sigma)$. 
 
 
 

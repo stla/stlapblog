@@ -139,7 +139,11 @@ consequently $SS_b(Y) \sim \sigma^2\chi^2_{J-1}$.
 
 By our previous derivations, the statistic 
 $$ \frac{\bar Y_{\bullet\bullet}  - \mu}{\frac{1}{\sqrt{I}}\sqrt{\frac{SS_b(Y)}{J(I-1)}}}$$
-has a Student $t$ distribution with $I-1$ degrees of freedom, wherefrom it is easy to get an exact confidence interval about the overall mean $\mu$.
+has a Student $t$ distribution with $I-1$ degrees of freedom, wherefrom it is easy to get an exact confidence interval about the overall mean $\mu$. 
+
+Note that we would get exactly the same confidence interval if we were told only the 
+ group means $\bar{Y}_{i\bullet}$. 
+ This is the topic of [the next article](http://stla.github.io/stlapblog/posts/ModelReduction.html).
 
 
 
