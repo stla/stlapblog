@@ -82,10 +82,20 @@
               <span>2014-04-09</span><br/>
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/KantorovichWithJulia.Rmd'>Source</a>
               <div class='lead'>
-<p>In the article <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">&#39;Using R to compute the Kantorovich distance&#39;</a> I have shown how to use the <a href="http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf">cddlibb C library</a> through R with the help of the <a href="http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf">rccd R package</a> to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using <a href="http://julialang.org/">Julia</a>. 
- Similarly to the R way, the Julia way uses a C library, the <a href="http://www.gnu.org/software/glpk/">GLPK (GNU Linear Programming Kit)</a> library, wrapped in a Julia package, named <a href="http://docs.julialang.org/en/release-0.1/stdlib/glpk/">GLPK</a> too. </p>
+<p>In the article <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">&#39;Using R to compute the Kantorovich distance&#39;</a> I have shown how to use the <a href="http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf">cddlibb C library</a> through R with the help of the <a href="http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf">rccd R package</a> to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using <a href="http://julialang.org/">Julia</a> using three 
+ differents ways:</p>
 
-<h2>Data of the problem</h2>
+<ul>
+<li><p><strong>GLPK</strong>:  Similarly to the R way, this Julia way uses a C library, the <a href="http://www.gnu.org/software/glpk/">GLPK (GNU Linear Programming Kit)</a> library, wrapped in a Julia package, named <a href="https://gplkjl.readthedocs.org/en/latest/glpk.html">GLPK</a> too. </p></li>
+<li><p><strong>JuMP</strong>: Using the <a href="https://github.com/JuliaOpt/JuMP.jl">JuMP</a> Julia library, a <a href="http://juliaopt.org/">JuliaOpt</a> project.</p></li>
+<li><p><strong>RationalSimplex</strong>: Using Iain Dunning&#39;s <a href="https://github.com/IainNZ/RationalSimplex.jl">RationalSimplex</a> module: 
+<em>Pure Julia implementation of the simplex algorithm for rational numbers</em>. This way is the only one allowing to get 
+the exact value when dealing with rational numbers.</p></li>
+</ul>
+
+<h1>GLPK library</h1>
+
+<h2>Setting the data of the problem</h2>
 
 <p>First, we define the probability measures \(\mu\) and \(\nu\) between which we want the Kantorovich distance to be computed.</p>
 
@@ -208,7 +218,9 @@ for i in 1:n
 end
 </code></pre>
 
-<p>Now we specify the positivity constraints \(p_{ij} \geq 0\) about the variables \(p_{ij}\) corresponding to the columns of the constraint matrix:</p>
+<p>Now we specify the positivity constraints \(p_{ij} \geq 0\) about the variables \(p_{ij}\) 
+corresponding to the columns of the constraint matrix, and we attach to each column the 
+corresponding coefficient of the objective function, given here by the matrix \(D\):</p>
 
 <pre><code class="r">GLPK.add_cols(lp, size(A,2))
 k=0
@@ -256,6 +268,103 @@ precision is achieved by the  <code>GLPK.exact</code> function:</p>
 
 <p>However, unfortunately, it is not possible to get the rational number \(3/28\) 
 with <code>GLPK</code>. </p>
+
+<h1>JuMP library</h1>
+
+<p>The <code>JuMP</code> library allows a very convenient syntax. As compared to <code>GLPK</code>, no matrix gymnastics is needed. 
+Watch this concision: </p>
+
+<pre><code class="r">using JuMP 
+
+ mu = [1/7, 2/7, 4/7]
+ nu = [1/4, 1/4, 1/2]
+ n = length(mu)
+
+ m = Model()
+ @defVar(m, p[1:n,1:n] &gt;= 0)
+ @setObjective(m, Min, sum{p[i,j], i in 1:n, j in 1:n; i != j})
+
+ for k in 1:n
+ @addConstraint(m, sum(p[k,:]) == mu[k])
+ @addConstraint(m, sum(p[:,k]) == nu[k])
+ end
+ solve(m)
+</code></pre>
+
+<pre><code class="r">julia&gt; println(&quot;Optimal objective value is:&quot;, getObjectiveValue(m))
+Optimal objective value is:0.10714285714285715
+
+julia&gt; 3/28
+0.10714285714285714
+</code></pre>
+
+<p>As you can see, the best 64-bit precision approximation is not achieved. 
+But it is possible to get it. 
+<code>JuMP</code> uses a solver, and we have not specified any solver. 
+Then <code>JuMP</code> (actually <code>MathProgBase)</code> will search for an available solver and pick one by default. 
+We can use <code>GLPK.exact</code> by calling the <code>GLPKMathProgInterface</code> library and speicify the solver 
+in the <code>Model</code> function: </p>
+
+<pre><code class="r">using GLPKMathProgInterface
+m = Model(solver=GLPKSolverLP(method=:Exact))
+</code></pre>
+
+<p>Then re-run the rest of the code, and you&#39;ll get:</p>
+
+<pre><code class="r">julia&gt; getObjectiveValue(m)
+0.10714285714285714
+</code></pre>
+
+<h1>RationalSimplex</h1>
+
+<p>The <code>RationalSimplex</code> module allows to get the exact Kantorovich distance as a rational number 
+as long as \(\mu\) and \(\nu\) have rational weights. 
+Rational numbers are specified in Julia with a double slash: </p>
+
+<pre><code class="r">mu=  [1//7, 2//7, 4//7]
+nu = [1//4, 1//4, 1//2]
+</code></pre>
+
+<p>We will not use matrix gymnastics to construct the constraint matrix \(A\) with rational entries, we define it 
+in Julia with our bare hands below.  </p>
+
+<pre><code class="r">include(&quot;myfolder/RationalSimplex.jl&quot;) 
+using RationalSimplex
+using Base.Test
+
+b = [mu, nu]  # &#39;row bounds&#39;
+c = [0//1, 1//1, 1//1, 1//1, 0//1, 1//1, 1//1, 1//1, 0//1]  #  objective coefficients attached to the columns (D matrix in stacked form)
+A = [1//1 1//1 1//1 0//1 0//1 0//1 0//1 0//1 0//1;
+     0//1 0//1 0//1 1//1 1//1 1//1 0//1 0//1 0//1;
+     0//1 0//1 0//1 0//1 0//1 0//1 1//1 1//1 1//1;
+     1//1 0//1 0//1 1//1 0//1 0//1 1//1 0//1 0//1;
+     0//1 1//1 0//1 0//1 1//1 0//1 0//1 1//1 0//1;
+     0//1 0//1 1//1 0//1 0//1 1//1 0//1 0//1 1//1]
+
+x = status, simplex(c, :Min, A, b, [&#39;=&#39;,&#39;=&#39;,&#39;=&#39;,&#39;=&#39;,&#39;=&#39;,&#39;=&#39;]);
+</code></pre>
+
+<p>The <code>simplex</code> function provides the solution of the linear programming problem, that is, the values of 
+\(p_{ij}\) achieving the Kantorovich distance:</p>
+
+<pre><code class="r">julia&gt; x
+9-element Array{Rational{Int64},1}:
+ 1//7 
+ 0//1 
+ 0//1 
+ 1//28
+ 1//4 
+ 0//1 
+ 1//14
+ 0//1 
+ 1//2 
+</code></pre>
+
+<p>The Kantorovich distance is then obtained as the scalar product of <code>c</code> with the solution: </p>
+
+<pre><code class="r">julia&gt; dot(c,x)
+3//28
+</code></pre>
 
 </div>
               <div id="disqus_thread"></div>
