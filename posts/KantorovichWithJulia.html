@@ -82,8 +82,8 @@
               <span>2014-04-09</span><br/>
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/KantorovichWithJulia.Rmd'>Source</a>
               <div class='lead'>
-<p>In the article <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">&#39;Using R to compute the Kantorovich distance&#39;</a> I have shown how to use the <a href="http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf">cddlibb C library</a> through R with the help of the <a href="http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf">rccd R package</a> to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using <a href="http://julialang.org/">Julia</a> using three 
- differents ways:</p>
+<p>In the article <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">&#39;Using R to compute the Kantorovich distance&#39;</a> I have shown how to use the <a href="http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf">cddlibb C library</a> through R with the help of the <a href="http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf">rccd R package</a> to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using three 
+ different ways with <a href="http://julialang.org/">Julia</a>:</p>
 
 <ul>
 <li><p><strong>GLPK</strong>:  Similarly to the R way, this Julia way uses a C library, the <a href="http://www.gnu.org/software/glpk/">GLPK (GNU Linear Programming Kit)</a> library, wrapped in a Julia package, named <a href="https://gplkjl.readthedocs.org/en/latest/glpk.html">GLPK</a> too. </p></li>
@@ -93,7 +93,15 @@
 the exact value when dealing with rational numbers.</p></li>
 </ul>
 
+<p>In the current version of this article, I will only detail the <code>GLPK</code> method. 
+I express my gratitude to all 
+guys on <a href="https://groups.google.com/forum/#!forum/julia-users">julia-users</a> 
+who kindly provided me their unvaluable help for this article.</p>
+
 <h1>GLPK library</h1>
+
+<p>I will try to explain in details the approach using <code>GLPK</code>, 
+without assuming the reader has some knowledge about Julia.</p>
 
 <h2>Setting the data of the problem</h2>
 
@@ -302,7 +310,7 @@ julia&gt; 3/28
 But it is possible to get it. 
 <code>JuMP</code> uses a solver, and we have not specified any solver. 
 Then <code>JuMP</code> (actually <code>MathProgBase)</code> will search for an available solver and pick one by default. 
-We can use <code>GLPK.exact</code> by calling the <code>GLPKMathProgInterface</code> library and speicify the solver 
+We can use <code>GLPK.exact</code> by calling the <code>GLPKMathProgInterface</code> library and specifying the solver 
 in the <code>Model</code> function: </p>
 
 <pre><code class="r">using GLPKMathProgInterface

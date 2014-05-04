@@ -8,19 +8,28 @@ opts_chunk$set(fig.path="assets/fig/KantorovichWithJulia", tidy=FALSE)
 ```
 
 
- In the article ['Using R to compute the Kantorovich distance'](http://stla.github.io/stlapblog/posts/KantorovichWithR.html) I have shown how to use the [cddlibb C library](http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf) through R with the help of the [rccd R package](http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf) to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using [Julia](http://julialang.org/) using three 
- differents ways:
+ In the article ['Using R to compute the Kantorovich distance'](http://stla.github.io/stlapblog/posts/KantorovichWithR.html) I have shown how to use the [cddlibb C library](http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf) through R with the help of the [rccd R package](http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf) to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using three 
+ different ways with [Julia](http://julialang.org/):
  
- - **GLPK**:  Similarly to the R way, this Julia way uses a C library, the [GLPK (GNU Linear Programming Kit)](http://www.gnu.org/software/glpk/) library, wrapped in a Julia package, named [GLPK](https://gplkjl.readthedocs.org/en/latest/glpk.html) too. 
+  - **GLPK**:  Similarly to the R way, this Julia way uses a C library, the [GLPK (GNU Linear Programming Kit)](http://www.gnu.org/software/glpk/) library, wrapped in a Julia package, named [GLPK](https://gplkjl.readthedocs.org/en/latest/glpk.html) too. 
  
- - **JuMP**: Using the [JuMP](https://github.com/JuliaOpt/JuMP.jl) Julia library, a [JuliaOpt](http://juliaopt.org/) project.
+  - **JuMP**: Using the [JuMP](https://github.com/JuliaOpt/JuMP.jl) Julia library, a [JuliaOpt](http://juliaopt.org/) project.
  
- - **RationalSimplex**: Using Iain Dunning's [RationalSimplex](https://github.com/IainNZ/RationalSimplex.jl) module: 
+  - **RationalSimplex**: Using Iain Dunning's [RationalSimplex](https://github.com/IainNZ/RationalSimplex.jl) module: 
  *Pure Julia implementation of the simplex algorithm for rational numbers*. This way is the only one allowing to get 
  the exact value when dealing with rational numbers.
- 
+
+
+In the current version of this article, I will only detail the `GLPK` method. 
+I express my gratitude to all 
+guys on [julia-users](https://groups.google.com/forum/#!forum/julia-users) 
+who kindly provided me their unvaluable help for this article.
+
 
 # GLPK library
+
+I will try to explain in details the approach using `GLPK`, 
+without assuming the reader has some knowledge about Julia.
 
 ## Setting the data of the problem
 
@@ -249,7 +258,7 @@ As you can see, the best 64-bit precision approximation is not achieved.
 But it is possible to get it. 
 `JuMP` uses a solver, and we have not specified any solver. 
 Then `JuMP` (actually `MathProgBase)` will search for an available solver and pick one by default. 
-We can use `GLPK.exact` by calling the `GLPKMathProgInterface` library and speicify the solver 
+We can use `GLPK.exact` by calling the `GLPKMathProgInterface` library and specifying the solver 
 in the `Model` function: 
 
 ```{r, eval=FALSE}
