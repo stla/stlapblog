@@ -1,9 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 
-strong, b {
-  font-weight: bolder;
-}
 
 body {
   font-family: "Source Sans Pro", Helvetica;
