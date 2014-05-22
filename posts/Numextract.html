@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Extraction of numbers for a character string</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Extraction of numbers for a character string</a>
+              </h3>
+              <span>2013-12-01</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Numextract.Rmd'>Source</a>
+              <div class='lead'>
+<p><strong>Article under construction!</strong></p>
+
+<p>Sometimes you get data like:</p>
+
+<pre><code>##    concentration temperature   pH
+## 1         2.12mL        11 C  7.0
+## 2          7.5mL        -1 C 10.5
+## 3          0.7mL         3 C  8.0
+## 4          7.6mL         5 C  7.5
+## 5         0.11mL         8 C 11.0
+## 6         2.13mL         4 C  4.0
+## 7         0.27mL         5 C 10.0
+## 8         0.45mL         4 C  8.5
+## 9         0.17mL         9 C  7.5
+## 10        0.96mL         5 C  5.5
+</code></pre>
+
+<p>and you&#39;d like to separate the numerical values from the units in columns such as <code>concentration</code> or <code>temperature</code>. </p>
+
+<p>@BondedDust and @tcash21 
+kindly provide me some help on <a href="http://stackoverflow.com/questions/19252663/extracting-decimal-numbers-from-a-string">stackoverflow</a> 
+to achieve such a task.</p>
+
+<h2>Extract numbers from a character string</h2>
+
+<p>I&#39;m using the following function to extract the numerical values:</p>
+
+<pre><code class="r">library(stringr)
+numextract &lt;- function(string) {
+    str_extract(string, &quot;\\-*\\d+\\.*\\d*&quot;)
+}
+</code></pre>
+
+<p>For example:</p>
+
+<pre><code class="r">numextract(&quot;30.5ml&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;30.5&quot;
+</code></pre>
+
+<pre><code class="r">numextract(&quot;&gt;2g&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2&quot;
+</code></pre>
+
+<p>The function is vectorized:</p>
+
+<pre><code class="r">numextract(c(&quot;30.5ml&quot;, &quot;37ml&quot;))
+</code></pre>
+
+<pre><code>## [1] &quot;30.5&quot; &quot;37&quot;
+</code></pre>
+
+<p>It also extracts negative numbers:</p>
+
+<pre><code class="r">numextract(&quot;-3°C&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;-3&quot;
+</code></pre>
+
+<p>If you  want to ignore the minus sign, delete it in <code>str_extract(string, &quot;\\-*\\d+\\.*\\d*&quot;)</code>. </p>
+
+<p>If there are multiple numbers in the character string, it only extracts the first one:</p>
+
+<pre><code class="r">numextract(&quot;between 2ml and 3ml&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2&quot;
+</code></pre>
+
+<p>(yes, I have already received such data in my life).</p>
+
+<p>If you want to extarct multiple numbers use this function instead:</p>
+
+<pre><code class="r">Numextract &lt;- function(string) {
+    unlist(regmatches(string, gregexpr(&quot;[[:digit:]]+\\.*[[:digit:]]*&quot;, string)))
+}
+Numextract(&quot;between 2ml and 3ml&quot;)
+</code></pre>
+
+<pre><code>## [1] &quot;2&quot; &quot;3&quot;
+</code></pre>
+
+<h2>Separate numbers and units</h2>
+
+<p>Consider the problem of the introduction:</p>
+
+<pre><code class="r">dat
+</code></pre>
+
+<pre><code>##    concentration temperature   pH
+## 1         2.12mL        11 C  7.0
+## 2          7.5mL        -1 C 10.5
+## 3          0.7mL         3 C  8.0
+## 4          7.6mL         5 C  7.5
+## 5         0.11mL         8 C 11.0
+## 6         2.13mL         4 C  4.0
+## 7         0.27mL         5 C 10.0
+## 8         0.45mL         4 C  8.5
+## 9         0.17mL         9 C  7.5
+## 10        0.96mL         5 C  5.5
+</code></pre>
+
+<p>Extract the numerical values of the <code>concentration</code> column</p>
+
+<pre><code class="r">(concentration &lt;- numextract(dat$concentration))
+</code></pre>
+
+<pre><code>##  [1] &quot;2.12&quot; &quot;7.5&quot;  &quot;0.7&quot;  &quot;7.6&quot;  &quot;0.11&quot; &quot;2.13&quot; &quot;0.27&quot; &quot;0.45&quot; &quot;0.17&quot; &quot;0.96&quot;
+</code></pre>
+
+<p>Sometimes, units are different, and we want to get them :</p>
+
+<pre><code class="r">(unit &lt;- str_split_fixed(dat$concentration, concentration, n = 2)[, 2])
+</code></pre>
+
+<pre><code>##  [1] &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot; &quot;mL&quot;
+</code></pre>
+
+<p>And it is good to check we are able to reconstruct the original column:</p>
+
+<pre><code class="r">all(paste0(concentration, unit) == dat$concentration)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<p>Now we&#39;d like to replace the original column by these two columns:</p>
+
+<pre><code class="r">(concentration &lt;- data.frame(concentration, unit))
+</code></pre>
+
+<pre><code>##    concentration unit
+## 1           2.12   mL
+## 2            7.5   mL
+## 3            0.7   mL
+## 4            7.6   mL
+## 5           0.11   mL
+## 6           2.13   mL
+## 7           0.27   mL
+## 8           0.45   mL
+## 9           0.17   mL
+## 10          0.96   mL
+</code></pre>
+
+<p>To do so, I&#39;m using the following function:</p>
+
+<pre><code class="r">df_replace &lt;- function(dat, col, newcol) {
+    if (!(col %in% names(dat))) 
+        stop(paste0(&quot;column &quot;, col, &quot; is not in &quot;, deparse(substitute(dat))))
+    if (is.vector(newcol)) {
+        newcol &lt;- data.frame(newcol, stringsAsFactors = FALSE)
+        newcol &lt;- reshape::rename(newcol, replace = (c(newcol = col)))
+    }
+    E &lt;- which(names(dat) == col)
+    if (E == 1) 
+        return(cbind(newcol, dat[, (E + +1):length(dat), drop = FALSE]))
+    if (E == length(dat)) 
+        return(cbind(dat[, 1:(E - 1), drop = FALSE], newcol)) else return(cbind(dat[, 1:(E - 1), drop = FALSE], newcol, dat[, (E + +1):length(dat), 
+        drop = FALSE]))
+}
+</code></pre>
+
+<p>like this:</p>
+
+<pre><code class="r">df_replace(dat, &quot;concentration&quot;, concentration)
+</code></pre>
+
+<pre><code>##    concentration unit temperature   pH
+## 1           2.12   mL        11 C  7.0
+## 2            7.5   mL        -1 C 10.5
+## 3            0.7   mL         3 C  8.0
+## 4            7.6   mL         5 C  7.5
+## 5           0.11   mL         8 C 11.0
+## 6           2.13   mL         4 C  4.0
+## 7           0.27   mL         5 C 10.0
+## 8           0.45   mL         4 C  8.5
+## 9           0.17   mL         9 C  7.5
+## 10          0.96   mL         5 C  5.5
+</code></pre>
+
+<h2>Handling character data</h2>
+
+<p>Assume you have a long dataset made of columns in character mode only (see next section about the import of 
+Excel files in R). 
+Even the columns containing numerical values are given in character mode, and you need an automatic way to 
+convert these columns in numeric mode. </p>
+
+<p>First, I&#39;m using the following function to check whether a column can be safely converted in numerical mode:</p>
+
+<pre><code class="r">isNumeric &lt;- function(string) {
+    ## test whether a character vector contains numbers only
+    x &lt;- numextract(string)
+    notNA &lt;- which(!is.na(x))
+    ifelse(length(notNA) == 0, FALSE, all(x[notNA] == string[notNA]))
+}
+</code></pre>
+
+<pre><code class="r">x &lt;- c(&quot;1.5&quot;, &quot;3.2&quot;)
+isNumeric(x)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">x &lt;- factor(x)
+isNumeric(x)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">x &lt;- c(&quot;1.5&quot;, &quot;3.2 &quot;)
+isNumeric(x)
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<pre><code class="r">x &lt;- c(&quot;1.5&quot;, &quot;&lt;3.2&quot;)
+isNumeric(x)
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<p>If <code>isNumeric()</code> returns <code>TRUE</code>, the you can safely use <code>as.numeric()</code> to convert. </p>
+
+<p>Based on <code>isNumeric</code>, the function <code>Numerize</code> below takes as input a dataframe containing only 
+character or factor columns, and returns the same dataframe 
+with numerical columns when possible.</p>
+
+<pre><code class="r">Numerize &lt;- function(dat, factors = TRUE) {
+    # 
+    factorcols &lt;- if (factors) 
+        FALSE else vapply(dat, function(col) is.factor(col), TRUE)
+    numcols &lt;- names(dat)[which(vapply(dat, function(col) isNumeric(col), TRUE) &amp; 
+        !factorcols)]
+    sapply(numcols, function(col) invisible(dat[[col]] &lt;&lt;- as.numeric(as.character(dat[[col]]))))
+    return(dat)
+}
+</code></pre>
+
+<p>For example:</p>
+
+<pre><code class="r">Numerize(data.frame(x = c(&quot;1.5&quot;, &quot;3.2&quot;), y = c(&quot;1.5&quot;, &quot;&lt;3.2&quot;)))
+</code></pre>
+
+<pre><code>##     x    y
+## 1 1.5  1.5
+## 2 3.2 &lt;3.2
+</code></pre>
+
+<h2>Import your file in characters</h2>
+
+<pre><code>&gt; wb &lt;- loadWorkbook(&quot;mourad.xlsx&quot;)
+&gt; dat &lt;- readWorksheet(wb, sheet = 1)
+&gt; str(dat)
+&#39;data.frame&#39;:  4 obs. of  4 variables:
+ $ A: num  8263352 8263352 12023604 12023604
+ $ B: num  231514 231514 3017236 3017236
+ $ C: num  23 23 20 17
+ $ D: chr  &quot;1203&quot; &quot;3243&quot; &quot;0015&quot; &quot;0321&quot;
+</code></pre>
+
+<p> .................... </p>
+
+</div>
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

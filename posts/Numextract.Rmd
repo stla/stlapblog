@@ -1,0 +1,293 @@
+---
+title: Extraction of numbers for a character string
+date : 2013-12-01
+--- &lead
+
+```{r setup0, echo=FALSE}
+opts_chunk$set(fig.path="assets/fig/Numextract-")
+```
+
+**Article under construction!**
+
+
+Sometimes you get data like:
+```{r, echo=FALSE}
+set.seed(666)
+n <- 10
+dat <- data.frame(
+  concentration = paste0(round(rlnorm(n),2), "mL"),
+  temperature = paste0(rpois(n,10)-5, " C"),
+  pH = rpois(n,14)/2
+    )
+dat
+```
+and you'd like to separate the numerical values from the units in columns such as `concentration` or `temperature`. 
+
+@BondedDust and @tcash21 
+kindly provide me some help on [stackoverflow](http://stackoverflow.com/questions/19252663/extracting-decimal-numbers-from-a-string) 
+to achieve such a task.
+
+
+
+## Extract numbers from a character string 
+
+I'm using the following function to extract the numerical values:
+
+```{r}
+library(stringr)
+numextract <- function(string){ 
+  str_extract(string, "\\-*\\d+\\.*\\d*")
+} 
+```
+
+For example:
+
+```{r}
+numextract("30.5ml")
+numextract(">2g")
+```
+
+The function is vectorized:
+```{r}
+numextract(c("30.5ml", "37ml"))
+```
+
+It also extracts negative numbers:
+```{r}
+numextract("-3°C")
+```
+
+If you  want to ignore the minus sign, delete it in `str_extract(string, "\\-*\\d+\\.*\\d*")`. 
+
+If there are multiple numbers in the character string, it only extracts the first one:
+```{r}
+numextract("between 2ml and 3ml")
+```
+(yes, I have already received such data in my life).
+
+If you want to extarct multiple numbers use this function instead:
+```{r}
+Numextract <- function(string){
+  unlist(regmatches(string,gregexpr("[[:digit:]]+\\.*[[:digit:]]*",string)))
+}
+Numextract("between 2ml and 3ml")
+```
+
+
+## Separate numbers and units
+
+Consider the problem of the introduction:
+
+```{r}
+dat
+```
+
+Extract the numerical values of the `concentration` column
+```{r}
+( concentration <- numextract(dat$concentration) )
+```
+
+Sometimes, units are different, and we want to get them :
+```{r}
+( unit <- str_split_fixed(dat$concentration, concentration, n=2)[,2] )
+```
+And it is good to check we are able to reconstruct the original column:
+```{r}
+all(paste0(concentration, unit) == dat$concentration)
+```
+Now we'd like to replace the original column by these two columns:
+```{r}
+( concentration <- data.frame(concentration, unit) )
+```
+To do so, I'm using the following function:
+```{r}
+df_replace <- function(dat, col, newcol){
+  if(!(col %in% names(dat))) stop(paste0("column ", col, " is not in ", deparse(substitute(dat))))
+  if(is.vector(newcol)){
+    newcol <- data.frame(newcol, stringsAsFactors=FALSE)
+    newcol <- reshape::rename(newcol, replace=(c("newcol"=col)))
+  }
+  E <- which(names(dat) == col)
+  if(E==1) return(cbind(newcol, dat[,(E++1):length(dat),drop=FALSE]))
+  if(E==length(dat)) return(cbind(dat[,1:(E-1),drop=FALSE], newcol))
+  else return(cbind(dat[,1:(E-1),drop=FALSE], newcol, dat[,(E++1):length(dat),drop=FALSE]))
+}
+```
+like this:
+```{r}
+df_replace(dat, "concentration", concentration)
+```
+
+
+## Handling character data
+
+Assume you have a long dataset made of columns in character mode only (see next section about the import of 
+Excel files in R). 
+Even the columns containing numerical values are given in character mode, and you need an automatic way to 
+convert these columns in numeric mode. 
+
+First, I'm using the following function to check whether a column can be safely converted in numerical mode:
+
+```{r}
+isNumeric <- function(string){
+  ## test whether a character vector contains numbers only
+  x <- numextract(string)
+  notNA <- which(!is.na(x))
+  ifelse(length(notNA)==0, FALSE, all(x[notNA]==string[notNA]))
+}
+```
+
+
+```{r}
+x <- c("1.5", "3.2")
+isNumeric(x)
+x <- factor(x)
+isNumeric(x)
+x <- c("1.5", "3.2 ")
+isNumeric(x)
+x <- c("1.5", "<3.2")
+isNumeric(x)
+```
+
+If `isNumeric()` returns `TRUE`, the you can safely use `as.numeric()` to convert. 
+
+Based on `isNumeric`, the function `Numerize` below takes as input a dataframe containing only 
+character or factor columns, and returns the same dataframe 
+with numerical columns when possible.
+
+```{r}
+Numerize <- function(dat, factors=TRUE){ #
+  factorcols <- if(factors) FALSE else vapply(dat, function(col) is.factor(col), TRUE) 
+  numcols <- names(dat)[which(vapply(dat, function(col) isNumeric(col), TRUE) & !factorcols)]
+  sapply(numcols, function(col) invisible(dat[[col]] <<- as.numeric(as.character(dat[[col]])))) 
+  return(dat)
+}
+```
+
+For example:
+```{r}
+Numerize(data.frame(x=c("1.5", "3.2"), y=c("1.5", "<3.2")))
+```
+
+
+
+## Import your file in characters
+
+```
+> wb <- loadWorkbook("mourad.xlsx")
+> dat <- readWorksheet(wb, sheet = 1)
+> str(dat)
+'data.frame':  4 obs. of  4 variables:
+ $ A: num  8263352 8263352 12023604 12023604
+ $ B: num  231514 231514 3017236 3017236
+ $ C: num  23 23 20 17
+ $ D: chr  "1203" "3243" "0015" "0321"
+ ```
+
+but experiment some memory problems 
+
+but with `gdata`: ...
+
+`RODBC` windows 32 bit uniquement et "bug"
+
+xlsx ? 
+
+hence there are good reasons to import in character
+
+Importing a `csv` file to a dataframe with character columns only is straightforward:
+```{r, eval=FALSE}
+read.csv(mycsvfile, header=TRUE, colClasses="character")
+```
+
+There are several packages allowing to import an Excel file. 
+My function below proposes two methods: `java` or `perl`. 
+The `java` method uses the`readWorksheet` function of the  `XLConnect` package which depends on the `rJava` package. 
+The `perl` method uses the `read.xls` function of `gdata` package, calling the `perl` program 
+which must be installed on your computer if you use this method.
+
+```{r}
+xls2dataframe <- function(XLfile, sheet="Sheet1", method="java", ...){
+  if(method=="java"){
+    options(java.parameters = "-Xmx512m") 
+    require(XLConnect) 
+    wb <- loadWorkbook(XLfile)
+    dat <- readWorksheet(wb, sheet = sheet, colTypes="character", ...)
+    xlcFreeMemory()
+    detach("package:XLConnect", unload=TRUE)
+    return(dat)
+  }
+  if(method=="perl"){
+    require(gdata)
+    dat <- read.xls(XL, sheet=sheet, 
+                    colClasses="character", verbose=TRUE, encoding="UTF-8")
+    chars <- which(sapply(dat, is.character))
+    for(i in chars){
+      dat[,i] <- sub("&lt;", "<", dat[,i])
+      dat[,i] <- sub("&gt;", ">", dat[,i])
+    }
+    detach("package:gdata", unload=TRUE)
+    return(dat)
+  }
+  if(method=="RODBC"){
+    require(RODBC)
+    fileconn <-odbcConnectExcel(XL, readOnly = TRUE)
+    dat <- sqlFetch(fileconn, sqltable=sheet, as.is = TRUE) 
+    odbcClose(fileconn)
+    return(dat)
+  }
+}
+```
+
+The `perl` program is usually installed on Linux machines. If you're using Windows and don't have `perl`, you can 
+[download Strawberry Perl](http://strawberryperl.com/releases.html) (use the portable version if you don't have 
+administrator privileges). 
+If the path to `perl` is not included in your system environment variables, you can add it in R by typing:
+```{r, eval=FALSE}
+perl.path <- "... your path to the perl/bin folder"
+PATH <- Sys.getenv()["PATH"] 
+Sys.setenv(PATH = paste0(PATH,";",perl))
+```
+
+Now we can make a function which automatically detects the extension of your file and 
+accordingly use `read.csv` or `xls2dataframe` to import it:
+```{r}
+fileToDf <- function(path, format=path, numerize=TRUE, ...){
+  require(stringr)
+  ext <- str_sub(format, start=-4)
+  if(ext==".csv"){
+    out <- read.csv(path, header=TRUE, colClasses="character")
+  }
+  else if(ext %in% c(".xls","xlsx")){
+    out <- xls2dataframe(path, ...)
+  }
+  if(numerize) return(Numerize(out)) else return(out)
+}
+```
+
+I have added the argument `numerize` which indicates whether to talk the 
+`Numerize` function before returing the dataframe. 
+This function is explained in the remaining of this article. 
+
+avantages ? s'il y a des espaces dans les nombres ? cas 00234 ?
+faire fonction numerize qui retourne aussi le nb de cases qui ne se convertit pas ? 
+plutôt useful pour RODBC ? (à cause du bug) format caractère dans Excel ?
+
+Mourad - nickel avec XLConnect:
+> wb <- loadWorkbook("mourad.xlsx")
+> dat <- readWorksheet(wb, sheet = 1)
+> str(dat)
+'data.frame':  4 obs. of  4 variables:
+ $ A: num  8263352 8263352 12023604 12023604
+ $ B: num  231514 231514 3017236 3017236
+ $ C: num  23 23 20 17
+ $ D: chr  "1203" "3243" "0015" "0321"
+
+- perl :
+ dat <- read.xls("mourad.xlsx", sheet=1)
+> str(dat)
+'data.frame':  4 obs. of  4 variables:
+ $ A: int  8263352 8263352 12023604 12023604
+ $ B: int  231514 231514 3017236 3017236
+ $ C: int  23 23 20 17
+ $ D: int  1203 3243 15 321
+ 
