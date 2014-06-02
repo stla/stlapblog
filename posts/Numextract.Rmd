@@ -1,13 +1,11 @@
 ---
-title: Extraction of numbers for a character string
+title: Extraction of numbers from a character string
 date : 2013-12-01
 --- &lead
 
 ```{r setup0, echo=FALSE}
 opts_chunk$set(fig.path="assets/fig/Numextract-")
 ```
-
-**Article under construction!**
 
 
 Sometimes you get data like:
@@ -91,7 +89,7 @@ Sometimes, units are different, and we want to get them :
 ```{r}
 ( unit <- str_split_fixed(dat$concentration, concentration, n=2)[,2] )
 ```
-And it is good to check we are able to reconstruct the original column:
+And it is a good practice to check we are able to reconstruct the original column:
 ```{r}
 all(paste0(concentration, unit) == dat$concentration)
 ```
@@ -133,7 +131,7 @@ isNumeric <- function(string){
   ## test whether a character vector contains numbers only
   x <- numextract(string)
   notNA <- which(!is.na(x))
-  ifelse(length(notNA)==0, FALSE, all(x[notNA]==string[notNA]))
+  ifelse(length(notNA)==0, FALSE, all(x[notNA]==str_trim(string[notNA])))
 }
 ```
 
@@ -169,125 +167,3 @@ For example:
 Numerize(data.frame(x=c("1.5", "3.2"), y=c("1.5", "<3.2")))
 ```
 
-
-
-## Import your file in characters
-
-```
-> wb <- loadWorkbook("mourad.xlsx")
-> dat <- readWorksheet(wb, sheet = 1)
-> str(dat)
-'data.frame':  4 obs. of  4 variables:
- $ A: num  8263352 8263352 12023604 12023604
- $ B: num  231514 231514 3017236 3017236
- $ C: num  23 23 20 17
- $ D: chr  "1203" "3243" "0015" "0321"
- ```
-
-but experiment some memory problems 
-
-but with `gdata`: ...
-
-`RODBC` windows 32 bit uniquement et "bug"
-
-xlsx ? 
-
-hence there are good reasons to import in character
-
-Importing a `csv` file to a dataframe with character columns only is straightforward:
-```{r, eval=FALSE}
-read.csv(mycsvfile, header=TRUE, colClasses="character")
-```
-
-There are several packages allowing to import an Excel file. 
-My function below proposes two methods: `java` or `perl`. 
-The `java` method uses the`readWorksheet` function of the  `XLConnect` package which depends on the `rJava` package. 
-The `perl` method uses the `read.xls` function of `gdata` package, calling the `perl` program 
-which must be installed on your computer if you use this method.
-
-```{r}
-xls2dataframe <- function(XLfile, sheet="Sheet1", method="java", ...){
-  if(method=="java"){
-    options(java.parameters = "-Xmx512m") 
-    require(XLConnect) 
-    wb <- loadWorkbook(XLfile)
-    dat <- readWorksheet(wb, sheet = sheet, colTypes="character", ...)
-    xlcFreeMemory()
-    detach("package:XLConnect", unload=TRUE)
-    return(dat)
-  }
-  if(method=="perl"){
-    require(gdata)
-    dat <- read.xls(XL, sheet=sheet, 
-                    colClasses="character", verbose=TRUE, encoding="UTF-8")
-    chars <- which(sapply(dat, is.character))
-    for(i in chars){
-      dat[,i] <- sub("&lt;", "<", dat[,i])
-      dat[,i] <- sub("&gt;", ">", dat[,i])
-    }
-    detach("package:gdata", unload=TRUE)
-    return(dat)
-  }
-  if(method=="RODBC"){
-    require(RODBC)
-    fileconn <-odbcConnectExcel(XL, readOnly = TRUE)
-    dat <- sqlFetch(fileconn, sqltable=sheet, as.is = TRUE) 
-    odbcClose(fileconn)
-    return(dat)
-  }
-}
-```
-
-The `perl` program is usually installed on Linux machines. If you're using Windows and don't have `perl`, you can 
-[download Strawberry Perl](http://strawberryperl.com/releases.html) (use the portable version if you don't have 
-administrator privileges). 
-If the path to `perl` is not included in your system environment variables, you can add it in R by typing:
-```{r, eval=FALSE}
-perl.path <- "... your path to the perl/bin folder"
-PATH <- Sys.getenv()["PATH"] 
-Sys.setenv(PATH = paste0(PATH,";",perl))
-```
-
-Now we can make a function which automatically detects the extension of your file and 
-accordingly use `read.csv` or `xls2dataframe` to import it:
-```{r}
-fileToDf <- function(path, format=path, numerize=TRUE, ...){
-  require(stringr)
-  ext <- str_sub(format, start=-4)
-  if(ext==".csv"){
-    out <- read.csv(path, header=TRUE, colClasses="character")
-  }
-  else if(ext %in% c(".xls","xlsx")){
-    out <- xls2dataframe(path, ...)
-  }
-  if(numerize) return(Numerize(out)) else return(out)
-}
-```
-
-I have added the argument `numerize` which indicates whether to talk the 
-`Numerize` function before returing the dataframe. 
-This function is explained in the remaining of this article. 
-
-avantages ? s'il y a des espaces dans les nombres ? cas 00234 ?
-faire fonction numerize qui retourne aussi le nb de cases qui ne se convertit pas ? 
-plutôt useful pour RODBC ? (à cause du bug) format caractère dans Excel ?
-
-Mourad - nickel avec XLConnect:
-> wb <- loadWorkbook("mourad.xlsx")
-> dat <- readWorksheet(wb, sheet = 1)
-> str(dat)
-'data.frame':  4 obs. of  4 variables:
- $ A: num  8263352 8263352 12023604 12023604
- $ B: num  231514 231514 3017236 3017236
- $ C: num  23 23 20 17
- $ D: chr  "1203" "3243" "0015" "0321"
-
-- perl :
- dat <- read.xls("mourad.xlsx", sheet=1)
-> str(dat)
-'data.frame':  4 obs. of  4 variables:
- $ A: int  8263352 8263352 12023604 12023604
- $ B: int  231514 231514 3017236 3017236
- $ C: int  23 23 20 17
- $ D: int  1203 3243 15 321
- 
