@@ -147,7 +147,9 @@ x <- c("1.5", "<3.2")
 isNumeric(x)
 ```
 
-If `isNumeric()` returns `TRUE`, the you can safely use `as.numeric()` to convert. 
+If `isNumeric(x)` returns `TRUE`, the you can safely use `as.numeric(x)` to convert  
+if `x` is a character vector, *but* you have to use `as.numeric(as.character(x))` 
+if `x` is a factor. You can simply use `as.numeric(as.character(x))` for both cases.
 
 Based on `isNumeric`, the function `Numerize` below takes as input a dataframe containing only 
 character or factor columns, and returns the same dataframe 

@@ -306,7 +306,9 @@ isNumeric(x)
 <pre><code>## [1] FALSE
 </code></pre>
 
-<p>If <code>isNumeric()</code> returns <code>TRUE</code>, the you can safely use <code>as.numeric()</code> to convert. </p>
+<p>If <code>isNumeric(x)</code> returns <code>TRUE</code>, the you can safely use <code>as.numeric(x)</code> to convert<br>
+if <code>x</code> is a character vector, <em>but</em> you have to use <code>as.numeric(as.character(x))</code> 
+if <code>x</code> is a factor. You can simply use <code>as.numeric(as.character(x))</code> for both cases.</p>
 
 <p>Based on <code>isNumeric</code>, the function <code>Numerize</code> below takes as input a dataframe containing only 
 character or factor columns, and returns the same dataframe 
