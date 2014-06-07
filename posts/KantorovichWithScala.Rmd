@@ -1,0 +1,114 @@
+---
+title: Using Scala to compute the Kantorovich distance
+date : 2014-06-09
+--- &lead
+
+```{r setup0, echo=FALSE}
+opts_chunk$set(fig.path="assets/fig/KantorovichWithScala", tidy=FALSE)
+```
+
+
+Recall that we previously provided an example of calculation of a Kantorovich distance [using R](http://stla.github.io/stlapblog/posts/KantorovichWithR.html) and 
+[using Julia](http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html). 
+Now it's time to do it with [Scala](http://www.scala-lang.org/) and 
+its [breeze library](https://github.com/scalanlp/breeze), 
+a [ScalaNLP projet](http://www.scalanlp.org/).
+
+This example is a linear programing problem given as follows. 
+The unknown variables  $p_{ij}$ have a tabular structure 
+$$P=\begin{pmatrix}
+p_{11} & p_{12} & p_{13} \\
+p_{21} & p_{22} & p_{23} \\
+p_{31} & p_{32} & p_{33} 
+\end{pmatrix},$$
+ are constrained by the following 
+linear equality/inequality constraints:
+$$\begin{cases}
+{\rm (1a) } \quad \sum_j p_{ij} = \mu(a_i) & \forall i \\ 
+{\rm (1b) } \quad \sum_i p_{ij} = \nu(a_j) & \forall j \\
+{\rm (2) } \quad  p_{ij} \geq 0 & \forall i,j \\
+\end{cases}$$
+where $\mu$ and $\nu$ are two probability vectors, taken to be 
+$$ \mu=\left(\frac{1}{7},\frac{1}{7},\frac{1}{7}\right) 
+\qquad 
+\text{and } \qquad 
+\mu=\left(\frac{1}{4},\frac{1}{4},\frac{1}{2}\right) 
+$$
+in our example, and the desideratum is to minimize the linear combination 
+$$ \sum_{i,j} D_{ij}p_{ij}$$ 
+where $D$ is a distance matrix, taken to be 
+$$ D = \begin{pmatrix}
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 
+\end{pmatrix},$$ 
+in our example.
+
+
+## Breeze expressions
+
+Most linear programming solvers are conceived to take as input the 
+matrix of linear constraints, and this is quite annoying to construct 
+this matrix in our situation: for the linear equality constraints this matrix is 
+$$
+A=\begin{pmatrix} M_1 \\ M_2 \end{pmatrix} 
+$$
+where 
+$$ M_1 = \begin{pmatrix}
+1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 1 & 1 & 1  & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1  
+\end{pmatrix} $$
+defines the linear equality constraints corresponding to $\mu$ 
+and 
+$$ M_2 = \begin{pmatrix}
+1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+ 0 & 1 & 0 & 0 & 1 & 0  & 0 & 1 & 0 \\
+ 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 1  
+\end{pmatrix}. $$
+defines the linear equality constraints corresponding to $\nu$. 
+
+[As we have seen](http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html), the Julia JuMP package provides a very convenient way to *write* the linear programing problem, using 
+*expressions* to define the unknown variables $p_{ij}$, the objective function and the 
+constraints, which avoids in particular to construct the $A$ matrix :
+
+```{r, eval=FALSE}
+using JuMP 
+
+ mu = [1/7, 2/7, 4/7]
+ nu = [1/4, 1/4, 1/2]
+ n = length(mu)
+ 
+ m = Model()
+ @defVar(m, p[1:n,1:n] >= 0)
+ @setObjective(m, Min, sum{p[i,j], i in 1:n, j in 1:n; i != j})
+ 
+ for k in 1:n
+ @addConstraint(m, sum(p[k,:]) == mu[k])
+ @addConstraint(m, sum(p[:,k]) == nu[k])
+ end
+ solve(m)
+```
+
+Using the Scala breeze library we also set the problem by using expressions. 
+This is not as concise as the Julia JuMP library and this requires 
+a bit of gymnastics with the Scala language, but essentially the spirit is the same: 
+we write the problem, using expressions.
+
+
+## Scala breeze in action 
+
+First, we define the probability measures $\mu$ and $\nu$ between which we want the Kantorovich distance to be computed, and the distance matrix $D$:
+
+```{r, eval=FALSE}
+var Mu = Array(1.0/7, 2.0/7, 4.0/7)
+var Nu = Array(1.0/4, 1.0/4, 1.0/2)
+val n = Mu.length
+val D =  Array.fill(n,n)(0)
+for( i <- 0 to n-1 ) 
+  for( j <- 0 to n-1 )
+		if( !(i==j) ) D(i)(j) = 1
+```
+
+
+
