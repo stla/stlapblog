@@ -12,9 +12,11 @@ Recall that we previously provided an example of calculation of a Kantorovich di
 [using Julia](http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html). 
 Now it's time to do it with [Scala](http://www.scala-lang.org/) and 
 its [breeze library](https://github.com/scalanlp/breeze), 
-a [ScalaNLP projet](http://www.scalanlp.org/).
+a [ScalaNLP projet](http://www.scalanlp.org/). 
 
-This example is a linear programing problem given as follows. 
+sssssssssssssssssssssssssssssssssssssssssssssssolver based on apache...
+
+Our example is a linear programing problem given as follows. 
 The unknown variables  $p_{ij}$ have a tabular structure 
 $$P=\begin{pmatrix}
 p_{11} & p_{12} & p_{13} \\
@@ -41,7 +43,7 @@ $$ D = \begin{pmatrix}
 0 & 1 & 1 \\
 1 & 0 & 1 \\
 1 & 1 & 0 
-\end{pmatrix},$$ 
+\end{pmatrix}$$ 
 in our example.
 
 
@@ -110,5 +112,97 @@ for( i <- 0 to n-1 )
 		if( !(i==j) ) D(i)(j) = 1
 ```
 
+To show an array in Scala, do:
+```{r, eval=FALSE}
+scala> println(D.deep.mkString("\n"))
+Array(0, 1, 1)
+Array(1, 0, 1)
+Array(1, 1, 0)
+```
+
+Before introduing the $P$ matrix of variables as an input, we need to create a new linear 
+programing object:
+
+```{r, eval=FALSE}
+val lp = new breeze.optimize.linear.LinearProgram();
+val P =  Array.fill(n,n)(lp.Real());
+```
+
+Here is our matrix of unknown variables:
+
+```{r, eval=FALSE}
+scala> println(P.deep.mkString("\n"))
+Array(x_0, x_1, x_2)
+Array(x_3, x_4, x_5)
+Array(x_6, x_7, x_8)
+```
+
+The following code defines the objective function as an expression:
+```{r, eval=FALSE}
+val Objective = ( 
+for( i <- 0 to 2 ) 
+  	yield ( 
+			for( (x, a) <- P(i) zip D(i) ) 
+				yield (x * a) 
+			).reduce(_ + _)
+).reduce(_ + _) 
+```
+
+```{r, eval=FALSE}
+scala> println(Objective)
+(x_0) * 0.0 + (x_1) * 1.0 + (x_2) * 1.0 + (x_3) * 1.0 + (x_4) * 0.0 + (x_5) * 1.0 + (x_6) * 1.0 + (x_7) * 1.0 + (x_8) * 0.0
+```
+
+Let us explain the above code. The following command returns the scala product of two vectors 
+`V1` and `V2`:
+```{r, eval=FALSE}
+for( (x, a) <- V1 zip V2 ) yield (x * a) ).reduce(_ + _)
+```
+The our code firstly generates the scalar product (as an expression) of the $i$-th line `P(i)` of $P$ and the 
+$i$-th line `D(i)` of $D$, for every $i=0,1,2$ (indexation starts at $0$ in Scala, not at $1$), 
+and then it generates the sum of these three scalar products. 
+
+Now we define the constrains as an array of expressions. 
+There are $2n$ equality constraints and $n^2$ positivity (inequality) constraints. 
+
+```{r, eval=FALSE}
+var Constraints = new Array[lp.Constraint](2*n+n*n)
+```
+
+The equality constraints 
+
+```{r, eval=FALSE}
+val tP=P.transpose
+```
+
+```{r, eval=FALSE}
+for (i <- 0 to n-1) {
+  Constraints(i) = P(i).reduce[lp.Expression](_ + _)  =:=  Mu(i)  
+  Constraints(i+n) = tP(i).reduce[lp.Expression](_ + _)  =:=  Nu(i)
+}
+```
+
+```{r, eval=FALSE}
+for (i <- 0 to n-1) {
+  var k = 2*n + n*i
+	for (j <- 0 to n-1) Constraints(k+j) = P(i)(j) >=0 
+}
+```
+
+```{r, eval=FALSE}
+val lpp = ( 
+-Objective
+subjectTo( Constraints:_* )
+)
+val result = lp.maximize(lpp)
+```
+
+```{r, eval=FALSE}
+scala> println(-result.value)
+0.1071428571428571
+
+scala> println(3.0/28)
+0.10714285714285714
+```
 
 
