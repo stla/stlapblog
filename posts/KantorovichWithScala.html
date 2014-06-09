@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Using Scala to compute the Kantorovich distance</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Using Scala to compute the Kantorovich distance</a>
+              </h3>
+              <span>2014-06-09</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/KantorovichWithScala.Rmd'>Source</a>
+              <div class='lead'>
+<p>Recall that we previously provided an example of calculation of a Kantorovich distance <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">using R</a> and 
+<a href="http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html">using Julia</a>. 
+Now it&#39;s time to do it with <a href="http://www.scala-lang.org/">Scala</a> and 
+its <a href="https://github.com/scalanlp/breeze">breeze library</a>, 
+a <a href="http://www.scalanlp.org/">ScalaNLP projet</a>. </p>
+
+<p>Our example is a linear programing problem given as follows. 
+The unknown variables  \(p_{ij}\) have a tabular structure 
+\[P=\begin{pmatrix}
+p_{11} & p_{12} & p_{13} \\
+p_{21} & p_{22} & p_{23} \\
+p_{31} & p_{32} & p_{33} 
+\end{pmatrix},\]
+ are constrained by the following 
+linear equality/inequality constraints:
+\[\begin{cases}
+{\rm (1a) } \quad \sum_j p_{ij} = \mu(a_i) & \forall i \\ 
+{\rm (1b) } \quad \sum_i p_{ij} = \nu(a_j) & \forall j \\
+{\rm (2) } \quad  p_{ij} \geq 0 & \forall i,j \\
+\end{cases}\]
+where \(\mu\) and \(\nu\) are two probability vectors, taken to be 
+\[ \mu=\left(\frac{1}{7},\frac{1}{7},\frac{1}{7}\right) 
+\qquad 
+\text{and } \qquad 
+\mu=\left(\frac{1}{4},\frac{1}{4},\frac{1}{2}\right) 
+\]
+in our example, and the desideratum is to minimize the linear combination 
+\[ \sum_{i,j} D_{ij}p_{ij}\] 
+where \(D\) is a distance matrix, taken to be 
+\[ D = \begin{pmatrix}
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 
+\end{pmatrix}\] 
+in our example.</p>
+
+<h2>Breeze expressions</h2>
+
+<p>The linear programming solver provided by <code>Breeze</code> is based on 
+<a href="http://google-opensource.blogspot.be/2009/06/introducing-apache-commons-math.html">Apache&#39;s Simplex Solver</a>. 
+Most linear programming solvers are conceived to take as input the 
+matrix of linear constraints, and this is quite annoying to construct 
+this matrix in our situation: for the linear equality constraints this matrix is 
+\[
+A=\begin{pmatrix} M_1 \\ M_2 \end{pmatrix} 
+\]
+where 
+\[ M_1 = \begin{pmatrix}
+1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 1 & 1 & 1  & 0 & 0 & 0 \\
+ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1  
+\end{pmatrix} \]
+defines the linear equality constraints corresponding to \(\mu\) 
+and 
+\[ M_2 = \begin{pmatrix}
+1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 \\
+ 0 & 1 & 0 & 0 & 1 & 0  & 0 & 1 & 0 \\
+ 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 1  
+\end{pmatrix}. \]
+defines the linear equality constraints corresponding to \(\nu\). 
+See how I defined these matrices 
+<a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">using R</a> and 
+<a href="http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html">using Julia</a> (with the 
+<code>GLPK</code> library), it was a bit tricky or a bit painful.</p>
+
+<p><a href="http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html">As we have seen</a>, the Julia 
+<code>JuMP</code> package provides a very convenient way to <em>write</em>, and maybe more importantly, to <em>read</em>, 
+the linear programing problem, using 
+<em>expressions</em> to define the unknown variables \(p_{ij}\), the objective function and the 
+constraints, which avoids in particular to construct the \(A\) matrix :</p>
+
+<pre><code class="r">using JuMP 
+
+ mu = [1/7, 2/7, 4/7]
+ nu = [1/4, 1/4, 1/2]
+ n = length(mu)
+
+ m = Model()
+ @defVar(m, p[1:n,1:n] &gt;= 0)
+ @setObjective(m, Min, sum{p[i,j], i in 1:n, j in 1:n; i != j})
+
+ for k in 1:n
+ @addConstraint(m, sum(p[k,:]) == mu[k])
+ @addConstraint(m, sum(p[:,k]) == nu[k])
+ end
+ solve(m)
+</code></pre>
+
+<p>Using the Scala <code>breeze</code> library we also set the problem by using expressions. 
+This is not as concise as the Julia JuMP library and this requires 
+a bit of gymnastics with the Scala language, but essentially the spirit is the same: 
+we write the problem, using expressions. 
+Another Java library, <a href="http://www.win-vector.com/blog/2012/11/yet-another-java-linear-programming-library/">WVLPsolver</a>, allows to encode the problem with a syntax closer to the one 
+of <code>JuMP</code>, but I have never tried it yet. 
+Anyway there is no difficuly with <code>breeze</code> once you get a basic knowledge in the 
+Scala language: mainly you only have to use a new type, <code>Expression</code>, a member of the 
+<code>lp</code> object.</p>
+
+<h2>Scala breeze in action</h2>
+
+<p>First, we define the probability measures \(\mu\) and \(\nu\) between which we want the Kantorovich distance to be computed, and the distance matrix \(D\):</p>
+
+<pre><code class="r">var Mu = Array(1.0/7, 2.0/7, 4.0/7)
+var Nu = Array(1.0/4, 1.0/4, 1.0/2)
+val n = Mu.length
+val D =  Array.fill(n,n)(0)
+for( i &lt;- 0 to n-1 ) 
+  for( j &lt;- 0 to n-1 )
+        if( !(i==j) ) D(i)(j) = 1
+</code></pre>
+
+<p>To show an array in Scala, do:</p>
+
+<pre><code class="r">scala&gt; println(D.deep.mkString(&quot;\n&quot;))
+Array(0, 1, 1)
+Array(1, 0, 1)
+Array(1, 1, 0)
+</code></pre>
+
+<p>Before introducing the \(P\) matrix of variables, we need to create a new linear 
+programing object:</p>
+
+<pre><code class="r">val lp = new breeze.optimize.linear.LinearProgram()
+</code></pre>
+
+<p>and then we can define \(P\) as an array of <code>Real</code> variables:</p>
+
+<pre><code class="r">val P =  Array.fill(n,n)(lp.Real())
+</code></pre>
+
+<p>Here is our matrix of unknown variables:</p>
+
+<pre><code class="r">scala&gt; println(P.deep.mkString(&quot;\n&quot;))
+Array(x_0, x_1, x_2)
+Array(x_3, x_4, x_5)
+Array(x_6, x_7, x_8)
+</code></pre>
+
+<p>The following code defines the objective function as an expression:</p>
+
+<pre><code class="r">val Objective = ( 
+for( i &lt;- 0 to 2 ) 
+    yield ( 
+            for( (x, a) &lt;- P(i) zip D(i) ) 
+                yield (x * a) 
+            ).reduce(_ + _)
+).reduce(_ + _) 
+</code></pre>
+
+<pre><code class="r">scala&gt; println(Objective)
+(x_0) * 0.0 + (x_1) * 1.0 + (x_2) * 1.0 + (x_3) * 1.0 + (x_4) * 0.0 + (x_5) * 1.0 + (x_6) * 1.0 + (x_7) * 1.0 + (x_8) * 0.0
+</code></pre>
+
+<p>Let us explain the above code. The following command returns the scalar product of two vectors 
+<code>V1</code> and <code>V2</code>:</p>
+
+<pre><code class="r">for( (x, a) &lt;- V1 zip V2 ) yield (x * a) ).reduce(_ + _)
+</code></pre>
+
+<p>Then our code firstly generates the scalar product (as an expression) of the \(i\)-th line <code>P(i)</code> of \(P\) and the 
+\(i\)-th line <code>D(i)</code> of \(D\), for every \(i=0,1,2\) (indexation starts at \(0\) in Scala, not at \(1\)), 
+and then it generates the sum of these three scalar products, which is the 
+expression for our objective function.</p>
+
+<p>Now we define the constraints in a <code>Constraint</code> array. 
+There are \(2n\) equality constraints and \(n^2\) positivity (inequality) constraints, 
+we will store them in this array:</p>
+
+<pre><code class="r">var Constraints = new Array[lp.Constraint](2*n+n*n)
+</code></pre>
+
+<p>The equality constraints are about the sum of the variables in each row and each column of 
+the \(P\) matrix. We set them as follows:</p>
+
+<pre><code class="r">val tP=P.transpose
+for (i &lt;- 0 to n-1) {
+  Constraints(i) = P(i).reduce[lp.Expression](_ + _)  =:=  Mu(i)  
+  Constraints(i+n) = tP(i).reduce[lp.Expression](_ + _)  =:=  Nu(i)
+}
+</code></pre>
+
+<p>And finally we set the positivity constraints as follows:</p>
+
+<pre><code class="r">for (i &lt;- 0 to n-1) {
+  var k = 2*n + n*i
+  for (j &lt;- 0 to n-1) Constraints(k+j) = P(i)(j) &gt;=0 
+}
+</code></pre>
+
+<p>There&#39;s quite bit of gymnastics in the previous code... I&#39;ll possibly simplify it in a future 
+version. </p>
+
+<p>Since the library only allows to maximize the objective function, whereas we aim to 
+minimize it, we take its opposite in the following  <code>lpp</code> object which fully 
+represents our linear programing problem :</p>
+
+<pre><code class="r">val lpp = ( 
+  -Objective
+  subjectTo( Constraints:_* )
+)
+val result = lp.maximize(lpp)
+</code></pre>
+
+<p>And then we get the Kantorovich distance:</p>
+
+<pre><code class="r">scala&gt; println(-result.value)
+0.1071428571428571
+</code></pre>
+
+<p>which almost achieves the best 64-bit precision approximation of the exact value \(3/28\): </p>
+
+<pre><code class="r">scala&gt; println(3.0/28)
+0.10714285714285714
+</code></pre>
+
+</div>
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

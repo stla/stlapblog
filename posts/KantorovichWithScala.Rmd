@@ -14,7 +14,6 @@ Now it's time to do it with [Scala](http://www.scala-lang.org/) and
 its [breeze library](https://github.com/scalanlp/breeze), 
 a [ScalaNLP projet](http://www.scalanlp.org/). 
 
-sssssssssssssssssssssssssssssssssssssssssssssssolver based on apache...
 
 Our example is a linear programing problem given as follows. 
 The unknown variables  $p_{ij}$ have a tabular structure 
@@ -49,6 +48,8 @@ in our example.
 
 ## Breeze expressions
 
+The linear programming solver provided by `Breeze` is based on 
+[Apache's Simplex Solver](http://google-opensource.blogspot.be/2009/06/introducing-apache-commons-math.html). 
 Most linear programming solvers are conceived to take as input the 
 matrix of linear constraints, and this is quite annoying to construct 
 this matrix in our situation: for the linear equality constraints this matrix is 
@@ -69,8 +70,15 @@ $$ M_2 = \begin{pmatrix}
  0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 1  
 \end{pmatrix}. $$
 defines the linear equality constraints corresponding to $\nu$. 
+See how I defined these matrices 
+[using R](http://stla.github.io/stlapblog/posts/KantorovichWithR.html) and 
+[using Julia](http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html) (with the 
+`GLPK` library), it was a bit tricky or a bit painful.
 
-[As we have seen](http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html), the Julia JuMP package provides a very convenient way to *write* the linear programing problem, using 
+
+[As we have seen](http://stla.github.io/stlapblog/posts/KantorovichWithJulia.html), the Julia 
+`JuMP` package provides a very convenient way to *write*, and maybe more importantly, to *read*, 
+the linear programing problem, using 
 *expressions* to define the unknown variables $p_{ij}$, the objective function and the 
 constraints, which avoids in particular to construct the $A$ matrix :
 
@@ -92,10 +100,15 @@ using JuMP
  solve(m)
 ```
 
-Using the Scala breeze library we also set the problem by using expressions. 
+Using the Scala `breeze` library we also set the problem by using expressions. 
 This is not as concise as the Julia JuMP library and this requires 
 a bit of gymnastics with the Scala language, but essentially the spirit is the same: 
-we write the problem, using expressions.
+we write the problem, using expressions. 
+Another Java library, [WVLPsolver](http://www.win-vector.com/blog/2012/11/yet-another-java-linear-programming-library/), allows to encode the problem with a syntax closer to the one 
+of `JuMP`, but I have never tried it yet. 
+Anyway there is no difficuly with `breeze` once you get a basic knowledge in the 
+Scala language: mainly you only have to use a new type, `Expression`, a member of the 
+`lp` object.
 
 
 ## Scala breeze in action 
@@ -120,12 +133,17 @@ Array(1, 0, 1)
 Array(1, 1, 0)
 ```
 
-Before introduing the $P$ matrix of variables as an input, we need to create a new linear 
+Before introducing the $P$ matrix of variables, we need to create a new linear 
 programing object:
 
 ```{r, eval=FALSE}
-val lp = new breeze.optimize.linear.LinearProgram();
-val P =  Array.fill(n,n)(lp.Real());
+val lp = new breeze.optimize.linear.LinearProgram()
+```
+
+and then we can define $P$ as an array of `Real` variables:
+
+```{r, eval=FALSE}
+val P =  Array.fill(n,n)(lp.Real())
 ```
 
 Here is our matrix of unknown variables:
@@ -153,56 +171,73 @@ scala> println(Objective)
 (x_0) * 0.0 + (x_1) * 1.0 + (x_2) * 1.0 + (x_3) * 1.0 + (x_4) * 0.0 + (x_5) * 1.0 + (x_6) * 1.0 + (x_7) * 1.0 + (x_8) * 0.0
 ```
 
-Let us explain the above code. The following command returns the scala product of two vectors 
+Let us explain the above code. The following command returns the scalar product of two vectors 
 `V1` and `V2`:
 ```{r, eval=FALSE}
 for( (x, a) <- V1 zip V2 ) yield (x * a) ).reduce(_ + _)
 ```
-The our code firstly generates the scalar product (as an expression) of the $i$-th line `P(i)` of $P$ and the 
-$i$-th line `D(i)` of $D$, for every $i=0,1,2$ (indexation starts at $0$ in Scala, not at $1$), 
-and then it generates the sum of these three scalar products. 
 
-Now we define the constrains as an array of expressions. 
-There are $2n$ equality constraints and $n^2$ positivity (inequality) constraints. 
+Then our code firstly generates the scalar product (as an expression) of the $i$-th line `P(i)` of $P$ and the 
+$i$-th line `D(i)` of $D$, for every $i=0,1,2$ (indexation starts at $0$ in Scala, not at $1$), 
+and then it generates the sum of these three scalar products, which is the 
+expression for our objective function.
+
+Now we define the constraints in a `Constraint` array. 
+There are $2n$ equality constraints and $n^2$ positivity (inequality) constraints, 
+we will store them in this array:
 
 ```{r, eval=FALSE}
 var Constraints = new Array[lp.Constraint](2*n+n*n)
 ```
 
-The equality constraints 
+The equality constraints are about the sum of the variables in each row and each column of 
+the $P$ matrix. We set them as follows:
 
 ```{r, eval=FALSE}
 val tP=P.transpose
-```
-
-```{r, eval=FALSE}
 for (i <- 0 to n-1) {
   Constraints(i) = P(i).reduce[lp.Expression](_ + _)  =:=  Mu(i)  
   Constraints(i+n) = tP(i).reduce[lp.Expression](_ + _)  =:=  Nu(i)
 }
 ```
 
+And finally we set the positivity constraints as follows:
+
 ```{r, eval=FALSE}
 for (i <- 0 to n-1) {
   var k = 2*n + n*i
-	for (j <- 0 to n-1) Constraints(k+j) = P(i)(j) >=0 
+  for (j <- 0 to n-1) Constraints(k+j) = P(i)(j) >=0 
 }
 ```
 
+There's quite bit of gymnastics in the previous code... I'll possibly simplify it in a future 
+version. 
+
+Since the library only allows to maximize the objective function, whereas we aim to 
+minimize it, we take its opposite in the following  `lpp` object which fully 
+represents our linear programing problem :
+
 ```{r, eval=FALSE}
 val lpp = ( 
--Objective
-subjectTo( Constraints:_* )
+  -Objective
+  subjectTo( Constraints:_* )
 )
 val result = lp.maximize(lpp)
 ```
 
+And then we get the Kantorovich distance:
+
 ```{r, eval=FALSE}
 scala> println(-result.value)
 0.1071428571428571
+```
 
+which almost achieves the best 64-bit precision approximation of the exact value $3/28$: 
+
+```{r, eval=FALSE}
 scala> println(3.0/28)
 0.10714285714285714
 ```
+
 
 
