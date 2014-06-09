@@ -211,7 +211,7 @@ for (i <- 0 to n-1) {
 ```
 
 There's quite bit of gymnastics in the previous code... I'll possibly simplify it in a future 
-version. 
+version, as I'm at my first steps with Scala `breeze`.
 
 Since the library only allows to maximize the objective function, whereas we aim to 
 minimize it, we take its opposite in the following  `lpp` object which fully 
