@@ -336,9 +336,9 @@ Here we are interested in the difference between \(OOS_1\) and \(OOS_2\), the pr
 
 <p><img src="assets/fig/Eep-unnamed-chunk-9-1.png" alt="plot of chunk unnamed-chunk-9"> </p>
 
-<p>The maximal value of the \(OOS\) deviation \(\Delta\) is called the <em>Kolmogorov distance</em> between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for \(USL=\dfrac{\mu_1+\mu_2}{2}\) (see the derivation in the Appendix), and shown by the orange line on the figure. </p>
+<p>The maximal value of the \(OOS\) deviation \(\Delta\) is called the <em>Kolmogorov distance</em> between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for \(USL=\dfrac{\mu_1+\mu_2}{2\sigma}\) (see the derivation in the Appendix), and shown by the orange line on the figure. </p>
 
-<p>Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between \(OOS_1\) and  \(OOS_2\) over all possible values of \(USL\). But this is not relevant because in practice it would be strange to set  \(USL=\dfrac{\mu_1+\mu_2}{2}\). </p>
+<p>Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between \(OOS_1\) and  \(OOS_2\) over all possible values of \(USL\). But this is not relevant because in practice it would be strange to set  \(USL=\dfrac{\mu_1+\mu_2}{2\sigma}\). </p>
 
 <p>Now we calculate and plot the estimate of \(\Delta\) and its credibility interval in function of \(USL\). </p>
 
