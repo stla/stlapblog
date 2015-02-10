@@ -152,7 +152,7 @@ specification interval. </p>
 
 <pre><code class="r">&gt; system.time(sims &lt;- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.613   0.017   0.632 
+  0.376   0.019   0.392 
 &gt; head(sims,3)
 </code></pre>
 
@@ -278,7 +278,8 @@ Here we are interested in the difference between \(OOS_1\) and \(OOS_2\), the pr
 
 <pre><code class="r">&gt; library(dplyr) 
 &gt; USL &lt;- 4
-&gt; sims1 &lt;- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)kable(sims1 %&gt;% reshape2::melt() %&gt;% group_by(variable) %&gt;% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption=&quot;Jeffreys estimates and $95\\%$-credibility intervals&quot;)
+&gt; sims1 &lt;- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)
+&gt; kable(sims1 %&gt;% reshape2::melt() %&gt;% group_by(variable) %&gt;% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption=&quot;Jeffreys estimates and $95\\%$-credibility intervals&quot;)
 </code></pre>
 
 <table><thead>

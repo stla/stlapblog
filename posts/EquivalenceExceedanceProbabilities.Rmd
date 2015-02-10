@@ -19,7 +19,7 @@ An acceptable deviation $\Delta$ between $\mu_1$ and $\mu_2$ has to be set by th
 there is a statistical significant evidence that the deviation between $\mu_1$ and $\mu_2$ 
 does not exceed $\Delta$. 
 
-```{r plot0, fig.width=3.5, fig.height=3.5, echo=FALSE}
+```{r plot0, fig.width=3, fig.height=3, echo=FALSE}
 par(mar=c(3,1,1,1))
 mu1 <- 1
 sigma1 <- 2
@@ -147,7 +147,7 @@ y <- c(sapply(mu, function(mu) rnorm(J, mu, sigma))) # response
 
 The theoretical model is given by this picture:
 
-```{r plot3, fig.width=3.5, fig.height=3.5, echo=FALSE}
+```{r plot3, fig.width=3, fig.height=3, echo=FALSE}
 par(mar=c(3,1,1,1))
 mu1 <- mu[1]
 mu2 <- mu[2]
@@ -272,7 +272,7 @@ Thus, we could derive a credibility interval around the Kolmogorov distance, tha
 Now we calculate and plot the estimate of $\Delta$ and its credibility interval in function of $USL$. 
 
 
-```{r, message=FALSE, error=TRUE, cache=TRUE}
+```{r, message=FALSE, error=TRUE, cache=FALSE}
 library(tidyr) # to use spread()
 sims <- reshape2::melt(data.frame(id=1:nrow(sims), sims), id.vars=c("id", "sigma"), value.name="µ", variable.name="group")
 levels(sims$group) <- c("group1", "group2")
@@ -331,7 +331,7 @@ therefore  $(az_2+b) - z_2 < 0$.
 Finally, in the case when $0 < a < 1$ and $b \geq 0$, one has 
 $z_1 < 0 \leq M \leq \frac{b}{1-a} < z_2$ and we will now consider the two situations shown by these figures:
 
-```{r kplot1, echo=FALSE, fig.height=5, fig.width=5}
+```{r kplot1, echo=FALSE, fig.height=3, fig.width=3}
 par(mar=c(1,1,1,1))
 a <- 0.4
 b <- 1
@@ -350,7 +350,7 @@ abline(h=0); abline(v=0)
 axis(1, lwd=0, lwd.ticks=1, at=c(z1, 0, M, b/(1-a), z2), labels=c("z1", "0", "M", "b/(1-a)" ,"z2"), pos=0, padj=-1)
 legend("topleft", "Case 1")
 ```
-```{r kplot2, echo=FALSE, fig.height=5, fig.width=5}
+```{r kplot2, echo=FALSE, fig.height=3, fig.width=3}
 par(mar=c(1,1,1,1))
 a <- 0.75
 b <- 0.13
@@ -379,7 +379,7 @@ By doing similar considerations, the  case $a > 1$ and $b \geq 0$ is summarized 
 figures below, and we show by the same approach that  the supremum of $\bigl|\Psi_{a,b}\bigr|$ is attained at $z_1$. 
 
 
-```{r kplot_ag1, echo=FALSE, fig.height=5, fig.width=5}
+```{r kplot_ag1, echo=FALSE, fig.height=3, fig.width=3}
 par(mar=c(2,1,1,1))
 a <- 2.2
 b <- 1
@@ -398,7 +398,7 @@ abline(h=0); abline(v=0)
 axis(1, lwd=0, lwd.ticks=1, at=c(z1, 0, M, b/(1-a), z2), labels=c("z1", "0", "M", "b/(1-a)" ,"z2"), pos=0, padj=-1)
 legend("bottomright", "Case 1")
 ```
-```{r kplot_ag2, echo=FALSE, fig.height=5, fig.width=5}
+```{r kplot_ag2, echo=FALSE, fig.height=3, fig.width=3}
 par(mar=c(2,1,1,1))
 a <- 2.2
 b <- 2

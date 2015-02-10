@@ -89,7 +89,7 @@ The `banova` function takes a short time to generate $10^6$ samples of the poste
 ```r
 > system.time(sims <- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.613   0.017   0.632 
+  0.376   0.019   0.392 
 > head(sims,3)
 ```
 
@@ -178,7 +178,8 @@ Here we are interested in the difference between $OOS_1$ and $OOS_2$, the probab
 ```r
 > library(dplyr) 
 > USL <- 4
-> sims1 <- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)kable(sims1 %>% reshape2::melt() %>% group_by(variable) %>% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption="Jeffreys estimates and $95\\%$-credibility intervals")
+> sims1 <- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)
+> kable(sims1 %>% reshape2::melt() %>% group_by(variable) %>% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption="Jeffreys estimates and $95\\%$-credibility intervals")
 ```
 
 
