@@ -18,11 +18,10 @@ Poirot is still under development and can be installed from github using [devtoo
 
 ```r
 require(devtools)
-install_github("poirot", "ramnathv")
-install_github("slidify", "ramnathv", ref = "dev")
-install_github("slidifyLibraries", "ramnathv")
+install_github('poirot', 'ramnathv')
+install_github('slidify', 'ramnathv', ref = 'dev')
+install_github('slidifyLibraries', 'ramnathv')
 ```
-
 
 
 Poirot uses **markdown** for text content, **knitr** for code chunks and **mustache** for templating. Poirot is highly extensible using widgets. As a publishing framework for data scientists, Poirot comes pre-equipped with support for math, visualization and tables.

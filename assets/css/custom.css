@@ -101,3 +101,12 @@ code {
 #content #post-wrapper {
 margin-left: 300px;
 }
+
+/* table */
+td, th {
+  border: 1px solid #999;
+  padding: 0.5rem;
+}
+table {
+  margin-bottom: 19px;
+}
