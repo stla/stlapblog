@@ -89,7 +89,7 @@ The `banova` function takes a short time to generate $10^6$ samples of the poste
 ```r
 > system.time(sims <- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.334   0.031   0.364 
+  0.613   0.017   0.632 
 > head(sims,3)
 ```
 
@@ -178,8 +178,7 @@ Here we are interested in the difference between $OOS_1$ and $OOS_2$, the probab
 ```r
 > library(dplyr) 
 > USL <- 4
-> sims1 <- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)
-> kable(sims1 %>% reshape2::melt() %>% group_by(variable) %>% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption="Jeffreys estimates and $95\\%$-credibility intervals")
+> sims1 <- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)kable(sims1 %>% reshape2::melt() %>% group_by(variable) %>% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption="Jeffreys estimates and $95\\%$-credibility intervals")
 ```
 
 
@@ -205,6 +204,8 @@ It is interesting to look at the $OOS$ deviation in function of $USL$. For our e
 The maximal value of the $OOS$ deviation $\Delta$ is called the *Kolmogorov distance* between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for $USL=\dfrac{\mu_1+\mu_2}{2}$ (see the derivation in the Appendix), and shown by the orange line on the figure. 
 
 Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between $OOS_1$ and  $OOS_2$ over all possible values of $USL$. But this is not relevant because in practice it would be strange to set  $USL=\dfrac{\mu_1+\mu_2}{2}$. 
+
+Now we calculate and plot the estimate of $\Delta$ and its credibility interval in function of $USL$. 
 
 
 
@@ -241,8 +242,6 @@ Thus, we could derive a credibility interval around the Kolmogorov distance, tha
 
 
 
-
-
 ```r
 > library(ggplot2)
 > ggplot(sims, aes(x=USL)) + geom_line(aes(y=estimate)) +
@@ -251,8 +250,9 @@ Thus, we could derive a credibility interval around the Kolmogorov distance, tha
 +   stat_function(fun=function(USL) 100*(pnorm(USL, mu[1], sigma)-pnorm(USL, mu[2], sigma)), color="red")
 ```
 
-![plot of chunk unnamed-chunk-12](assets/fig/Eep-unnamed-chunk-12-1.png) 
+![plot of chunk unnamed-chunk-11](assets/fig/Eep-unnamed-chunk-11-1.png) 
 
+The theoretical deviation is shown by the red curve, the estimated deviation is shown by the black curve. We still note how large are the credibility intervals, especially around the maximual value of the deviation.
 
 ## Appendix: Kolmogorov distance between two Gaussian distributions
 

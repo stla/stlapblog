@@ -152,9 +152,6 @@ par(mar=c(3,1,1,1))
 mu1 <- mu[1]
 mu2 <- mu[2]
 sigma1 <- sigma2 <- sigma
-#Kdist(mu1,sigma1,mu2,sigma2)
-#1-pnorm(qnorm(95/100,mu1,sigma1), mu2, sigma2)
-#abline(v=qnorm(95/100,mu1,sigma1))
 xlim <- c(min(c(mu1,mu2)-3*c(sigma1,sigma2)), max(c(mu1,mu2)+3*c(sigma1,sigma2)))
 ylim <- c(0, max(dnorm(c(mu1,mu2),c(mu1,mu2),c(sigma1,sigma2))))
 curve(dnorm(x,mu1,sigma1), 
@@ -272,6 +269,8 @@ The maximal value of the $OOS$ deviation $\Delta$ is called the *Kolmogorov dist
 
 Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between $OOS_1$ and  $OOS_2$ over all possible values of $USL$. But this is not relevant because in practice it would be strange to set  $USL=\dfrac{\mu_1+\mu_2}{2}$. 
 
+Now we calculate and plot the estimate of $\Delta$ and its credibility interval in function of $USL$. 
+
 
 ```{r, message=FALSE, error=TRUE, cache=TRUE}
 library(tidyr) # to use spread()
@@ -286,13 +285,7 @@ head(sims,3)
 ```
 
 
-```{r, eval=FALSE, include=FALSE}
-sims <- mutate(sims, Delta0=100*(pnorm(USL, mu[1], sigma)-pnorm(USL, mu[2], sigma)))
-head(sims)
-# plutôt l'ajouter au plot avec stat_function
-```
-
-```{r, fig.width=7, fig.height=5}
+```{r, fig.width=8, fig.height=6}
 library(ggplot2)
 ggplot(sims, aes(x=USL)) + geom_line(aes(y=estimate)) +
   geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.1) +
@@ -300,6 +293,7 @@ ggplot(sims, aes(x=USL)) + geom_line(aes(y=estimate)) +
   stat_function(fun=function(USL) 100*(pnorm(USL, mu[1], sigma)-pnorm(USL, mu[2], sigma)), color="red")
 ```
 
+The theoretical deviation is shown by the red curve, the estimated deviation is shown by the black curve. We still note how large are the credibility intervals, especially around the maximual value of the deviation.
 
 ## Appendix: Kolmogorov distance between two Gaussian distributions
 

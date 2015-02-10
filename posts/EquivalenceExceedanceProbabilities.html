@@ -152,7 +152,7 @@ specification interval. </p>
 
 <pre><code class="r">&gt; system.time(sims &lt;- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.334   0.031   0.364 
+  0.613   0.017   0.632 
 &gt; head(sims,3)
 </code></pre>
 
@@ -278,8 +278,7 @@ Here we are interested in the difference between \(OOS_1\) and \(OOS_2\), the pr
 
 <pre><code class="r">&gt; library(dplyr) 
 &gt; USL &lt;- 4
-&gt; sims1 &lt;- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)
-&gt; kable(sims1 %&gt;% reshape2::melt() %&gt;% group_by(variable) %&gt;% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption=&quot;Jeffreys estimates and $95\\%$-credibility intervals&quot;)
+&gt; sims1 &lt;- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)kable(sims1 %&gt;% reshape2::melt() %&gt;% group_by(variable) %&gt;% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption=&quot;Jeffreys estimates and $95\\%$-credibility intervals&quot;)
 </code></pre>
 
 <table><thead>
@@ -339,6 +338,8 @@ Here we are interested in the difference between \(OOS_1\) and \(OOS_2\), the pr
 <p>The maximal value of the \(OOS\) deviation \(\Delta\) is called the <em>Kolmogorov distance</em> between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for \(USL=\dfrac{\mu_1+\mu_2}{2}\) (see the derivation in the Appendix), and shown by the orange line on the figure. </p>
 
 <p>Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between \(OOS_1\) and  \(OOS_2\) over all possible values of \(USL\). But this is not relevant because in practice it would be strange to set  \(USL=\dfrac{\mu_1+\mu_2}{2}\). </p>
+
+<p>Now we calculate and plot the estimate of \(\Delta\) and its credibility interval in function of \(USL\). </p>
 
 <pre><code class="r">&gt; library(tidyr) # to use spread()
 &gt; sims &lt;- reshape2::melt(data.frame(id=1:nrow(sims), sims), id.vars=c(&quot;id&quot;, &quot;sigma&quot;), value.name=&quot;µ&quot;, variable.name=&quot;group&quot;)
@@ -416,7 +417,9 @@ Here we are interested in the difference between \(OOS_1\) and \(OOS_2\), the pr
 +   stat_function(fun=function(USL) 100*(pnorm(USL, mu[1], sigma)-pnorm(USL, mu[2], sigma)), color=&quot;red&quot;)
 </code></pre>
 
-<p><img src="assets/fig/Eep-unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12"> </p>
+<p><img src="assets/fig/Eep-unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11"> </p>
+
+<p>The theoretical deviation is shown by the red curve, the estimated deviation is shown by the black curve. We still note how large are the credibility intervals, especially around the maximual value of the deviation.</p>
 
 <h2>Appendix: Kolmogorov distance between two Gaussian distributions</h2>
 
