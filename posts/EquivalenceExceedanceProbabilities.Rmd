@@ -19,7 +19,7 @@ An acceptable deviation $\Delta$ between $\mu_1$ and $\mu_2$ has to be set by th
 there is a statistical significant evidence that the deviation between $\mu_1$ and $\mu_2$ 
 does not exceed $\Delta$. 
 
-```{r plot0, fig.width=3, fig.height=3, echo=FALSE}
+```{r plot0, fig.width=3.1, fig.height=3.1, echo=FALSE}
 par(mar=c(3,1,1,1))
 mu1 <- 1
 sigma1 <- 2
@@ -55,7 +55,7 @@ For instance, an upper specification limit ($USL$) is given and the relevant cha
 of the process is the out-of-specification probability ($OOS$), that is, the probability 
 that the process generates some data beyond $USL$. 
 
-```{r plot1, fig.width=6, fig.height=3, echo=FALSE}
+```{r plot1, fig.width=6.1, fig.height=3.1, echo=FALSE}
 layout(t(c(1,2)))
 par(mar=c(3,1,1,1))
 mu1 <- 1
@@ -111,7 +111,7 @@ probabilities. We give a Bayesian method in the case of independant samples with
 to the case of paired samples. 
 Our methods are easily modified 
 to handle the case of a lower specification limit as well as the case  of a 
-specification interval. 
+specification two-sided interval. 
 
 
 
@@ -147,7 +147,7 @@ y <- c(sapply(mu, function(mu) rnorm(J, mu, sigma))) # response
 
 The theoretical model is given by this picture:
 
-```{r plot3, fig.width=3, fig.height=3, echo=FALSE}
+```{r plot3, fig.width=3.1, fig.height=3.1, echo=FALSE}
 par(mar=c(3,1,1,1))
 mu1 <- mu[1]
 mu2 <- mu[2]
@@ -229,12 +229,15 @@ kable(sims1 %>% reshape2::melt() %>% group_by(variable) %>% summarise(estimate=m
 
 Note that the intervals around $OOS_1$, $OOS_2$ and $\Delta$ are quite large. That shows that the estimates are far to be precise. 
 
+**(R point) The pipe operator `%>%`.** As you see, I used the `%>%` operator in the previous code block. This operator is provided by the `magrittr` package, which is automatically loaded here by loading the `dplyr` package. 
+In case you don't know this operator, I will explain a shorter example in the next section. Here we use it in order to avoid to nest too many functions : `summarise(group_by(reshape2::melt(sims1, ...`. 
+
 
 ## Looking at the deviation in function of $USL$
 
 It is interesting to look at the $OOS$ deviation in function of $USL$. For our example, here is the theoretical picture:
 
-```{r, echo=FALSE, fig.width=6, fig.height=5}
+```{r dev_vs_usl, echo=FALSE, fig.width=6, fig.height=5}
 par(mar=c(5,5,2,5))
 mu1 <- mu[1]
 mu2 <- mu[2]
@@ -267,7 +270,35 @@ legend("topright",legend=c(expression(OOS[1]),expression(OOS[2]),expression(Delt
 
 The maximal value of the $OOS$ deviation $\Delta$ is called the *Kolmogorov distance* between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for $USL=\dfrac{\mu_1+\mu_2}{2\sigma}$ (see the derivation in the Appendix), and shown by the orange line on the figure. 
 
-Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between $OOS_1$ and  $OOS_2$ over all possible values of $USL$. But this is not relevant because in practice it would be strange to set  $USL=\dfrac{\mu_1+\mu_2}{2\sigma}$. 
+Thus, we could derive an estimate and a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between $OOS_1$ and  $OOS_2$ over all possible values of $USL$:
+```{r}
+Kdist <- function(µ1, µ2, sigma) ((µ1+µ2)/2/sigma) %>% {pnorm(., µ1, sigma) - pnorm(., µ2, sigma)} %>% abs
+Kdist_sims <- with(sims, 100*Kdist(µ1, µ2, sigma)) 
+mean(Kdist_sims); quantile(Kdist_sims, probs = c(2.5,97.5)/100)
+```
+
+But this is not really releveant in the context of $OOS$. It is clear on our example where $\sigma=1$ that we are not interested in the deviation $\Delta$ for a value of $USL$ such as  
+ $USL=\dfrac{\mu_1+\mu_2}{2\sigma}$. In practice the value of $USL$ is usually located in the upper tails of the two Gaussian distributions. 
+
+**(R point) The pipe operator `%>%`.** As promised, I detail an example of the use of the `%>%` operator.  Without this operator, I would have defined the `Kdist` function as follows:
+
+```{r, eval=FALSE}
+Kdist <- function(µ1, µ2, sigma) abs(pnorm((µ1+µ2)/2/sigma, µ1, sigma) - pnorm((µ1+µ2)/2/sigma, µ2, sigma))
+```
+or, in order to avoid the double calculation of `(µ1+µ2)/2/sigma`:
+```{r, eval=FALSE}
+Kdist <- function(µ1, µ2, sigma){
+  x <- (µ1+µ2)/2/sigma
+  abs(pnorm(x, µ1, sigma) - pnorm(x, µ2, sigma))
+}
+```
+Here, the pipe operator `%>%` firstly allows up to map `(µ1+µ2)/2/sigma` conveniently:
+```{r, eval=FALSE}
+((µ1+µ2)/2/sigma) %>% {pnorm(., µ1, sigma) - pnorm(., µ2, sigma)}
+```
+Then the result is mapped to the `abs` function by adding `%>% abs` (equivalently `%>% abs(.)`), instead of encapsulating the result by doing `abs(...)`. 
+
+
 
 Now we calculate and plot the estimate of $\Delta$ and its credibility interval in function of $USL$. 
 
@@ -278,14 +309,14 @@ sims <- reshape2::melt(data.frame(id=1:nrow(sims), sims), id.vars=c("id", "sigma
 levels(sims$group) <- c("group1", "group2")
 head(sims, 3)
 usl <- seq(0,5, by=0.25)
-sims <- data.frame(sims[,c("id","group")], setNames(lapply(usl, function(USL) 100*(1-pnorm(USL, sims$µ, sims$sigma))), paste0("OOS_", usl)))
-sims <- cbind(USL=usl, reshape2::melt(sims, id.vars=c("group","id")) %>% spread(group, value) %>% 
-  mutate(Delta=group2-group1) %>% group_by(variable) %>% summarise(estimate=mean(Delta), lwr=quantile(Delta, 2.5/100), upr=quantile(Delta, 97.5/100)))[,-2]
+sims <- data.frame(sims[,c("id","group")], setNames(lapply(usl, function(USL) 100*(1-pnorm(USL, sims$µ, sims$sigma))), paste0("OOS_", usl))) %>% 
+  cbind(USL=usl, reshape2::melt(., id.vars=c("group","id")) %>% spread(group, value) %>% 
+          mutate(Delta=group2-group1) %>% group_by(variable) %>% summarise(estimate=mean(Delta), lwr=quantile(Delta, 2.5/100), upr=quantile(Delta, 97.5/100)))[,-2]
 head(sims,3)
 ```
 
 
-```{r, fig.width=8, fig.height=6}
+```{r interval_dev_vs_usl, fig.width=8, fig.height=6}
 library(ggplot2)
 ggplot(sims, aes(x=USL)) + geom_line(aes(y=estimate)) +
   geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.1) +

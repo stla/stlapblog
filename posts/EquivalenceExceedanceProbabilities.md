@@ -42,7 +42,7 @@ probabilities. We give a Bayesian method in the case of independant samples with
 to the case of paired samples. 
 Our methods are easily modified 
 to handle the case of a lower specification limit as well as the case  of a 
-specification interval. 
+specification two-sided interval. 
 
 
 
@@ -89,7 +89,7 @@ The `banova` function takes a short time to generate $10^6$ samples of the poste
 ```r
 > system.time(sims <- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.376   0.019   0.392 
+  0.579   0.037   0.618 
 > head(sims,3)
 ```
 
@@ -178,7 +178,7 @@ Here we are interested in the difference between $OOS_1$ and $OOS_2$, the probab
 ```r
 > library(dplyr) 
 > USL <- 4
-> sims1 <- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)
+> sims1 <- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1),
 > kable(sims1 %>% reshape2::melt() %>% group_by(variable) %>% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption="Jeffreys estimates and $95\\%$-credibility intervals")
 ```
 
@@ -195,16 +195,54 @@ Here we are interested in the difference between $OOS_1$ and $OOS_2$, the probab
 
 Note that the intervals around $OOS_1$, $OOS_2$ and $\Delta$ are quite large. That shows that the estimates are far to be precise. 
 
+**(R point) The pipe operator `%>%`.** As you see, I used the `%>%` operator in the previous code block. This operator is provided by the `magrittr` package, which is automatically loaded here by loading the `dplyr` package. 
+In case you don't know this operator, I will explain a shorter example in the next section. Here we use it in order to avoid to nest too many functions : `summarise(group_by(reshape2::melt(sims1, ...`. 
+
 
 ## Looking at the deviation in function of $USL$
 
 It is interesting to look at the $OOS$ deviation in function of $USL$. For our example, here is the theoretical picture:
 
-![plot of chunk unnamed-chunk-9](assets/fig/Eep-unnamed-chunk-9-1.png) 
+![plot of chunk dev_vs_usl](assets/fig/Eep-dev_vs_usl-1.png) 
 
-The maximal value of the $OOS$ deviation $\Delta$ is called the *Kolmogorov distance* between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for $USL=\dfrac{\mu_1+\mu_2}{2}$ (see the derivation in the Appendix), and shown by the orange line on the figure. 
+The maximal value of the $OOS$ deviation $\Delta$ is called the *Kolmogorov distance* between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for $USL=\dfrac{\mu_1+\mu_2}{2\sigma}$ (see the derivation in the Appendix), and shown by the orange line on the figure. 
 
-Thus, we could derive a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between $OOS_1$ and  $OOS_2$ over all possible values of $USL$. But this is not relevant because in practice it would be strange to set  $USL=\dfrac{\mu_1+\mu_2}{2}$. 
+Thus, we could derive an estimate and a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between $OOS_1$ and  $OOS_2$ over all possible values of $USL$:
+
+```r
+> Kdist <- function(µ1, µ2, sigma) ((µ1+µ2)/2/sigma) %>% {pnorm(., µ1, sigma) - pnorm(., µ2, sigma)} %>% abs
+> Kdist_sims <- with(sims, 100*Kdist(µ1, µ2, sigma))
+> mean(Kdist_sims); quantile(Kdist_sims, probs = c(2.5,97.5)/100)
+[1] 11.54142
+      2.5%      97.5% 
+ 0.4700835 31.1350492 
+```
+
+But this is not really releveant in the context of $OOS$. It is clear on our example where $\sigma=1$ that we are not interested in the deviation $\Delta$ for a value of $USL$ such as  
+ $USL=\dfrac{\mu_1+\mu_2}{2\sigma}$. In practice the value of $USL$ is usually located in the upper tails of the two Gaussian distributions. 
+
+**(R point) The pipe operator `%>%`.** As promised, I detail an example of the use of the `%>%` operator.  Without this operator, I would have defined the `Kdist` function as follows:
+
+
+```r
+> Kdist <- function(µ1, µ2, sigma) abs(pnorm((µ1+µ2)/2/sigma, µ1, sigma) - pnorm((µ1+µ2)/2/sigma, µ2, sigma))
+```
+or, in order to avoid the double calculation of `(µ1+µ2)/2/sigma`:
+
+```r
+> Kdist <- function(µ1, µ2, sigma){
++   x <- (µ1+µ2)/2/sigma
++   abs(pnorm(x, µ1, sigma) - pnorm(x, µ2, sigma))
++ }
+```
+Here, the pipe operator `%>%` firstly allows up to map `(µ1+µ2)/2/sigma` conveniently:
+
+```r
+> ((µ1+µ2)/2/sigma) %>% {pnorm(., µ1, sigma) - pnorm(., µ2, sigma)}
+```
+Then the result is mapped to the `abs` function by adding `%>% abs` (equivalently `%>% abs(.)`), instead of encapsulating the result `abs(...)`. 
+
+
 
 Now we calculate and plot the estimate of $\Delta$ and its credibility interval in function of $USL$. 
 
@@ -227,19 +265,20 @@ Now we calculate and plot the estimate of $\Delta$ and its credibility interval 
 
 ```r
 > usl <- seq(0,5, by=0.25)
-> sims <- data.frame(sims[,c("id","group")], setNames(lapply(usl, function(USL) 100*(1-pnorm(USL, sims$µ, sims$sigma))), paste0("OOS_", usl)))
-> sims <- cbind(USL=usl, reshape2::melt(sims, id.vars=c("group","id")) %>% spread(group, value) %>% 
-+   mutate(Delta=group2-group1) %>% group_by(variable) %>% summarise(estimate=mean(Delta), lwr=quantile(Delta, 2.5/100), upr=quantile(Delta, 97.5/100)))[,-2]
+> sims <- data.frame(sims[,c("id","group")], setNames(lapply(usl, function(USL) 100*(1-pnorm(USL, sims$µ, sims$sigma))), paste0("OOS_", usl))) %>% 
++   cbind(USL=usl, reshape2::melt(., id.vars=c("group","id")) %>% spread(group, value) %>% 
++           mutate(Delta=group2-group1) %>% group_by(variable) %>% summarise(estimate=mean(Delta), lwr=quantile(Delta, 2.5/100), upr=quantile(Delta, 97.5/100)))[,-2]
+Error in xj[i]: type 'list' d'indice incorrect
 > head(sims,3)
 ```
 
 
 
-|  USL| estimate|       lwr|       upr|
-|----:|--------:|---------:|---------:|
-| 0.00| 1.741791| -3.967600|  8.705849|
-| 0.25| 2.421491| -5.345896| 11.412120|
-| 0.50| 3.244611| -6.983556| 14.542463|
+| id|    sigma|group  |        µ|
+|--:|--------:|:------|--------:|
+|  1| 1.099777|group1 | 1.905582|
+|  2| 1.259851|group1 | 1.836148|
+|  3| 1.103276|group1 | 1.773983|
 
 
 
@@ -249,9 +288,8 @@ Now we calculate and plot the estimate of $\Delta$ and its credibility interval 
 +   geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.1) +
 +   ylab(expression(Delta)) + 
 +   stat_function(fun=function(USL) 100*(pnorm(USL, mu[1], sigma)-pnorm(USL, mu[2], sigma)), color="red")
+Error in eval(expr, envir, enclos): objet 'estimate' introuvable
 ```
-
-![plot of chunk unnamed-chunk-11](assets/fig/Eep-unnamed-chunk-11-1.png) 
 
 The theoretical deviation is shown by the red curve, the estimated deviation is shown by the black curve. We still note how large are the credibility intervals, especially around the maximual value of the deviation.
 
