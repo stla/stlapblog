@@ -88,7 +88,7 @@ An acceptable deviation \(\Delta\) between \(\mu_1\) and \(\mu_2\) has to be set
 there is a statistical significant evidence that the deviation between \(\mu_1\) and \(\mu_2\) 
 does not exceed \(\Delta\). </p>
 
-<p><img src="assets/fig/Eep-plot0-1.png" alt="plot of chunk plot0"> </p>
+<p><img width="40%" src="assets/fig/Eep-plot0-1.png" alt="plot of chunk plot0"> </p>
 
 <p>In some cases issued from fields of research such as psychology or agronomy, setting 
 the acceptable deviation \(\Delta\) should cause no problem for the expert: 
@@ -102,7 +102,7 @@ For instance, an upper specification limit (\(USL\)) is given and the relevant c
 of the process is the out-of-specification probability (\(OOS\)), that is, the probability 
 that the process generates some data beyond \(USL\). </p>
 
-<p><img src="assets/fig/Eep-plot1-1.png" alt="plot of chunk plot1"> </p>
+<p><img width="65%" src="assets/fig/Eep-plot1-1.png" alt="plot of chunk plot1"> </p>
 
 <p>Some guidelines recommend to set the acceptable deviation \(\Delta\) between the means by 
 thinking in terms of specification limits. This requires to take into account the 
@@ -146,13 +146,13 @@ specification two-sided interval. </p>
 
 <p>The theoretical model is given by this picture:</p>
 
-<p><img src="assets/fig/Eep-plot3-1.png" alt="plot of chunk plot3"> </p>
+<p><img width="40%" src="assets/fig/Eep-plot3-1.png" alt="plot of chunk plot3"> </p>
 
 <p>The <code>banova</code> function takes a short time to generate \(10^6\) samples of the posterior distribution:</p>
 
 <pre><code class="r">&gt; system.time(sims &lt;- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.579   0.037   0.618 
+  0.602   0.025   0.626 
 &gt; head(sims,3)
 </code></pre>
 
@@ -278,7 +278,7 @@ Here we are interested in the difference between \(OOS_1\) and \(OOS_2\), the pr
 
 <pre><code class="r">&gt; library(dplyr) 
 &gt; USL &lt;- 4
-&gt; sims1 &lt;- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1),
+&gt; sims1 &lt;- mutate(sims, OOS1 = 100*(1-pnorm(USL, µ1, sigma)), OOS2 = 100*(1-pnorm(USL, µ2, sigma)), Delta=OOS2-OOS1)
 &gt; kable(sims1 %&gt;% reshape2::melt() %&gt;% group_by(variable) %&gt;% summarise(estimate=mean(value), lwr=quantile(value, 2.5/100), upr=quantile(value, 97.5/100)), digits=2, caption=&quot;Jeffreys estimates and $95\\%$-credibility intervals&quot;)
 </code></pre>
 
@@ -337,22 +337,20 @@ In case you don&#39;t know this operator, I will explain a shorter example in th
 
 <p>It is interesting to look at the \(OOS\) deviation in function of \(USL\). For our example, here is the theoretical picture:</p>
 
-<p><img src="assets/fig/Eep-dev_vs_usl-1.png" alt="plot of chunk dev_vs_usl"> </p>
+<p><img width="72%" src="assets/fig/Eep-dev_vs_usl-1.png" alt="plot of chunk dev_vs_usl"> </p>
 
 <p>The maximal value of the \(OOS\) deviation \(\Delta\) is called the <em>Kolmogorov distance</em> between the two distributions. In our case of two Gaussian distributions with equal variances, it is attained for \(USL=\dfrac{\mu_1+\mu_2}{2\sigma}\) (see the derivation in the Appendix), and shown by the orange line on the figure. </p>
 
 <p>Thus, we could derive an estimate and a credibility interval around the Kolmogorov distance, that is to say the maximal deviation between \(OOS_1\) and  \(OOS_2\) over all possible values of \(USL\):</p>
 
 <pre><code class="r">&gt; Kdist &lt;- function(µ1, µ2, sigma) ((µ1+µ2)/2/sigma) %&gt;% {pnorm(., µ1, sigma) - pnorm(., µ2, sigma)} %&gt;% abs
-&gt; Kdist_sims &lt;- with(sims, 100*Kdist(µ1, µ2, sigma))
-&gt; mean(Kdist_sims); quantile(Kdist_sims, probs = c(2.5,97.5)/100)
+&gt; Kdist_sims &lt;- with(sims, 100*Kdist(µ1, µ2, sigma))mean(Kdist_sims); quantile(Kdist_sims, probs = c(2.5,97.5)/100)
 [1] 11.54142
       2.5%      97.5% 
  0.4700835 31.1350492 
 </code></pre>
 
-<p>But this is not really releveant in the context of \(OOS\). It is clear on our example where \(\sigma=1\) that we are not interested in the deviation \(\Delta\) for a value of \(USL\) such as<br>
- \(USL=\dfrac{\mu_1+\mu_2}{2\sigma}\). In practice the value of \(USL\) is usually located in the upper tails of the two Gaussian distributions. </p>
+<p>But this is not really releveant in the context of \(OOS\). It is clear on our example where \(\sigma=1\) that we are not interested in the deviation \(\Delta\) for a value of \(USL\) such as \(USL=\dfrac{\mu_1+\mu_2}{2\sigma}\). In practice the value of \(USL\) is usually located in the upper tails of the two Gaussian distributions. </p>
 
 <p><strong>(R point) The pipe operator <code>%&gt;%</code>.</strong> As promised, I detail an example of the use of the <code>%&gt;%</code> operator.  Without this operator, I would have defined the <code>Kdist</code> function as follows:</p>
 
@@ -411,48 +409,53 @@ In case you don&#39;t know this operator, I will explain a shorter example in th
 </tbody></table>
 
 <pre><code class="r">&gt; usl &lt;- seq(0,5, by=0.25)
-&gt; sims &lt;- data.frame(sims[,c(&quot;id&quot;,&quot;group&quot;)], setNames(lapply(usl, function(USL) 100*(1-pnorm(USL, sims$µ, sims$sigma))), paste0(&quot;OOS_&quot;, usl))) %&gt;% 
-+   cbind(USL=usl, reshape2::melt(., id.vars=c(&quot;group&quot;,&quot;id&quot;)) %&gt;% spread(group, value) %&gt;% 
-+           mutate(Delta=group2-group1) %&gt;% group_by(variable) %&gt;% summarise(estimate=mean(Delta), lwr=quantile(Delta, 2.5/100), upr=quantile(Delta, 97.5/100)))[,-2]
-Error in xj[i]: type &#39;list&#39; d&#39;indice incorrect
+&gt; sims &lt;- cbind(USL=usl, 
++               data.frame(sims[,c(&quot;id&quot;,&quot;group&quot;)], setNames(lapply(usl, function(USL) 100*(1-pnorm(USL, sims$µ, sims$sigma))), paste0(&quot;OOS_&quot;, usl))) %&gt;% 
++                 reshape2::melt(id.vars=c(&quot;group&quot;,&quot;id&quot;)) %&gt;% spread(group, value) %&gt;% 
++                 mutate(Delta=group2-group1) %&gt;% 
++                 group_by(variable) %&gt;% 
++                 summarise(estimate=mean(Delta), 
++                           lwr=quantile(Delta, 2.5/100), 
++                           upr=quantile(Delta, 97.5/100)))[,-2]
 &gt; head(sims,3)
 </code></pre>
 
 <table><thead>
 <tr>
-<th align="right">id</th>
-<th align="right">sigma</th>
-<th align="left">group</th>
-<th align="right">µ</th>
+<th align="right">USL</th>
+<th align="right">estimate</th>
+<th align="right">lwr</th>
+<th align="right">upr</th>
 </tr>
 </thead><tbody>
 <tr>
-<td align="right">1</td>
-<td align="right">1.099777</td>
-<td align="left">group1</td>
-<td align="right">1.905582</td>
+<td align="right">0.00</td>
+<td align="right">1.741791</td>
+<td align="right">-3.967600</td>
+<td align="right">8.705849</td>
 </tr>
 <tr>
-<td align="right">2</td>
-<td align="right">1.259851</td>
-<td align="left">group1</td>
-<td align="right">1.836148</td>
+<td align="right">0.25</td>
+<td align="right">2.421491</td>
+<td align="right">-5.345896</td>
+<td align="right">11.412120</td>
 </tr>
 <tr>
-<td align="right">3</td>
-<td align="right">1.103276</td>
-<td align="left">group1</td>
-<td align="right">1.773983</td>
+<td align="right">0.50</td>
+<td align="right">3.244611</td>
+<td align="right">-6.983556</td>
+<td align="right">14.542463</td>
 </tr>
 </tbody></table>
 
 <pre><code class="r">&gt; library(ggplot2)
-&gt; ggplot(sims, aes(x=USL)) + geom_line(aes(y=estimate)) +
+&gt; ggplot(sims, aes(x=USL,y=estimate)) + geom_line() +
 +   geom_ribbon(aes(ymin=lwr, ymax=upr), alpha=0.1) +
 +   ylab(expression(Delta)) + 
 +   stat_function(fun=function(USL) 100*(pnorm(USL, mu[1], sigma)-pnorm(USL, mu[2], sigma)), color=&quot;red&quot;)
-Error in eval(expr, envir, enclos): objet &#39;estimate&#39; introuvable
 </code></pre>
+
+<p><img src="assets/fig/Eep-interval_dev_vs_usl-1.png" alt="plot of chunk interval_dev_vs_usl"> </p>
 
 <p>The theoretical deviation is shown by the red curve, the estimated deviation is shown by the black curve. We still note how large are the credibility intervals, especially around the maximual value of the deviation.</p>
 
@@ -491,8 +494,8 @@ therefore  \((az_2+b) - z_2 < 0\).
 Finally, in the case when \(0 < a < 1\) and \(b \geq 0\), one has 
 \(z_1 < 0 \leq M \leq \frac{b}{1-a} < z_2\) and we will now consider the two situations shown by these figures:</p>
 
-<p><img src="assets/fig/Eep-kplot1-1.png" alt="plot of chunk kplot1"> 
-<img src="assets/fig/Eep-kplot2-1.png" alt="plot of chunk kplot2"> </p>
+<p><img width="45%" src="assets/fig/Eep-kplot1-1.png" alt="plot of chunk kplot1"> 
+<img width="45%" src="assets/fig/Eep-kplot2-1.png" alt="plot of chunk kplot2"> </p>
 
 <p>We will show that the supremum of \(\bigl|\Psi_{a,b}\bigr|\) is attained at \(z_1\) in both cases. 
 Note that \(\bigl|\Psi_{a,b}(z_1)\bigr|=\Psi_{a,b}(z_1)\) is the standard Gaussian measure of the interval \(I_1=[z_1, az_1+b]\) and  \(\bigl|\Psi_{a,b}(z_2)\bigr|=-\Psi_{a,b}(z_2)\) is the standard Gaussian measure of the interval \(I_2=[az_2+b, z_2]\). The length of \(I_1\) is always larger than the one of \(I_2\). If \(az_1+b \geq 0\) (case \(1\)), then \(I_1\) contains \(0\), and then it is clear that the standard Gaussian measure of \(I_1\) is larger than the one of \(I_2\) in this case. If \(az_1+b < 0\) (case \(2\)), then one has \(|az_1+b| < az_2+b\) because of the equality 
@@ -502,8 +505,8 @@ which is easy to get by elementary calculus. Therefore the  standard Gaussian me
 <p>By doing similar considerations, the  case \(a > 1\) and \(b \geq 0\) is summarized by the two 
 figures below, and we show by the same approach that  the supremum of \(\bigl|\Psi_{a,b}\bigr|\) is attained at \(z_1\). </p>
 
-<p><img src="assets/fig/Eep-kplot_ag1-1.png" alt="plot of chunk kplot_ag1"> 
-<img src="assets/fig/Eep-kplot_ag2-1.png" alt="plot of chunk kplot_ag2"> </p>
+<p><img width="45%" src="assets/fig/Eep-kplot_ag1-1.png" alt="plot of chunk kplot_ag1"> 
+<img width="45%" src="assets/fig/Eep-kplot_ag2-1.png" alt="plot of chunk kplot_ag2"> </p>
 
 <p>The R function <code>Kdist</code> below returns the Kolmogorov distance:</p>
 
