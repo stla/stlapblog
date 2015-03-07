@@ -457,7 +457,7 @@ The R function `Kdist` below returns the Kolmogorov distance:
 
 ```{r, prompt=FALSE}
 Kdist00 <-  function(a,b){
-  z <- (a * b - sign(b) * sqrt(b^2 + 2 * (a^2 - 1) * log(a)))/(1 - a^2)
+  z <- (a * b - (sign(b)+(b==0)) * sqrt(b^2 + 2 * (a^2 - 1) * log(a)))/(1 - a^2)
   out <- pnorm(a*z+b)-pnorm(z)
   attr(out, "where") <- z
   return(out)

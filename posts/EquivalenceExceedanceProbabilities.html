@@ -511,7 +511,7 @@ figures below, and we show by the same approach that  the supremum of \(\bigl|\P
 <p>The R function <code>Kdist</code> below returns the Kolmogorov distance:</p>
 
 <pre><code class="r">Kdist00 &lt;-  function(a,b){
-  z &lt;- (a * b - sign(b) * sqrt(b^2 + 2 * (a^2 - 1) * log(a)))/(1 - a^2)
+  z &lt;- (a * b - (sign(b)+(b==0)) * sqrt(b^2 + 2 * (a^2 - 1) * log(a)))/(1 - a^2)
   out &lt;- pnorm(a*z+b)-pnorm(z)
   attr(out, &quot;where&quot;) &lt;- z
   return(out)
