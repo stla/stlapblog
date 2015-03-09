@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+  <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="./css/flot.css" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript" src="libraries/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="libraries/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="libraries/random-0.26.js"></script>
+	<script type="text/javascript">
+$(document).ready(function() {
+
+function CDF(sims, t) {
+  var counter=0;
+  for(var i=0; i<sims.length; i++){
+    if(sims[i] < t){
+      counter++;
+    }
+  }
+  return counter/sims.length;
+}
+
+function MySims(n,I,J) {
+  var stream = new Random(1234); 
+  var sims=[];
+  for(var i=0; i< n; i += 1){
+    sims.push(stream.gamma(I*(J-1)/2,1)/stream.gamma(I*(J-1)/2,1)*stream.gamma((I-1)/2,1)/stream.gamma((I-1)/2,1));
+  }
+  return(sims)
+}
+
+function MyProb(n, I, J, npoints){
+  var sims=MySims(n,I,J);
+  var ry=[];
+  for(var i=0; i<=npoints; i++){
+    var r=i/npoints;
+    var t=r/(r+J*(1-r));
+    ry.push([r, CDF(sims,t)]);
+  }
+  return ry;
+}
+
+function myFunction(I,J) {
+         var xy = MyProb(10000, I, J, 1000);
+    $.plot("#placeholder", [ xy ],
+    {
+		yaxis: {
+				ticks: 10,
+				min: 0,
+				max: 0.5,
+				tickDecimals: 2
+			}
+	});              
+}
+
+  
+$('#I').click(function () {
+    var I = $(this).val();
+    var J = $('#J').val();
+	myFunction(I,J);
+});
+
+$('#J').click(function () {
+    var J = $(this).val();
+    var I = $('#I').val();
+	myFunction(I,J);
+});
+
+var I = 3;
+var J = 6;
+$('#I').val(I)
+$('#J').val(J)
+myFunction(I,J);
+		
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+	});
+
+</script>
+  </head>
+  
+  
+  <body>
+  <div id="content">
+
+<form>
+  I (number of groups): 
+  <input id="I", type="number" name="I" min="2" max="50">
+</form>
+<form>
+  J (number of individuals within each group):
+    <input id="J", type="number" name="J" min="2" max="50">
+</form>
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+
+	</div>
+  
+    <div id="footer">
+		
+	</div>
+  </body>
+  </html>
