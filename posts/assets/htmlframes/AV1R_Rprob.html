@@ -7,6 +7,9 @@
     <script language="javascript" type="text/javascript" src="libraries/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="libraries/jquery.flot.js"></script>
     <script language="javascript" type="text/javascript" src="libraries/random-0.26.js"></script>
+    <script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 	<script type="text/javascript">
 $(document).ready(function() {
 
@@ -41,14 +44,16 @@ function MyProb(n, I, J, npoints){
 }
 
 function myFunction(I,J) {
-         var xy = MyProb(10000, I, J, 1000);
+         var xy = MyProb(30000, I, J, 100);
     $.plot("#placeholder", [ xy ],
     {
+		xaxis: {
+			},
 		yaxis: {
 				ticks: 10,
 				min: 0,
 				max: 0.5,
-				tickDecimals: 2
+				tickDecimals: 2,
 			}
 	});              
 }
@@ -75,7 +80,7 @@ myFunction(I,J);
 
 		// Add the Flot version string to the footer
 
-		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+		$("#flotversion").prepend(" &ndash; " + "Flot " + $.plot.version + " &ndash; ");
 	});
 
 </script>
@@ -84,6 +89,7 @@ myFunction(I,J);
   
   <body>
   <div id="content">
+
 
 <form>
   I (number of groups): 
@@ -94,15 +100,21 @@ myFunction(I,J);
     <input id="J", type="number" name="J" min="2" max="50">
 </form>
 
-		<div class="demo-container">
-			<div id="placeholder" class="demo-placeholder"></div>
-		</div>
 
+<table cellpadding="0" cellspacing="0">
+    <tr>
+        <td  style="vertical-align:middle;"><div style="width:100px;height=30px" class='rotate'><p><em>probability of rejection</em></p></div></td>
+        <td id="placeholder" width="500px" height="300px"  > <td>
+		<td id="flotversion" style="vertical-align:middle;font-size: 12px;color: #999;"></td>
+    </tr>
+    <tr>
+				<td></td>
+				<td >\(\dfrac{\sigma^2_w}{\sigma^2_w+\sigma^2_b}\)</td>
+    </tr>
+</table>
 
 	</div>
   
-    <div id="footer">
-		
-	</div>
+
   </body>
   </html>
