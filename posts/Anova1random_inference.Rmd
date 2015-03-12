@@ -39,7 +39,7 @@ Throughout the article, we will use the following function to get the within sum
 ```{r}
 SOS <- function(y, group){
   require(dplyr)
-  return(data.frame(y=y,group=group) %>% mutate(mean=mean(y)) %>% group_by(group) %>% mutate(groupmean=mean(y)) %>% ungroup %>% do(summarise(., SSw=crossprod(y-groupmean), SSb=crossprod(groupmean-mean))) %>% mutate(SStot=SSw+SSb) %>% as.list)
+  return(data.frame(y=y,group=group) %>% mutate(mean=mean(y)) %>% group_by(group) %>% mutate(groupmean=mean(y)) %>% ungroup %>% do(summarise(., SSw=crossprod(y-groupmean), SSb=crossprod(groupmean-mean))) %>% as.list)
   }
 ```
 

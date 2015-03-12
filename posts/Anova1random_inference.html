@@ -96,7 +96,7 @@
 <p>Throughout the article, we will use the following function to get the within sum-of-squares <span class="math">\(SS_w\)</span> and the between sum-of-squares <span class="math">\(SS_b\)</span>:</p>
 <pre class="r"><code>SOS &lt;- function(y, group){
   require(dplyr)
-  return(data.frame(y=y,group=group) %&gt;% mutate(mean=mean(y)) %&gt;% group_by(group) %&gt;% mutate(groupmean=mean(y)) %&gt;% ungroup %&gt;% do(summarise(., SSw=crossprod(y-groupmean), SSb=crossprod(groupmean-mean))) %&gt;% mutate(SStot=SSw+SSb) %&gt;% as.list)
+  return(data.frame(y=y,group=group) %&gt;% mutate(mean=mean(y)) %&gt;% group_by(group) %&gt;% mutate(groupmean=mean(y)) %&gt;% ungroup %&gt;% do(summarise(., SSw=crossprod(y-groupmean), SSb=crossprod(groupmean-mean))) %&gt;% as.list)
   }</code></pre>
 <div id="bayesian-posterior-distributions" class="section level2">
 <h2>Bayesian posterior distributions</h2>
