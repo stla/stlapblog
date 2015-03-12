@@ -15,7 +15,7 @@ assignInNamespace("cedta.override",
 ```
 
 
-The one-way random effect ANOVA model is the simplest linear Gaussian model with random effects: one random factor, and no other factor or covariate.  However, methods of inference to get  estimates, confidence intervals for various parameters (variance components, coefficient of variation), prediction intervals and tolerances intervals, are not so well-known. This is what we provide in this article, in the simplest situations : the case of *balanced data* (at the end we give a possible way to handle the unbalanced situation).
+The one-way random effect ANOVA model is the simplest linear Gaussian model with random effects: one random factor, and no other factor or covariate.  However, methods of inference to get  estimates, confidence intervals for various parameters (variance components, coefficient of variation), prediction intervals and tolerance intervals, are not so well-known. This is what we provide in this article, in the simplest situation : the case of *balanced data* (at the end we give a possible way to handle the unbalanced situation).
 
 Recall that, denoting by $y_{ij}$  the $j$-th response in group $i$. 
 this model assumes that the responses $y_{ij}$ are generated in two steps. 
@@ -139,8 +139,6 @@ We can already store the posterior simulations of the Bayesian method:
 sims1 <- with(dat1, ranova(y, group, nsims=1e6))
 sims2 <- with(dat2, ranova(y, group, nsims=1e6))
 # stacked simulations in a data.table
-is.data.table(sims1)
-is.data.table(sims2)
 sims <- rbind(sims1[, "data":="data1"], sims2[,"data":="data2"])
 setkey(sims, data)
 ```
@@ -252,7 +250,7 @@ confintVC <- function(y, group, alpha=5/100){
   Vl <- G1^2*MSSb^2+H2^2*MSSw^2+G12*MSSw*MSSb  
   betweenLCB <- (MSSb-MSSw-sqrt(Vl))/J # Betwen lwr
   betweenUCB <- (MSSb-MSSw+sqrt(Vu))/J  # Between upr  
-  ## Total variance confidenc interval
+  ## Total variance confidence interval
   sigma2tot <- sigma2w+sigma2b   # estimate
   totalLCB <- sigma2tot - (sqrt(G1^2*MSSb^2+G2^2*(J-1)^2*MSSw^2)/J) # Total lwr 
   totalUCB <- sigma2tot + (sqrt(H1^2*MSSb^2+H2^2*(J-1)^2*MSSw^2)/J)  # Total upr  

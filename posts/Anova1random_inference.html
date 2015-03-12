@@ -85,7 +85,7 @@
 
 
 
-<p>The one-way random effect ANOVA model is the simplest linear Gaussian model with random effects: one random factor, and no other factor or covariate. However, methods of inference to get estimates, confidence intervals for various parameters (variance components, coefficient of variation), prediction intervals and tolerances intervals, are not so well-known. This is what we provide in this article, in the simplest situations : the case of <em>balanced data</em> (at the end we give a possible way to handle the unbalanced situation).</p>
+<p>The one-way random effect ANOVA model is the simplest linear Gaussian model with random effects: one random factor, and no other factor or covariate. However, methods of inference to get estimates, confidence intervals for various parameters (variance components, coefficient of variation), prediction intervals and tolerance intervals, are not so well-known. This is what we provide in this article, in the simplest situation : the case of <em>balanced data</em> (at the end we give a possible way to handle the unbalanced situation).</p>
 <p>Recall that, denoting by <span class="math">\(y_{ij}\)</span> the <span class="math">\(j\)</span>-th response in group <span class="math">\(i\)</span>. this model assumes that the responses <span class="math">\(y_{ij}\)</span> are generated in two steps. First, the group means <span class="math">\(\mu_i\)</span> are independently generated according to a Gaussian distribution <span class="math">\({\cal N}(\mu, \sigma^2_b)\)</span> where <span class="math">\(\mu\)</span> is the overall mean and <span class="math">\(\sigma^2_b\)</span> is the so-called <em>between variance</em>. Second, the responses <span class="math">\(y_{ij}\)</span>, <span class="math">\(j =1,\ldots,J\)</span>, for each group <span class="math">\(i\)</span>, are independently distributed according to a Gaussian distribution <span class="math">\({\cal N}(\mu_i, \sigma^2_w)\)</span> with <em>within variance</em> <span class="math">\(\sigma^2_w\)</span> and mean <span class="math">\(\mu_i\)</span>. Shortly, the model can be written: <span class="math">\[\begin{cases}
 \mu_i \sim_{\text{iid}} {\cal N}(\mu, \sigma^2_b) &amp; i=1,\ldots,I 
 \\
@@ -167,10 +167,6 @@ dat &lt;- rbind(cbind(data=&quot;dat1&quot;, dat1), cbind(data=&quot;dat2&quot;,
 sims2 &lt;- with(dat2, ranova(y, group, nsims=1e6))
 ## Rejection percentage:  19.2 %
 # stacked simulations in a data.table
-is.data.table(sims1)
-## [1] TRUE
-is.data.table(sims2)
-## [1] TRUE
 sims &lt;- rbind(sims1[, &quot;data&quot;:=&quot;data1&quot;], sims2[,&quot;data&quot;:=&quot;data2&quot;])
 setkey(sims, data)</code></pre>
 <p>Note that the theoretical rejection percentages could be calculated with our above formula of <span class="math">\(R(SS_w,SS_b)\)</span>:</p>
@@ -271,7 +267,7 @@ quantile(sims[&quot;data2&quot;]$mu, c(2.5,97.5)/100)
   Vl &lt;- G1^2*MSSb^2+H2^2*MSSw^2+G12*MSSw*MSSb  
   betweenLCB &lt;- (MSSb-MSSw-sqrt(Vl))/J # Betwen lwr
   betweenUCB &lt;- (MSSb-MSSw+sqrt(Vu))/J  # Between upr  
-  ## Total variance confidenc interval
+  ## Total variance confidence interval
   sigma2tot &lt;- sigma2w+sigma2b   # estimate
   totalLCB &lt;- sigma2tot - (sqrt(G1^2*MSSb^2+G2^2*(J-1)^2*MSSw^2)/J) # Total lwr 
   totalUCB &lt;- sigma2tot + (sqrt(H1^2*MSSb^2+H2^2*(J-1)^2*MSSw^2)/J)  # Total upr  
