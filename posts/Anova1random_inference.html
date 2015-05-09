@@ -331,7 +331,7 @@ with(dat2, confintVC(y, group))
   SSb &lt;- SS$SSb; SSw &lt;- SS$SSw
   Z &lt;- rnorm(nsims)
   Ub &lt;- rchisq(nsims, I-1)
-  Ue &lt;- rchisq(nsims, I*(J-1)) # ! J*(I-1) dans le bouquin
+  Ue &lt;- rchisq(nsims, I*(J-1)) # ! J*(I-1) in K &amp; M's book is an error
   mu.gpq &lt;- mean(y)-Z/sqrt(Ub)*sqrt(SSb/I/J)
   sigmatot.gpq &lt;- 1/sqrt(J)*sqrt(SSb/Ub+(J-1)*SSw/Ue)
   G &lt;- sigmatot.gpq/mu.gpq
@@ -435,7 +435,7 @@ qnorm(c(10,90)/100, 10, sqrt(2))
   SSb &lt;- SS$SSb; SSw &lt;- SS$SSw
     Z &lt;- rnorm(nsims)
     Ub &lt;- rchisq(nsims, I-1)
-    Ue &lt;- rchisq(nsims, I*(J-1)) # ! J*(I-1) in K &amp; M's book
+    Ue &lt;- rchisq(nsims, I*(J-1)) # ! J*(I-1) in K &amp; M's book is an error
     G &lt;- mean(y)-Z/sqrt(Ub)*sqrt(SSb/I/J)-qnorm(p)/sqrt(J)*sqrt(SSb/Ub+(J-1)*SSw/Ue)
     low &lt;- as.numeric(quantile(G,1-conf)) 
     G &lt;- mean(y) + Z/sqrt(Ub)*sqrt(SSb/I/J) + qnorm(p)/sqrt(J)*sqrt(SSb/Ub+(J-1)*SSw/Ue)
