@@ -327,7 +327,7 @@ ranovaCV <-  function(y, group, level=0.95, nsims=100000){
   SSb <- SS$SSb; SSw <- SS$SSw
   Z <- rnorm(nsims)
   Ub <- rchisq(nsims, I-1)
-  Ue <- rchisq(nsims, I*(J-1)) # ! J*(I-1) in the book is an error
+  Ue <- rchisq(nsims, I*(J-1)) # ! J*(I-1) dans le bouquin
   mu.gpq <- mean(y)-Z/sqrt(Ub)*sqrt(SSb/I/J)
   sigmatot.gpq <- 1/sqrt(J)*sqrt(SSb/Ub+(J-1)*SSw/Ue)
   G <- sigmatot.gpq/mu.gpq

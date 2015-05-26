@@ -84,64 +84,18 @@
               <div class='lead'>
 <p>Sometimes you get data like:</p>
 
-<table><thead>
-<tr>
-<th align="left">concentration</th>
-<th align="left">temperature</th>
-<th align="right">pH</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">2.12mL</td>
-<td align="left">11 C</td>
-<td align="right">7.0</td>
-</tr>
-<tr>
-<td align="left">7.5mL</td>
-<td align="left">-1 C</td>
-<td align="right">10.5</td>
-</tr>
-<tr>
-<td align="left">0.7mL</td>
-<td align="left">3 C</td>
-<td align="right">8.0</td>
-</tr>
-<tr>
-<td align="left">7.6mL</td>
-<td align="left">5 C</td>
-<td align="right">7.5</td>
-</tr>
-<tr>
-<td align="left">0.11mL</td>
-<td align="left">8 C</td>
-<td align="right">11.0</td>
-</tr>
-<tr>
-<td align="left">2.13mL</td>
-<td align="left">4 C</td>
-<td align="right">4.0</td>
-</tr>
-<tr>
-<td align="left">0.27mL</td>
-<td align="left">5 C</td>
-<td align="right">10.0</td>
-</tr>
-<tr>
-<td align="left">0.45mL</td>
-<td align="left">4 C</td>
-<td align="right">8.5</td>
-</tr>
-<tr>
-<td align="left">0.17mL</td>
-<td align="left">9 C</td>
-<td align="right">7.5</td>
-</tr>
-<tr>
-<td align="left">0.96mL</td>
-<td align="left">5 C</td>
-<td align="right">5.5</td>
-</tr>
-</tbody></table>
+<pre><code>##    concentration temperature   pH
+## 1         2.12mL        11 C  7.0
+## 2          7.5mL        -1 C 10.5
+## 3          0.7mL         3 C  8.0
+## 4          7.6mL         5 C  7.5
+## 5         0.11mL         8 C 11.0
+## 6         2.13mL         4 C  4.0
+## 7         0.27mL         5 C 10.0
+## 8         0.45mL         4 C  8.5
+## 9         0.17mL         9 C  7.5
+## 10        0.96mL         5 C  5.5
+</code></pre>
 
 <p>and you&#39;d like to separate the numerical values from the units in columns such as <code>concentration</code> or <code>temperature</code>. </p>
 
@@ -219,64 +173,18 @@ Numextract(&quot;between 2ml and 3ml&quot;)
 <pre><code class="r">dat
 </code></pre>
 
-<table><thead>
-<tr>
-<th align="left">concentration</th>
-<th align="left">temperature</th>
-<th align="right">pH</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">2.12mL</td>
-<td align="left">11 C</td>
-<td align="right">7.0</td>
-</tr>
-<tr>
-<td align="left">7.5mL</td>
-<td align="left">-1 C</td>
-<td align="right">10.5</td>
-</tr>
-<tr>
-<td align="left">0.7mL</td>
-<td align="left">3 C</td>
-<td align="right">8.0</td>
-</tr>
-<tr>
-<td align="left">7.6mL</td>
-<td align="left">5 C</td>
-<td align="right">7.5</td>
-</tr>
-<tr>
-<td align="left">0.11mL</td>
-<td align="left">8 C</td>
-<td align="right">11.0</td>
-</tr>
-<tr>
-<td align="left">2.13mL</td>
-<td align="left">4 C</td>
-<td align="right">4.0</td>
-</tr>
-<tr>
-<td align="left">0.27mL</td>
-<td align="left">5 C</td>
-<td align="right">10.0</td>
-</tr>
-<tr>
-<td align="left">0.45mL</td>
-<td align="left">4 C</td>
-<td align="right">8.5</td>
-</tr>
-<tr>
-<td align="left">0.17mL</td>
-<td align="left">9 C</td>
-<td align="right">7.5</td>
-</tr>
-<tr>
-<td align="left">0.96mL</td>
-<td align="left">5 C</td>
-<td align="right">5.5</td>
-</tr>
-</tbody></table>
+<pre><code>##    concentration temperature   pH
+## 1         2.12mL        11 C  7.0
+## 2          7.5mL        -1 C 10.5
+## 3          0.7mL         3 C  8.0
+## 4          7.6mL         5 C  7.5
+## 5         0.11mL         8 C 11.0
+## 6         2.13mL         4 C  4.0
+## 7         0.27mL         5 C 10.0
+## 8         0.45mL         4 C  8.5
+## 9         0.17mL         9 C  7.5
+## 10        0.96mL         5 C  5.5
+</code></pre>
 
 <p>Extract the numerical values of the <code>concentration</code> column</p>
 
@@ -307,53 +215,18 @@ Numextract(&quot;between 2ml and 3ml&quot;)
 <pre><code class="r">( concentration &lt;- data.frame(concentration, unit) )
 </code></pre>
 
-<table><thead>
-<tr>
-<th align="left">concentration</th>
-<th align="left">unit</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">2.12</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">7.5</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">0.7</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">7.6</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">0.11</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">2.13</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">0.27</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">0.45</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">0.17</td>
-<td align="left">mL</td>
-</tr>
-<tr>
-<td align="left">0.96</td>
-<td align="left">mL</td>
-</tr>
-</tbody></table>
+<pre><code>##    concentration unit
+## 1           2.12   mL
+## 2            7.5   mL
+## 3            0.7   mL
+## 4            7.6   mL
+## 5           0.11   mL
+## 6           2.13   mL
+## 7           0.27   mL
+## 8           0.45   mL
+## 9           0.17   mL
+## 10          0.96   mL
+</code></pre>
 
 <p>To do so, I&#39;m using the following function:</p>
 
@@ -375,75 +248,18 @@ Numextract(&quot;between 2ml and 3ml&quot;)
 <pre><code class="r">df_replace(dat, &quot;concentration&quot;, concentration)
 </code></pre>
 
-<table><thead>
-<tr>
-<th align="left">concentration</th>
-<th align="left">unit</th>
-<th align="left">temperature</th>
-<th align="right">pH</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">2.12</td>
-<td align="left">mL</td>
-<td align="left">11 C</td>
-<td align="right">7.0</td>
-</tr>
-<tr>
-<td align="left">7.5</td>
-<td align="left">mL</td>
-<td align="left">-1 C</td>
-<td align="right">10.5</td>
-</tr>
-<tr>
-<td align="left">0.7</td>
-<td align="left">mL</td>
-<td align="left">3 C</td>
-<td align="right">8.0</td>
-</tr>
-<tr>
-<td align="left">7.6</td>
-<td align="left">mL</td>
-<td align="left">5 C</td>
-<td align="right">7.5</td>
-</tr>
-<tr>
-<td align="left">0.11</td>
-<td align="left">mL</td>
-<td align="left">8 C</td>
-<td align="right">11.0</td>
-</tr>
-<tr>
-<td align="left">2.13</td>
-<td align="left">mL</td>
-<td align="left">4 C</td>
-<td align="right">4.0</td>
-</tr>
-<tr>
-<td align="left">0.27</td>
-<td align="left">mL</td>
-<td align="left">5 C</td>
-<td align="right">10.0</td>
-</tr>
-<tr>
-<td align="left">0.45</td>
-<td align="left">mL</td>
-<td align="left">4 C</td>
-<td align="right">8.5</td>
-</tr>
-<tr>
-<td align="left">0.17</td>
-<td align="left">mL</td>
-<td align="left">9 C</td>
-<td align="right">7.5</td>
-</tr>
-<tr>
-<td align="left">0.96</td>
-<td align="left">mL</td>
-<td align="left">5 C</td>
-<td align="right">5.5</td>
-</tr>
-</tbody></table>
+<pre><code>##    concentration unit temperature   pH
+## 1           2.12   mL        11 C  7.0
+## 2            7.5   mL        -1 C 10.5
+## 3            0.7   mL         3 C  8.0
+## 4            7.6   mL         5 C  7.5
+## 5           0.11   mL         8 C 11.0
+## 6           2.13   mL         4 C  4.0
+## 7           0.27   mL         5 C 10.0
+## 8           0.45   mL         4 C  8.5
+## 9           0.17   mL         9 C  7.5
+## 10          0.96   mL         5 C  5.5
+</code></pre>
 
 <h2>Handling character data</h2>
 
@@ -511,21 +327,10 @@ with numerical columns when possible.</p>
 <pre><code class="r">Numerize(data.frame(x=c(&quot;1.5&quot;, &quot;3.2&quot;), y=c(&quot;1.5&quot;, &quot;&lt;3.2&quot;)))
 </code></pre>
 
-<table><thead>
-<tr>
-<th align="right">x</th>
-<th align="left">y</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="right">1.5</td>
-<td align="left">1.5</td>
-</tr>
-<tr>
-<td align="right">3.2</td>
-<td align="left">&lt;3.2</td>
-</tr>
-</tbody></table>
+<pre><code>##     x    y
+## 1 1.5  1.5
+## 2 3.2 &lt;3.2
+</code></pre>
 
 </div>
               <div id="disqus_thread"></div>

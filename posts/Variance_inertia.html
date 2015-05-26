@@ -84,7 +84,7 @@
               <div class='lead'>
 <p>In order to make a presentation, I was wondering how to display the variance of a distribution or the variance of a sample on a graphic. Finally, I&#39;ve found this solution:</p>
 
-<p><img src="assets/fig/varinertia-gaussian-1.png" alt="plot of chunk gaussian"> </p>
+<p><img src="assets/fig/varinertia-gaussian.png" alt="plot of chunk gaussian"> </p>
 
 <p>What is this &quot;ellipse&quot; with an arrow ? This is a picture commonly used in classical mechanics to represent the moment of inertia of a body spinning around an axis of rotation. The variance of a distribution has an interpretation as a moment of inertia: the body is a very thin sheet of metal whose shape is the area under the graph of the density and whose mass is \(1\), and the axis of rotation is the vertical axis through the mean of the distribution. Thus the variance measures how hard it is to spin this metal sheet. Under this interpretation, the standard deviation is termed as <em>gyroscopic radius</em>, or <em>radius of gyration</em>, of the metal sheet. </p>
 
@@ -92,7 +92,7 @@
 
 <p>I have written my own function <code>inertia()</code> to draw this picture. Its main arguments are shown in the following figure (made with R and then converted to a TikZ LaTeX picture with the awesome <a href="https://github.com/yihui/tikzDevice">tikzDevice</a> package):</p>
 
-<pre><code class="r">inertia(x0,y0,a,b,r,l,d,s,w)
+<pre><code class="r">inertia(x0, y0, a, b, r, l, d, s, w)
 </code></pre>
 
 <p><object data="assets/fig/inertiaellipse.pdf" type="application/pdf" width="550px" height="400px"></p>
@@ -108,11 +108,11 @@
 <p>As shown in the first figure, the ellipse is useful to display the variance of a theoretical distribution. 
 In my presentation, I have also used it to explain the decomposition of the sample variance: </p>
 
-<p><img src="assets/fig/varinertia-dsv-1.png" alt="plot of chunk dsv"> </p>
+<p><img src="assets/fig/varinertia-dsv.png" alt="plot of chunk dsv"> </p>
 
 <p>And I have also used the moment of inertia representation to explain the one-way random effect ANOVA model, which is commonly used to model the decomposition of variance:</p>
 
-<p><img src="assets/fig/varinertia-anovarandommodel-1.png" alt="plot of chunk anovarandommodel"> </p>
+<p><img src="assets/fig/varinertia-anovarandommodel.png" alt="plot of chunk anovarandommodel"> </p>
 
 </div>
               <div id="disqus_thread"></div>

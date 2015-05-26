@@ -155,44 +155,46 @@ for \(i \in \{1,n/2^k\}\);</p></li>
 </ul>
 
 <pre><code class="r">## example: rational approximation of pi ##
-bs.pi &lt;- function(m){
+bs.pi &lt;- function(m) {
     u &lt;- function(i) as.numeric(i)
-    v &lt;- function(i) 2*i+1
-     n &lt;- 2^m
-     indexes &lt;- c(1:n)
-     delta &lt;- alpha &lt;- u(indexes)
+    v &lt;- function(i) 2 * i + 1
+    n &lt;- 2^m
+    indexes &lt;- c(1:n)
+    delta &lt;- alpha &lt;- u(indexes)
     beta &lt;- v(indexes)
-     j &lt;- 1; l &lt;- n
-     while(j&lt;n){
-       l &lt;- l/2
-       odd &lt;- 2*c(1:l); even &lt;- odd-1
-       alpha &lt;- beta[odd]*alpha[even] + delta[even]*alpha[odd]
-       j &lt;- 2*j
-       beta &lt;- beta[odd]*beta[even]
-       delta &lt;- delta[even]*delta[odd]
-       }
-     Sn &lt;- alpha/beta + 1
-     out &lt;- list(alpha=alpha, beta=beta, Sn=Sn)
-     return(out)
+    j &lt;- 1
+    l &lt;- n
+    while (j &lt; n) {
+        l &lt;- l/2
+        odd &lt;- 2 * c(1:l)
+        even &lt;- odd - 1
+        alpha &lt;- beta[odd] * alpha[even] + delta[even] * alpha[odd]
+        j &lt;- 2 * j
+        beta &lt;- beta[odd] * beta[even]
+        delta &lt;- delta[even] * delta[odd]
+    }
+    Sn &lt;- alpha/beta + 1
+    out &lt;- list(alpha = alpha, beta = beta, Sn = Sn)
+    return(out)
 }
 </code></pre>
 
 <p>The method very well performs while \(m\leq 7\) :</p>
 
-<pre><code class="r">print(bs.pi(7),digits=22)
+<pre><code class="r">print(bs.pi(7), digits = 22)
 </code></pre>
 
 <pre><code>## $alpha
-## [1] 9.589805429639700552285e+254
+## [1] 9.589805429639700552931e+254
 ## 
 ## $beta
-## [1] 1.680074832206408008727e+255
+## [1] 1.680074832206408008955e+255
 ## 
 ## $Sn
 ## [1] 1.570796326794896557999
 </code></pre>
 
-<pre><code class="r">print(pi/2,digits=22)
+<pre><code class="r">print(pi/2, digits = 22)
 </code></pre>
 
 <pre><code>## [1] 1.570796326794896557999
@@ -223,43 +225,45 @@ S_n(x) = 1 + \sum_{k=1}^n \prod_{i=1}^k\frac{u_i}{v_i}
 where \(u_i \equiv p\) and \(v_i= i q\) are integer numbers. Thus, we can use the binary splitting algorithm to compute \(S_{2^m}\):</p>
 
 <pre><code class="r">## example: rational approximation of exp(p/q) ##
-bs.exp &lt;- function(p,q,m){
-    v &lt;- function(i) i*q
-     n &lt;- 2^m
+bs.exp &lt;- function(p, q, m) {
+    v &lt;- function(i) i * q
+    n &lt;- 2^m
     indexes &lt;- 1:n
-     delta &lt;- alpha &lt;- rep(p,n)
+    delta &lt;- alpha &lt;- rep(p, n)
     beta &lt;- v(indexes)
-     j &lt;- 1; l &lt;- n
-     while(j&lt;n){
-       l &lt;- l/2
-       odd &lt;- 2*c(1:l); even &lt;- odd-1
-       alpha &lt;- beta[odd]*alpha[even] + delta[even]*alpha[odd]
-       j &lt;- 2*j
-       beta &lt;- beta[odd]*beta[even]
-       delta &lt;- delta[even]*delta[odd]
-       }
-     Sn &lt;- alpha/beta + 1
-     out &lt;- list(alpha=alpha, beta=beta, Sn=Sn)
-     return(out)
+    j &lt;- 1
+    l &lt;- n
+    while (j &lt; n) {
+        l &lt;- l/2
+        odd &lt;- 2 * c(1:l)
+        even &lt;- odd - 1
+        alpha &lt;- beta[odd] * alpha[even] + delta[even] * alpha[odd]
+        j &lt;- 2 * j
+        beta &lt;- beta[odd] * beta[even]
+        delta &lt;- delta[even] * delta[odd]
+    }
+    Sn &lt;- alpha/beta + 1
+    out &lt;- list(alpha = alpha, beta = beta, Sn = Sn)
+    return(out)
 }
 </code></pre>
 
 <p>Let us try to evaluate \(\exp(1)\). For \(m=7\), the approximation is not entirely satisfactory:</p>
 
-<pre><code class="r">print(bs.exp(1,1,7), digits=22)
+<pre><code class="r">print(bs.exp(1, 1, 7), digits = 22)
 </code></pre>
 
 <pre><code>## $alpha
-## [1] 6.626046675252336548016e+215
+## [1] 6.626046675252336548741e+215
 ## 
 ## $beta
-## [1] 3.856204823625804071551e+215
+## [1] 3.85620482362580407204e+215
 ## 
 ## $Sn
 ## [1] 2.718281828459045534885
 </code></pre>
 
-<pre><code class="r">print(exp(1), digits=22)
+<pre><code class="r">print(exp(1), digits = 22)
 </code></pre>
 
 <pre><code>## [1] 2.718281828459045090796
@@ -267,7 +271,7 @@ bs.exp &lt;- function(p,q,m){
 
 <p>And for \(m=8\), it crashes:</p>
 
-<pre><code class="r">bs.exp(1,1,8)
+<pre><code class="r">bs.exp(1, 1, 8)
 </code></pre>
 
 <pre><code>## $alpha
@@ -290,25 +294,27 @@ The crantastic <a href="http://www.inside-r.org/packages/cran/gmp"><code>gmp</co
 
 <pre><code class="r">library(gmp)
 ## rational approximation of pi with gmp ##
-bs.pi.gmp &lt;- function(m){
+bs.pi.gmp &lt;- function(m) {
     u &lt;- function(i) as.numeric(i)
-    v &lt;- function(i) 2*i+1
-     n &lt;- 2^m
+    v &lt;- function(i) 2 * i + 1
+    n &lt;- 2^m
     indexes &lt;- 1:n
-     delta &lt;- alpha &lt;- as.bigz(u(indexes))
-     beta &lt;- as.bigz(v(indexes))
-     j &lt;- 1; l &lt;- n
-     while(j&lt;n){
-       l &lt;- l/2
-       odd &lt;- 2*c(1:l); even &lt;- odd-1
-       alpha &lt;- beta[odd]*alpha[even] + delta[even]*alpha[odd]
-       j &lt;- 2*j
-       beta &lt;- beta[odd]*beta[even]
-       delta &lt;- delta[even]*delta[odd]
-       }
-     Sn &lt;- alpha/beta + 1
-  out &lt;- list(Sn=Sn, eval.Sn=format(as.numeric(Sn),digits=22))
-return(out)
+    delta &lt;- alpha &lt;- as.bigz(u(indexes))
+    beta &lt;- as.bigz(v(indexes))
+    j &lt;- 1
+    l &lt;- n
+    while (j &lt; n) {
+        l &lt;- l/2
+        odd &lt;- 2 * c(1:l)
+        even &lt;- odd - 1
+        alpha &lt;- beta[odd] * alpha[even] + delta[even] * alpha[odd]
+        j &lt;- 2 * j
+        beta &lt;- beta[odd] * beta[even]
+        delta &lt;- delta[even] * delta[odd]
+    }
+    Sn &lt;- alpha/beta + 1
+    out &lt;- list(Sn = Sn, eval.Sn = format(as.numeric(Sn), digits = 22))
+    return(out)
 }
 </code></pre>
 
@@ -335,7 +341,7 @@ return(out)
 ## [1] 34459425
 ## 
 ## $Sn
-## [1] 1.569735
+## [1] 1.57
 </code></pre>
 
 <p>As you can see, \(S_n\) is written as an irreducible fraction with the <code>gmp</code> approach. 
@@ -357,28 +363,30 @@ But this is not the main strength of the  <code>gmp</code> package. Now we have 
 <p>Let us come back to the exponential example:</p>
 
 <pre><code class="r">## rational approximation of exp(p/q) with gmp ##
-bs.exp.gmp &lt;- function(p,q,m){
-      v &lt;- function(i) i*q
-     n &lt;- 2^m
+bs.exp.gmp &lt;- function(p, q, m) {
+    v &lt;- function(i) i * q
+    n &lt;- 2^m
     indexes &lt;- 1:n
-     delta &lt;- alpha &lt;- as.bigz(rep(p,n))
+    delta &lt;- alpha &lt;- as.bigz(rep(p, n))
     beta &lt;- as.bigz(v(indexes))
-     j &lt;- 1; l &lt;- n
-     while(j&lt;n){
-       l &lt;- l/2
-       odd &lt;- 2*c(1:l); even &lt;- odd-1
-       alpha &lt;- beta[odd]*alpha[even] + delta[even]*alpha[odd]
-       j &lt;- 2*j
-       beta &lt;- beta[odd]*beta[even]
-       delta &lt;- delta[even]*delta[odd]
-       }
-     Sn &lt;- alpha/beta + 1
-  out &lt;- list(Sn=Sn, eval.Sn=format(as.numeric(Sn),digits=22))
-return(out)
+    j &lt;- 1
+    l &lt;- n
+    while (j &lt; n) {
+        l &lt;- l/2
+        odd &lt;- 2 * c(1:l)
+        even &lt;- odd - 1
+        alpha &lt;- beta[odd] * alpha[even] + delta[even] * alpha[odd]
+        j &lt;- 2 * j
+        beta &lt;- beta[odd] * beta[even]
+        delta &lt;- delta[even] * delta[odd]
+    }
+    Sn &lt;- alpha/beta + 1
+    out &lt;- list(Sn = Sn, eval.Sn = format(as.numeric(Sn), digits = 22))
+    return(out)
 }
 </code></pre>
 
-<pre><code class="r"> bs.exp.gmp(1,1,8)
+<pre><code class="r">bs.exp.gmp(1, 1, 8)
 </code></pre>
 
 <pre><code>## $Sn
@@ -395,24 +403,27 @@ return(out)
 
 <p>Before turning to the Gauss hypergeometric function we write a general function for the binary splitting taking as arguments the two sequences \((u_i)\) and \((v_i)\):</p>
 
-<pre><code class="r">bs.gmp &lt;- function(u,v,m=7,value=&quot;eval&quot;){
-     n &lt;- 2^m
+<pre><code class="r">bs.gmp &lt;- function(u, v, m = 7, value = &quot;eval&quot;) {
+    n &lt;- 2^m
     indexes &lt;- 1:n
-     delta &lt;- alpha &lt;- as.bigz(u(indexes))
+    delta &lt;- alpha &lt;- as.bigz(u(indexes))
     beta &lt;- as.bigz(v(indexes))
-     j &lt;- 1; l &lt;- n
-     while(j&lt;n){
-       l &lt;- l/2
-       odd &lt;- 2*c(1:l); even &lt;- odd-1
-       alpha &lt;- beta[odd]*alpha[even] + delta[even]*alpha[odd]
-       j &lt;- 2*j
-       beta &lt;- beta[odd]*beta[even]
-       delta &lt;- delta[even]*delta[odd]
-       }
-     Sn &lt;- alpha/beta + 1
-     eval.Sn &lt;- format(as.numeric(Sn) ,digits=22)
-     out &lt;- switch(value, &quot;eval&quot;=eval.Sn, &quot;exact&quot;=Sn, &quot;both&quot;=list(Sn=Sn, eval.Sn=eval.Sn))
-return(out)
+    j &lt;- 1
+    l &lt;- n
+    while (j &lt; n) {
+        l &lt;- l/2
+        odd &lt;- 2 * c(1:l)
+        even &lt;- odd - 1
+        alpha &lt;- beta[odd] * alpha[even] + delta[even] * alpha[odd]
+        j &lt;- 2 * j
+        beta &lt;- beta[odd] * beta[even]
+        delta &lt;- delta[even] * delta[odd]
+    }
+    Sn &lt;- alpha/beta + 1
+    eval.Sn &lt;- format(as.numeric(Sn), digits = 22)
+    out &lt;- switch(value, eval = eval.Sn, exact = Sn, both = list(Sn = Sn, 
+        eval.Sn = eval.Sn))
+    return(out)
 }
 </code></pre>
 
@@ -430,30 +441,34 @@ to represent the \(n\)-th ascending factorial of \(a\). . </p>
 \(\alpha,\beta,\gamma, z\) by manipulating only integer numbers. 
 This is performed by the R function below</p>
 
-<pre><code class="r">## rational approximation of  2F1(a1/a2, b1/b2, c1/c2; p/q) with gmp ##
-hypergeo_bs &lt;- function(a1,a2, b1,b2, c1,c2, p,q, m){
-  u &lt;- function(i) c2*(a1+(i-1)*a2)*(b1+(i-1)*b2)*p
-  v &lt;- function(i) a2*b2*i*(c1+(i-1)*c2)*q
-    bs.gmp(u,v,m)
+<pre><code class="r">## rational approximation of 2F1(a1/a2, b1/b2, c1/c2; p/q)
+## with gmp ##
+hypergeo_bs &lt;- function(a1, a2, b1, b2, c1, c2, p, q, m) {
+    u &lt;- function(i) c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * 
+        b2) * p
+    v &lt;- function(i) a2 * b2 * i * (c1 + (i - 1) * c2) * q
+    bs.gmp(u, v, m)
 }
 </code></pre>
 
 <p>For more convenience I have firstly written the function below which returns the irreducible rational 
 notation of a given number \(x\). The user can also specify a rounding order for \(x\). </p>
 
-<pre><code class="r">n.decimals &lt;- function(x, tol=.Machine$double.eps){
-  sapply(x, function(x) {
+<pre><code class="r">n.decimals &lt;- function(x, tol = .Machine$double.eps) {
+    sapply(x, function(x) {
         i &lt;- 0
-        while(abs(x-round(x,i))&gt;tol){i &lt;- i+1}
-    return(i)
+        while (abs(x - round(x, i)) &gt; tol) {
+            i &lt;- i + 1
+        }
+        return(i)
     })
 }
-irred.frac &lt;- function(x, rnd=n.decimals(x)){
+irred.frac &lt;- function(x, rnd = n.decimals(x)) {
     b &lt;- 10^rnd
-    a &lt;- as.bigz(b*round(x,rnd))
-    num &lt;- a/gcd.bigz(a,b)
-    den &lt;- b/gcd.bigz(a,b)
-list(num=num, den=den)
+    a &lt;- as.bigz(b * round(x, rnd))
+    num &lt;- a/gcd.bigz(a, b)
+    den &lt;- b/gcd.bigz(a, b)
+    list(num = num, den = den)
 }
 </code></pre>
 
@@ -471,7 +486,7 @@ list(num=num, den=den)
 ## [1] 1000000000000000
 </code></pre>
 
-<pre><code class="r">irred.frac(pi, rnd=7)
+<pre><code class="r">irred.frac(pi, rnd = 7)
 </code></pre>
 
 <pre><code>## $num
@@ -485,41 +500,48 @@ list(num=num, den=den)
 
 <p>Finally, here is a user-friendly function for evaluating \({}_2\!F_1\) with the binary splitting:</p>
 
-<pre><code class="r">Hypergeometric2F1 &lt;- function(a, b, c, z, m=7, 
-        rnd.params=max(n.decimals(c(a,b,c))), rnd.z=n.decimals(z), 
-        check.cv=FALSE){
-    frac.a &lt;- irred.frac(a,rnd.params) 
-    frac.b &lt;- irred.frac(b,rnd.params)
-    frac.c &lt;- irred.frac(c,rnd.params)
-    a1 &lt;- frac.a$num; a2 &lt;- frac.a$den
-    b1 &lt;- frac.b$num; b2 &lt;- frac.b$den
-    c1 &lt;- frac.c$num; c2 &lt;- frac.c$den
-    frac.z &lt;- irred.frac(z,rnd.z)
-    p &lt;- frac.z$num; q &lt;- frac.z$den
-    out &lt;- hypergeo_bs(a1,a2, b1,b2, c1,c2, p,q, m)
-    if(check.cv){
-        x &lt;- hypergeo_bs(a1,a2, b1,b2, c1,c2, p,q, m+1)
-        cv &lt;- x==out
-        out &lt;- list(result=out, convergence=cv)
-        if(!cv){
-            out$convergence &lt;- paste(out$convergence, &quot; - m=&quot;, m, &quot; need to be increased&quot;, sep=&quot;&quot;)
-        } 
+<pre><code class="r">Hypergeometric2F1 &lt;- function(a, b, c, z, m = 7, rnd.params = max(n.decimals(c(a, 
+    b, c))), rnd.z = n.decimals(z), check.cv = FALSE) {
+    frac.a &lt;- irred.frac(a, rnd.params)
+    frac.b &lt;- irred.frac(b, rnd.params)
+    frac.c &lt;- irred.frac(c, rnd.params)
+    a1 &lt;- frac.a$num
+    a2 &lt;- frac.a$den
+    b1 &lt;- frac.b$num
+    b2 &lt;- frac.b$den
+    c1 &lt;- frac.c$num
+    c2 &lt;- frac.c$den
+    frac.z &lt;- irred.frac(z, rnd.z)
+    p &lt;- frac.z$num
+    q &lt;- frac.z$den
+    out &lt;- hypergeo_bs(a1, a2, b1, b2, c1, c2, p, q, m)
+    if (check.cv) {
+        x &lt;- hypergeo_bs(a1, a2, b1, b2, c1, c2, p, q, m + 1)
+        cv &lt;- x == out
+        out &lt;- list(result = out, convergence = cv)
+        if (!cv) {
+            out$convergence &lt;- paste(out$convergence, &quot; - m=&quot;, 
+                m, &quot; need to be increased&quot;, sep = &quot;&quot;)
+        }
     }
-return(out); return(a)
+    return(out)
+    return(a)
 }
 </code></pre>
 
 <p>For example:</p>
 
-<pre><code class="r">a &lt;- 20.5; b &lt;- 11.92; c &lt;- 19
+<pre><code class="r">a &lt;- 20.5
+b &lt;- 11.92
+c &lt;- 19
 z &lt;- 0.5
-Hypergeometric2F1(a,b,c,z)
+Hypergeometric2F1(a, b, c, z)
 </code></pre>
 
 <pre><code>## [1] &quot;8057.994139606238604756&quot;
 </code></pre>
 
-<pre><code class="r">Hypergeometric2F1(a,b,c,z, m=3, check.cv=TRUE)
+<pre><code class="r">Hypergeometric2F1(a, b, c, z, m = 3, check.cv = TRUE)
 </code></pre>
 
 <pre><code>## $result
@@ -529,7 +551,7 @@ Hypergeometric2F1(a,b,c,z)
 ## [1] &quot;FALSE - m=3 need to be increased&quot;
 </code></pre>
 
-<pre><code class="r">Hypergeometric2F1(a,b,c,z, m=7, check.cv=TRUE)
+<pre><code class="r">Hypergeometric2F1(a, b, c, z, m = 7, check.cv = TRUE)
 </code></pre>
 
 <pre><code>## $result
@@ -542,15 +564,10 @@ Hypergeometric2F1(a,b,c,z)
 <p>Note that Robin Hankin&#39;s <code>gsl</code> package does an excellent job:</p>
 
 <pre><code class="r">library(gsl)
+hyperg_2F1(a, b, c, z)
 </code></pre>
 
-<pre><code>## Error in library(gsl): there is no package called &#39;gsl&#39;
-</code></pre>
-
-<pre><code class="r">hyperg_2F1(a,b,c,z)
-</code></pre>
-
-<pre><code>## Error in eval(expr, envir, enclos): impossible de trouver la fonction &quot;hyperg_2F1&quot;
+<pre><code>## [1] 8058
 </code></pre>
 
 </div>

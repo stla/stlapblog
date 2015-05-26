@@ -8,6 +8,8 @@ date : 2014-01-14
 
 
 
+
+
 Most usually, the mathematical treatment of Gaussian linear models starts with 
 the matricial writing $Y=X\beta+\sigma G$, where $Y$ is a random vector modelling the 
 $n$ response values, $X$ is a known matrix, $\beta$ is 
