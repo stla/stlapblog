@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+  <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="./css/flot01.css" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript" src="./libraries/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="./libraries/jquery.flot.js"></script>
+        <script language="javascript" type="text/javascript" src="./libraries/jquery-flot-dashes.js"></script>
+    <script language="javascript" type="text/javascript" src="./libraries/jStat/core.js"></script>
+   <script language="javascript" type="text/javascript" src="./libraries/jStat/special.js"></script>
+    <script language="javascript" type="text/javascript" src="./libraries/jStat/distribution.js"></script>
+    <script language="javascript" type="text/javascript" src="./libraries/jStat/vector.js"></script>
+    <script language="javascript" type="text/javascript" src="./libraries/jStat/test.js"></script>
+     <script language="javascript" type="text/javascript" src="./libraries/underscore-min.js"></script>
+
+<script language="javascript" type="text/javascript">
+function logit(p) { return Math.log(p)-Math.log(1-p); }
+function expit(x) { return Math.exp(x)/(1+Math.exp(x)); }
+
+function Power0(Theta, precision, I, J, nsims, U, Z){
+	if(typeof U == 'undefined'){
+		var U = new Array(I);
+		for (var i = 0; i < I; i++) {
+			U[i] = new Array(nsims);
+			for(var sim=0; sim<nsims; sim++){
+				U[i][sim] = new Array(J);
+				for(var j=0; j<J; j++){
+					U[i][sim][j] = Math.random();
+				}
+			}
+		}
+	}
+	if(typeof Z == 'undefined'){
+		var jGauss = jStat.normal;
+		var Z = new Array(I);
+		for (var i = 0; i < I; i++) {
+			Z[i] = new Array(nsims);
+			for(var sim=0; sim<nsims; sim++){
+				Z[i][sim] =  jGauss.sample(0,1);
+			}
+		}
+	}
+	var sigma= Math.sqrt(1/precision);
+	var lower = 0;
+	var upper = 0;
+	var twosided = 0;
+	for(var sim=0; sim<nsims; sim++){
+		var theta = Array(I);
+		var y = Array(I); 
+		for(var i=0; i<I; i++){
+			theta[i] = expit(logit(Theta) + sigma*Z[i][sim]);
+			y[i] = 0;
+			for(var j=0; j<J; j++){
+				y[i] += (U[i][sim][j] < theta[i]);
+			}
+			y[i] /= J;
+		}
+		var bounds = jStat.tci(jStat(y).mean(), alpha=.05, y); 
+		lower += (bounds[0] < Theta);
+		upper += (bounds[1] > Theta);
+		twosided += (bounds[0] < Theta) && (bounds[1] > Theta);
+	}
+	return [lower/nsims, upper/nsims, twosided/nsims];
+}
+
+function Power(precision, I, J, nsims, npoints, U, Z){
+	var lower=[];
+	var upper=[];
+	var twosided=[];
+	if(typeof U == 'undefined'){
+		var U = new Array(I);
+		for (var i = 0; i < I; i++) {
+			U[i] = new Array(nsims);
+			for(var sim=0; sim<nsims; sim++){
+				U[i][sim] = new Array(J);
+				for(var j=0; j<J; j++){
+					U[i][sim][j] = Math.random();
+				}
+			}
+		}
+	} else {
+		U = U.slice(0,I);
+	}
+	if(typeof Z == 'undefined'){
+		var jGauss = jStat.normal;
+		var Z = new Array(I);
+		for (var i = 0; i < I; i++) {
+			Z[i] = new Array(nsims);
+			for(var sim=0; sim<nsims; sim++){
+				Z[i][sim] =  jGauss.sample(0,1);
+			}
+		}
+	} else {
+		Z = Z.slice(0,I);
+	}
+	for(var i=1; i<npoints; i++){
+		var Theta=i/npoints;
+		var power=Power0(Theta, precision, I, J, nsims, U, Z);
+		lower.push([Theta, power[0]]);
+		upper.push([Theta, power[1]]);
+		twosided.push([Theta, power[2]]);		
+	}
+	return [lower,upper,twosided];
+}
+</script>
+    
+
+    
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	var I_max = 200;
+	var nsims = 5000;
+	var U = new Array(I_max);
+	for (var i = 0; i < I_max; i++) {
+		U[i] = new Array(nsims);
+	}
+	var jGauss = jStat.normal;
+	var Z = new Array(I_max);
+	for (var i = 0; i < I_max; i++) {
+		Z[i] = new Array(nsims);
+		for(var sim=0; sim<nsims; sim++){
+			Z[i][sim] =  jGauss.sample(0,1);
+		}
+	}
+	
+	function myFunction(I,J,precision) {
+		for (var i = 0; i < I; i++) {
+			for(var sim=0; sim<nsims; sim++){
+				U[i][sim] = new Array(J);
+				for(var j=0; j<J; j++){
+					U[i][sim][j] = Math.random();
+				}
+			}
+		}
+		var xy = Power(100, I, J, nsims=nsims, npoints=30, U, Z);
+	    $.plot("#placeholder", 
+			[{
+				label: 'lower',
+				data: xy[0],
+				shadowSize: 0 
+			}, {
+				label: 'upper',
+				data : xy[1],
+				shadowSize: 0 
+			}, {
+				label: 'twosided',
+				data : xy[2],
+				shadowSize: 0 
+			},{
+				label: '97.5%',
+				data: [[0,.975],[1,.975]],
+				dashes: { show: true },
+				points: { show: true },
+				shadowSize: 0 
+			},{
+				label: '95%', 
+				data: [[0,.95],[1,.95]],
+				dashes: { show: true },
+				points: { show: true },
+				shadowSize: 0 
+			}],
+			//{
+				//grid: {
+				//markings: [
+					//{ color: '#000', lineWidth: 1, xaxis: { from: -2, to: 2 } },
+				//]
+				//}
+			//},
+			{ yaxis: {min: 0.9, max: 1 } }
+			);    
+	}
+	
+	$('#I, #J, #sigma').keyup(function () {
+	    var I = $('#I').val();
+	    var J = $('#J').val();
+	    var sigma = $('#sigma').val();
+		myFunction(I,J,1/sigma^2);
+	});
+	
+	var I = 5;
+	var J = 6;
+	var sigma=1;
+	$('#I').val(I)
+	$('#J').val(J)
+	$('#sigma').val(sigma)
+	myFunction(I,J,1/sigma^2);
+	
+
+});
+
+</script>
+  </head>
+  <body>
+  <div id="content">
+
+
+
+		<form>
+		  I (number of individuals): 
+		  <input id="I", type="number" name="I" min="2" max="200">
+		  J (number of trials per individual):
+		    <input id="J", type="number" name="J" min="2" max="50">
+		</form>
+
+		<form>
+		  &sigma; (standard deviation around <em>logit(&Theta;)</em>)
+		    <input id="sigma"  type="number" name="sigma" min="0" max="50">
+		</form>
+
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+	</div>
+  
+  </body>
+  </html>
