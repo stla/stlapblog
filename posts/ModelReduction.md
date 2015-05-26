@@ -6,9 +6,6 @@ date : 2014-04-12
 
 
 
-**This article is still under construction**
-
-
 
 
 ## Reducing the one-way ANOVA model with random effects
@@ -102,16 +99,16 @@ dat <- transform(dat,
 head(dat)
 ```
 
-```
-##   factor1 factor2       y
-## 1       1       1  0.7533
-## 2       1       2  3.0144
-## 3       1       3  1.6449
-## 4       1       1  2.0282
-## 5       1       2 -1.2169
-## 6       1       3  2.7584
-```
 
+
+|factor1 |factor2 |         y|
+|:-------|:-------|---------:|
+|1       |1       |  0.753311|
+|1       |2       |  3.014355|
+|1       |3       |  1.644866|
+|1       |1       |  2.028168|
+|1       |2       | -1.216875|
+|1       |3       |  2.758396|
 
 Fitting the model as follows, the parameter of interest $\alpha_1=1$ is named `factor11` in R:
 
@@ -130,7 +127,6 @@ pandoc.table(confint(fit1), style="rmarkdown", digits=3, emphasize.rows=2)
 |   **factor21**    |  -1.7   |  -0.116  |
 |   **factor22**    |  -0.46  |   1.12   |
 
-
 Now we look at the confidence interval in the reducel model ${\cal M}'$:
 
 
@@ -148,7 +144,6 @@ pandoc.table(confint(fit2), style="rmarkdown", digits=3, emphasize.rows=2)
 |   **factor11**    | *0.206* |  *1.77*  |
 |   **factor21**    |  -2.01  |  0.202   |
 |   **factor22**    | -0.778  |   1.44   |
-
 
 The confidence interval in ${\cal M}'$ is wider than the one in $\cal M$. 
 Let us use simulations to see this more precisely. 
@@ -193,8 +188,7 @@ axis(1, at=alpha1, labels=expression(alpha[1]))
 abline(v=alpha1, lty="dashed")
 ```
 
-![plot of chunk unnamed-chunk-4](assets/fig/ModelReductionunnamed-chunk-4.png) 
-
+![plot of chunk unnamed-chunk-4](assets/fig/ModelReductionunnamed-chunk-4-1.png) 
 
 As we said in the previous section, the confidence interval derived from 
 the reduced model ${\cal M}'$ is correct: for both curves, the area at the left 
@@ -223,7 +217,6 @@ mean(power2)
 ## [1] 0.7116
 ```
 
-
 Note that $H_0$ means that the first factor has no effect, and actually it can 
 be shown that the test based on the confidence interval is exactly the same 
 as the classical Fisher test provided by the `anova` function:
@@ -233,34 +226,25 @@ as the classical Fisher test provided by the `anova` function:
 anova(fit1)
 ```
 
-```
-## Analysis of Variance Table
-## 
-## Response: y
-##           Df Sum Sq Mean Sq F value Pr(>F)   
-## factor1    1   23.5   23.46   13.64 0.0014 **
-## factor2    2   10.1    5.05    2.93 0.0763 . 
-## Residuals 20   34.4    1.72                  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-```
+
+
+|          | Df|   Sum Sq|   Mean Sq|   F value|    Pr(>F)|
+|:---------|--:|--------:|---------:|---------:|---------:|
+|factor1   |  1| 23.45944| 23.459444| 13.641359| 0.0014391|
+|factor2   |  2| 10.09083|  5.045413|  2.933842| 0.0763352|
+|Residuals | 20| 34.39458|  1.719729|        NA|        NA|
 
 ```r
 anova(fit2)
 ```
 
-```
-## Analysis of Variance Table
-## 
-## Response: y
-##           Df Sum Sq Mean Sq F value Pr(>F)  
-## factor1    1   5.86    5.86   29.51  0.032 *
-## factor2    2   2.52    1.26    6.35  0.136  
-## Residuals  2   0.40    0.20                 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-```
 
+
+|          | Df|    Sum Sq|   Mean Sq|  F value|    Pr(>F)|
+|:---------|--:|---------:|---------:|--------:|---------:|
+|factor1   |  1| 5.8648610| 5.8648610| 29.50589| 0.0322605|
+|factor2   |  2| 2.5227066| 1.2613533|  6.34582| 0.1361318|
+|Residuals |  2| 0.3975383| 0.1987692|       NA|        NA|
 
 We can understand why the power is suboptimal in ${\cal M}'$. 
 As you know, the $F$ statistic is the ratio of the mean square of 
@@ -282,19 +266,14 @@ which is here:
 anova(update(fit1, y~factor1*factor2)) 
 ```
 
-```
-## Analysis of Variance Table
-## 
-## Response: y
-##                 Df Sum Sq Mean Sq F value Pr(>F)   
-## factor1          1   23.5   23.46   12.87 0.0021 **
-## factor2          2   10.1    5.05    2.77 0.0895 . 
-## factor1:factor2  2    1.6    0.80    0.44 0.6531   
-## Residuals       18   32.8    1.82                  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-```
 
+
+|                | Df|    Sum Sq|    Mean Sq|    F value|    Pr(>F)|
+|:---------------|--:|---------:|----------:|----------:|---------:|
+|factor1         |  1| 23.459444| 23.4594441| 12.8723459| 0.0021035|
+|factor2         |  2| 10.090827|  5.0454133|  2.7684503| 0.0894765|
+|factor1:factor2 |  2|  1.590153|  0.7950767|  0.4362636| 0.6531035|
+|Residuals       | 18| 32.804432|  1.8224684|         NA|        NA|
 
 The first three mean squares are exactly $K=4$ times the sum of squares in 
 ${\cal M}'$:
@@ -304,13 +283,13 @@ ${\cal M}'$:
 K*anova(fit2)[,2:3]
 ```
 
-```
-##           Sum Sq Mean Sq
-## factor1    23.46 23.4594
-## factor2    10.09  5.0454
-## Residuals   1.59  0.7951
-```
 
+
+|          |    Sum Sq|    Mean Sq|
+|:---------|---------:|----------:|
+|factor1   | 23.459444| 23.4594441|
+|factor2   | 10.090827|  5.0454133|
+|Residuals |  1.590153|  0.7950767|
 
  
 Thus, we have the following equality about the classical Fisher statistic $F'$ 

@@ -89,7 +89,7 @@ The `banova` function takes a short time to generate $10^6$ samples of the poste
 ```r
 > system.time(sims <- banova(y, group, nsims = 1e+06))
    user  system elapsed 
-  0.602   0.025   0.626 
+  0.347   0.000   0.345 
 > head(sims,3)
 ```
 
@@ -211,7 +211,8 @@ Thus, we could derive an estimate and a credibility interval around the Kolmogor
 
 ```r
 > Kdist <- function(µ1, µ2, sigma) ((µ1+µ2)/2/sigma) %>% {pnorm(., µ1, sigma) - pnorm(., µ2, sigma)} %>% abs
-> Kdist_sims <- with(sims, 100*Kdist(µ1, µ2, sigma))mean(Kdist_sims); quantile(Kdist_sims, probs = c(2.5,97.5)/100)
+> Kdist_sims <- with(sims, 100*Kdist(µ1, µ2, sigma))
+> mean(Kdist_sims); quantile(Kdist_sims, probs = c(2.5,97.5)/100)
 [1] 11.54142
       2.5%      97.5% 
  0.4700835 31.1350492 
@@ -352,7 +353,7 @@ The R function `Kdist` below returns the Kolmogorov distance:
 
 ```r
 Kdist00 <-  function(a,b){
-  z <- (a * b - sign(b) * sqrt(b^2 + 2 * (a^2 - 1) * log(a)))/(1 - a^2)
+  z <- (a * b - (sign(b)+(b==0)) * sqrt(b^2 + 2 * (a^2 - 1) * log(a)))/(1 - a^2)
   out <- pnorm(a*z+b)-pnorm(z)
   attr(out, "where") <- z
   return(out)

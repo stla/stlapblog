@@ -5,7 +5,6 @@ date : 2013-03-15
 
 
 
-
 In [<u>my previous article</u>](http://stla.github.io/stlapblog/posts/rgl_knitr.html) I showed an interactive 3D surface response fitted from a model with two continous predictors. But when there is more than two continuous predictors, since we can use only two predictors at time in the image, we can only show a surface plot depending on the fixed values of the other predictors. Here we will build a `Shiny` application allowing to visualize a surface plot *reactive* to the values of the other predictors.
 
 For our illustration we use the (coded) dataset `heli` available in the `rsm` package. 
@@ -104,13 +103,11 @@ print(heli, decode=FALSE)
 ```
 
 
-
 A second-order response-surface model for these data is fitted using
 
 ```r
 heli.rsm <- rsm(ave ~ block + SO(x1,x2,x3,x4), data = heli) 
 ```
-
 
 The fitted surface response is shown below as a function of `x3` and `x4` with 
 the values of `x1` and `x2` both fixed at $0$:  
@@ -120,8 +117,7 @@ the values of `x1` and `x2` both fixed at $0$:
 persp(heli.rsm, ~x3+x4, at=list(x1=0,x2=0), col = rainbow(50), contours = "colors")
 ```
 
-![plot of chunk unnamed-chunk-3](assets/fig/rsmShinyunnamed-chunk-3.png) 
-
+![plot of chunk unnamed-chunk-3](assets/fig/rsmShinyunnamed-chunk-3-1.png) 
 
 Now we build a `Shiny` application which does the same plot with *reactive* values of `x1` and `x2`. 
 
@@ -157,7 +153,6 @@ shinyUI(pageWithSidebar(
 ))
 ```
 
-
 **server.R file** drawing the surface:
 
 ```r
@@ -174,7 +169,6 @@ shinyServer(function(input, output){
     })
 })
 ```
-
 This `Shiny` application you see below is actually hosted at my  *Shiny beta hosting account* and 
 is accessible at [http://glimmer.rstudio.com/stla/3Dsliced/](http://glimmer.rstudio.com/stla/3Dsliced/). 
 I have embedded it here by typing the following html code: 

@@ -6,7 +6,6 @@ date : 2014-04-09
 
 
 
-
  In the article ['Using R to compute the Kantorovich distance'](http://stla.github.io/stlapblog/posts/KantorovichWithR.html) I have shown how to use the [cddlibb C library](http://web.mit.edu/sage/export/tmp/cddlib-094b/doc/cddlibman.pdf) through R with the help of the [rccd R package](http://cran.r-project.org/web/packages/rcdd/vignettes/vinny.pdf) to compute the Kantorovich distance between two probability measures (on a finite set). In the present article I show how to do so using three 
  different ways with [Julia](http://julialang.org/):
  
@@ -40,7 +39,6 @@ mu = [1/7, 2/7, 4/7]
 nu = [1/4, 1/4, 1/2]
 ```
 
-
 Recall that the Kantorovich distance is defined from an initial distance which we take to be the $0-1$ distance, and is represented in the $D$ matrix defined as follows with Julia:
 
 
@@ -48,7 +46,6 @@ Recall that the Kantorovich distance is defined from an initial distance which w
 n = length(mu)
 D = 1.-eye(n);
 ```
-
 
 
 ```r
@@ -59,7 +56,6 @@ julia> D
  1.0  1.0  0.0
 ```
 
-
 Thus, the Julia `eye` function is similar to the R `diag` function. 
 
 Note that we have defined $D$ by typing "`1.-eye(n)`" and not "`1-eye(n)`" which 
@@ -69,13 +65,11 @@ I'm afraid you are puzzled because you don't know whether "`1.-eye(n)`" is
 ```r
 1. - eye(n)
 ```
-
 or
 
 ```r
 1 .- eye(n)
 ```
-
 ? Don't worry, this is very easy to know with Julia, you can get the structure of "`1.-eye(n)`" as an 
 expression:
 
@@ -85,7 +79,6 @@ julia> :(1.-eye(n))
 :(.-(1,eye(n)))
 ```
 
-
 That means the operator "`.-`" acts on the integer "`1`" and the matrix "`eye(n)`", whereas "`1. - eye(n)`" is the expression 
 for the operator "`-`"  acting on the float "`1.`" and "`eye(n)`":
 
@@ -94,7 +87,6 @@ for the operator "`-`"  acting on the float "`1.`" and "`eye(n)`":
 julia> :(1. - eye(n))
 :(-(1.0,eye(n)))
 ```
-
 
 
 ## Constraint matrix
@@ -131,7 +123,6 @@ A=vcat(M1,M2);
 ```
 
 
-
 ```r
 julia> A
 6x9 Array{Float64,2}:
@@ -142,7 +133,6 @@ julia> A
  0.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0  0.0
  0.0  0.0  1.0  0.0  0.0  1.0  0.0  0.0  1.0
 ```
-
 
 
 Recall that the constraints of our problem are the linear equality constraints 
@@ -162,14 +152,12 @@ lp = GLPK.Prob()
 GLPK.set_prob_name(lp, "kanto")
 ```
 
-
 Computing the Kantorovich distance is a minimization problem, declared as follows:
 
 
 ```r
 GLPK.set_obj_dir(lp, GLPK.MIN)
 ```
-
 
 (`obj` refers to *objective function*, the function to be optimized).
 
@@ -186,7 +174,6 @@ for i in 1:n
 end
 ```
 
-
 Now we specify the positivity constraints $p_{ij} \geq 0$ about the variables $p_{ij}$ 
 corresponding to the columns of the constraint matrix, and we attach to each column the 
 corresponding coefficient of the objective function, given here by the matrix $D$:
@@ -202,7 +189,6 @@ for i in 1:n, j in 1:n
 end
 ```
 
-
 We are ready ! Load the matrix, run the algorithm :
 
 
@@ -210,7 +196,6 @@ We are ready ! Load the matrix, run the algorithm :
 GLPK.load_matrix(lp, sparse(A))
 GLPK.simplex(lp);
 ```
-
 
 and get the solution:
 
@@ -220,7 +205,6 @@ julia> GLPK.get_obj_val(lp)
 0.10714285714285715
 ```
 
-
 As we have seen in the [previous article](http://stla.github.io/stlapblog/posts/KantorovichWithR.html), the exact Kantorovich distance between $\mu$ and $\nu$ is $\dfrac{3}{28}$:
 
 
@@ -229,7 +213,6 @@ julia> 3/28
 0.10714285714285714
 ```
 
-
 Have you noticed the results are *not* exactly the same:
 
 
@@ -237,7 +220,6 @@ Have you noticed the results are *not* exactly the same:
 julia> GLPK.get_obj_val(lp) - 3/28
 1.3877787807814457e-17
 ```
-
 
 Thus, the `GLPK.simplex` method does not achieve 
 the best approximation of $3/28$ in the 64 bit precision. A better 
@@ -249,12 +231,10 @@ GLPK.exact(lp);
 ```
 
 
-
 ```r
 julia> GLPK.get_obj_val(lp) - 3/28
 0.0
 ```
-
 
 However, unfortunately, it is not possible to get the rational number $3/28$ 
 with `GLPK`. 
@@ -285,7 +265,6 @@ using JuMP
 ```
 
 
-
 ```r
 julia> println("Optimal objective value is:", getObjectiveValue(m))
 Optimal objective value is:0.10714285714285715
@@ -293,7 +272,6 @@ Optimal objective value is:0.10714285714285715
 julia> 3/28
 0.10714285714285714
 ```
-
 
 As you can see, the best 64-bit precision approximation is not achieved. 
 But it is possible to get it. 
@@ -308,14 +286,12 @@ using GLPKMathProgInterface
 m = Model(solver=GLPKSolverLP(method=:Exact))
 ```
 
-
 Then re-run the rest of the code, and you'll get:
 
 ```r
 julia> getObjectiveValue(m)
 0.10714285714285714
 ```
-
 
 
 # RationalSimplex 
@@ -328,7 +304,6 @@ Rational numbers are specified in Julia with a double slash:
 mu=  [1//7, 2//7, 4//7]
 nu = [1//4, 1//4, 1//2]
 ```
-
 
 We will not use matrix gymnastics to construct the constraint matrix $A$ with rational entries, we define it 
 in Julia with our bare hands below.  
@@ -351,7 +326,6 @@ A = [1//1 1//1 1//1 0//1 0//1 0//1 0//1 0//1 0//1;
 x = status, simplex(c, :Min, A, b, ['=','=','=','=','=','=']);
 ```
 
-
 The `simplex` function provides the solution of the linear programming problem, that is, the values of 
 $p_{ij}$ achieving the Kantorovich distance:
 
@@ -370,7 +344,6 @@ julia> x
  1//2 
 ```
 
-
 The Kantorovich distance is then obtained as the scalar product of `c` with the solution: 
 
 
@@ -378,7 +351,6 @@ The Kantorovich distance is then obtained as the scalar product of `c` with the 
 julia> dot(c,x)
 3//28
 ```
-
 
 
 

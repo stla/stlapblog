@@ -6,7 +6,6 @@ date : 2014-04-06
 
 
 
-
 \(\newcommand{\indic}{\mathbf{1}}\)
 \(\newcommand{\perpoplus}{\overset{\perp}{\oplus}}\)
 \(\newcommand{\RR}{\mathbb{R}}\)
@@ -36,8 +35,7 @@ $\mu_i$. Shortly, the model can be written:
 \mu_i \sim_{\text{iid}} {\cal N}(\mu, \sigma^2_b) & i=1,\ldots,I
 \end{cases}.$$
 
-![plot of chunk anovarandommodel](assets/fig/AV1random-anovarandommodel.png) 
-
+![plot of chunk anovarandommodel](assets/fig/AV1random-anovarandommodel-1.png) 
 
 
 An equivalent writing of this model, and from now on using capital letters for random 
