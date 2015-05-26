@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Please psychologists, use random effects</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Please psychologists, use random effects</a>
+              </h3>
+              <span>25/05/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Psi_bem_RandomEffects.Rmd'>Source</a>
+              <div class='lead'>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 17px;
+   margin: 8px;
+}
+</style>
+<style type="text/css">
+#wrap { width: 1100px; height: 400px; padding: 0; overflow: hidden; }
+#frame {
+    width: 1280px;
+    height: 786px;
+    border: 0;
+    -ms-transform: scale(0.75);
+    -moz-transform: scale(0.75);
+    -o-transform: scale(0.75);
+    -webkit-transform: scale(0.75);
+    transform: scale(0.75);
+    
+    -ms-transform-origin: 0 0;
+    -moz-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+</style>
+
+<p><span class="math">\(\newcommand{\logit}{\mathrm{logit}\,}\)</span> <span class="math">\(\newcommand{\expit}{\mathrm{expit}\,}\)</span></p>
+<p><a href="http://dbem.ws/FeelingFuture.pdf" title="Feeling the future: Experimental evidence for anomalous retroactive influences on cognition and affect.">Bem’s statisical analyses</a> of his experiments yield significant effects interpreted as evidence for the existence of <a href="http://en.wikipedia.org/wiki/Parapsychology#Terminology" title="Wikipedia: Parapsychology"><em>psi</em></a>. These results immediately faced a wave of criticisms. But I was concerned by a point nobody challenged: the statistical model used in Bem’s first experiment.</p>
+<div id="bems-experiment-1" class="section level2">
+<h2>Bem’s experiment 1</h2>
+<p>In this experiment, <span class="math">\(100\)</span> subjects performed a series of Bernoulli trials: they had to guess behind which of two curtains there is an erotic picture.</p>
+<p>The design of the experiment is not clear from my reading of Bem’s article. I understand that <span class="math">\(40\)</span> subjects performed <span class="math">\(12\)</span> trials and <span class="math">\(60\)</span> subjects performed <span class="math">\(18\)</span> trials - a total of <span class="math">\(1560\)</span> trials. But the results provided in the article are not consistent with <span class="math">\(1560\)</span>; rather they are consistent with <span class="math">\(1360\)</span>.</p>
+<p>But this is not important for my purpose. Let us say there were <span class="math">\(I=100\)</span> subjects who each performed <span class="math">\(J=15\)</span> trials. And let’s make a picture with <span class="math">\(I=3\)</span> and <span class="math">\(J=4\)</span> for the sake of readability:</p>
+<p><img src="assets/fig/Psi_Bem_RandomEffects-hbinom_plot-1.png" title="" alt="" width="475.2" /></p>
+</div>
+<div id="hierarchical-binomial-model" class="section level2">
+<h2>Hierarchical binomial model</h2>
+<p>The picture above represents the model I would use for the experiment. Let me explain each point appearing in the picture, <em>from the bottom to the top</em>:</p>
+<ol style="list-style-type: decimal">
+<li><p>For each of the three subjects, a <span class="math">\(0/1\)</span> result is recorded for each of the 4 trials: a <span class="math">\(0\)</span> means the individual failed to guess the location of the erotic picture, whereas a <span class="math">\(1\)</span> indicates a success.</p></li>
+<li><p>For each subject <span class="math">\(i=1,2,3\)</span>, the series of <span class="math">\(0/1\)</span> results is modelled as <span class="math">\(4\)</span> independent Bernoulli trials with success probability <span class="math">\(\theta_i\)</span>.</p></li>
+<li><p>Assuming these subjects are selected at random in the population, the probabilities of success <span class="math">\(\theta_i\)</span> are modelled by a distribution centered around an unknown value <span class="math">\(\Theta\)</span>, representing the overall probability of succes in the population. The red ellipse <a href="http://stla.github.io/stlapblog/posts/Variance_inertia.html">represents the variance</a> of the <span class="math">\(\theta_i\)</span>’s. This is just a way to show that the <span class="math">\(\theta_i\)</span> are random. There are two common choices for the distribution of the <span class="math">\(\theta_i\)</span>:</p>
+<ul>
+<li><p>a Beta distribution whose two shape parameters are unknown;</p></li>
+<li><p>a Gaussian distribution after <em>logit</em> transformation with unknown mean <span class="math">\(\mathrm{logit}\,\Theta\)</span> and unknown standard deviation <span class="math">\(\sigma\)</span> (so the <span class="math">\(\sigma\)</span> appearing in the previous picture is the standard deviation of the <span class="math">\(\logit \theta_i\)</span>, not the one of the <span class="math">\(\theta_i\)</span>).</p></li>
+</ul></li>
+</ol>
+<p>This is called a <em>hierarchical</em> binomial model, or a model with <em>random effects</em> (the <span class="math">\(\theta_i\)</span>). With (short) mathematical notations, denoting by <span class="math">\(y_{ij}\)</span> the result of the <span class="math">\(j\)</span>-th trial for individual <span class="math">\(i\)</span>: <span class="math">\[\begin{cases}
+ (y_{ij} \mid \theta_i) \sim_{\text{iid}} \mathrm{Bernoulli}(\theta_i) &amp; j=1,\ldots,J \\ 
+\theta_i \sim_{\text{iid}} {\rm Beta}(a, b) &amp; i=1,\ldots,I
+\end{cases}\]</span> or <span class="math">\[\begin{cases}
+ (y_{ij} \mid \theta_i) \sim_{\text{iid}} \mathrm{Bernoulli}(\theta_i) &amp; j=1,\ldots,J \\ 
+\logit \theta_i \sim_{\text{iid}} {\cal N}(\logit \Theta, \sigma^2) &amp; i=1,\ldots,I
+\end{cases}.\]</span></p>
+<p>Distributions of Beta family generates random values in the interval <span class="math">\((0,1)\)</span>, but from a technical perspective they are more difficult to deal with than the normal (Gaussian distribution). In the second model, using the <em>logit</em> transformation is a way to map the interval <span class="math">\((0,1)\)</span> to the entire line of real numbers <span class="math">\((-\infty, +\infty)\)</span>, thereby allowing to use a simple normal distribution.<br />This model can be fitted with the <code>glmer</code> function of the <code>lme4</code> package. To show how it works, I simulate some fictive data with <span class="math">\(I=100\)</span>, <span class="math">\(J=15\)</span>, and an overall proportion of success <span class="math">\(53\%\)</span> (hence <span class="math">\(795\)</span> successes), similarly to the result of Bem’s experiments:</p>
+<pre class="r"><code>&gt; library(data.table)
+&gt; dat &lt;- data.table(subject=1:100)[, list(result=rep(0,15)), by=subject]
+&gt; set.seed(3141593)
+&gt; dat$result &lt;- sample(rep(c(0,1), c(1500-795, 795)), 1500, replace=FALSE)</code></pre>
+<p>These data are not simulated according to the model assumptions: I simply allocated <span class="math">\(795\)</span> successess (<span class="math">\(1\)</span>) and <span class="math">\(1500-795\)</span> (<span class="math">\(0\)</span>) at random. Below is a short part of the simulated data:</p>
+<pre class="r"><code>&gt; dat
+      subject result
+   1:       1      0
+   2:       1      0
+   3:       1      0
+   4:       1      0
+   5:       1      0
+  ---               
+1496:     100      0
+1497:     100      1
+1498:     100      1
+1499:     100      1
+1500:     100      1</code></pre>
+<p>And below are the proportions of success (the <span class="math">\(\theta_i\)</span>) for the first <span class="math">\(8\)</span> individuals:</p>
+<pre class="r"><code>&gt; dat[, list(success=mean(result)), by=subject] %&gt;% head(8)
+   subject   success
+1:       1 0.3333333
+2:       2 0.4666667
+3:       3 0.7333333
+4:       4 0.4666667
+5:       5 0.2666667
+6:       6 0.4666667
+7:       7 0.6000000
+8:       8 0.7333333</code></pre>
+<p>As you see, there are small proportions of success, such as <span class="math">\(27\%\)</span>, and high proportions of success, such as <span class="math">\(73\%\)</span>. Bem’s article does not show anything about their variability. Fitting the hierarchical binomial model gives an estimate of the overall proportion of success <span class="math">\(\Theta\)</span> as well as an estimate of this variability:</p>
+<pre class="r"><code>&gt; library(lme4)
+&gt; fit &lt;- glmer(cbind(result,1-result)~(1|subject), data=dat, family=&quot;binomial&quot;)
+&gt; summary(fit)
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: cbind(result, 1 - result) ~ (1 | subject)
+   Data: dat
+
+     AIC      BIC   logLik deviance df.resid 
+  2077.9   2088.5  -1036.9   2073.9     1498 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.0966 -1.0542  0.9119  0.9411  0.9713 
+
+Random effects:
+ Groups  Name        Variance Std.Dev.
+ subject (Intercept) 0.01676  0.1295  
+Number of obs: 1500, groups:  subject, 100
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  0.12065    0.05345   2.257    0.024 *
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The value <code>0.12065</code> appearing in the <code>Fixed effects</code> part of the output is the estimated value of <span class="math">\(\logit \Theta\)</span>. Back-transforming gives an estimated value of <span class="math">\(\Theta\)</span> close to <span class="math">\(53\%\)</span>, as expected:</p>
+<pre class="r"><code>&gt; logit &lt;- function(p) log(p)-log(1-p)
+&gt; expit &lt;- function(x) exp(x)/(1+exp(x))
+&gt; expit(0.12065)
+[1] 0.530126</code></pre>
+<p>The estimate of the standard deviation <span class="math">\(\sigma\)</span> is given in the <code>Random effects</code> part of the output. It is approximately <code>0.1295</code>. Recall that <span class="math">\(\sigma\)</span> is the standard deviation of the <span class="math">\(\logit \theta_i\)</span>, not of the <span class="math">\(\theta_i\)</span>. The estimated distribution of the <span class="math">\(\theta_i\)</span> is derived from the estimated distribution of the <span class="math">\(\logit \theta_i\)</span> by a simple application of the change of variables formula. One obtains the distribution shown on figure below:</p>
+<p><img src="assets/fig/Psi_Bem_RandomEffects-unnamed-chunk-7-1.png" title="" alt="" width="691.2" /></p>
+<p>The <code>lme4</code> package provides confidence intervals based on the profile-likelihood:</p>
+<pre class="r"><code>&gt; fit_profile &lt;- profile(fit)
+&gt; ( intervals &lt;- confint(fit_profile) )
+                 2.5 %    97.5 %
+.sig01      0.00000000 0.3401959
+(Intercept) 0.01515634 0.2270525</code></pre>
+<p>The first line is a <span class="math">\(95\%\)</span>-confidence interval about the standard deviation <span class="math">\(\sigma\)</span>, the second one is a <span class="math">\(95\%\)</span>-confidence interval about <span class="math">\(\logit \Theta\)</span>. Back-transforming gives a <span class="math">\(95\%\)</span>-confidence interval about <span class="math">\(\Theta\)</span>:</p>
+<pre class="r"><code>&gt; intervals[2,] %&gt;% expit
+    2.5 %    97.5 % 
+0.5037890 0.5565205 </code></pre>
+<p>The lower bound <span class="math">\(\approx 50.4\%\)</span> is higher than <span class="math">\(50\%\)</span>. Thus, using this confidence interval to test <span class="math">\(H_0\colon\{\Theta=50\%\}\)</span> vs <span class="math">\(H_1\colon\{\Theta&gt;50\%\}\)</span> gives a significant result at the <span class="math">\(2.5\%\)</span> significance level.</p>
+</div>
+<div id="bems-analysis-not-questioned-by-criticisms" class="section level2">
+<h2>Bem’s analysis (not questioned by criticisms)</h2>
+<p>Bem proceeds as follows. Denoting by <span class="math">\(\bar y_{i\bullet}\)</span> the proportion of success for individual <span class="math">\(i\)</span>, Bem applies the classical <span class="math">\(t\)</span>-test to the <span class="math">\(\bar y_{i\bullet}\)</span> to test <span class="math">\(H_0\colon\{\Theta=50\%\}\)</span> vs <span class="math">\(H_1\colon\{\Theta&gt;50\%\}\)</span>.</p>
+<p>As I mention in two previous articles (<a href="http://stla.github.io/stlapblog/posts/Anova1random.html" title="The balanced ANOVA model with random effects.">this one</a> and <a href="http://stla.github.io/stlapblog/posts/ModelReduction.html" title="Reducing a model to get confidence intervals">this one</a>), this procedure is totally correct for the analogue Gaussian hierarchical model. But is it correct here ? This is the point I was concerned about.</p>
+<p>One gets this <span class="math">\(95\%\)</span>-confidence interval by following Bem’s procedure:</p>
+<pre class="r"><code>&gt; t.test(dat[, list(success=mean(result)), by=subject]$success)
+
+    One Sample t-test
+
+data:  dat[, list(success = mean(result)), by = subject]$success
+t = 39.7124, df = 99, p-value &lt; 2.2e-16
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 0.5035187 0.5564813
+sample estimates:
+mean of x 
+     0.53 </code></pre>
+<p>The confidence interval is almost the same as the profile-likelihood confidence interval previously derived (say, for short, the PL interval). But the profile-likelihood is not always correct: it is based on asymptotic theory, that is, it is correct when <span class="math">\(I\)</span> and <span class="math">\(J\)</span> are not too small. When they are too small, I think (I have not checked) that the PL intervals are too small.</p>
+<p>Bem’s method implicitly assumes the statistical model on which the <span class="math">\(t\)</span>-test is founded, namely, that the <span class="math">\(\bar y_{i\bullet}\)</span> are <em>i.i.d.</em> realizations from a Gaussian distribution.</p>
+<p>At the intermediate level of the hierarchical model, by the normal approximation to the binomial distribution, the <span class="math">\(\bar y_{i\bullet}\)</span> can be approximated by independent, but <em>not i.i.d.</em> Gaussian distributions: <span class="math">\[(\bar y_{i\bullet} \mid \theta_i) \approx {\cal N}\left(\theta_i, \frac{\theta_i(1-\theta_i)}{J}\right).\]</span></p>
+<p>And at the top level of the hierarchical model, that is, after integrating the conditional distributions over the distribution of the <span class="math">\(\theta_i\)</span>, the <span class="math">\(\bar y_{i\bullet}\)</span> are independent, identically distributed, but not approximately Gaussian for all situations, even when assuming the normal approximation at the intermediate level:</p>
+<pre class="r"><code>&gt; theta &lt;- expit(rnorm(1000, 0, 1))
+&gt; y &lt;- rnorm(1000, theta, sqrt(theta*(1-theta)/15))
+&gt; qqnorm(y)
+&gt; qqline(y)</code></pre>
+<p><img src="assets/fig/Psi_Bem_RandomEffects-unnamed-chunk-13-1.png" title="" alt="" width="672" /></p>
+<p>However the approximation is good when the <span class="math">\(\theta_i\)</span> are not too dispersed, such as the case of the previously fitted distribution on our fictive data:</p>
+<pre class="r"><code>&gt; theta &lt;- expit(rnorm(1000, 0.12065, 0.1295))
+&gt; y &lt;- rnorm(1000, theta, sqrt(theta*(1-theta)/15))
+&gt; qqnorm(y)
+&gt; qqline(y)</code></pre>
+<p><img src="assets/fig/Psi_Bem_RandomEffects-unnamed-chunk-14-1.png" title="" alt="" width="672" /></p>
+<p>Now, assuming or not the normal approximation to the binomial distribution at the intermediate level, the expectation of <span class="math">\(\bar y_{i\bullet}\)</span> at this level is : <span class="math">\[E(\bar y_{i\bullet} \mid \theta_i)=\theta_i,\]</span> then at the top level the expectation is <span class="math">\(E(\theta_i)\)</span>. Thus, Bem’s inference method is about <span class="math">\(E(\theta_i)\)</span> whereas the <code>glmer</code> method draws inference about <span class="math">\(\logit\Theta=E(\logit \theta_i)\)</span> and, after back-transforming, yields inference about <span class="math">\(\Theta\)</span>. Theoretically, <span class="math">\(E(\theta_i) \neq \Theta\)</span>, but in the present situation, where the <span class="math">\(\theta_i\)</span> are not too dispersed, <span class="math">\(E(\theta_i)\)</span> is very close to <span class="math">\(\Theta\)</span>:</p>
+<pre class="r"><code>&gt; mean(theta)
+[1] 0.5307612
+&gt; expit(0.12065)
+[1] 0.530126</code></pre>
+<p>Thus, Bem’s method, up to approximation, falls into the method I called <a href="http://stla.github.io/stlapblog/posts/ModelReduction.html" title="Reducing a model to get confidence intervals"><em>Reducing a model to get a confidence interval</em></a>. Thus this method should approximately control the significance level as long as the approximation is not bad. Moreover, from the closeness between the <span class="math">\(t\)</span>-test interval and the PL interval previously seen, I suspect that the method is close to optimatility when it is valid.</p>
+<p>I have written a Javascript program to assess the frequentist coverage of the intervals. For <span class="math">\(I=100\)</span> and <span class="math">\(J=15\)</span>, I get the following graph that displays the coverage of the <span class="math">\(95\%\)</span>-confidence interval in function of <span class="math">\(\Theta\)</span>:</p>
+<p><img src="assets/img/Psi_Bem_RandomEffects-power_100-15.png" /></p>
+<p>It is really good. You can see the coverage for smaller values of <span class="math">\(I\)</span> and <span class="math">\(J\)</span> by playing with this interactive implementation of my Javascript program (computations take a while - be patient):</p>
+<div id="wrap">
+<iframe id="frame" src="assets/htmlframes/hbinom_logit01.html"></iframe>
+</div>
+<p>You can see that the coverage is always better (close to the target level) at <span class="math">\(\Theta=0.5\)</span>.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>Do Bem and his criticizers are aware that the <span class="math">\(t\)</span>-test applied to the individual proportions of succes is an approximation of the model with random effects ? I don’t know, but when reading them I think the answer is <em>no</em> because I am under the impression they consider <span class="math">\(\Theta\)</span> as an individual proportion of success common to all individuals, instead of an overall proportion in the population. And I don’t see why to use the reduction method when it is possible to fit the hierarchical model. Moreover, the non-existence of <em>psi</em> should be translated by the null hypothesis <span class="math">\(H_0\colon\{\Theta=50\% \,\, \mathrm{and}\,\, \sigma=0\}\)</span>, rather than <span class="math">\(H_0\colon\{\Theta=50\%\}\)</span>.</p>
+<p>Note that Bem’s method does not correspond to the reduction of the hierarchial binomial model in case of an unbalanced design (not all subjects perform the same number of trials), because the <span class="math">\(\bar y_{i\bullet}\)</span> in this case, are not identically distributed. It should remain approximately correct when the design is not too unbalanced, but, again, there is no interest to use this method when it is possible to use the model with random effects.</p>
+</div>
+
+
+          </div> 
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
