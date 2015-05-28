@@ -6,6 +6,7 @@ output:
   html_document: default
 ---
 
+*(this article is under progrees)*
 
 <style type="text/css">
 body, td {
@@ -50,7 +51,7 @@ K <- 0.9 # scale figures
 
 
 ```{r auxFunctions, include=FALSE}
-source('/home/stla/Github/stlapblog/posts/assets/Rfunctions/inertia_macro_v1.R', encoding='UTF-8')
+source('./assets/Rfunctions/inertia_macro_v1.R', encoding='UTF-8')
 library(diagram)
 hbinom_plot <- function (I, J, root=expression(Theta), colors=rep("white",I), mar=c(.1,.1,.1,.1)) 
 {
@@ -139,7 +140,7 @@ $$\begin{cases}
 \logit \theta_i \sim_{\text{iid}} {\cal N}(\logit \Theta, \sigma^2) & i=1,\ldots,I
 \end{cases}.$$
 
-Distributions of Beta family generates random values in the interval $(0,1)$, but from a technical perspective they are more difficult to deal with than the normal (Gaussian distribution). 
+Distributions of Beta family generate random values in the interval $(0,1)$, but from a technical perspective they are more difficult to deal with than the normal (Gaussian) distribution. 
 In the second model, using the *logit* transformation is a way to map the interval $(0,1)$ to the entire line of real numbers $(-\infty, +\infty)$, thereby allowing to use a simple normal distribution.  
 This model can be fitted with the `glmer` function of the `lme4` package. 
 To show how it works, I simulate some fictive data with $I=100$, $J=15$, and an overall proportion of success $53\%$ (hence $795$ successes), similarly to the result of Bem's experiments: 
@@ -278,7 +279,7 @@ mean(theta)
 expit(0.12065)
 ```
 
-Thus, Bem's method, up to approximation, falls into the method I called [*Reducing a model to get a confidence interval*][stla2]. Thus this method should approximately control the significance level as long as the approximation is not bad. Moreover, from the closeness between the $t$-test interval and the PL interval previously seen, I suspect that the method is close to optimatility when it is valid. 
+Thus, Bem's method, up to approximation, falls into the method I called [*Reducing a model to get a confidence interval*][stla2]. Thus this method should approximately control the significance level as long as the approximation is not bad. Moreover, from the previously seen closeness between the $t$-test interval and the PL interval, I suspect that the method is close to optimatility when it is valid. 
 
 I have written a Javascript program to assess the frequentist coverage of the intervals. For $I=100$ and $J=15$, I get the following graph that displays the coverage of the $95\%$-confidence interval in function of $\Theta$:
 
