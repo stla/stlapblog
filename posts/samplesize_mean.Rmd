@@ -13,7 +13,7 @@ mu <- 10
 sigma <- 1
 ```
 
-This article explains the methodology implemented in the Shiny application available at http://glimmer.rstudio.com/stla/samplesize_mean/
+This article explains the methodology implemented in the Shiny application available at https://stla.shinyapps.io/samplesize_mean.
 
 Statement of the problem 
 -----------------------------
