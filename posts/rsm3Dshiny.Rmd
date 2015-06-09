@@ -81,15 +81,15 @@ shinyServer(function(input, output){
     })
 })
 ```
-This `Shiny` application you see below is actually hosted at my  *Shiny beta hosting account* and 
-is accessible at [http://glimmer.rstudio.com/stla/3Dsliced/](http://glimmer.rstudio.com/stla/3Dsliced/). 
+This `Shiny` application you see below is actually hosted at my  <s>*Shiny beta hosting account*</s> *ShinyApps hosting account* and 
+is accessible at [https://stla.shinyapps.io/3Dsliced](https://stla.shinyapps.io/3Dsliced). 
 I have embedded it here by typing the following html code: 
 
 ```
-<iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 1100px; height: 600px"></iframe>
+<iframe src="https://stla.shinyapps.io/3Dsliced" style="border: none; width: 1000px; height: 500px"></iframe>
 ```
 
-<iframe src="http://glimmer.rstudio.com/stla/3Dsliced/" style="border: none; width: 1100px; height: 600px"></iframe>
+<iframe src="https://stla.shinyapps.io/3Dsliced" style="border: none; width: 1000px; height: 500px"></iframe>
 
 
 
