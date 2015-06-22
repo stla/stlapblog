@@ -129,20 +129,20 @@ end
 <pre><code>&gt;&gt; # time consumed by the function:
 &gt;&gt; start = Time.now; set_representation(15); finish = Time.now
 &gt;&gt; puts finish - start
-0.085996691
+0.083333906
 &gt;&gt; # time consumed by the hash:
 &gt;&gt; start = Time.now; set_hash[15]; finish = Time.now
 &gt;&gt; puts finish - start
-0.085022553</code></pre>
+0.081732193</code></pre>
 <p><strong><em>But</em></strong> look what happens if I re-run the same code:</p>
 <pre><code>&gt;&gt; # time consumed by the function:
 &gt;&gt; start = Time.now; set_representation(15); finish = Time.now
 &gt;&gt; puts finish - start
-0.082815154
+0.084197709
 &gt;&gt; # time consumed by the hash:
 &gt;&gt; start = Time.now; set_hash[15]; finish = Time.now
 &gt;&gt; puts finish - start
-1.515e-06</code></pre>
+1.215e-06</code></pre>
 <p>Now, the time consumed by <code>set_hash[15]</code> is almost instantaneous! This is due to <a href="https://en.wikipedia.org/wiki/Memoization"><em>memoization</em></a> (see <a href="http://www.sitepoint.com/algorithmic-fun-ruby-hashes/">Algorithmic Fun with Ruby Hashes</a>).</p>
 </div>
 <div id="displaying-a-set" class="section level2">
@@ -181,14 +181,14 @@ end</code></pre>
 &gt;&gt; puts display_hash[three] # beautiful
 {Ø,{Ø},{Ø,{Ø}},{Ø,{Ø},{Ø,{Ø}}}}</code></pre>
 <p>The memoization offered by hash approach has a great advantage here. Take for example the case of <span class="math">\(2\)</span>: <span class="math">\[2 = \{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\} = \{\varnothing,  \{\varnothing\}, 1\},\]</span> and then, when the set representation of <span class="math">\(2\)</span> is generated, the set representation of <span class="math">\(1\)</span> is generated as well, and this one is memoized. For example we can see that the time consumed by <code>set_hash[16]</code> is almost instantaneous once <code>set_hash[17]</code> is calculated:</p>
-<pre><code>&gt;&gt; # time consumed by the function:
+<pre><code>&gt;&gt; # time consumed by set_hash[17]:
 &gt;&gt; start = Time.now; set_hash[17]; finish = Time.now
 &gt;&gt; puts finish - start
-0.243497168
-&gt;&gt; # time consumed by the hash:
+0.245833472
+&gt;&gt; # time consumed by set_hash[16]:
 &gt;&gt; start = Time.now; set_hash[16]; finish = Time.now
 &gt;&gt; puts finish - start
-1.153e-06</code></pre>
+1.157e-06</code></pre>
 </div>
 <div id="unordered-pairs" class="section level2">
 <h2>Unordered pairs</h2>

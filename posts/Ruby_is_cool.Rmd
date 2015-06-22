@@ -190,10 +190,10 @@ and then, when the set representation of $2$ is generated, the set representatio
 For example we can see that the time consumed by `set_hash[16]` is almost instantaneous once  `set_hash[17]` is calculated: 
 
 ```{r, engine='RUBY', use.memo=TRUE, memo=FALSE}
-# time consumed by the function:
+# time consumed by set_hash[17]:
 start = Time.now; set_hash[17]; finish = Time.now
 puts finish - start
-# time consumed by the hash:
+# time consumed by set_hash[16]:
 start = Time.now; set_hash[16]; finish = Time.now
 puts finish - start
 ```
