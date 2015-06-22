@@ -184,7 +184,7 @@ puts three.inspect # ugly
 puts display_hash[three] # beautiful
 ```
 
-The memoization offered by hash approach has a great advantage here. Take for example the case of $2$:
+The memoization offered by the hash approach has a great advantage here. Take for example the case of $2$:
 $$2 = \{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\} = \{\varnothing,  \{\varnothing\}, 1\},$$
 and then, when the set representation of $2$ is generated, the set representation of $1$ is generated as well, and this one is memoized. 
 For example we can see that the time consumed by `set_hash[16]` is almost instantaneous once  `set_hash[17]` is calculated: 
