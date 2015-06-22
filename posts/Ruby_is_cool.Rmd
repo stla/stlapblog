@@ -1,0 +1,246 @@
+---
+title: "Ruby is cool"
+author: "Stéphane Laurent"
+date: "22/06/2015"
+output: html_document
+---
+
+*(first version)*
+
+```{r, include=FALSE, memo=TRUE}
+library(knitr)
+join <- function(x){ 
+  tab <- stringr::str_detect(x, "  ") | stringr::str_detect(x, "\t")
+  begins <- which(sapply(seq_len(length(x)-1), function(i) !tab[i] && tab[i+1])) 
+  ends <- which(sapply(seq_len(length(x)-1), function(i) tab[i] && !tab[i+1]))+1
+  for(i in 1:length(begins)){
+    begin <- begins[i]
+    end <- ends[i]
+    x[begin] <- paste(x[begin:end], collapse="\n")
+    x[(begin+1):end] <- NA
+    }
+  x <- x[-which(is.na(x))]
+  return(x)
+  }
+# example: 
+# > join(c("x=2", "y=3;", "def f(a)", "  w=a*a",  "  return w", "end", "puts f(x+y)", "def g(a)", "  return a*a*a", "end"))
+# [1] "x=2"                                "y=3;"                              
+# [3] "def f(a)\n  w=a*a\n  return w\nend" "puts f(x+y)"                       
+# [5] "def g(a)\n  return a*a*a\nend"   
+knit_engines$set(RUBY = function(options) {
+  if(!exists("MEMO")) MEMO <<- list()
+  if(length(MEMO) && !is.null(options$use.memo) && options$use.memo){
+    precode <- do.call(c, MEMO)
+    memo <- TRUE
+    }else{
+      memo <- FALSE
+      }
+  code0 <- options$code
+  if(!is.null(options$memo) && options$memo) MEMO <<- c(MEMO, list(code0))
+  if(length(code0)>1){
+    code <-   if(any(stringr::str_detect(code0, "  "))) join(code0) else code0
+    }else{
+      code <- code0
+      }
+  prog <- paste(sapply(code, function(x) sprintf("puts '>> %s'\n%s", x, x)), collapse="\n")
+  if(memo){
+    prog <- paste(paste(precode, collapse="\n"), "\n", prog, collapse="\n")
+    }
+  out <-  system2("ruby", args=c("-e", shQuote(prog)), stdout=TRUE, stderr=TRUE)
+  start <- which.max(out==paste0(">> ", code0[1]))
+  if(memo) out <- out[start:length(out)] # tail(out, length(out)-start+2)
+  out <- paste(out, collapse="\n") #  capture.output(str(out))
+  options$comment=NA
+  return( knitr:::wrap.character(out, options))
+  })
+```
+
+
+Do you think this title is ridiculous ? I do. But last week I gave my first try to [Ruby](https://www.ruby-lang.org/en/), and I have nothing really useful to share: this blog post is just the story of someone discovering Ruby.
+
+I was looking for a (cool) programming language providing a way to deal with sets. The [set library](http://ruby-doc.org/stdlib-2.2.2/libdoc/set/rdoc/Set.html) perfectly fulfilled my expectation :
+
+```{r, engine='RUBY', memo=TRUE}
+require "set" 
+s1 = ["a", "b"].to_set
+puts s1.inspect
+s2 = ["b", "c"].to_set
+puts s2.inspect
+puts s1.subset? s2
+puts s1.union(s2).inspect
+```
+
+Is there something to explain in the above code ? I don't think so (unless you have never used any programming language). And this one of the reasons for which Ruby is cool.
+
+## Set-theoretic construction of natural numbers
+
+In order to train myself to use the Ruby langage, I undertook to implement the set-theoretic construction of the natural numbers:
+$$0 = \{\varnothing\}, \quad 1=0 \cup \{0\}= \{\varnothing,  \{\varnothing\}\}, \quad 2=1\cup\{1\}=\{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\}, \quad ...$$
+
+To define $0$ we can use $\varnothing$ as a character or as a symbol:
+
+```{r, engine='RUBY', use.memo=TRUE}
+puts ["Ø"].to_set.inspect
+puts [:Ø].to_set.inspect
+```
+
+Now, we define a recursive function calculating the set representation of an integer:
+
+```{r, engine='RUBY', use.memo=TRUE, memo=TRUE}
+def set_representation(n) 
+  n == 0 ? ["Ø"].to_set : set_representation(n-1).tap {|x| break x.union([x].to_set)} 
+end
+```
+
+See [this stackoverflow thread](http://stackoverflow.com/questions/14780783/ruby-map-for-a-single-object) about the usage of `tap` to map a single object to a function. 
+
+The `set_representation`  function works fine:
+
+```{r, engine='RUBY', use.memo=TRUE}
+puts set_representation(1).inspect
+puts set_representation(2).inspect
+```
+
+However, another way consists in using a *hash*, as I learnt by reading [Algorithmic Fun with Ruby Hashes](http://www.sitepoint.com/algorithmic-fun-ruby-hashes/). The code is similar to the one of `set_representation`, except that the first value must be initialized outside the body:
+
+```{r, engine='RUBY', memo=TRUE, use.memo=TRUE}
+set_hash ||= Hash.new do |hash,n|
+  hash[n] =  hash[n-1].tap {|x| break x.union([x].to_set)}
+end
+# initialization:
+set_hash[0] = ["Ø"].to_set
+```
+
+Results, as expected, are the same:
+
+```{r, engine='RUBY', use.memo=TRUE}
+puts set_hash[2].inspect
+```
+
+And the computation times are comparable:
+
+```{r, engine='RUBY', use.memo=TRUE, memo=TRUE}
+# time consumed by the function:
+start = Time.now; set_representation(15); finish = Time.now
+puts finish - start
+# time consumed by the hash:
+start = Time.now; set_hash[15]; finish = Time.now
+puts finish - start
+```
+
+***But*** look what happens if I re-run the same code:
+
+```{r, engine='RUBY', use.memo=TRUE, memo=FALSE}
+# time consumed by the function:
+start = Time.now; set_representation(15); finish = Time.now
+puts finish - start
+# time consumed by the hash:
+start = Time.now; set_hash[15]; finish = Time.now
+puts finish - start
+```
+
+Now, the time consumed by `set_hash[15]` is almost instantaneous! This is due to [*memoization*](https://en.wikipedia.org/wiki/Memoization) (see  [Algorithmic Fun with Ruby Hashes](http://www.sitepoint.com/algorithmic-fun-ruby-hashes/)). 
+
+
+## Displaying a set 
+
+My next goal was to get a better rendering of the sets. Indeed, it is hard to read something like :
+
+```{r, engine='RUBY', use.memo=TRUE}
+puts set_hash[2].inspect
+```
+
+as compared to $$\{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\}$$ isn't it ? 
+Then I defined a recursive hash:
+
+```{r, engine='RUBY', use.memo=TRUE, memo=TRUE}
+display_hash ||= Hash.new do |hash,set|
+  if set.inject(true) {|status, x| status and x.class==String}
+    display_hash[set] = "{" + set.inject {|union, x| union + "," + x} + "}"
+  else 
+    set = set.to_a
+    for i in 0 .. set.size-1
+      if set[i].class == Set 
+        set[i] = display_hash[Set.new(set[i])]
+      end
+    end
+    display_hash[set] = display_hash[set.to_set] 
+  end
+end
+```
+
+The first line checks whether all elements of the set are some strings. If so, it returns the set as a character string with a comma separating the elements and some braces. Otherwise, the hash is calculated for each element of the set which are themselves some sets (the procedure assumes that the set to be displayed consists only of character strings and of sets of such sets). 
+And it works as desired:
+
+```{r, engine='RUBY', use.memo=TRUE}
+one = set_hash[1]
+two = set_hash[2]
+three = set_hash[3]
+puts one.inspect # ugly 
+puts display_hash[one] # beautiful
+puts two.inspect # ugly
+puts display_hash[two] # beautiful
+puts three.inspect # ugly 
+puts display_hash[three] # beautiful
+```
+
+The memoization offered by hash approach has a great advantage here. Take for example the case of $2$:
+$$2 = \{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\} = \{\varnothing,  \{\varnothing\}, 1\},$$
+and then, when the set representation of $2$ is generated, the set representation of $1$ is generated as well, and this one is memoized. 
+For example we can see that the time consumed by `set_hash[16]` is almost instantaneous once  `set_hash[17]` is calculated: 
+
+```{r, engine='RUBY', use.memo=TRUE, memo=FALSE}
+# time consumed by the function:
+start = Time.now; set_hash[17]; finish = Time.now
+puts finish - start
+# time consumed by the hash:
+start = Time.now; set_hash[16]; finish = Time.now
+puts finish - start
+```
+
+## Unordered pairs 
+
+Finally, I wanted to visualize the iterated unordered pairs of a set. That is, starting for example from the set $A_1=\{a,b\}$, the set of its unordered pairs is 
+$A_2 = \{\{a\}, \{a,b\}, \{b\}\}$, then we form the set of unordered pairs of $A_2$, and so on. A simple function does this job:
+
+```{r, engine='RUBY', use.memo=TRUE, memo=TRUE}
+def pairs(s,n)
+  while n > 0 do 
+		b = s.to_a
+		s = [].to_set
+		for i in 0 .. b.size-1
+			for j in i .. b.size-1
+				s.add([b[i],b[j]].to_set)
+			end
+		end
+		n = n - 1
+	end
+	return s.to_set
+end
+```
+
+And the rendering hash works fine: 
+
+```{r, engine='RUBY', use.memo=TRUE}
+p1 = pairs(["a","b"].to_set, 1)
+puts display_hash[p1]
+p2 = pairs(["a","b"].to_set, 2)
+puts display_hash[p2]
+```
+
+We can also list the iterated pairs using `map`:
+
+```{r, engine='RUBY', use.memo=TRUE}
+p3 = pairs(["a","b"].to_set, 3)
+puts p3.map {|x| display_hash[x]}
+```
+
+<br/> 
+
+Now, maybe you still think the title is ridiculous. But I hope you believe Ruby is cool.
+
+
+```{r, echo=FALSE}
+rm(list=ls())
+knit_exit()
+```

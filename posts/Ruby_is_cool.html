@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ruby is cool</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Ruby is cool</a>
+              </h3>
+              <span>22/06/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Ruby_is_cool.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><em>(first version)</em></p>
+<p>Do you think this title is ridiculous ? I do. But last week I gave my first try to <a href="https://www.ruby-lang.org/en/">Ruby</a>, and I have nothing really useful to share: this blog post is just the story of someone discovering Ruby.</p>
+<p>I was looking for a (cool) programming language providing a way to deal with sets. The <a href="http://ruby-doc.org/stdlib-2.2.2/libdoc/set/rdoc/Set.html">set library</a> perfectly fulfilled my expectation :</p>
+<pre><code>&gt;&gt; require &quot;set&quot; 
+&gt;&gt; s1 = [&quot;a&quot;, &quot;b&quot;].to_set
+&gt;&gt; puts s1.inspect
+#&lt;Set: {&quot;a&quot;, &quot;b&quot;}&gt;
+&gt;&gt; s2 = [&quot;b&quot;, &quot;c&quot;].to_set
+&gt;&gt; puts s2.inspect
+#&lt;Set: {&quot;b&quot;, &quot;c&quot;}&gt;
+&gt;&gt; puts s1.subset? s2
+false
+&gt;&gt; puts s1.union(s2).inspect
+#&lt;Set: {&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}&gt;</code></pre>
+<p>Is there something to explain in the above code ? I don’t think so (unless you have never used any programming language). And this one of the reasons for which Ruby is cool.</p>
+<div id="set-theoretic-construction-of-natural-numbers" class="section level2">
+<h2>Set-theoretic construction of natural numbers</h2>
+<p>In order to train myself to use the Ruby langage, I undertook to implement the set-theoretic construction of the natural numbers: <span class="math">\[0 = \{\varnothing\}, \quad 1=0 \cup \{0\}= \{\varnothing,  \{\varnothing\}\}, \quad 2=1\cup\{1\}=\{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\}, \quad ...\]</span></p>
+<p>To define <span class="math">\(0\)</span> we can use <span class="math">\(\varnothing\)</span> as a character or as a symbol:</p>
+<pre><code>&gt;&gt; puts [&quot;Ø&quot;].to_set.inspect
+#&lt;Set: {&quot;Ø&quot;}&gt;
+&gt;&gt; puts [:Ø].to_set.inspect
+#&lt;Set: {:Ø}&gt;</code></pre>
+<p>Now, we define a recursive function calculating the set representation of an integer:</p>
+<pre><code>&gt;&gt; def set_representation(n) 
+  n == 0 ? [&quot;Ø&quot;].to_set : set_representation(n-1).tap {|x| break x.union([x].to_set)} 
+end</code></pre>
+<p>See <a href="http://stackoverflow.com/questions/14780783/ruby-map-for-a-single-object">this stackoverflow thread</a> about the usage of <code>tap</code> to map a single object to a function.</p>
+<p>The <code>set_representation</code> function works fine:</p>
+<pre><code>&gt;&gt; puts set_representation(1).inspect
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;
+&gt;&gt; puts set_representation(2).inspect
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;}&gt;</code></pre>
+<p>However, another way consists in using a <em>hash</em>, as I learnt by reading <a href="http://www.sitepoint.com/algorithmic-fun-ruby-hashes/">Algorithmic Fun with Ruby Hashes</a>. The code is similar to the one of <code>set_representation</code>, except that the first value must be initialized outside the body:</p>
+<pre><code>&gt;&gt; set_hash ||= Hash.new do |hash,n|
+  hash[n] =  hash[n-1].tap {|x| break x.union([x].to_set)}
+end
+&gt;&gt; # initialization:
+&gt;&gt; set_hash[0] = [&quot;Ø&quot;].to_set</code></pre>
+<p>Results, as expected, are the same:</p>
+<pre><code>&gt;&gt; puts set_hash[2].inspect
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;}&gt;</code></pre>
+<p>And the computation times are comparable:</p>
+<pre><code>&gt;&gt; # time consumed by the function:
+&gt;&gt; start = Time.now; set_representation(15); finish = Time.now
+&gt;&gt; puts finish - start
+0.085996691
+&gt;&gt; # time consumed by the hash:
+&gt;&gt; start = Time.now; set_hash[15]; finish = Time.now
+&gt;&gt; puts finish - start
+0.085022553</code></pre>
+<p><strong><em>But</em></strong> look what happens if I re-run the same code:</p>
+<pre><code>&gt;&gt; # time consumed by the function:
+&gt;&gt; start = Time.now; set_representation(15); finish = Time.now
+&gt;&gt; puts finish - start
+0.082815154
+&gt;&gt; # time consumed by the hash:
+&gt;&gt; start = Time.now; set_hash[15]; finish = Time.now
+&gt;&gt; puts finish - start
+1.515e-06</code></pre>
+<p>Now, the time consumed by <code>set_hash[15]</code> is almost instantaneous! This is due to <a href="https://en.wikipedia.org/wiki/Memoization"><em>memoization</em></a> (see <a href="http://www.sitepoint.com/algorithmic-fun-ruby-hashes/">Algorithmic Fun with Ruby Hashes</a>).</p>
+</div>
+<div id="displaying-a-set" class="section level2">
+<h2>Displaying a set</h2>
+<p>My next goal was to get a better rendering of the sets. Indeed, it is hard to read something like :</p>
+<pre><code>&gt;&gt; puts set_hash[2].inspect
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;}&gt;</code></pre>
+<p>as compared to <span class="math">\[\{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\}\]</span> isn’t it ? Then I defined a recursive hash:</p>
+<pre><code>&gt;&gt; display_hash ||= Hash.new do |hash,set|
+  if set.inject(true) {|status, x| status and x.class==String}
+    display_hash[set] = &quot;{&quot; + set.inject {|union, x| union + &quot;,&quot; + x} + &quot;}&quot;
+  else 
+    set = set.to_a
+    for i in 0 .. set.size-1
+      if set[i].class == Set 
+        set[i] = display_hash[Set.new(set[i])]
+      end
+    end
+    display_hash[set] = display_hash[set.to_set] 
+  end
+end</code></pre>
+<p>The first line checks whether all elements of the set are some strings. If so, it returns the set as a character string with a comma separating the elements and some braces. Otherwise, the hash is calculated for each element of the set which are themselves some sets (the procedure assumes that the set to be displayed consists only of character strings and of sets of such sets). And it works as desired:</p>
+<pre><code>&gt;&gt; one = set_hash[1]
+&gt;&gt; two = set_hash[2]
+&gt;&gt; three = set_hash[3]
+&gt;&gt; puts one.inspect # ugly 
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;
+&gt;&gt; puts display_hash[one] # beautiful
+{Ø,{Ø}}
+&gt;&gt; puts two.inspect # ugly
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;}&gt;
+&gt;&gt; puts display_hash[two] # beautiful
+{Ø,{Ø},{Ø,{Ø}}}
+&gt;&gt; puts three.inspect # ugly 
+#&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;, #&lt;Set: {&quot;Ø&quot;, #&lt;Set: {&quot;Ø&quot;}&gt;}&gt;}&gt;}&gt;
+&gt;&gt; puts display_hash[three] # beautiful
+{Ø,{Ø},{Ø,{Ø}},{Ø,{Ø},{Ø,{Ø}}}}</code></pre>
+<p>The memoization offered by hash approach has a great advantage here. Take for example the case of <span class="math">\(2\)</span>: <span class="math">\[2 = \{\varnothing,  \{\varnothing\}, \{\varnothing,  \{\varnothing\}\}\} = \{\varnothing,  \{\varnothing\}, 1\},\]</span> and then, when the set representation of <span class="math">\(2\)</span> is generated, the set representation of <span class="math">\(1\)</span> is generated as well, and this one is memoized. For example we can see that the time consumed by <code>set_hash[16]</code> is almost instantaneous once <code>set_hash[17]</code> is calculated:</p>
+<pre><code>&gt;&gt; # time consumed by the function:
+&gt;&gt; start = Time.now; set_hash[17]; finish = Time.now
+&gt;&gt; puts finish - start
+0.243497168
+&gt;&gt; # time consumed by the hash:
+&gt;&gt; start = Time.now; set_hash[16]; finish = Time.now
+&gt;&gt; puts finish - start
+1.153e-06</code></pre>
+</div>
+<div id="unordered-pairs" class="section level2">
+<h2>Unordered pairs</h2>
+<p>Finally, I wanted to visualize the iterated unordered pairs of a set. That is, starting for example from the set <span class="math">\(A_1=\{a,b\}\)</span>, the set of its unordered pairs is <span class="math">\(A_2 = \{\{a\}, \{a,b\}, \{b\}\}\)</span>, then we form the set of unordered pairs of <span class="math">\(A_2\)</span>, and so on. A simple function does this job:</p>
+<pre><code>&gt;&gt; def pairs(s,n)
+  while n &gt; 0 do 
+        b = s.to_a
+        s = [].to_set
+        for i in 0 .. b.size-1
+            for j in i .. b.size-1
+                s.add([b[i],b[j]].to_set)
+            end
+        end
+        n = n - 1
+    end
+    return s.to_set
+end</code></pre>
+<p>And the rendering hash works fine:</p>
+<pre><code>&gt;&gt; p1 = pairs([&quot;a&quot;,&quot;b&quot;].to_set, 1)
+&gt;&gt; puts display_hash[p1]
+{{a},{a,b},{b}}
+&gt;&gt; p2 = pairs([&quot;a&quot;,&quot;b&quot;].to_set, 2)
+&gt;&gt; puts display_hash[p2]
+{{{a}},{{a},{a,b}},{{a},{b}},{{a,b}},{{a,b},{b}},{{b}}}</code></pre>
+<p>We can also list the iterated pairs using <code>map</code>:</p>
+<pre><code>&gt;&gt; p3 = pairs([&quot;a&quot;,&quot;b&quot;].to_set, 3)
+&gt;&gt; puts p3.map {|x| display_hash[x]}
+{{{a}}}
+{{{a}},{{a},{a,b}}}
+{{{a}},{{a},{b}}}
+{{{a}},{{a,b}}}
+{{{a}},{{a,b},{b}}}
+{{{a}},{{b}}}
+{{{a},{a,b}}}
+{{{a},{a,b}},{{a},{b}}}
+{{{a},{a,b}},{{a,b}}}
+{{{a},{a,b}},{{a,b},{b}}}
+{{{a},{a,b}},{{b}}}
+{{{a},{b}}}
+{{{a},{b}},{{a,b}}}
+{{{a},{b}},{{a,b},{b}}}
+{{{a},{b}},{{b}}}
+{{{a,b}}}
+{{{a,b}},{{a,b},{b}}}
+{{{a,b}},{{b}}}
+{{{a,b},{b}}}
+{{{a,b},{b}},{{b}}}
+{{{b}}}</code></pre>
+<p><br/></p>
+<p>Now, maybe you still think the title is ridiculous. But I hope you believe Ruby is cool.</p>
+</div>
+
+
+          </div> 
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
