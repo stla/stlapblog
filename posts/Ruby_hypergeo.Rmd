@@ -1,0 +1,68 @@
+---
+title: "Evaluating the Gauss hypergeometric function in Ruby"
+author: "Stéphane Laurent"
+date: "13/07/2015"
+output: html_document
+---
+
+
+```{r, include=FALSE, memo=TRUE}
+library(knitr)
+source("./assets/knitrEngines/ruby00.R")
+```
+
+
+I have previously shown [how to efficiently evaluate the Gauss hypergeometric function using arithmetic on large integers](http://stla.github.io/stlapblog/posts/BS_F21_v3.html), with the help of the binary splitting algorithm.
+
+I have now written the binary splitting algorithm in Ruby. This is rather straightforward in Ruby because it automatically converts integers to the `Bignum` large integer class when needed. 
+Moreover, numeric variables have a `to_r` method to convert to a rational number 
+(`Rational` class). One can even directly apply the methods `numerator` and 
+`denominator` to extract the numerator and the denominator of the rational approximation. 
+
+
+
+```{r, engine='RUBY', memo=TRUE}
+def hypergeo(a,b,c,x,m=7)
+    p = x.numerator
+	q = x.denominator
+	a1 = a.numerator
+	a2 = a.denominator
+	b1 = b.numerator
+	b2 = b.denominator
+	c1 = c.numerator
+	c2 = c.denominator
+	n=2**m
+	indexes = (1..n)
+	delta = indexes.collect{ |i| c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * b2) * p }
+	alpha = delta 
+	beta = indexes.collect{ |i| a2 * b2 * i * (c1 + (i - 1) * c2) * q }
+	j = 1 
+	l = n
+	while j < n  do
+		odd = (2..l).step(2)
+		even = (1..l-1).step(2)
+		alpha = [[odd.map{|i| beta[i-1]}, even.map{|i| alpha[i-1]}].transpose.map{|x| x.reduce(:*)}, [odd.map{|i| alpha[i-1]}, even.map{|i| delta[i-1]}].transpose.map{|x| x.reduce(:*)}].transpose.map{|x| x.reduce(:+)}
+		beta = [odd.map{|i| beta[i-1]}, even.map{|i| beta[i-1]}].transpose.map{|x| x.reduce(:*)}
+		delta = [odd.map{|i| delta[i-1]}, even.map{|i| delta[i-1]}].transpose.map{|x| x.reduce(:*)}
+		l = l/2 
+		j = 2*j
+	end
+	Rational(alpha[0],beta[0]).to_f + 1
+end
+```
+
+It seems to work fine:
+
+```{r, engine='RUBY', use.memo=TRUE}
+puts hypergeo(20.5, 11.92, 19, 0.5, 7)
+```
+
+
+<br/> 
+
+
+
+```{r, echo=FALSE}
+rm(list=ls())
+knit_exit()
+```
