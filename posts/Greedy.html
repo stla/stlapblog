@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Avoiding nested loops with a Cantor expansion</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Avoiding nested loops with a Cantor expansion</a>
+              </h3>
+              <span>29/07/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Greedy.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><em>(first version)</em></p>
+<p>I added an answer to a <a href="http://stackoverflow.com/q/4683539/1100107">question on Stackoverflow</a> about the problem of a variable amount of nested loops. But an answer to a four years old question on Stackoverflow rarely receives some attention.</p>
+<div id="cantor-expansions-of-integers" class="section level2">
+<h2>Cantor expansions of integers</h2>
+<p>My answer is based on a Cantor expansion of the integers. The binary representation of integer numbers is well-known. In R, use this function to get it:</p>
+<pre class="r"><code>number2binary &lt;- function(number, noBits=1+floor(log2(max(number,1)))) {
+  if(noBits &lt; 1+floor(log2(number))) warning(sprintf(&quot;noBits=%s is not enough&quot;, noBits))
+  return( as.numeric(intToBits(number))[1:noBits] ) 
+}
+number2binary(5)
+## [1] 1 0 1
+number2binary(5, noBits=4)
+## [1] 1 0 1 0</code></pre>
+<p>The second argument, <code>noBits</code>, allows to fix the length of the binary representation, adding some <code>0</code> to the right to reach it.</p>
+<p>The binary representation is a system of numerotation. The correspondence between the usual decimal representation and the binary representation is the following:</p>
+<pre class="r"><code>nmax &lt;- 10
+data.frame(
+  N=0:nmax,
+  expansion=vapply(0:nmax, function(i) paste(myutils::number2binary(i), collapse=&quot;&quot;), character(1))
+)
+##     N expansion
+## 1   0         0
+## 2   1         1
+## 3   2        10
+## 4   3        11
+## 5   4       100
+## 6   5       101
+## 7   6       110
+## 8   7       111
+## 9   8      1000
+## 10  9      1001
+## 11 10      1010</code></pre>
+<p>The numerotation for the <span class="math">\(2^n\)</span> first integers is also given by the Cartesian product of the set <span class="math">\(\{0,1\}\)</span> with itself <span class="math">\(n\)</span> times:</p>
+<pre class="r"><code>expand.grid(epsilon0=c(0,1), epsilon1=c(0,1), epsilon2=c(0,1))
+##   epsilon0 epsilon1 epsilon2
+## 1        0        0        0
+## 2        1        0        0
+## 3        0        1        0
+## 4        1        1        0
+## 5        0        0        1
+## 6        1        0        1
+## 7        0        1        1
+## 8        1        1        1</code></pre>
+<p>Thus, one can view the binary representation of a number <span class="math">\(n\)</span> as the <span class="math">\(n\)</span>-th element of this Cartesian product (for the <a href="https://en.wikipedia.org/wiki/Lexicographical_order#Colexicographic_order">colexicographic order</a>).</p>
+<p>Well, everybody knows that. In mathematical terms, the binary representation allows to write any natural number <span class="math">\(N\)</span> as a finite sequence of digits <span class="math">\(\epsilon_i \in \{0,1\}\)</span>: <span class="math">\[
+N = \text{&quot;}\epsilon_0\epsilon_1\epsilon_2\ldots\epsilon_n\text{&quot;}.
+\]</span> and that means <span class="math">\[
+N = \epsilon_0 + \epsilon_1\times 2 + \epsilon_2 \times 2^2 + \ldots + \epsilon_n \times 2^n.
+\]</span></p>
+<p>Such a representation is more generally possible with digits <span class="math">\(\epsilon_i \in \{0,\ldots, r_n-1\}\)</span>, where <span class="math">\((r_n)\)</span> is a sequence of integer numbers <span class="math">\(\geq 2\)</span>, and then the representation means <span class="math">\[
+N = \epsilon_0 + \epsilon_1\times \ell_1 + \epsilon_2 \times \ell_2 + \ldots + \epsilon_n \times \ell_n,
+\]</span> where <span class="math">\(\ell_n=\prod_{i=0}^{n-1} r_i\)</span>, and then this expansion of <span class="math">\(N\)</span> is called its <span class="math">\((r_n)\)</span>-ary expansion. The binary expansion is the case when <span class="math">\(r_n\equiv 2\)</span>. The general <span class="math">\((r_n)\)</span>-ary expansion is called a Cantor’s number system. There also are, beyond the scope of this post, <a href="http://matwbn.icm.edu.pl/ksiazki/aa/aa70/aa7022.pdf">more general systems of numeration</a>.</p>
+<p>For example, the <span class="math">\((3,4,5)\)</span>-ary representation of a number <span class="math">\(n\)</span> is the <span class="math">\(n\)</span>-th element of this Cartesian product <span class="math">\(\{0,1,2\}\times\{0,1,2,3\}\times\{0,1,2,3,4\}\)</span>.</p>
+<p>One gets the integer <span class="math">\(N\)</span> from its <span class="math">\((r_n)\)</span>-ary expansion by simply applying the above formula. Conversely, the derivation of the <span class="math">\((r_n)\)</span>-ary from an integer is given by the <em>greedy algorithm</em>:</p>
+<ul>
+<li>While <span class="math">\(N&gt;0\)</span>
+<ul>
+<li>Take the first index <span class="math">\(k\)</span> such that <span class="math">\(\ell_k &gt; N\)</span></li>
+<li>Set <span class="math">\(\epsilon_k\)</span> to be the Euclidean quotient of <span class="math">\(N\)</span> by <span class="math">\(\ell_{k-1}\)</span>, and update <span class="math">\(N\)</span> to be the remainder</li>
+</ul></li>
+</ul>
+<p>This R function returns the <span class="math">\((r_n)\)</span>-ary expansion, using the binary expansion as the default one:</p>
+<pre class="r"><code>intToAry &lt;- function(n, sizes=rep(2, 1+floor(log2(max(n,1))))){
+  l &lt;- c(1, cumprod(sizes))
+  epsilon &lt;- numeric(length(sizes))
+  while(n&gt;0){
+    k &lt;- which.min(l&lt;=n)
+    e &lt;- floor(n/l[k-1])
+    epsilon[k-1] &lt;- e
+    n &lt;- n-e*l[k-1]
+  }
+  return(epsilon)
+}
+aryToInt &lt;- function(epsilon, sizes=rep(2, length(epsilon)-1)){
+  sum(epsilon*c(1,cumprod(sizes[1:(length(epsilon)-1)])))
+}</code></pre>
+<p>As an example:</p>
+<pre class="r"><code>intToAry(29, c(3, 4, 5)) 
+## [1] 2 1 2</code></pre>
+<p>means that <span class="math">\(29 = 2\times 1 + 1 \times 3  + 2 \times (3\times 4)\)</span>.</p>
+<p>Note that the last element of <code>sizes</code>, here <code>5</code>, is not visible in the expansion. It only fixes the maximal value of <span class="math">\(\epsilon_2\)</span>: the <span class="math">\((3,4,5)\)</span>-ary expansion of <span class="math">\(N\)</span> is <span class="math">\[
+N = \epsilon_0 + \epsilon_1 \times 3 + \epsilon_2 \times (3\times 4)
+\]</span> with <span class="math">\(\epsilon_0 \in \{0,1,2\}\)</span>, <span class="math">\(\epsilon_1 \in \{0, 1, 2, 3\}\)</span>, <span class="math">\(\epsilon_2 \in \{0, 1, 2, 3, 4\}\)</span>.</p>
+</div>
+<div id="application-to-nested-loops" class="section level2">
+<h2>Application to nested loops</h2>
+<p>Assume you have a nested loop:</p>
+<pre class="r"><code>for(i in 1:3){
+  for(j in 1:4){
+    for(k in 1:5){
+      doSomething(c(i,j,k))
+    }
+  }
+}</code></pre>
+<p>This nested loop can be reduced to only one loop with the <span class="math">\((3,4,5)\)</span>-ary representation:</p>
+<pre class="r"><code>for(n in 1:(3*4*5)){
+  doSomething(intToAry(n)+1, c(3,4,5))
+}</code></pre>
+</div>
+<div id="a-rcpp-implementation" class="section level2">
+<h2>A Rcpp implementation</h2>
+<p>Using the <code>intToAry</code> function in a long loop could be time-consuming. We give below a <code>C++</code> implementation for R, using the <code>Rcpp</code> and <code>inline</code> packages.</p>
+<pre class="r"><code>library(inline)
+src &lt;- &#39;int n = as&lt;int&gt;(N);
+std::vector&lt;int&gt; s = as&lt; std::vector&lt;int&gt; &gt;(sizes);
+std::vector&lt;int&gt; epsilon (s.size());
+std::vector&lt;int&gt;::iterator it;
+it = s.begin();
+it = s.insert ( it , 1 );
+int G[s.size()];
+std::partial_sum (s.begin(), s.end(), G, std::multiplies&lt;int&gt;());
+int k;
+while(n&gt;0){
+  k=1;
+  while(G[k]&lt;=n){
+    k=k+1;
+  }
+  epsilon[k-1] = (int)n / G[k-1];
+  n = n % G[k-1];
+}
+return wrap(epsilon); &#39;
+intToAry_Rcpp &lt;- cxxfunction(signature(N=&quot;integer&quot;,
+                           sizes=&quot;integer&quot;),
+                 body=src, plugin=&quot;Rcpp&quot;)</code></pre>
+<pre class="r"><code>intToAry_Rcpp(29, c(3,4,5))
+## [1] 2 1 2</code></pre>
+<div id="benchmarks" class="section level3">
+<h3>Benchmarks</h3>
+<p>The <code>C++</code> implementation is clearly faster.</p>
+<pre class="r"><code>L &lt;- vector(mode=&quot;list&quot;, length=2*3*4*5*6*7*8*9)
+system.time(
+  for(n in 1:(2*3*4*5*6*7*8*9)){
+    L[[n]] &lt;- intToAry(n-1, c(2,3,4,5,6,7,8,9))
+  }
+)
+##    user  system elapsed 
+##  16.086   0.000  16.082
+system.time(
+  for(n in 1:(2*3*4*5*6*7*8*9)){
+    L[[n]] &lt;- intToAry_Rcpp(n-1, c(2,3,4,5,6,7,8,9))
+  }
+)
+##    user  system elapsed 
+##   1.905   0.121   2.047</code></pre>
+</div>
+</div>
+<div id="a-javascript-implementation" class="section level2">
+<h2>A Javascript implementation</h2>
+<pre class="v8"><code>function intToAry(n, sizes) {
+  if (n&lt;0) throw new Error(&quot;n must be a nonnegative integer&quot;);
+  for (i = 0; i&lt;sizes.length; i++) if (sizes[i]!=parseInt(sizes[i]) || sizes[i]&lt;1){  throw new Error(&quot;sizes must be a vector of integers be &gt;1&quot;); };
+  for (var G = [1], i = 0; i&lt;sizes.length; i++) G[i+1] = G[i] * sizes[i]; 
+  if (n&gt;=_.last(G)) throw new Error(&quot;n must be &lt;&quot; + _.last(G));
+  for (var epsilon=[], i=0; i &lt; sizes.length; i++) epsilon[i]=0;
+  while(n &gt; 0){
+    var k = _.findIndex(G, function(x){ return n &lt; x; }) - 1;
+    var e = (n/G[k])&gt;&gt;0;
+    epsilon[k] = e;
+    n = n-e*G[k];
+  }
+  return epsilon;
+}
+intToAry(29, [3, 4, 5])
+## 2,1,2</code></pre>
+</div>
+
+
+          </div> 
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
