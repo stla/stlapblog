@@ -206,12 +206,14 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <p><img src="assets/fig/Psi_Bem_RandomEffects-unnamed-chunk-7-1.png" title="" alt="" width="691.2" /></p>
 <p>The <code>lme4</code> package provides confidence intervals based on the profile-likelihood:</p>
 <pre class="r"><code>&gt; fit_profile &lt;- profile(fit)
-Error: &#39;data&#39; not found, and some variables missing from formula environment
 &gt; ( intervals &lt;- confint(fit_profile) )
-Error in confint(fit_profile): objet &#39;fit_profile&#39; introuvable</code></pre>
+                 2.5 %    97.5 %
+.sig01      0.00000000 0.3401959
+(Intercept) 0.01515634 0.2270525</code></pre>
 <p>The first line is a <span class="math">\(95\%\)</span>-confidence interval about the standard deviation <span class="math">\(\sigma\)</span>, the second one is a <span class="math">\(95\%\)</span>-confidence interval about <span class="math">\(\logit \Theta\)</span>. Back-transforming gives a <span class="math">\(95\%\)</span>-confidence interval about <span class="math">\(\Theta\)</span>:</p>
 <pre class="r"><code>&gt; intervals[2,] %&gt;% expit
-Error in eval(expr, envir, enclos): objet &#39;intervals&#39; introuvable</code></pre>
+    2.5 %    97.5 % 
+0.5037890 0.5565205 </code></pre>
 <p>The lower bound <span class="math">\(\approx 50.4\%\)</span> is higher than <span class="math">\(50\%\)</span>. Thus, using this confidence interval to test <span class="math">\(H_0\colon\{\Theta=50\%\}\)</span> vs <span class="math">\(H_1\colon\{\Theta&gt;50\%\}\)</span> gives a significant result at the <span class="math">\(2.5\%\)</span> significance level.</p>
 </div>
 <div id="bems-analysis-not-questioned-by-criticisms" class="section level2">
