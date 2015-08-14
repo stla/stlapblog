@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 # TO DO : BLACKPATH DONNÉ PAR LABEL DES EDGES, PAS DES VERTICES
 library(knitr)
-opts_chunk$set(fig.path="Figures/bratteli-")
+opts_chunk$set(fig.path="assets/fig/bratteli-")
 knit_hooks$set(plot = function(x, options) {
   paste('<figure><img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="',
         opts_knit$get('base.url'), paste(x, collapse = '.'),
