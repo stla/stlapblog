@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drawing a Bratteli graph</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Drawing a Bratteli graph</a>
+              </h3>
+              <span>14/08/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Bratteli.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>A <em>Bratteli graph</em>, such as the <em>Pascal graph</em> shown below, is a graded graph whose edges only connect vertices from one level to vertices of the next level.</p>
+<figure>
+<img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="Figures/bratteli-unnamed-chunk-1-1.png">
+<figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic">
+Pascal graph
+</figcaption></figure>
+<p></br></p>
+<p>Such a graph is defined by a sequence of <em>incidence matrices</em> <span class="math">\(M_n\)</span>. Denoting by <span class="math">\(c_n\)</span> the number of vertices at level <span class="math">\(n\)</span>, the incidence matrix <span class="math">\(M_n\)</span> is a <span class="math">\(c_n \times c_{n+1}\)</span> matrix showing all connections between level <span class="math">\(n\)</span> and level <span class="math">\(n+1\)</span>. A “<span class="math">\(0\)</span>” means there’s no edge, a “<span class="math">\(1\)</span>” means there’s one edge, a “<span class="math">\(2\)</span>” means there’s a double edge, etc. The first three incidence matrices of the Pascal graph are</p>
+<p><span class="math">\[ M_0= \begin{pmatrix}{}
+  1 &amp; 1 \\ 
+  \end{pmatrix}
+ , \, M_1= \begin{pmatrix}{}
+  1 &amp; 1 &amp; 0 \\ 
+  0 &amp; 1 &amp; 1 \\ 
+  \end{pmatrix}
+ , \, M_2= \begin{pmatrix}{}
+  1 &amp; 1 &amp; 0 &amp; 0 \\ 
+  0 &amp; 1 &amp; 1 &amp; 0 \\ 
+  0 &amp; 0 &amp; 1 &amp; 1 \\ 
+  \end{pmatrix}
+ .\]</span></p>
+<p>and I get them with this function:</p>
+<pre class="r"><code>Pascal_Mn &lt;- function(n){
+  M &lt;- matrix(0, nrow=n+1, ncol=n+2)
+  for(i in 1:(n+1)){
+    M[i, ][c(i, i+1)] &lt;- 1
+  }
+  return(M)
+}</code></pre>
+<p>Given a function <code>fun_Mn</code> taking a nonnegative integer <code>n</code> as argument and returning an incidence matrix, such as the <code>Pascal_Mn</code> function, my <code>Bgraph</code> function draws the corresponding Bratteli graph from the root level to a desired level <code>N</code>. Its arguments are:</p>
+<pre class="r"><code>formalArgs(Bgraph)</code></pre>
+<pre><code>##  [1] &quot;fun_Mn&quot;        &quot;N&quot;             &quot;title&quot;         &quot;blackpath&quot;    
+##  [5] &quot;label_path&quot;    &quot;labels_vertex&quot; &quot;USE.COLNAMES&quot;  &quot;first_vertex&quot; 
+##  [9] &quot;label_root&quot;    &quot;only_end&quot;      &quot;cex_vertex&quot;    &quot;labels_edges&quot; 
+## [13] &quot;cex_edge&quot;      &quot;...&quot;</code></pre>
+<p>The figure above has been generated by this code:</p>
+<pre class="r"><code>Bgraph(Pascal_Mn, 3, USE.COLNAMES=FALSE, blackpath=c(1,2,3,3), first_vertex=1)</code></pre>
+<div id="odometers" class="section level3">
+<h3>Odometers</h3>
+<p>For an odometer, the incidence matrixes are full of “<span class="math">\(1\)</span>”:</p>
+<pre class="r"><code>Odometer_Mn &lt;- function(sizes){
+  sizes &lt;- c(1,sizes)
+  function(n){
+    return(matrix(1, nrow=sizes[n+1], ncol=sizes[n+2]))
+  }
+}</code></pre>
+<pre class="r"><code>par(mar=c(1,1,1,1)/10) 
+fun_Mn &lt;- Odometer_Mn(c(3,4,5))
+Bgraph(fun_Mn, N=3, labels_vertex=TRUE, blackpath=c(2,1,2), label_path=TRUE)</code></pre>
+<figure>
+<img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="Figures/bratteli-odometer-1.png">
+<figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic">
+(3,4,5)-ary odometer
+</figcaption></figure>
+<p></br></p>
+<p>This graph is related to <a href="http://stla.github.io/stlapblog/posts/Greedy.html">Cantor expansions</a>. For the previous example, the paths starting from the root level and going to the third level provide a representation of the Cartesian product <span class="math">\(\{0,1,2\}\times\{0,1,2,3\}\times\{0,1,2,3,4\}\)</span>.</p>
+</div>
+<div id="homogeneous-trees" class="section level3">
+<h3>Homogeneous trees</h3>
+<p>A homogeneous tree is a Bratteli graph. I use a trick to generate the incidence matrices, <a href="http://stla.github.io/stlapblog/posts/KantorovichWithR.html">the same I already used before</a>.</p>
+<pre class="r"><code>Tree_Mn &lt;- function(sizes){
+  function(n){
+    if(n==0) return(matrix(1, ncol=sizes[1]))
+    unname(t(model.matrix(~0+gl(prod(sizes[1:n]),sizes[n+1])))[,])
+  }
+}</code></pre>
+<p>As for the odometer, the paths of the tree provide a representation of a Cartesian producct, but in less compact form:</p>
+<pre class="r"><code>par(mar=c(1,1,1,1)/10) 
+fun_Mn &lt;- Tree_Mn(c(3,4,5))
+Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, blackpath=c(2,8,44))</code></pre>
+<figure>
+<img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="Figures/bratteli-tree-1.png">
+<figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic">
+(3,4,5)-ary tree
+</figcaption></figure>
+<p></br></p>
+</div>
+<div id="conversion-to-tikz" class="section level3">
+<h3>Conversion to <code>tikZ</code></h3>
+<p>……..</p>
+</div>
+
+
+          </div> 
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
