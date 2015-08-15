@@ -23,148 +23,8 @@ fscale <- 1.8
 
 
 ```{r functions, include=FALSE}
-library(xtable)
-dollarify <- function(){
-    function(x) paste0("$",x,"$")
-}
-latex_matrix <- function(M){
-  print(xtable(M, align=rep("",ncol(M)+1), digits=0), floating=FALSE, tabular.environment="pmatrix", include.rownames=FALSE, include.colnames=FALSE, hline.after=NULL, timestamp=NULL, comment=FALSE, print.results=FALSE)
-  }
-library(diagram) 
-Bgraph <- function(fun_Mn, N, title=NA, blackpath=NULL, col_path="blue", labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
-  Mn <- sapply(0:(N-1), function(n) fun_Mn(n))
-  nvertices <- sapply(1:N, function(n) nrow(Mn[[n]])) # number of vertices per level
-  elpos <- coordinates (c(nvertices, ncol(Mn[[N]])), ...) # positions of vertices
-  left <- cumsum(nvertices)
-  vertex <- function(n,k){ # n: level ; k: vertex at this level 
-    left[n] + k 
-  }
-  # 
-  l <- length(blackpath)
-  blackpath <- c(blackpath, rep(0,N+1-l))
-  blackpath <- blackpath +1  # NA useless but..
-  vpath <- blackpath[1]
-  for(k in 2:N){
-    v <- vpath[k-1] 
-    vpath[k] <- which(Mn[[k]][v,]>0)[blackpath[k]]
-  }
-  blackpath <- vpath 
-  # construct connections matrix
-  fromto <- NULL
-  multiplicity <- NULL
-  lcol <- lty <- lwd <- NULL
-  # connections from level n=0
-  current <- 1 
-  for(i in which(Mn[[1]][1,]>0)){
-    goto <- vertex(1, i)
-    fromto <- rbind(fromto, c(current,goto))
-    multiplicity <- c(multiplicity, Mn[[1]][1,i])
-    lcol <- rbind(lcol, 
-                  ifelse(i==blackpath[1], "blue", "gray")
-    )
-    lty <- rbind(lty, 
-                 ifelse(i==blackpath[1], "solid", "solid")
-    )
-    lwd <- rbind(lwd, 
-                 ifelse(i==blackpath[1], 4, 2)
-    )
-  }
-  # connections from level n
-  for(n in 1:(N-1)){
-    for(i in 1:nrow(Mn[[n+1]])){
-      current <- vertex(n,i)
-      path_done <- FALSE
-      for(k in which(Mn[[n+1]][i,]>0)){
-        goto <- vertex(n+1, k)
-        fromto <- rbind(fromto, c(current,goto))
-        multiplicity <- c(multiplicity, Mn[[n+1]][i,k])
-        s <- which.max(Mn[[n+1]][i,]>0)-1
-        lcol <- rbind(lcol, 
-                      #ifelse(k==s+blackpath[n], "blue", "gray")
-                      ifelse(all(c(i,k)==blackpath[n:(n+1)]), "blue", "gray")
-        )
-        lty <- rbind(lty, 
-                     ifelse(all(c(i,k)==blackpath[n:(n+1)]), "solid", "solid")
-        )
-        lwd <- rbind(lwd, 
-                     ifelse(all(c(i,k)==blackpath[n:(n+1)]), 4, 2)
-        )
-      }
-    }
-  }
-  nr <- nrow(fromto)
-  if(labels_edges) labs_edges <- unlist( by(fromto[,1], fromto[,1], FUN=function(x) 1:length(x)) ) - 1
-  arrpos <- matrix(ncol = 2, nrow = nr)
-  # START PLOT 
-  openplotmat(main=title)
-  for (i in 1:nr){ # draw and store the arrows
-    if(multiplicity[i]==1){
-      arrpos[i, ] <- straightarrow (to = elpos[fromto[i, 2], ],
-                                    from = elpos[fromto[i, 1], ],
-                                    arr.pos = 0.5, arr.length = 0, 
-                                    lcol=lcol[i], lty=lty[i], lwd=lwd[i])
-    }
-    if(multiplicity[i]==2){
-      curvedarrow (to = elpos[fromto[i, 2], ],
-                   from = elpos[fromto[i, 1], ],
-                   arr.pos = 0.5, arr.length = 0, 
-                   lcol=lcol[i], lty=lty[i], lwd=lwd[i],
-                   curve=-0.05)
-      arrpos[i, ] <- curvedarrow (to = elpos[fromto[i, 2], ],
-                                  from = elpos[fromto[i, 1], ],
-                                  arr.pos = 0.5, arr.length =0, 
-                                  lcol=lcol[i], lty=lty[i], lwd=lwd[i],
-                                  curve=0.05)
-      #       straightarrow (to = elpos[fromto[i, 2], ],
-      #                      from = elpos[fromto[i, 1], ],
-      #                      arr.pos = 0.3, arr.length = 1, 
-      #                       lwd=0)
-      #       arrpos[i, ] <- straightarrow (to = elpos[fromto[i, 2], ],
-      #                                     from = elpos[fromto[i, 1], ],
-      #                                     arr.pos = 0.7, arr.length = 1, 
-      #                                     lcol=lcol[i], lty=lty[i], lwd=lwd[i])
-    }
-    # labels on edges 
-    if(labels_edges && !labels_path){ # faire un black path only
-      if(LaTeX) labels_edges <- paste0("$", labels_edges, "$")
-      mid <- arrpos[i, ]
-      if(ellipse_edge){
-        textellipse(mid, 0.02, lab=labs_edges[i], cex=cex_edge, lcol="black", shadow.size=0) 
-      }else{
-        textempty(mid+c(0,0), lab=labs_edges[i], cex=cex_edge)
-      }
-    }
-    # labels on the blue path
-    if(labels_path){
-      if(lcol[i]=="blue"){
-        mid <- arrpos[i, ]
-        if(ellipse_edge){
-          textellipse(mid, 0.02, lab=labs_edges[i], cex=cex_edge, lcol="black", shadow.size=0) 
-        }else{
-            textempty(mid+c(0,0), lab=labs_edges[i], cex=cex_edge)
-        }
-      }
-    }
-  }
-  # labels on vertices
-  if(labels_vertex){
-    # root label 
-    textellipse(elpos[1,], 0.01, 0.01, lab = label_root, box.col="white", shadow.size=0, lcol="white", cex=cex_vertex) 
-    # vertices labels
-    start <- ifelse(only_end, N, 1)
-    for(n in start:N){ 
-      for(i in 1:ncol(Mn[[n]])){
-        lab <- as.character(ifelse(USE.COLNAMES, colnames(Mn[[n]])[i] , i-1+first_vertex))
-        if(LaTeX && !USE.COLNAMES) lab <- paste0("$", lab, "$")
-        if(ellipse_vertex){
-          textellipse(elpos[vertex(n,i),], 0.02, 0.02, lab=lab, box.col="white", shadow.size=0, cex=cex_vertex)          
-        }else{
-          textempty(elpos[vertex(n,i),], lab = lab, cex=cex_vertex)  
-        }
-      }
-    }
-  }
-}
+source("./assets/Rfunctions/Bgraph_v1.R")
+source("./assets/Rfunctions/utils_latex.R")
 Pascal_Mn <- function (n) {
   M <- matrix(0, nrow = n + 1, ncol = n + 2)
   for (i in 1:(n + 1)) {
@@ -183,7 +43,7 @@ A *Bratteli graph*, such as the *Pascal graph* shown below, is a graded graph wh
 
 ```{r, echo=FALSE, fig.width=fscale*3, fig.height=fscale*3,  fig.cap="Pascal graph"}
 par(mar=c(1,1,0,1)/10)
-Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), first_vertex=1)
+Bgraph(Pascal_Mn, N=3, path=c(1,0,1), first_vertex=1)
 ```
 
 Such a graph is defined by a sequence of *incidence matrices* $M_n$. Denoting by $c_n$ the number of vertices at level $n$, the incidence  matrix $M_n$ is a $c_n \times c_{n+1}$ matrix showing all connections between level $n$ and level $n+1$. A "$0$" means there's no edge, a "$1$" means there's one edge, a "$2$" means there's a double edge, etc. The first three incidence matrices of the Pascal graph are 
@@ -214,14 +74,14 @@ The effects of most of the arguments will be illustrated below. The ellipsis `..
 The figure above has been generated by this code, except that this time we change its orientation with the `hor` argument:
 ```{r}
 par(mar=c(.1,.1,.1,.1))
-Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), first_vertex=1, hor=FALSE)
+Bgraph(Pascal_Mn, N=3, path=c(1,0,1), first_vertex=1, hor=FALSE)
 ```
 
 The path shown in blue on the figure, is given as the sequence of labels on the edges of this path. The `first_vertex` argument, intended to be `0` or `1`, controls the label of the first vertex at each level. The user can decide to show the edge labels of the blue path only with the `labels_path` argument. By setting the `only_end` argument to `TRUE`, only the vertex labels at the last level are shown:
 
 ```{r}
 par(mar=c(.1,.1,.1,.1))
-Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), first_vertex=0, labels_path=TRUE, only_end=TRUE)
+Bgraph(Pascal_Mn, N=3, path=c(1,0,1), first_vertex=0, labels_path=TRUE, only_end=TRUE)
 ```
 
 By setting the `USE.COLNAMES` argument to `TRUE`, the vertex labels appearing at level $n$ are the column names of $M_n$. For example, on figure below we display the binomial numbers on the vertices Pascal graph, which give the number of paths from the root vertex. We also show the effect of the `ellipse_vertex` argument.
@@ -236,7 +96,7 @@ Pascal_Mn <- function(n){
   return(M)
 }
 par(mar=c(.1,.1,.1,.1))
-Bgraph(Pascal_Mn, N=4, blackpath=c(1,0,1,1), labels_path=TRUE, USE.COLNAMES=TRUE, ellipse_vertex=TRUE)
+Bgraph(Pascal_Mn, N=4, path=c(1,0,1,1), labels_path=TRUE, USE.COLNAMES=TRUE, ellipse_vertex=TRUE)
 ```
 
 
@@ -259,7 +119,7 @@ Odometer_Mn <- function(sizes){
 ```{r odometer, fig.width=fscale*3, fig.height=fscale*3,  fig.cap="(3,4,5)-ary odometer"}
 par(mar=c(1,1,1,1)/10) 
 fun_Mn <- Odometer_Mn(c(3,4,5))
-Bgraph(fun_Mn, N=3, labels_vertex=TRUE, blackpath=c(2,1,2), labels_path=TRUE)
+Bgraph(fun_Mn, N=3, labels_vertex=TRUE, path=c(2,1,2), labels_path=TRUE)
 ```
 
 This graph is related to [Cantor expansions](http://stla.github.io/stlapblog/posts/Greedy.html). For the previous example, the paths starting from the root level and going to the third level provide a representation of the Cartesian product  $\{0,1,2\}\times\{0,1,2,3\}\times\{0,1,2,3,4\}$. 
@@ -282,7 +142,7 @@ As for the odometer, the paths of the tree provide a representation of a Cartesi
 ```{r tree, fig.width=fscale*3, fig.height=fscale*3,  fig.cap="(3,4,5)-ary tree"}
 par(mar=c(1,1,1,1)/10) 
 fun_Mn <- Tree_Mn(c(3,4,5))
-Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, blackpath=c(2,1,2))
+Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, path=c(2,1,2))
 ```
 
 ### Conversion to `TikZ` 
@@ -304,7 +164,7 @@ texfile <- "bratteli-Pascal.tex"
 tikz(texfile, standAlone=TRUE, 
       packages=c(getOption("tikzLatexPackages"), "\\usepackage{amsmath}\n\\usepackage{amssymb}\n"))
 par(mar=c(.1,.1,.1,.1))
-Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), labels_path=TRUE, USE.COLNAMES=TRUE, LaTeX=TRUE, label_root="$\\varnothing$", relsize=.6)
+Bgraph(Pascal_Mn, N=3, path=c(1,0,1), labels_path=TRUE, USE.COLNAMES=TRUE, LaTeX=TRUE, label_root="$\\varnothing$", relsize=.6)
 dev.off()
 # convert to pdf: 
 tools::texi2dvi(texfile, pdf=TRUE, clean=TRUE)
