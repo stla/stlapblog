@@ -163,7 +163,7 @@ Bgraph(Pascal_Mn, N=4, path=c(1,0,1,1), labels_path=TRUE, USE.COLNAMES=TRUE, ell
     return(matrix(1, nrow=sizes[n+1], ncol=sizes[n+2]))
   }
 }</code></pre>
-<pre class="r"><code>par(mar=c(1,1,1,1)/10) 
+<pre class="r"><code>par(mar=c(.1,.1,.1,.1))
 fun_Mn &lt;- Odometer_Mn(c(3,4,5))
 Bgraph(fun_Mn, N=3, labels_vertex=TRUE, path=c(2,1,2), labels_path=TRUE)</code></pre>
 <figure>
@@ -184,7 +184,7 @@ Bgraph(fun_Mn, N=3, labels_vertex=TRUE, path=c(2,1,2), labels_path=TRUE)</code><
   }
 }</code></pre>
 <p>As for the odometer, the paths of the tree provide a representation of a Cartesian producct, but in less compact form:</p>
-<pre class="r"><code>par(mar=c(1,1,1,1)/10) 
+<pre class="r"><code>par(mar=c(.1,.1,.1,.1))
 fun_Mn &lt;- Tree_Mn(c(3,4,5))
 Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, path=c(2,1,2))</code></pre>
 <figure>
@@ -230,7 +230,22 @@ It appears you don’t have a PDF plugin for this browser. No biggie… you can 
 </div>
 <div id="multiples-edges" class="section level3">
 <h3>Multiples edges</h3>
-<p>My <code>Bgraph</code> function currently handles double edges too.</p>
+<p>My <code>Bgraph</code> function currently handles double edges too. Let us try the Pascal graph with some double edges taken at random.</p>
+<pre class="r"><code>Pascal2_Mn &lt;- function(n){
+  M &lt;- matrix(0, nrow=n+1, ncol=n+2)
+  for(i in 1:(n+1)){
+    M[i, ][c(i, i+1)] &lt;- sample.int(2, 1)
+  }
+  return(M)
+}
+set.seed(666)
+par(mar=c(.1,.1,.1,.1))
+Bgraph(Pascal2_Mn, N=4, labels_vertex=FALSE, labels_path=TRUE, path=c(1,0,1,0))</code></pre>
+<figure>
+<img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="assets/fig/bratteli-doubleedge-1.png">
+<figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic"></figcaption></figure>
+<p></br></p>
+<p>Currently, the rendering of the colored path is not correct, because the two edges of a double edge appears in color. The label edges are not correct too. This will be fixed in a next version of the <code>Bgraph</code> function.</p>
 </div>
 
 

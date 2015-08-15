@@ -1,5 +1,5 @@
 library(diagram) 
-Bgraph <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
+Bgraph_v1 <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
   Mn <- sapply(0:(N-1), function(n) fun_Mn(n))
   nvertices <- sapply(1:N, function(n) nrow(Mn[[n]])) # number of vertices per level
   elpos <- coordinates (c(nvertices, ncol(Mn[[N]])), ...) # positions of vertices
