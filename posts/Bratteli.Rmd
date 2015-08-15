@@ -1,5 +1,5 @@
 ---
-title: "Drawing a Bratteli graph"
+title: "Drawing a Bratteli graph with R"
 author: "Stéphane Laurent"
 date: "14/08/2015"
 output:
@@ -9,7 +9,6 @@ output:
 
 
 ```{r setup, include=FALSE}
-# TO DO : BLACKPATH DONNÉ PAR LABEL DES EDGES, PAS DES VERTICES
 library(knitr)
 opts_chunk$set(fig.path="assets/fig/bratteli-")
 knit_hooks$set(plot = function(x, options) {
@@ -32,7 +31,7 @@ latex_matrix <- function(M){
   print(xtable(M, align=rep("",ncol(M)+1), digits=0), floating=FALSE, tabular.environment="pmatrix", include.rownames=FALSE, include.colnames=FALSE, hline.after=NULL, timestamp=NULL, comment=FALSE, print.results=FALSE)
   }
 library(diagram) 
-Bgraph <- function(fun_Mn, N, title=NA, blackpath=NULL, label_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ...){
+Bgraph <- function(fun_Mn, N, title=NA, blackpath=NULL, col_path="blue", labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
   Mn <- sapply(0:(N-1), function(n) fun_Mn(n))
   nvertices <- sapply(1:N, function(n) nrow(Mn[[n]])) # number of vertices per level
   elpos <- coordinates (c(nvertices, ncol(Mn[[N]])), ...) # positions of vertices
@@ -44,7 +43,12 @@ Bgraph <- function(fun_Mn, N, title=NA, blackpath=NULL, label_path=FALSE, labels
   l <- length(blackpath)
   blackpath <- c(blackpath, rep(0,N+1-l))
   blackpath <- blackpath +1  # NA useless but..
-  #blackpath <- sapply(seq_along(blackpath), function(n) vertex(n, blackpath[n]))
+  vpath <- blackpath[1]
+  for(k in 2:N){
+    v <- vpath[k-1] 
+    vpath[k] <- which(Mn[[k]][v,]>0)[blackpath[k]]
+  }
+  blackpath <- vpath 
   # construct connections matrix
   fromto <- NULL
   multiplicity <- NULL
@@ -121,18 +125,28 @@ Bgraph <- function(fun_Mn, N, title=NA, blackpath=NULL, label_path=FALSE, labels
       #                                     lcol=lcol[i], lty=lty[i], lwd=lwd[i])
     }
     # labels on edges 
-    if(labels_edges && !label_path){ # faire un black path only
+    if(labels_edges && !labels_path){ # faire un black path only
+      if(LaTeX) labels_edges <- paste0("$", labels_edges, "$")
       mid <- arrpos[i, ]
-      textempty(mid+c(0,0), lab=labs_edges[i], cex=cex_edge)
-      #textellipse(mid, 0.02, lab=labs_edges[i], cex = 1.1, lcol="white", shadow.size=0)
-    }
-    if(label_path){
-      if(lcol[i]=="blue"){
-        mid <- arrpos[i, ]
+      if(ellipse_edge){
+        textellipse(mid, 0.02, lab=labs_edges[i], cex=cex_edge, lcol="black", shadow.size=0) 
+      }else{
         textempty(mid+c(0,0), lab=labs_edges[i], cex=cex_edge)
       }
     }
+    # labels on the blue path
+    if(labels_path){
+      if(lcol[i]=="blue"){
+        mid <- arrpos[i, ]
+        if(ellipse_edge){
+          textellipse(mid, 0.02, lab=labs_edges[i], cex=cex_edge, lcol="black", shadow.size=0) 
+        }else{
+            textempty(mid+c(0,0), lab=labs_edges[i], cex=cex_edge)
+        }
+      }
+    }
   }
+  # labels on vertices
   if(labels_vertex){
     # root label 
     textellipse(elpos[1,], 0.01, 0.01, lab = label_root, box.col="white", shadow.size=0, lcol="white", cex=cex_vertex) 
@@ -141,9 +155,12 @@ Bgraph <- function(fun_Mn, N, title=NA, blackpath=NULL, label_path=FALSE, labels
     for(n in start:N){ 
       for(i in 1:ncol(Mn[[n]])){
         lab <- as.character(ifelse(USE.COLNAMES, colnames(Mn[[n]])[i] , i-1+first_vertex))
-        textempty(elpos[vertex(n,i),], lab = lab, cex=cex_vertex)
-        #textellipse(elpos[vertex(n,i),], 0.03, 0.03, lab = lab, box.col = "white", shadow.size = 0, cex = 1.1)
-        #textrect(elpos[vertex(n,i),], 0.03, 0.1, lab = lab, box.col = "white", shadow.size = 0, cex = 1.1)
+        if(LaTeX && !USE.COLNAMES) lab <- paste0("$", lab, "$")
+        if(ellipse_vertex){
+          textellipse(elpos[vertex(n,i),], 0.02, 0.02, lab=lab, box.col="white", shadow.size=0, cex=cex_vertex)          
+        }else{
+          textempty(elpos[vertex(n,i),], lab = lab, cex=cex_vertex)  
+        }
       }
     }
   }
@@ -157,12 +174,16 @@ Pascal_Mn <- function (n) {
 }
 ```
 
+*Hey, ergodicians!* How do you draw your Bratteli graphs ? Are you using `Xfig` ? Are you typing raw `pstricks` or `TikZ` code ? Are you crazy ? I have written the `Bgraph` R function, and it does the job without pain. Feel free to take it [here](./assets/Rfunctions/Bgraph_v1.R).
 
-A *Bratteli graph*, such as the *Pascal graph* shown below, is a graded graph whose edges only connect vertices from one level to vertices of the next level.
+
+### Bratelli graphs - The Pascal example 
+
+A *Bratteli graph*, such as the *Pascal graph* shown below, is a graded graph whose edges only connect vertices from one level to some vertices of the next level.
 
 ```{r, echo=FALSE, fig.width=fscale*3, fig.height=fscale*3,  fig.cap="Pascal graph"}
 par(mar=c(1,1,0,1)/10)
-Bgraph(Pascal_Mn, 3, USE.COLNAMES=FALSE, blackpath=c(1,2,3,3), first_vertex=1)
+Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), first_vertex=1)
 ```
 
 Such a graph is defined by a sequence of *incidence matrices* $M_n$. Denoting by $c_n$ the number of vertices at level $n$, the incidence  matrix $M_n$ is a $c_n \times c_{n+1}$ matrix showing all connections between level $n$ and level $n+1$. A "$0$" means there's no edge, a "$1$" means there's one edge, a "$2$" means there's a double edge, etc. The first three incidence matrices of the Pascal graph are 
@@ -183,20 +204,47 @@ Pascal_Mn <- function(n){
 ```
 
 
-Given a function `fun_Mn` taking a nonnegative integer `n` as argument and returning an incidence matrix, such as the `Pascal_Mn` function, my `Bgraph` function draws the corresponding Bratteli graph from the root level to a desired level `N`. Its arguments are:
+Given a function `fun_Mn` taking a nonnegative integer `n` as argument and returning an incidence matrix, such as the `Pascal_Mn` function, my `Bgraph` function, based on the [diagram package](http://www.inside-r.org/packages/cran/diagram), draws the corresponding Bratteli graph from the root level to a desired level `N`. Its arguments are:
 ```{r}
 formalArgs(Bgraph)
 ```
 
-The figure above has been generated by this code:
-```{r, eval=FALSE}
-Bgraph(Pascal_Mn, 3, USE.COLNAMES=FALSE, blackpath=c(1,2,3,3), first_vertex=1)
+The effects of most of the arguments will be illustrated below. The ellipsis `...` is intended for additional arguments to the [coordinates](http://www.inside-r.org/packages/cran/diagram/docs/coordinates) function of the `diagram` package. For example the `hor` argument allows to rotate the picture. 
+
+The figure above has been generated by this code, except that this time we change its orientation with the `hor` argument:
+```{r}
+par(mar=c(.1,.1,.1,.1))
+Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), first_vertex=1, hor=FALSE)
+```
+
+The path shown in blue on the figure, is given as the sequence of labels on the edges of this path. The `first_vertex` argument, intended to be `0` or `1`, controls the label of the first vertex at each level. The user can decide to show the edge labels of the blue path only with the `labels_path` argument. By setting the `only_end` argument to `TRUE`, only the vertex labels at the last level are shown:
+
+```{r}
+par(mar=c(.1,.1,.1,.1))
+Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), first_vertex=0, labels_path=TRUE, only_end=TRUE)
+```
+
+By setting the `USE.COLNAMES` argument to `TRUE`, the vertex labels appearing at level $n$ are the column names of $M_n$. For example, on figure below we display the binomial numbers on the vertices Pascal graph, which give the number of paths from the root vertex. We also show the effect of the `ellipse_vertex` argument.
+
+```{r}
+Pascal_Mn <- function(n){
+  M <- matrix(0, nrow=n+1, ncol=n+2)
+  for(i in 1:(n+1)){
+    M[i, ][c(i, i+1)] <- 1
+  }
+  colnames(M) <- choose(n+1, 0:(n+1))
+  return(M)
+}
+par(mar=c(.1,.1,.1,.1))
+Bgraph(Pascal_Mn, N=4, blackpath=c(1,0,1,1), labels_path=TRUE, USE.COLNAMES=TRUE, ellipse_vertex=TRUE)
 ```
 
 
 ### Odometers 
 
-For an odometer, the incidence matrixes are full of "$1$": 
+Bratteli graphs are well-known in ergodic theory since Vershik has shown that every invertible measure-preserving transformations can be represented as a transformation on the set of paths of such a graph. 
+
+The canonical Bratteli graph of an odometer is given by incidence matrixes full of "$1$": 
 
 ```{r}
 Odometer_Mn <- function(sizes){
@@ -211,7 +259,7 @@ Odometer_Mn <- function(sizes){
 ```{r odometer, fig.width=fscale*3, fig.height=fscale*3,  fig.cap="(3,4,5)-ary odometer"}
 par(mar=c(1,1,1,1)/10) 
 fun_Mn <- Odometer_Mn(c(3,4,5))
-Bgraph(fun_Mn, N=3, labels_vertex=TRUE, blackpath=c(2,1,2), label_path=TRUE)
+Bgraph(fun_Mn, N=3, labels_vertex=TRUE, blackpath=c(2,1,2), labels_path=TRUE)
 ```
 
 This graph is related to [Cantor expansions](http://stla.github.io/stlapblog/posts/Greedy.html). For the previous example, the paths starting from the root level and going to the third level provide a representation of the Cartesian product  $\{0,1,2\}\times\{0,1,2,3\}\times\{0,1,2,3,4\}$. 
@@ -234,10 +282,53 @@ As for the odometer, the paths of the tree provide a representation of a Cartesi
 ```{r tree, fig.width=fscale*3, fig.height=fscale*3,  fig.cap="(3,4,5)-ary tree"}
 par(mar=c(1,1,1,1)/10) 
 fun_Mn <- Tree_Mn(c(3,4,5))
-Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, blackpath=c(2,8,44))
+Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, blackpath=c(2,1,2))
 ```
 
-### Conversion to `tikZ` 
+### Conversion to `TikZ` 
 
-........
+Mathematicians like $\LaTeX$ figures. The `tikzDevice` package allows to convert any R figure to a `TikZ` figure. For example we generate below the Pascal graph with the binomial numbers ${n \choose k}$ as vertex labels. We set the argument `LaTeX` to `TRUE` in the `Bgraph` function to generate edge labels in $\LaTeX$ math mode.
 
+```{r, eval=!file.exists("assets/fig/bratteli-Pascal.pdf"), message=FALSE, results='hide'}
+Pascal_Mn <- function(n){
+  M <- matrix(0, nrow=n+1, ncol=n+2)
+  for(i in 1:(n+1)){
+    M[i, ][c(i, i+1)] <- 1
+  }
+  colnames(M) <- sprintf("${%s \\choose %s}$", n+2, 1:(n+2))  
+  return(M)
+}
+# convert to TikZ code:
+library(tikzDevice)
+texfile <- "bratteli-Pascal.tex"
+tikz(texfile, standAlone=TRUE, 
+      packages=c(getOption("tikzLatexPackages"), "\\usepackage{amsmath}\n\\usepackage{amssymb}\n"))
+par(mar=c(.1,.1,.1,.1))
+Bgraph(Pascal_Mn, N=3, blackpath=c(1,0,1), labels_path=TRUE, USE.COLNAMES=TRUE, LaTeX=TRUE, label_root="$\\varnothing$", relsize=.6)
+dev.off()
+# convert to pdf: 
+tools::texi2dvi(texfile, pdf=TRUE, clean=TRUE)
+# crop the figure (remove white margins): 
+knitr::plot_crop("bratteli-Pascal.pdf")
+```
+
+```{r, echo=FALSE, eval=!file.exists("assets/fig/bratteli-Pascal.pdf"), echo=FALSE}
+file.copy("bratteli-Pascal.tex", "assets/fig/bratteli-Pascal.tex")
+file.copy("bratteli-Pascal.pdf", "assets/fig/bratteli-Pascal.pdf")
+file.remove("bratteli-Pascal.tex", "bratteli-Pascal.pdf")
+```
+
+This is the result:
+
+<object data="assets/fig/bratteli-Pascal.pdf" type="application/pdf" width="450px" height="410px">
+ 
+  <p>It appears you don't have a PDF plugin for this browser.
+  No biggie... you can <a href="assets/fig/bratteli-Pascal.pdf">click here to
+  download the PDF file.</a></p>
+  
+</object>
+
+
+### Multiples edges 
+
+My `Bgraph` function currently handles double edges too. 
