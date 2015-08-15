@@ -1,5 +1,5 @@
 library(diagram) 
-Bgraph_v1 <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
+Bgraph_v1 <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", lwd_path=4, labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
   Mn <- sapply(0:(N-1), function(n) fun_Mn(n))
   nvertices <- sapply(1:N, function(n) nrow(Mn[[n]])) # number of vertices per level
   elpos <- coordinates (c(nvertices, ncol(Mn[[N]])), ...) # positions of vertices
@@ -34,7 +34,7 @@ Bgraph_v1 <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", labels_pa
                  ifelse(i==path[1], "solid", "solid")
     )
     lwd <- rbind(lwd, 
-                 ifelse(i==path[1], 4, 2)
+                 ifelse(i==path[1], lwd_path, 2)
     )
   }
   # connections from level n
@@ -51,7 +51,7 @@ Bgraph_v1 <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", labels_pa
         )
         lty <- rbind(lty, ifelse(all(c(i,k)==path[n:(n+1)]), "solid", "solid")
         )
-        lwd <- rbind(lwd, ifelse(all(c(i,k)==path[n:(n+1)]), 4, 2)
+        lwd <- rbind(lwd, ifelse(all(c(i,k)==path[n:(n+1)]), lwd_path, 2)
         )
       }
     }
@@ -120,4 +120,16 @@ Bgraph_v1 <- function(fun_Mn, N, title=NA, path=NULL, col_path="blue", labels_pa
       }
     }
   }
+}
+
+#' Homogeneous tree
+Tree_Mn <- function(sizes){
+  function(n){
+    if(n==0) return(matrix(1, ncol=sizes[1]))
+    unname(t(model.matrix(~0+gl(prod(sizes[1:n]),sizes[n+1])))[,])
+  }
+}
+Tree_plot <- function(sizes, N, title=NA, path=NULL, col_path="blue", lwd_path=4, labels_path=FALSE, labels_vertex=TRUE, USE.COLNAMES=FALSE, first_vertex=0, label_root="ø", only_end=FALSE, cex_vertex=1.5, labels_edges=TRUE, cex_edge=1.1, ellipse_vertex=FALSE, ellipse_edge=FALSE, LaTeX=FALSE, ...){
+  fun_Mn <- Tree_Mn(sizes)
+  Bgraph_v1(fun_Mn, N, title=title, path=path, col_path=col_path, lwd_path=lwd_path, labels_path=labels_path, labels_vertex=labels_vertex, USE.COLNAMES=USE.COLNAMES, first_vertex=first_vertex, label_root=label_root, only_end=only_end, cex_vertex=cex_vertex, labels_edges=labels_edges, cex_edge=cex_edge, ellipse_vertex=ellipse_vertex, ellipse_edge=ellipse_edge, LaTeX=LaTeX, ...)
 }

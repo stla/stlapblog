@@ -1,7 +1,7 @@
 ---
 title: "Avoiding nested loops with a Cantor expansion"
 author: "Stéphane Laurent"
-date: "29/07/2015"
+date: "10/08/2015"
 output: html_document
 ---
 
@@ -10,12 +10,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 library(knitr)
-opts_chunk$set(collapse=TRUE)
+opts_chunk$set(collapse=TRUE, fig.path="assets/fig/greedy-")
+source("./assets/Rfunctions/Bgraph.R")
 source("./assets/knitrEngines/V800.R")
-#ct <- new_context()
-#opts_chunk$set(V8.context=ct)
 opts_chunk$set(V8.libraries=c("assets/htmlframes/libraries/underscore-min.js"))
-#ct$source(system.file("js/underscore.js", package="V8"))
 ```
 
 
@@ -53,7 +51,12 @@ The numerotation for the $2^n$ first integers is also given by the Cartesian pro
 expand.grid(epsilon0=c(0,1), epsilon1=c(0,1), epsilon2=c(0,1))
 ```
 
-Thus, one can view the binary representation of a number $n$ as the $n$-th element of this Cartesian product (for the [colexicographic order](https://en.wikipedia.org/wiki/Lexicographical_order#Colexicographic_order)).
+Thus, one can view the binary representation of a number $n$ as the $n$-th element of this Cartesian product (for the [colexicographic order](https://en.wikipedia.org/wiki/Lexicographical_order#Colexicographic_order)). The enumeration is easily viewed on a tree:
+
+```{r, echo=FALSE, fig.width=6, fig.height=3}
+par(mar=c(1,1,1,1)/100)
+Tree_plot(c(2,2,2), N=3, col_path="gray", lwd_path=2, only_end=TRUE, hor=FALSE)
+```
 
 
 Well, everybody knows that. In mathematical terms, 
