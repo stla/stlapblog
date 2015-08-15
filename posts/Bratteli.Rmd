@@ -156,7 +156,7 @@ Pascal_Mn <- function(n){
   for(i in 1:(n+1)){
     M[i, ][c(i, i+1)] <- 1
   }
-  colnames(M) <- sprintf("${%s \\choose %s}$", n+2, 1:(n+2))  
+  colnames(M) <- sprintf("${%s \\choose %s}$", n+1, 0:(n+1))  
   return(M)
 }
 # convert to TikZ code:

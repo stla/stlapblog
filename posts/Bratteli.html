@@ -203,7 +203,7 @@ Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, path=c(2,1,2))</cod
   for(i in 1:(n+1)){
     M[i, ][c(i, i+1)] &lt;- 1
   }
-  colnames(M) &lt;- sprintf(&quot;${%s \\choose %s}$&quot;, n+2, 1:(n+2))  
+  colnames(M) &lt;- sprintf(&quot;${%s \\choose %s}$&quot;, n+1, 0:(n+1))  
   return(M)
 }
 # convert to TikZ code:
