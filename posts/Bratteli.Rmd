@@ -15,7 +15,7 @@ knit_hooks$set(plot = function(x, options) {
   paste('<figure><img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="',
         opts_knit$get('base.url'), paste(x, collapse = '.'),
         '"><figcaption style=\"text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic\">', 
-        options$fig.cap, '</figcaption></figure></br>',
+        options$fig.cap, '</figcaption></figure>', #</br>
         sep = '')
   })
 fscale <- 1.8
@@ -35,7 +35,7 @@ Pascal_Mn <- function (n) {
 }
 ```
 
-*Hey, ergodicians!* How do you draw your Bratteli graphs ? Are you using `Xfig` ? Are you typing raw `pstricks` or `TikZ` code ? Are you crazy ? I have written the `Bgraph` R function, and it does the job without pain. Feel free to take it [here](./assets/Rfunctions/Bgraph_v1.R).
+*Hey, ergodicians!* How do you draw your Bratteli graphs ? Are you using `Xfig`? Are you typing raw `pstricks` or `TikZ` code? Are you crazy? I have written the `Bgraph` R function, and it does the job without pain for you (feel free to take it [here](./assets/Rfunctions/Bgraph_v1.R)). You just have to write a R function returning the incidence matrices of the graph. 
 
 
 ### Bratelli graphs - The Pascal example 

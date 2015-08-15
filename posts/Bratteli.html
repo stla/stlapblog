@@ -83,7 +83,7 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Bratteli.Rmd'>Source</a>
               <div class='lead'>
 
-<p><em>Hey, ergodicians!</em> How do you draw your Bratteli graphs ? Are you using <code>Xfig</code> ? Are you typing raw <code>pstricks</code> or <code>TikZ</code> code ? Are you crazy ? I have written the <code>Bgraph</code> R function, and it does the job without pain. Feel free to take it <a href="./assets/Rfunctions/Bgraph_v1.R">here</a>.</p>
+<p><em>Hey, ergodicians!</em> How do you draw your Bratteli graphs ? Are you using <code>Xfig</code>? Are you typing raw <code>pstricks</code> or <code>TikZ</code> code? Are you crazy? I have written the <code>Bgraph</code> R function, and it does the job without pain for you (feel free to take it <a href="./assets/Rfunctions/Bgraph_v1.R">here</a>). You just have to write a R function returning the incidence matrices of the graph.</p>
 <div id="bratelli-graphs---the-pascal-example" class="section level3">
 <h3>Bratelli graphs - The Pascal example</h3>
 <p>A <em>Bratteli graph</em>, such as the <em>Pascal graph</em> shown below, is a graded graph whose edges only connect vertices from one level to some vertices of the next level.</p>
@@ -92,7 +92,7 @@
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic">
 Pascal graph
 </figcaption></figure>
-<p></br></p>
+
 <p>Such a graph is defined by a sequence of <em>incidence matrices</em> <span class="math">\(M_n\)</span>. Denoting by <span class="math">\(c_n\)</span> the number of vertices at level <span class="math">\(n\)</span>, the incidence matrix <span class="math">\(M_n\)</span> is a <span class="math">\(c_n \times c_{n+1}\)</span> matrix showing all connections between level <span class="math">\(n\)</span> and level <span class="math">\(n+1\)</span>. A “<span class="math">\(0\)</span>” means there’s no edge, a “<span class="math">\(1\)</span>” means there’s one edge, a “<span class="math">\(2\)</span>” means there’s a double edge, etc. The first three incidence matrices of the Pascal graph are</p>
 <p><span class="math">\[ M_0= \begin{pmatrix}{}
   1 &amp; 1 \\ 
@@ -129,14 +129,14 @@ Bgraph(Pascal_Mn, N=3, path=c(1,0,1), first_vertex=1, hor=FALSE)</code></pre>
 <figure>
 <img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="assets/fig/bratteli-unnamed-chunk-5-1.png">
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic"></figcaption></figure>
-<p></br></p>
+
 <p>The path shown in blue on the figure, is given as the sequence of labels on the edges of this path. The <code>first_vertex</code> argument, intended to be <code>0</code> or <code>1</code>, controls the label of the first vertex at each level. The user can decide to show the edge labels of the blue path only with the <code>labels_path</code> argument. By setting the <code>only_end</code> argument to <code>TRUE</code>, only the vertex labels at the last level are shown:</p>
 <pre class="r"><code>par(mar=c(.1,.1,.1,.1))
 Bgraph(Pascal_Mn, N=3, path=c(1,0,1), first_vertex=0, labels_path=TRUE, only_end=TRUE)</code></pre>
 <figure>
 <img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="assets/fig/bratteli-unnamed-chunk-6-1.png">
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic"></figcaption></figure>
-<p></br></p>
+
 <p>By setting the <code>USE.COLNAMES</code> argument to <code>TRUE</code>, the vertex labels appearing at level <span class="math">\(n\)</span> are the column names of <span class="math">\(M_n\)</span>. For example, on figure below we display the binomial numbers on the vertices Pascal graph, which give the number of paths from the root vertex. We also show the effect of the <code>ellipse_vertex</code> argument.</p>
 <pre class="r"><code>Pascal_Mn &lt;- function(n){
   M &lt;- matrix(0, nrow=n+1, ncol=n+2)
@@ -151,7 +151,8 @@ Bgraph(Pascal_Mn, N=4, path=c(1,0,1,1), labels_path=TRUE, USE.COLNAMES=TRUE, ell
 <figure>
 <img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="assets/fig/bratteli-unnamed-chunk-7-1.png">
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic"></figcaption></figure>
-<p></br></p>
+
+
 </div>
 <div id="odometers" class="section level3">
 <h3>Odometers</h3>
@@ -171,7 +172,7 @@ Bgraph(fun_Mn, N=3, labels_vertex=TRUE, path=c(2,1,2), labels_path=TRUE)</code><
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic">
 (3,4,5)-ary odometer
 </figcaption></figure>
-<p></br></p>
+
 <p>This graph is related to <a href="http://stla.github.io/stlapblog/posts/Greedy.html">Cantor expansions</a>. For the previous example, the paths starting from the root level and going to the third level provide a representation of the Cartesian product <span class="math">\(\{0,1,2\}\times\{0,1,2,3\}\times\{0,1,2,3,4\}\)</span>.</p>
 </div>
 <div id="homogeneous-trees" class="section level3">
@@ -192,7 +193,7 @@ Bgraph(fun_Mn, N=3, labels_vertex=FALSE, labels_edges=FALSE, path=c(2,1,2))</cod
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic">
 (3,4,5)-ary tree
 </figcaption></figure>
-<p></br></p>
+
 </div>
 <div id="conversion-to-tikz" class="section level3">
 <h3>Conversion to <code>TikZ</code></h3>
@@ -244,7 +245,7 @@ Bgraph(Pascal2_Mn, N=4, labels_vertex=FALSE, labels_path=TRUE, path=c(1,0,1,0))<
 <figure>
 <img style="display: block;margin-left: auto;margin-right: auto;" width=400 src="assets/fig/bratteli-doubleedge-1.png">
 <figcaption style="text-align: center; line-height:21px; font-weight:normal; font-family:times; font-size:18px; font-style:italic"></figcaption></figure>
-<p></br></p>
+
 <p>Currently, the rendering of the colored path is not correct, because the two edges of a double edge appears in color. The label edges are not correct too. This will be fixed in a next version of the <code>Bgraph</code> function.</p>
 </div>
 
