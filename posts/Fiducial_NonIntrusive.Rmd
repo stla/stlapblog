@@ -1,0 +1,250 @@
+---
+title: "Fiducial statistics: the non-intrusive algorithm"
+author: "Stéphane Laurent"
+date: "28 août 2015"
+output: html_document
+---
+
+***(this article is under progrees)***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=FALSE, fig.path="assets/fig/fiducial_nonintrusive-")
+library(data.table)
+```
+
+The 2012 paper [Computational issues of generalized fiducial inference](http://www.sciencedirect.com/science/article/pii/S0167947313000911) by Hannig & al. provides a nice way to simulate the generalized fiducial distribution of parametric models for independent observations with continuous sampling distributions. It is called the *non-intrusive* algorithm. 
+
+We start by showing how it works for a Gaussian sample $x_i \sim_{\text{i.i.d.}} {\cal N}(\mu, \sigma^2)$ with unknown mean $\mu$ and unknown standard deviation $\sigma$. 
+
+The method is based on the representation $X_i = G_{\mu,\sigma}(U_i)$ where the $U_i$ are independent random variables uniformly distributed on $(0,1)$ and $G_{\mu,\sigma}(U_i)$ is the inverse *cdf* of the Gaussian distribution ${\cal N}(\mu, \sigma^2)$. This fact is not specific to Gaussian distributions, it is a well-known fact used to sample from a dsitribution from a uniform sampling on $(0,1)$ when the inverse $cdf$ is tractable. Since  ${\cal N}(\mu, \sigma^2)$ is a continuous distribution, one can write the inverse relation $U_i=F_{\mu,\sigma}(X_i)$ where $F_{\mu,\sigma}$ is the *cdf* of ${\cal N}(\mu, \sigma^2)$.
+
+#### Main step : solving the structural equations
+
+The main step in the non-intrusive algorithm consists in solving for $(\mu,\sigma)$ the system of equations
+$$
+\begin{cases}
+F_{\mu,\sigma}(x_{i}) = u_{i} \\
+F_{\mu,\sigma}(x_{j}) = u_{j} 
+\end{cases}
+$$
+for each indexes $i<j$ of the observed sample $(x_1, \ldots, x_n)$ and given $u_i, u_j \in (0,1)$. This is quite easy for the Gaussian case. Using the fact that $F_{\mu,\sigma}(x)=\Phi\left(\frac{x-\mu}{\sigma}\right)$, where $\Phi=F_{0,1}$, one gets a linear system of equations whose solution is
+$$
+\begin{pmatrix}
+\mu \\ \sigma 
+\end{pmatrix} 
+= \frac{1}{\Phi^{-1}(u_j) - \Phi^{-1}(u_i)}
+\begin{pmatrix}
+x_i \Phi^{-1}(u_j) - x_j \Phi^{-1}(u_i) \\ x_j - x_i
+\end{pmatrix}. 
+$$
+The value of $\sigma$ is negative When $u_i$ and $u_j$ are not in the same order than $x_i$ and $x_j$, and these solutions are discarded. Thus, as long as $x_i \neq x_j$, the system has a solution for all $(u_i, u_j)$ in a subset of ${(0,1)}^2$ having Lebesgue measure $1/2$. We denote by $Q_{x_i,x_j}(u_i, u_j)$ the solution. 
+
+
+```{r}
+Q <- function(x, u){
+  x1 <- x[1]; x2 <- x[2]
+  u1 <- u[1]; u2 <- u[2]
+  if(sign(x1-x2) != sign(u1-u2)) return(NULL)
+  q <- qnorm(u)
+  mu <- q[2]*x1-q[1]*x2
+  sigma <- x2-x1
+  return(c(mu,sigma)/(q[2]-q[1]))
+}
+```
+
+Note that this step would be as simple for another *location-scale* family of distributions with location parameter $\mu$ and scale parameter $\sigma$. It suffices to replace $\Phi^{-1}$ with the inverse *cdf* for $\mu=0$ and $\sigma=1$. 
+
+#### Screening ${(0,1)}^2$
+
+The algorithm requires a grid of ${(0,1)}^2$. For efficiency, we use the `data.table` package to generate and store this grid. The `CJ` (Cross Join) function of the `data.table` is similar to the `expand.grid` base function but it returns the Cartesian product in a table of class `data.table`. 
+
+```{r}
+library(data.table)
+Grid <- function(L){
+  x <- seq(0, 1, length.out=L+1)[-1] - 1/(2*L)
+  return(CJ(u1=x, u2=x))
+}
+```
+
+`Grid(L)` generates `L` $\times$ `L` points uniformly allocated  on the square: 
+
+```{r plotgrid, echo=-1, fig.width=3}
+par(mar=c(4,4,0,0), pty="s")
+plot(Grid(6), pch="+", asp=1, xlim=c(0,1), xaxs="i", yaxs="i")
+```
+
+
+#### Non-intrusive algorithm
+
+For all pairs of indexes $i < j$, or only for such pairs obtained by sampling (see below), the algorithm requires to evaluate the solution $Q_{x_i,x_j}({\boldsymbol u})$ for ${\boldsymbol u}=(u_1,u_2)$ running over all the points of the grid. 
+
+The number of such pair of indexes $i < j$ is ${n \choose 2}$. When it is not big, one runs the algorithm over all such pairs, otherwise one can run it over $K<{n \choose 2}$ sampled pairs of indexes. 
+
+We denote by $(\mu_{k,m}, \sigma_{k,m})$ the solution $Q_{x_i,x_j}({\boldsymbol u}_m)$ where $i<j$ is the $k$-th pair of indexes $i < j$ and ${\boldsymbol u}_m$ is the $m$-th point of the grid, for $k = 1, \ldots, K$ (total number of pairs or number of sampled pairs) and $m=1, \ldots, M$ (number of points in the grid), and set  $J_{k,m}=\frac{1}{M}f(x_i, \mu_k, \sigma_k)f(x_j, \mu_k, \sigma_k)$. The cases when $Q_{x_i,x_j}({\boldsymbol u}_m)$ is not defined are simply not taken into account, equivalently one sets $J_{k,m}=0$ in these cases. 
+Then, the generalized fiducial probability of $(\mu,\sigma) \in A$ is approximated by 
+$$
+\frac{\sum_{k=1}^K\sum_{m=1}^M J_{k,m} {\boldsymbol 1}\{(\mu_{k,m}, \sigma_{k,m})\in A\}}{\sum_{k=1}^K\sum_{m=1}^M J_{k,m}} 
+= \sum_{k=1}^K\sum_{m=1}^M W_{k,m} {\boldsymbol 1}\{(\mu_{k,m}, \sigma_{k,m})\in A\}
+$$
+with $W_{k,m} = \frac{J_{k,m}}{\sum_{k=1}^K\sum_{m=1}^M J_{k,m}}$. 
+
+In particular, this formula provides the approximated generalized fiducial *cdf* of $\mu$:
+$$
+t \mapsto \sum_{k=1}^K\sum_{m=1}^M W_{k,m} {\boldsymbol 1}\{\mu_{k,m} \leq t\}
+$$
+and, similarly, the one of $\sigma$:
+$$
+t \mapsto \sum_{k=1}^K\sum_{m=1}^M W_{k,m} {\boldsymbol 1}\{\sigma_{k,m} \leq t\}.
+$$
+We will give more details about the way to perform fiducial inference after running an example.
+
+#### Example 
+
+We run an example with the small sample size $n=4$. There are only ${4 \choose 2} = 6$ pairs of indexes $i<j$. We take a grid with $100\times 100$ points.
+
+```{r, eval=TRUE}
+# simulated data
+set.seed(666)
+n <- 4
+x <- rnorm(n, mean=0.4, sd=0.8)
+# algorithm
+L <- 100
+grid <- Grid(L)
+pairs <- combn(n, 2) # all combinations i<j
+K <- ncol(pairs)
+J <- Mu <- Sigma <- matrix(NA, nrow=L^2, ncol=K)
+for(k in 1:K){ 
+  I <- pairs[,k]
+  Jk <- rep(NA, L^2)
+  for(l in 1:L^2){
+    theta <- Q(x=x[I], u=c(grid$u1[l], grid$u2[l]))
+    if(!is.null(theta)){
+      Jk[l] <- -2*log(L) + sum(dnorm(x[-I], theta[1], theta[2], log=TRUE))  
+      Mu[l,k] <- theta[1]
+      Sigma[l,k] <- theta[2]
+    }
+  }
+  J[,k] <- exp(Jk)
+}
+```
+
+At the end, we store the outputs in vectors, discarding the indexes $(k,m)$ for which there is no solution to the system of structural equations:
+
+```{r, collapse=TRUE}
+keep <- which(!is.na(J))
+length(keep) # should be ≈ 6*10000/2=30000
+W <- J[keep]/sum(J[keep])
+Mu <- Mu[keep]
+Sigma <- Sigma[keep]
+```
+
+#### Fiducial inference 
+
+The approximated generalized fiducial *cdf* of one parameter is exactly obtained as a weighted empirical *cdf*, taking the $W_{k,m}$ as weights. Below we get it with the help of the `ewcdf` function of the `spatstat` package. The exact joint fiducial distribution is known, it is the same as the Jeffreys posterior distribution. Below we compare the approximate fiducial distribution of $\mu$ with its exact fiducial distribution, which is a shifted and scaled Student distribution
+
+```{r}
+### approximate fiducial distribution of µ ###
+F_mu <- spatstat::ewcdf(Mu, weights=W)
+curve(F_mu, from=0, to=2.5, col="blue", lwd=2)
+### exact fiducial distribution ###
+mean_x <- mean(x)
+sd_x <- sd(x)
+curve(pt((x-mean_x)/(sd_x/sqrt(n)), df=n-1), add=TRUE, col="red", lwd=3, lty="dashed")
+### show the median ###
+abline(h=0.5, lty="dotted")
+abline(v=mean(x), lty="dotted")
+```
+
+The approximation is quite perfect. Below we do the same comparison for the fiducial distribution of $\sigma$, and we also see a quite perfect approximation.
+
+```{r}
+### approximate fiducial distribution of σ ###
+F_sigma <- spatstat::ewcdf(Sigma,W)
+curve(F_sigma, from=0, to=2.5, ylim=c(0,1), col="blue", lwd=2)
+### exact fiducial distribution ###
+# pdf of an inverse square root Gamma distribution
+psqrtigamma <- function(x, a, b) {
+  1-pgamma(1/x^2, a, b) 
+}
+# fiducial/Jeffreys distribution 
+psigma <- function(x, n, sd) {
+  psqrtigamma(x, (n - 1)/2, (n - 1) * sd^2/2)
+}
+curve(psigma(x, n, sd_x), add=TRUE, col="red", lwd=3, lty="dashed")
+```
+
+The quantiles of the marginal fiducial distributions are easy to get too. The `quantile` function can be applied to empirical weighted *cdf* given by `ewcdf` function. Thus we get a $95\%$-confidence fiducial interval about $\mu$ as follows:
+
+```{r}
+quantile(F_mu, c(0.025, 0.975))
+confint(lm(x~1)) # theoretically it is the same
+```
+
+To perform inference on a scalar quantity $\psi = f(\mu, \sigma)$, say for example the coefficient of variation $\psi=\sigma/\mu$, one simply construct the value of $\psi$ for each pair $(\mu_{k,m}, \sigma_{k,m})$, and we proceed as before.
+
+```{r}
+F_psi <- spatstat::ewcdf(Sigma/Mu, weights=W)
+curve(F_psi, from=0, to=3, col="blue", lwd=2)
+```
+
+
+```{r, eval=FALSE}
+Fmu(mean(x)) # 0.5 ?
+q <- seq(mean(x)-3*sd(x)/sqrt(n), mean(x)+3*sd(x)/sqrt(n), length.out = 10)
+points(q, sapply(q, function(t) sum(W*(Mu<t))))
+# sims
+msample <- rmultinom(1, length(Mu), W)[,1]
+resims <- rep(Mu, times=msample)
+curve(ecdf(resims)(x), add=TRUE, col="blue")
+```
+
+If needed, simulations of the fiducial distributions can be generated by multinomial sampling of the $(\mu_{k,m}, \sigma_{k,m})$:
+
+```{r, echo=-1, fig.width=5}
+par(mar=c(4,4,0,0))
+msample <- rmultinom(1, length(keep), W)[,1]
+Sims <- cbind(mu=rep(Mu, times=msample), sigma=rep(Sigma, times=msample))
+plot(Sims, pch="+")
+```
+
+
+
+### Improving the grid 
+
+To achieve better precision, one can use a grid specific to each pair of indexes $i < j$, with points more concentrated around $Q_{x_i,x_j}^{-1}(\hat\mu,\hat\sigma)$, where $\hat\mu$ and $\hat\sigma$ are the ML estimates. I have written the R functions below to generate such a grid, but so far I have not seriously studied the advantage of using it.
+
+```{r, fig.width=5}
+Subd <- function(rho1, rho2, p, n){
+  if(rho1>rho2) stop()
+  rho1 <- tan(rho1*pi/180)
+  rho2 <- tan(rho2*pi/180)
+  a <- (rho2-rho1)/2
+  b <- rho1
+  g <- function(a, b, y) (-b+sign(b)*sqrt(b^2+4*a*y))/a/2
+  n1 <- max(floor(n*p), floor(n/2))
+  s1 <- sapply(seq(0, p*(a+b), length.out=n1+1), function(y) p*g(a*p, b*p, y)) 
+  s2 <- sapply(seq((p-1)*(a+b), 0, length.out=n-n1+1), function(y) (p-1)*g(a*(p-1), b*(p-1), y)+1) 
+  return(c(s1,s2[-1]))
+}
+## 
+hypercubes <- function(S, U, rho1=44, rho2=46){
+  subds <- lapply(U, function(u) Subd(rho1, rho2, u, S))
+  lengths <- as.matrix(do.call(CJ, c(setNames(lapply(subds, diff), paste0("l", 1:length(U))), list(sorted=FALSE))))
+  subds_exp <- as.matrix(do.call(CJ, setNames(lapply(subds, function(s) head(s,-1)), paste0("s", 1:length(U)))))
+  centers <- setNames(data.table(lengths/2+subds_exp), paste0("u", 1:length(U)))
+  return(cbind(
+    logvolume=rowSums(log(as.matrix(lengths))), 
+    centers))
+}
+grid <- hypercubes(20, U=c(0.3, 0.8), rho1=45, rho2=80)
+plot(0, 0, type="n", xlim=c(0,1), ylim=c(0,1), xlab=NA, ylab=NA)
+points(grid$u1, grid$u2, pch="+", col="blue")
+```
+
+
+### Generalization to linear regression
+
+The above method is easily generalized to linear regression models $Y=X\beta + \sigma \epsilon$. One can use a standard normal distribution for the error terms $\epsilon_i$, or a Student distribution, a Cauchy distribution, or any distribution whose *pdf* and inverse *cdf* can be evaluated. 
+
+.....
+

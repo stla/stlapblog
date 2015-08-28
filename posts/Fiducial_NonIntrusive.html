@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fiducial statistics: the non-intrusive algorithm</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Fiducial statistics: the non-intrusive algorithm</a>
+              </h3>
+              <span>28 août 2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Fiducial_NonIntrusive.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(this article is under progrees)</em></strong></p>
+<p>The 2012 paper <a href="http://www.sciencedirect.com/science/article/pii/S0167947313000911">Computational issues of generalized fiducial inference</a> by Hannig &amp; al. provides a nice way to simulate the generalized fiducial distribution of parametric models for independent observations with continuous sampling distributions. It is called the <em>non-intrusive</em> algorithm.</p>
+<p>We start by showing how it works for a Gaussian sample <span class="math">\(x_i \sim_{\text{i.i.d.}} {\cal N}(\mu, \sigma^2)\)</span> with unknown mean <span class="math">\(\mu\)</span> and unknown standard deviation <span class="math">\(\sigma\)</span>.</p>
+<p>The method is based on the representation <span class="math">\(X_i = G_{\mu,\sigma}(U_i)\)</span> where the <span class="math">\(U_i\)</span> are independent random variables uniformly distributed on <span class="math">\((0,1)\)</span> and <span class="math">\(G_{\mu,\sigma}(U_i)\)</span> is the inverse <em>cdf</em> of the Gaussian distribution <span class="math">\({\cal N}(\mu, \sigma^2)\)</span>. This fact is not specific to Gaussian distributions, it is a well-known fact used to sample from a dsitribution from a uniform sampling on <span class="math">\((0,1)\)</span> when the inverse <span class="math">\(cdf\)</span> is tractable. Since <span class="math">\({\cal N}(\mu, \sigma^2)\)</span> is a continuous distribution, one can write the inverse relation <span class="math">\(U_i=F_{\mu,\sigma}(X_i)\)</span> where <span class="math">\(F_{\mu,\sigma}\)</span> is the <em>cdf</em> of <span class="math">\({\cal N}(\mu, \sigma^2)\)</span>.</p>
+<div id="main-step-solving-the-structural-equations" class="section level4">
+<h4>Main step : solving the structural equations</h4>
+<p>The main step in the non-intrusive algorithm consists in solving for <span class="math">\((\mu,\sigma)\)</span> the system of equations <span class="math">\[
+\begin{cases}
+F_{\mu,\sigma}(x_{i}) = u_{i} \\
+F_{\mu,\sigma}(x_{j}) = u_{j} 
+\end{cases}
+\]</span> for each indexes <span class="math">\(i&lt;j\)</span> of the observed sample <span class="math">\((x_1, \ldots, x_n)\)</span> and given <span class="math">\(u_i, u_j \in (0,1)\)</span>. This is quite easy for the Gaussian case. Using the fact that <span class="math">\(F_{\mu,\sigma}(x)=\Phi\left(\frac{x-\mu}{\sigma}\right)\)</span>, where <span class="math">\(\Phi=F_{0,1}\)</span>, one gets a linear system of equations whose solution is <span class="math">\[
+\begin{pmatrix}
+\mu \\ \sigma 
+\end{pmatrix} 
+= \frac{1}{\Phi^{-1}(u_j) - \Phi^{-1}(u_i)}
+\begin{pmatrix}
+x_i \Phi^{-1}(u_j) - x_j \Phi^{-1}(u_i) \\ x_j - x_i
+\end{pmatrix}. 
+\]</span> The value of <span class="math">\(\sigma\)</span> is negative When <span class="math">\(u_i\)</span> and <span class="math">\(u_j\)</span> are not in the same order than <span class="math">\(x_i\)</span> and <span class="math">\(x_j\)</span>, and these solutions are discarded. Thus, as long as <span class="math">\(x_i \neq x_j\)</span>, the system has a solution for all <span class="math">\((u_i, u_j)\)</span> in a subset of <span class="math">\({(0,1)}^2\)</span> having Lebesgue measure <span class="math">\(1/2\)</span>. We denote by <span class="math">\(Q_{x_i,x_j}(u_i, u_j)\)</span> the solution.</p>
+<pre class="r"><code>Q &lt;- function(x, u){
+  x1 &lt;- x[1]; x2 &lt;- x[2]
+  u1 &lt;- u[1]; u2 &lt;- u[2]
+  if(sign(x1-x2) != sign(u1-u2)) return(NULL)
+  q &lt;- qnorm(u)
+  mu &lt;- q[2]*x1-q[1]*x2
+  sigma &lt;- x2-x1
+  return(c(mu,sigma)/(q[2]-q[1]))
+}</code></pre>
+<p>Note that this step would be as simple for another <em>location-scale</em> family of distributions with location parameter <span class="math">\(\mu\)</span> and scale parameter <span class="math">\(\sigma\)</span>. It suffices to replace <span class="math">\(\Phi^{-1}\)</span> with the inverse <em>cdf</em> for <span class="math">\(\mu=0\)</span> and <span class="math">\(\sigma=1\)</span>.</p>
+</div>
+<div id="screening-012" class="section level4">
+<h4>Screening <span class="math">\({(0,1)}^2\)</span></h4>
+<p>The algorithm requires a grid of <span class="math">\({(0,1)}^2\)</span>. For efficiency, we use the <code>data.table</code> package to generate and store this grid. The <code>CJ</code> (Cross Join) function of the <code>data.table</code> is similar to the <code>expand.grid</code> base function but it returns the Cartesian product in a table of class <code>data.table</code>.</p>
+<pre class="r"><code>library(data.table)
+Grid &lt;- function(L){
+  x &lt;- seq(0, 1, length.out=L+1)[-1] - 1/(2*L)
+  return(CJ(u1=x, u2=x))
+}</code></pre>
+<p><code>Grid(L)</code> generates <code>L</code> <span class="math">\(\times\)</span> <code>L</code> points uniformly allocated on the square:</p>
+<pre class="r"><code>plot(Grid(6), pch=&quot;+&quot;, asp=1, xlim=c(0,1), xaxs=&quot;i&quot;, yaxs=&quot;i&quot;)</code></pre>
+<p><img src="assets/fig/fiducial_nonintrusive-plotgrid-1.png" title="" alt="" width="288" /></p>
+</div>
+<div id="non-intrusive-algorithm" class="section level4">
+<h4>Non-intrusive algorithm</h4>
+<p>For all pairs of indexes <span class="math">\(i &lt; j\)</span>, or only for such pairs obtained by sampling (see below), the algorithm requires to evaluate the solution <span class="math">\(Q_{x_i,x_j}({\boldsymbol u})\)</span> for <span class="math">\({\boldsymbol u}=(u_1,u_2)\)</span> running over all the points of the grid.</p>
+<p>The number of such pair of indexes <span class="math">\(i &lt; j\)</span> is <span class="math">\({n \choose 2}\)</span>. When it is not big, one runs the algorithm over all such pairs, otherwise one can run it over <span class="math">\(K&lt;{n \choose 2}\)</span> sampled pairs of indexes.</p>
+<p>We denote by <span class="math">\((\mu_{k,m}, \sigma_{k,m})\)</span> the solution <span class="math">\(Q_{x_i,x_j}({\boldsymbol u}_m)\)</span> where <span class="math">\(i&lt;j\)</span> is the <span class="math">\(k\)</span>-th pair of indexes <span class="math">\(i &lt; j\)</span> and <span class="math">\({\boldsymbol u}_m\)</span> is the <span class="math">\(m\)</span>-th point of the grid, for <span class="math">\(k = 1, \ldots, K\)</span> (total number of pairs or number of sampled pairs) and <span class="math">\(m=1, \ldots, M\)</span> (number of points in the grid), and set <span class="math">\(J_{k,m}=\frac{1}{M}f(x_i, \mu_k, \sigma_k)f(x_j, \mu_k, \sigma_k)\)</span>. The cases when <span class="math">\(Q_{x_i,x_j}({\boldsymbol u}_m)\)</span> is not defined are simply not taken into account, equivalently one sets <span class="math">\(J_{k,m}=0\)</span> in these cases. Then, the generalized fiducial probability of <span class="math">\((\mu,\sigma) \in A\)</span> is approximated by <span class="math">\[
+\frac{\sum_{k=1}^K\sum_{m=1}^M J_{k,m} {\boldsymbol 1}\{(\mu_{k,m}, \sigma_{k,m})\in A\}}{\sum_{k=1}^K\sum_{m=1}^M J_{k,m}} 
+= \sum_{k=1}^K\sum_{m=1}^M W_{k,m} {\boldsymbol 1}\{(\mu_{k,m}, \sigma_{k,m})\in A\}
+\]</span> with <span class="math">\(W_{k,m} = \frac{J_{k,m}}{\sum_{k=1}^K\sum_{m=1}^M J_{k,m}}\)</span>.</p>
+<p>In particular, this formula provides the approximated generalized fiducial <em>cdf</em> of <span class="math">\(\mu\)</span>: <span class="math">\[
+t \mapsto \sum_{k=1}^K\sum_{m=1}^M W_{k,m} {\boldsymbol 1}\{\mu_{k,m} \leq t\}
+\]</span> and, similarly, the one of <span class="math">\(\sigma\)</span>: <span class="math">\[
+t \mapsto \sum_{k=1}^K\sum_{m=1}^M W_{k,m} {\boldsymbol 1}\{\sigma_{k,m} \leq t\}.
+\]</span> We will give more details about the way to perform fiducial inference after running an example.</p>
+</div>
+<div id="example" class="section level4">
+<h4>Example</h4>
+<p>We run an example with the small sample size <span class="math">\(n=4\)</span>. There are only <span class="math">\({4 \choose 2} = 6\)</span> pairs of indexes <span class="math">\(i&lt;j\)</span>. We take a grid with <span class="math">\(100\times 100\)</span> points.</p>
+<pre class="r"><code># simulated data
+set.seed(666)
+n &lt;- 4
+x &lt;- rnorm(n, mean=0.4, sd=0.8)
+# algorithm
+L &lt;- 100
+grid &lt;- Grid(L)
+pairs &lt;- combn(n, 2) # all combinations i&lt;j
+K &lt;- ncol(pairs)
+J &lt;- Mu &lt;- Sigma &lt;- matrix(NA, nrow=L^2, ncol=K)
+for(k in 1:K){ 
+  I &lt;- pairs[,k]
+  Jk &lt;- rep(NA, L^2)
+  for(l in 1:L^2){
+    theta &lt;- Q(x=x[I], u=c(grid$u1[l], grid$u2[l]))
+    if(!is.null(theta)){
+      Jk[l] &lt;- -2*log(L) + sum(dnorm(x[-I], theta[1], theta[2], log=TRUE))  
+      Mu[l,k] &lt;- theta[1]
+      Sigma[l,k] &lt;- theta[2]
+    }
+  }
+  J[,k] &lt;- exp(Jk)
+}</code></pre>
+<p>At the end, we store the outputs in vectors, discarding the indexes <span class="math">\((k,m)\)</span> for which there is no solution to the system of structural equations:</p>
+<pre class="r"><code>keep &lt;- which(!is.na(J))
+length(keep) # should be ≈ 6*10000/2=30000
+## [1] 29700
+W &lt;- J[keep]/sum(J[keep])
+Mu &lt;- Mu[keep]
+Sigma &lt;- Sigma[keep]</code></pre>
+</div>
+<div id="fiducial-inference" class="section level4">
+<h4>Fiducial inference</h4>
+<p>The approximated generalized fiducial <em>cdf</em> of one parameter is exactly obtained as a weighted empirical <em>cdf</em>, taking the <span class="math">\(W_{k,m}\)</span> as weights. Below we get it with the help of the <code>ewcdf</code> function of the <code>spatstat</code> package. The exact joint fiducial distribution is known, it is the same as the Jeffreys posterior distribution. Below we compare the approximate fiducial distribution of <span class="math">\(\mu\)</span> with its exact fiducial distribution, which is a shifted and scaled Student distribution</p>
+<pre class="r"><code>### approximate fiducial distribution of µ ###
+F_mu &lt;- spatstat::ewcdf(Mu, weights=W)
+curve(F_mu, from=0, to=2.5, col=&quot;blue&quot;, lwd=2)
+### exact fiducial distribution ###
+mean_x &lt;- mean(x)
+sd_x &lt;- sd(x)
+curve(pt((x-mean_x)/(sd_x/sqrt(n)), df=n-1), add=TRUE, col=&quot;red&quot;, lwd=3, lty=&quot;dashed&quot;)
+### show the median ###
+abline(h=0.5, lty=&quot;dotted&quot;)
+abline(v=mean(x), lty=&quot;dotted&quot;)</code></pre>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
+<p>The approximation is quite perfect. Below we do the same comparison for the fiducial distribution of <span class="math">\(\sigma\)</span>, and we also see a quite perfect approximation.</p>
+<pre class="r"><code>### approximate fiducial distribution of σ ###
+F_sigma &lt;- spatstat::ewcdf(Sigma,W)
+curve(F_sigma, from=0, to=2.5, ylim=c(0,1), col=&quot;blue&quot;, lwd=2)
+### exact fiducial distribution ###
+# pdf of an inverse square root Gamma distribution
+psqrtigamma &lt;- function(x, a, b) {
+  1-pgamma(1/x^2, a, b) 
+}
+# fiducial/Jeffreys distribution 
+psigma &lt;- function(x, n, sd) {
+  psqrtigamma(x, (n - 1)/2, (n - 1) * sd^2/2)
+}
+curve(psigma(x, n, sd_x), add=TRUE, col=&quot;red&quot;, lwd=3, lty=&quot;dashed&quot;)</code></pre>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-6-1.png" title="" alt="" width="672" /></p>
+<p>The quantiles of the marginal fiducial distributions are easy to get too. The <code>quantile</code> function can be applied to empirical weighted <em>cdf</em> given by <code>ewcdf</code> function. Thus we get a <span class="math">\(95\%\)</span>-confidence fiducial interval about <span class="math">\(\mu\)</span> as follows:</p>
+<pre class="r"><code>quantile(F_mu, c(0.025, 0.975))</code></pre>
+<pre><code>##       2.5%      97.5% 
+## -0.1707912  2.7454581</code></pre>
+<pre class="r"><code>confint(lm(x~1)) # theoretically it is the same</code></pre>
+<pre><code>##                  2.5 %   97.5 %
+## (Intercept) -0.1697282 2.746008</code></pre>
+<p>To perform inference on a scalar quantity <span class="math">\(\psi = f(\mu, \sigma)\)</span>, say for example the coefficient of variation <span class="math">\(\psi=\sigma/\mu\)</span>, one simply construct the value of <span class="math">\(\psi\)</span> for each pair <span class="math">\((\mu_{k,m}, \sigma_{k,m})\)</span>, and we proceed as before.</p>
+<pre class="r"><code>F_psi &lt;- spatstat::ewcdf(Sigma/Mu, weights=W)
+curve(F_psi, from=0, to=3, col=&quot;blue&quot;, lwd=2)</code></pre>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-8-1.png" title="" alt="" width="672" /></p>
+<pre class="r"><code>Fmu(mean(x)) # 0.5 ?
+q &lt;- seq(mean(x)-3*sd(x)/sqrt(n), mean(x)+3*sd(x)/sqrt(n), length.out = 10)
+points(q, sapply(q, function(t) sum(W*(Mu&lt;t))))
+# sims
+msample &lt;- rmultinom(1, length(Mu), W)[,1]
+resims &lt;- rep(Mu, times=msample)
+curve(ecdf(resims)(x), add=TRUE, col=&quot;blue&quot;)</code></pre>
+<p>If needed, simulations of the fiducial distributions can be generated by multinomial sampling of the <span class="math">\((\mu_{k,m}, \sigma_{k,m})\)</span>:</p>
+<pre class="r"><code>msample &lt;- rmultinom(1, length(keep), W)[,1]
+Sims &lt;- cbind(mu=rep(Mu, times=msample), sigma=rep(Sigma, times=msample))
+plot(Sims, pch=&quot;+&quot;)</code></pre>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-10-1.png" title="" alt="" width="480" /></p>
+</div>
+<div id="improving-the-grid" class="section level3">
+<h3>Improving the grid</h3>
+<p>To achieve better precision, one can use a grid specific to each pair of indexes <span class="math">\(i &lt; j\)</span>, with points more concentrated around <span class="math">\(Q_{x_i,x_j}^{-1}(\hat\mu,\hat\sigma)\)</span>, where <span class="math">\(\hat\mu\)</span> and <span class="math">\(\hat\sigma\)</span> are the ML estimates. I have written the R functions below to generate such a grid, but so far I have not seriously studied the advantage of using it.</p>
+<pre class="r"><code>Subd &lt;- function(rho1, rho2, p, n){
+  if(rho1&gt;rho2) stop()
+  rho1 &lt;- tan(rho1*pi/180)
+  rho2 &lt;- tan(rho2*pi/180)
+  a &lt;- (rho2-rho1)/2
+  b &lt;- rho1
+  g &lt;- function(a, b, y) (-b+sign(b)*sqrt(b^2+4*a*y))/a/2
+  n1 &lt;- max(floor(n*p), floor(n/2))
+  s1 &lt;- sapply(seq(0, p*(a+b), length.out=n1+1), function(y) p*g(a*p, b*p, y)) 
+  s2 &lt;- sapply(seq((p-1)*(a+b), 0, length.out=n-n1+1), function(y) (p-1)*g(a*(p-1), b*(p-1), y)+1) 
+  return(c(s1,s2[-1]))
+}
+## 
+hypercubes &lt;- function(S, U, rho1=44, rho2=46){
+  subds &lt;- lapply(U, function(u) Subd(rho1, rho2, u, S))
+  lengths &lt;- as.matrix(do.call(CJ, c(setNames(lapply(subds, diff), paste0(&quot;l&quot;, 1:length(U))), list(sorted=FALSE))))
+  subds_exp &lt;- as.matrix(do.call(CJ, setNames(lapply(subds, function(s) head(s,-1)), paste0(&quot;s&quot;, 1:length(U)))))
+  centers &lt;- setNames(data.table(lengths/2+subds_exp), paste0(&quot;u&quot;, 1:length(U)))
+  return(cbind(
+    logvolume=rowSums(log(as.matrix(lengths))), 
+    centers))
+}
+grid &lt;- hypercubes(20, U=c(0.3, 0.8), rho1=45, rho2=80)
+plot(0, 0, type=&quot;n&quot;, xlim=c(0,1), ylim=c(0,1), xlab=NA, ylab=NA)
+points(grid$u1, grid$u2, pch=&quot;+&quot;, col=&quot;blue&quot;)</code></pre>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-11-1.png" title="" alt="" width="480" /></p>
+</div>
+<div id="generalization-to-linear-regression" class="section level3">
+<h3>Generalization to linear regression</h3>
+<p>The above method is easily generalized to linear regression models <span class="math">\(Y=X\beta + \sigma \epsilon\)</span>. One can use a standard normal distribution for the error terms <span class="math">\(\epsilon_i\)</span>, or a Student distribution, a Cauchy distribution, or any distribution whose <em>pdf</em> and inverse <em>cdf</em> can be evaluated.</p>
+<p>…..</p>
+</div>
+
+
+          </div> 
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
