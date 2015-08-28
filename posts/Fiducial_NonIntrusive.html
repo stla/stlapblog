@@ -86,7 +86,7 @@
 <p><strong><em>(this article is under progrees)</em></strong></p>
 <p>The 2012 paper <a href="http://www.sciencedirect.com/science/article/pii/S0167947313000911">Computational issues of generalized fiducial inference</a> by Hannig &amp; al. provides a nice way to simulate the generalized fiducial distribution of parametric models for independent observations with continuous sampling distributions. It is called the <em>non-intrusive</em> algorithm.</p>
 <p>We start by showing how it works for a Gaussian sample <span class="math">\(x_i \sim_{\text{i.i.d.}} {\cal N}(\mu, \sigma^2)\)</span> with unknown mean <span class="math">\(\mu\)</span> and unknown standard deviation <span class="math">\(\sigma\)</span>.</p>
-<p>The method is based on the representation <span class="math">\(X_i = G_{\mu,\sigma}(U_i)\)</span> where the <span class="math">\(U_i\)</span> are independent random variables uniformly distributed on <span class="math">\((0,1)\)</span> and <span class="math">\(G_{\mu,\sigma}(U_i)\)</span> is the inverse <em>cdf</em> of the Gaussian distribution <span class="math">\({\cal N}(\mu, \sigma^2)\)</span>. This fact is not specific to Gaussian distributions, it is a well-known fact used to sample from a dsitribution from a uniform sampling on <span class="math">\((0,1)\)</span> when the inverse <span class="math">\(cdf\)</span> is tractable. Since <span class="math">\({\cal N}(\mu, \sigma^2)\)</span> is a continuous distribution, one can write the inverse relation <span class="math">\(U_i=F_{\mu,\sigma}(X_i)\)</span> where <span class="math">\(F_{\mu,\sigma}\)</span> is the <em>cdf</em> of <span class="math">\({\cal N}(\mu, \sigma^2)\)</span>.</p>
+<p>The method is based on the representation <span class="math">\(X_i = G_{\mu,\sigma}(U_i)\)</span> where the <span class="math">\(U_i\)</span> are independent random variables uniformly distributed on <span class="math">\((0,1)\)</span> and <span class="math">\(G_{\mu,\sigma}(U_i)\)</span> is the inverse <em>cdf</em> of the Gaussian distribution <span class="math">\({\cal N}(\mu, \sigma^2)\)</span>. This representation is not specific to Gaussian distributions, it is a well-known fact used to sample from a dsitribution from a uniform sampling on <span class="math">\((0,1)\)</span> when the inverse <span class="math">\(cdf\)</span> is tractable. Since <span class="math">\({\cal N}(\mu, \sigma^2)\)</span> is a continuous distribution, one can write the inverse relation <span class="math">\(U_i=F_{\mu,\sigma}(X_i)\)</span> where <span class="math">\(F_{\mu,\sigma}\)</span> is the <em>cdf</em> of <span class="math">\({\cal N}(\mu, \sigma^2)\)</span>.</p>
 <div id="main-step-solving-the-structural-equations" class="section level4">
 <h4>Main step : solving the structural equations</h4>
 <p>The main step in the non-intrusive algorithm consists in solving for <span class="math">\((\mu,\sigma)\)</span> the system of equations <span class="math">\[
@@ -102,7 +102,7 @@ F_{\mu,\sigma}(x_{j}) = u_{j}
 \begin{pmatrix}
 x_i \Phi^{-1}(u_j) - x_j \Phi^{-1}(u_i) \\ x_j - x_i
 \end{pmatrix}. 
-\]</span> The value of <span class="math">\(\sigma\)</span> is negative When <span class="math">\(u_i\)</span> and <span class="math">\(u_j\)</span> are not in the same order than <span class="math">\(x_i\)</span> and <span class="math">\(x_j\)</span>, and these solutions are discarded. Thus, as long as <span class="math">\(x_i \neq x_j\)</span>, the system has a solution for all <span class="math">\((u_i, u_j)\)</span> in a subset of <span class="math">\({(0,1)}^2\)</span> having Lebesgue measure <span class="math">\(1/2\)</span>. We denote by <span class="math">\(Q_{x_i,x_j}(u_i, u_j)\)</span> the solution.</p>
+\]</span> The value of <span class="math">\(\sigma\)</span> is negative when <span class="math">\(u_i\)</span> and <span class="math">\(u_j\)</span> are not in the same order than <span class="math">\(x_i\)</span> and <span class="math">\(x_j\)</span>, and these solutions are discarded. Thus, as long as <span class="math">\(x_i \neq x_j\)</span>, the system has a solution for all <span class="math">\((u_i, u_j)\)</span> in a subset of <span class="math">\({(0,1)}^2\)</span> having Lebesgue measure <span class="math">\(1/2\)</span>. We denote by <span class="math">\(Q_{x_i,x_j}(u_i, u_j)\)</span> the solution.</p>
 <pre class="r"><code>Q &lt;- function(x, u){
   x1 &lt;- x[1]; x2 &lt;- x[2]
   u1 &lt;- u[1]; u2 &lt;- u[2]
@@ -183,7 +183,7 @@ curve(F_mu, from=0, to=2.5, col=&quot;blue&quot;, lwd=2)
 ### exact fiducial distribution ###
 mean_x &lt;- mean(x)
 sd_x &lt;- sd(x)
-curve(pt((x-mean_x)/(sd_x/sqrt(n)), df=n-1), add=TRUE, col=&quot;red&quot;, lwd=3, lty=&quot;dashed&quot;)
+curve(pt((x-mean_x)/(sd_x/sqrt(n)), df=n-1), add=TRUE, col=&quot;red&quot;, lwd=2, lty=&quot;dashed&quot;)
 ### show the median ###
 abline(h=0.5, lty=&quot;dotted&quot;)
 abline(v=mean(x), lty=&quot;dotted&quot;)</code></pre>
@@ -201,7 +201,7 @@ psqrtigamma &lt;- function(x, a, b) {
 psigma &lt;- function(x, n, sd) {
   psqrtigamma(x, (n - 1)/2, (n - 1) * sd^2/2)
 }
-curve(psigma(x, n, sd_x), add=TRUE, col=&quot;red&quot;, lwd=3, lty=&quot;dashed&quot;)</code></pre>
+curve(psigma(x, n, sd_x), add=TRUE, col=&quot;red&quot;, lwd=2, lty=&quot;dashed&quot;)</code></pre>
 <p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-6-1.png" title="" alt="" width="672" /></p>
 <p>The quantiles of the marginal fiducial distributions are easy to get too. The <code>quantile</code> function can be applied to empirical weighted <em>cdf</em> given by <code>ewcdf</code> function. Thus we get a <span class="math">\(95\%\)</span>-confidence fiducial interval about <span class="math">\(\mu\)</span> as follows:</p>
 <pre class="r"><code>quantile(F_mu, c(0.025, 0.975))</code></pre>
@@ -214,18 +214,11 @@ curve(psigma(x, n, sd_x), add=TRUE, col=&quot;red&quot;, lwd=3, lty=&quot;dashed
 <pre class="r"><code>F_psi &lt;- spatstat::ewcdf(Sigma/Mu, weights=W)
 curve(F_psi, from=0, to=3, col=&quot;blue&quot;, lwd=2)</code></pre>
 <p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-8-1.png" title="" alt="" width="672" /></p>
-<pre class="r"><code>Fmu(mean(x)) # 0.5 ?
-q &lt;- seq(mean(x)-3*sd(x)/sqrt(n), mean(x)+3*sd(x)/sqrt(n), length.out = 10)
-points(q, sapply(q, function(t) sum(W*(Mu&lt;t))))
-# sims
-msample &lt;- rmultinom(1, length(Mu), W)[,1]
-resims &lt;- rep(Mu, times=msample)
-curve(ecdf(resims)(x), add=TRUE, col=&quot;blue&quot;)</code></pre>
 <p>If needed, simulations of the fiducial distributions can be generated by multinomial sampling of the <span class="math">\((\mu_{k,m}, \sigma_{k,m})\)</span>:</p>
 <pre class="r"><code>msample &lt;- rmultinom(1, length(keep), W)[,1]
 Sims &lt;- cbind(mu=rep(Mu, times=msample), sigma=rep(Sigma, times=msample))
 plot(Sims, pch=&quot;+&quot;)</code></pre>
-<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-10-1.png" title="" alt="" width="480" /></p>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-9-1.png" title="" alt="" width="480" /></p>
 </div>
 <div id="improving-the-grid" class="section level3">
 <h3>Improving the grid</h3>
@@ -255,7 +248,7 @@ hypercubes &lt;- function(S, U, rho1=44, rho2=46){
 grid &lt;- hypercubes(20, U=c(0.3, 0.8), rho1=45, rho2=80)
 plot(0, 0, type=&quot;n&quot;, xlim=c(0,1), ylim=c(0,1), xlab=NA, ylab=NA)
 points(grid$u1, grid$u2, pch=&quot;+&quot;, col=&quot;blue&quot;)</code></pre>
-<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-11-1.png" title="" alt="" width="480" /></p>
+<p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-10-1.png" title="" alt="" width="480" /></p>
 </div>
 <div id="generalization-to-linear-regression" class="section level3">
 <h3>Generalization to linear regression</h3>
