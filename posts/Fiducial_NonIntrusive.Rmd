@@ -1,7 +1,8 @@
 ---
 title: "Fiducial statistics: the non-intrusive algorithm"
+subtitle: "R and C++ implementation"
 author: "Stéphane Laurent"
-date: "28 août 2015"
+date: "2015-09-04"
 output: html_document
 ---
 
@@ -103,7 +104,7 @@ We will give more details about the way to perform fiducial inference after runn
 
 We run an example with the small sample size $n=4$. There are only ${4 \choose 2} = 6$ pairs of indexes $i<j$. We take a grid with $100\times 100$ points.
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, cache=TRUE}
 # simulated data
 set.seed(666)
 n <- 4
@@ -150,7 +151,7 @@ curve(F_mu, from=0, to=2.5, col="blue", lwd=2)
 ### exact fiducial distribution ###
 mean_x <- mean(x)
 sd_x <- sd(x)
-curve(pt((x-mean_x)/(sd_x/sqrt(n)), df=n-1), add=TRUE, col="red", lwd=2, lty="dashed")
+curve(pt((x-mean_x)/(sd_x/sqrt(n)), df=n-1), add=TRUE, col="red", lwd=3, lty="dashed")
 ### show the median ###
 abline(h=0.5, lty="dotted")
 abline(v=mean(x), lty="dotted")
@@ -171,7 +172,7 @@ psqrtigamma <- function(x, a, b) {
 psigma <- function(x, n, sd) {
   psqrtigamma(x, (n - 1)/2, (n - 1) * sd^2/2)
 }
-curve(psigma(x, n, sd_x), add=TRUE, col="red", lwd=2, lty="dashed")
+curve(psigma(x, n, sd_x), add=TRUE, col="red", lwd=3, lty="dashed")
 ```
 
 The quantiles of the marginal fiducial distributions are easy to get too. The `quantile` function can be applied to empirical weighted *cdf* given by `ewcdf` function. Thus we get a $95\%$-confidence fiducial interval about $\mu$ as follows:
@@ -179,6 +180,15 @@ The quantiles of the marginal fiducial distributions are easy to get too. The `q
 ```{r}
 quantile(F_mu, c(0.025, 0.975))
 confint(lm(x~1)) # theoretically it is the same
+```
+
+The mean:
+
+```{r}
+sum(W*Mu)
+mean(x) # theoretically it is the same
+sum(W*1/Sigma)
+1/sd(x) # theoretically it is the same
 ```
 
 To perform inference on a scalar quantity $\psi = f(\mu, \sigma)$, say for example the coefficient of variation $\psi=\sigma/\mu$, one simply construct the value of $\psi$ for each pair $(\mu_{k,m}, \sigma_{k,m})$, and we proceed as before.
@@ -233,9 +243,232 @@ points(grid$u1, grid$u2, pch="+", col="blue")
 ```
 
 
-### Generalization to linear regression
+## Generalization to linear regression
 
-The above method is easily generalized to linear regression models $Y=X\beta + \sigma \epsilon$. One can use a standard normal distribution for the error terms $\epsilon_i$, or a Student distribution, a Cauchy distribution, or any distribution whose *pdf* and inverse *cdf* can be evaluated. 
+The above method is easily generalized to linear regression models 
+$$Y=X\beta + \sigma \epsilon.$$. One can use a standard normal distribution for the error terms $\epsilon_i$, or a Student distribution, a Cauchy distribution, or any  distribution centered around $0$ whose *pdf* and inverse *cdf* can be evaluated. 
 
-.....
+Our function `Q` becomes:
+
+```{r}
+Q <- function(Y, X, U, qdistr=qnorm){
+  H <- unname(cbind(X, qdistr(U)))
+  if(det(H)==0) return(NULL)
+  sol <- solve(crossprod(H))%*%t(H)%*%Y
+  if(tail(sol,1)<=0) return(NULL)
+  return(as.vector(sol))
+}
+```
+
+We also need a `Grid` function for the $p$-dimensional hypercube ${(0,1)}^p$:
+
+```{r}
+Grid <- function(L, p){
+  x <- seq(0, 1, length.out=L+1)[-1] - 1/(2*L)
+  return(do.call(CJ, rep(list(x), p)))
+}
+```
+
+For example, we simulate data from a simple linear regression model:
+
+```{r simlinreg}
+f <- function(x) 4+2*x
+# simulated data
+set.seed(666)
+n <- 20
+x <- seq_len(n) # covariates
+Y <- f(x)+rnorm(n)
+# model matrix
+X <- model.matrix(~x) 
+p <- ncol(X)+1
+```
+
+Then the non-intrusive algorithm is generated as follows:
+
+```{r, cache=TRUE, eval=FALSE}
+L <- 40
+grid <- as.matrix(Grid(L,p))
+K <- 50 # number of sampled pairs i_1 < ... < i_p
+J <-  Sigma <- matrix(NA, nrow=L^p, ncol=K)
+Theta <- array(NA, c(L^p, K, p))
+for(k in 1:K){ 
+  I <- sort(sample(n, p))
+  Jk <- rep(NA, L^p)
+  for(l in 1:L^p){
+    theta <- Q(Y=Y[I], X=X[I,], U=grid[l,], qnorm)
+    if(!is.null(theta)){
+      Jk[l] <- sum(dnorm(Y[-I], X[-I,]%*%head(theta,-1), tail(theta,1), log=TRUE))  
+      Theta[l,k,] <- theta
+    }
+  }
+  J[,k] <- exp(Jk)
+}
+keep <- which(!is.na(J))
+W <- J[keep]/sum(J[keep])
+Beta0 <- Theta[,,1][keep]; Beta1 <- Theta[,,2][keep]; Sigma <- Theta[,,p][keep]
+```
+
+However, we have not run the previous code here. It is too slow. This a good opportunity to use the `Rcpp` package to write and call a `C++` function. 
+
+### C++ implementation
+
+I  use the `RcppArmadillo` package which allows to use the Armadillo `C++` library for linear algebra. 
+As I am still a beginner in `C++` as well as in the use of `Rcpp`, for the moment I use the `inline` package to integrate this function in R.
+
+```{r inline, cache=FALSE}
+library(inline)
+library(RcppArmadillo)
+
+src <- '
+using namespace Rcpp;
+
+NumericMatrix XX(Xr);
+int n = XX.nrow(); int q = XX.ncol();
+arma::mat X(XX.begin(), n, q, false);  
+
+NumericVector YY(Yr);
+arma::colvec Y=YY;
+
+NumericMatrix GGrid(Gridr);
+int M = GGrid.nrow(), p = GGrid.ncol();
+arma::mat Grid(GGrid.begin(), M, p, false);  
+
+NumericMatrix II(Ir);
+int K = II.ncol();
+arma::mat I(II.begin(), n, K, false);  
+arma::colvec Ik(n);
+
+arma::mat XI(p,q);
+arma::mat XmI(n-p,q);
+arma::colvec YI(p);
+arma::colvec YmI(n-p);
+
+//arma::mat Theta(p, 0);
+arma::mat Theta(p, K*(M-pow(M, 1.0/p))/2);
+std::vector<double> J;
+NumericVector s(n-p);
+arma::colvec theta(p);
+arma::rowvec U(p);
+bool test;
+arma::rowvec G(p);
+arma::mat H(p,p);
+arma::colvec means(n-p); 
+int counter=0; 
+
+for(int k=0; k<K; k++){
+  Ik = I.col(k); 
+  XI=X.rows(find(Ik==1));
+  XmI=X.rows(find(Ik==0));
+  YI=Y(find(Ik==1));
+  YmI=Y(find(Ik==0));
+
+  for(int i=0; i<M; i++){
+    U = Grid(arma::span(i), arma::span::all);
+    test = arma::all(vectorise(U) == U(0,0)); 
+    if(!test){
+      G = Rcpp::qnorm(as<NumericVector>(wrap(U)));
+      H = join_rows(XI, trans(G));
+      theta = (trans(H)*H).i()*trans(H)*YI;
+      if(theta(p-1,0)>0){ 
+        //Theta = join_rows(Theta, theta); 
+        Theta(arma::span::all, arma::span(counter)) = theta;
+        counter += 1;
+        means = XmI*(theta.head_rows(p-1));
+        for(int j=0; j<YmI.size(); j++){ s[j] = R::dnorm(YmI(j,0), means(j,0), theta(p-1,0), 1); }
+        J.push_back(exp(arma::sum(as<arma::vec>(s))));
+      }
+    }
+  }
+}
+
+arma::rowvec sigma = Theta.row(p-1); 
+Theta.shed_row(p-1);
+arma::vec W = arma::normalise(arma::conv_to<arma::vec>::from(J),1);
+
+return(List::create(Named("ncol")=Theta.size(), Named("ncol2")=K*(M-pow(M, 1/p))/2, Named("Theta")=Theta, Named("sigma") = sigma, Named("W") = W));
+'
+ 
+Fiducial <- cxxfunction(signature(Xr="numeric", Yr="numeric", Ir="integer", Gridr="numeric"), body=src, plugin="RcppArmadillo")
+```
+
+Note the logical test `arma::all(vectorise(U) == U(0,0))` in the code. It tests whether the coordinates of a point ${\boldsymbol u}$ of the grid are all equal. In such a case, the matrix `H` would not be of full rank, because the column `G` would be a multiple of the intercept column of ones.
+
+Also note the two commented lines `\\ Theta ...`. I used this code first, but the `joint_rows` is very time-consuming. 
+
+Let's try our first example to compare the results. 
+
+```{r}
+set.seed(666)
+n <- 4
+Yr <- rnorm(n, mean=0.4, sd=0.8)
+Xr <- matrix(1, nrow=n, ncol=1) # model matrix
+Gridr <- as.matrix(Grid(100, p=2))
+pairs <- combn(n,2)
+Ir <- apply(pairs, 2, function(col) is.element(1:n, col)) # to do in C++
+results <- Fiducial(Xr, Yr, Ir, Gridr) 
+```
+
+Nice, results are exactly the same: 
+
+```{r, collapse=TRUE, fig.width=4}
+W <- as.vector(results$W)
+Mu <- as.vector(results$Theta)
+Sigma <- as.vector(results$sigma)
+F_mu <- spatstat::ewcdf(Mu, weights=W)
+quantile(F_mu, c(0.025, 0.975))
+F_sigma <- spatstat::ewcdf(Sigma, weights=W)
+sum(W*1/Sigma)
+1/sd(Yr)
+```
+
+### Simple linear regression example
+
+Now we can run the simple linear regression example.
+
+```{r, ref.label='simlinreg'}
+```
+
+There are ${20 \choose 3}=1140$ triples of indexes $i_1<i_2<i_3$. We sample only $50$ such triples, and we take a grid with $30^3=27000$ hypercubes:
+
+```{r, eval=TRUE}
+triples <- combn(n,p)
+K <- 50
+triples <- triples[,sample.int(ncol(triples),K)]
+Ir <- apply(triples, 2, function(col) is.element(1:n, col)) # to do in C++
+L <- 30
+results <- Fiducial(Xr=X, Yr=Y, Ir=Ir, Gridr=as.matrix(Grid(L,p)))
+```
+
+In spite of our choices of rather small $K$ and $L$, the approximated fiducial distribution is quite close to the theoretical one:
+
+```{r, collapse=TRUE, eval=TRUE}
+W <- as.vector(results$W)
+Beta0 <- as.vector(results$Theta[1,])
+Beta1 <- as.vector(results$Theta[2,])
+Sigma <- as.vector(results$sigma)
+sum(W*Beta0); sum(W*Beta1)
+(fit <- lm(Y~x))
+F_beta0 <- spatstat::ewcdf(Beta0, weights=W)
+quantile(F_beta0, c(0.025, 0.975))
+confint(fit)
+curve(F_beta0, from=2, to=6, ylim=c(0,1), col="blue", lwd=2)
+sfit <- summary(fit)
+stderror <- sfit$sigma*sqrt(diag(sfit$cov.unscaled))
+curve(pt((x-coef(fit)[1])/stderror[1], df=n-2), add=TRUE, col="red", lwd=3, lty="dashed")
+# beta1
+F_beta1 <- spatstat::ewcdf(Beta1, weights=W)
+quantile(F_beta1, c(0.025, 0.975))
+curve(F_beta1, from=1.7, to=2.2, ylim=c(0,1), col="blue", lwd=2)
+curve(pt((x-coef(fit)[2])/stderror[2], df=n-2), add=TRUE, col="red", lwd=3, lty="dashed")
+``` 
+
+```{r, collapse=TRUE, eval=TRUE}
+# sigma
+F_sigma <- spatstat::ewcdf(Sigma, weights=W)
+sum(W*1/Sigma)
+1/sfit$sigma
+curve(F_sigma, from=0.7, to=2, ylim=c(0,1), col="blue", lwd=2)
+curve(psqrtigamma(x, (n-2)/2, (n-2)*sfit$sigma^2/2), add=TRUE, col="red", lwd=3, lty="dashed")
+```
+
 
