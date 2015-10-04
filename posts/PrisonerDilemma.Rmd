@@ -50,7 +50,7 @@ And it claims that this is troubling for Classical Probability theory. This is n
 
 Of course the two experiments are totally different, and there is no reason to assume $\Pr=\Pr^\ast$. The so-called violation of the TP *actually shows* that $\Pr\neq\Pr^\ast$.
 
-I am afraid this misunderstanding of the conditional probability could have an origin in the name which is sometimes used to call it : $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ is the *probability that* $A \textrm{ defects}$ ***knowing that*** $B \textrm{ defects}$. And it looks like it can be misinterpreted as: the *probability that* $A \textrm{ defects}$ ***when $A$ knows that*** $B \textrm{ defects}$.
+I am afraid this misunderstanding of the conditional probability could have an origin in the name which is sometimes used to call it : $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ is the *probability that* $A \textrm{ defects}$ ***knowing that*** $B \textrm{ defects}$. And it looks like it can be misinterpreted as: the *probability that* $A \textrm{ defects}$ ***when $A$ knows that*** $B \textrm{ defects}$. And $A$ never knows whether $B$ defects in the "true" prisoner dilemma.
 
 ```{r, include=FALSE}
 knitr::knit_exit()
