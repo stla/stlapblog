@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The prisoner's dilemma does not violate classical probability laws</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">The prisoner's dilemma does not violate classical probability laws</a>
+              </h3>
+              <span>4/10/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/PrisonerDilemma.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>I have come across some papers and slides about <em>quantum cognition</em>, including:</p>
+<ul>
+<li><a href="https://ppw.kuleuven.be/okp/_pdf/Lee2013QMOCA.pdf">Cold and hot cognition: Quantum probability theory and realistic psychological modeling</a>, by P. J. Corr</li>
+<li><a href="https://community.apan.org/afosr/m/cognition_decision__computational_intelligence_program/121111/download.aspx">Applications of quantum probability theory to dynamic decision making</a>, by Busemeyer, Balakrishnan and Wang</li>
+</ul>
+<p>These texts and other ones claim that <em>the <a href="https://en.wikipedia.org/wiki/Prisoner%27s_dilemma"><em>prisoner’s dilemma</em></a> violates the law of total probability.</em></p>
+<p>Quoting Corr’s paper:</p>
+<blockquote>
+<p>The literature shows: (1) knowing that one’s partner has defected leads to a higher probability of defection; (2) knowing that one’s partner has cooperated also leads to a higher probability of defection; and, most troubling for Classical Probability theory, (3) not knowing one’s partner’s decision leads to a higher probability of cooperation.</p>
+</blockquote>
+<p>The slides by Busemeyer &amp; al. provide some empirical data supporting this claim. The above quote has an obvious flaw, as I explain now.</p>
+<p>I want to emphasize this is not an attempt to discredit quantum cognition. This story of violation of the TP law is older than quantum cognition, but this is where I found it. I asked on a stackexchange network about psychology whether this flaw were known, and then what is the purpose of quantum cognition about the prisoner’s dilemma. I got some reactions of persons falling into the flaw. That showed me that it is at least not known by everybody, and this helped me to achieve, I hope, a better explanation, which is the content of this blog post.</p>
+<p>Consider <strong><em>two experiments</em></strong>:</p>
+<ul>
+<li><p><em>The “true” prisoner’s dilemma</em>: each of the prisoners <span class="math">\(A\)</span> and <span class="math">\(B\)</span> has the choice to cooperate or defect, without knowing the other prisoner’s choice.</p></li>
+<li><p><em>The “faked” prisoner’s dilemma</em>: each of the prisoners <span class="math">\(A\)</span> and <span class="math">\(B\)</span> has the choice to cooperate or defect, but <span class="math">\(B\)</span> is asked first, and <span class="math">\(A\)</span> knows <span class="math">\(B\)</span>’s choice.</p></li>
+</ul>
+<p>Consider the two probabilities <span class="math">\(\Pr\)</span> and <span class="math">\(\Pr^\ast\)</span> respectively corresponding to these two experiments.</p>
+<p>The above quote claims that the literature shows:</p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math">\(\Pr^\ast(A \textrm{ defects} \mid B \textrm{ defects}) &gt; 0.5\)</span></p></li>
+<li><p><span class="math">\(\Pr^\ast(A \textrm{ defects} \mid B \textrm{ coop.}) &gt; 0.5\)</span></p></li>
+<li><p><span class="math">\(\Pr(A \textrm{ defects}) &lt; 0.5\)</span></p></li>
+</ol>
+<p>And it claims that this is troubling for Classical Probability theory. This is not troubling. But this is troubling if you assume <span class="math">\(\Pr=\Pr^\ast\)</span>. And I believe this is the flaw in the reasoning. Indeed, the TP law shows that <span class="math">\(\Pr(A \textrm{ defects})\)</span> is a weighted average of <span class="math">\(\Pr(A \textrm{ defects} \mid B \textrm{ defects})\)</span> and <span class="math">\(\Pr(A \textrm{ defects} \mid B \textrm{ coop.})\)</span>. Assuming <span class="math">\(\Pr=\Pr^\ast\)</span> implies that <span class="math">\(\Pr(A \textrm{ defects})\)</span>, which is lower than <span class="math">\(0.5\)</span>, would be a weighted average of two numbers higher than <span class="math">\(0.5\)</span>, which is impossible.</p>
+<p>Of course the two experiments are totally different, and there is no reason to assume <span class="math">\(\Pr=\Pr^\ast\)</span>. The so-called violation of the TP <em>actually shows</em> that <span class="math">\(\Pr\neq\Pr^\ast\)</span>.</p>
+<p>I am afraid this misunderstanding of the conditional probability could have an origin in the name which is sometimes used to call it : <span class="math">\(\Pr(A \textrm{ defects} \mid B \textrm{ defects})\)</span> is the <em>probability that</em> <span class="math">\(A \textrm{ defects}\)</span> <strong><em>knowing that</em></strong> <span class="math">\(B \textrm{ defects}\)</span>. And it looks like it can be misinterpreted as: the <em>probability that</em> <span class="math">\(A \textrm{ defects}\)</span> <strong><em>when <span class="math">\(A\)</span> knows that</em></strong> <span class="math">\(B \textrm{ defects}\)</span>.</p>
+
+
+          </div> 
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

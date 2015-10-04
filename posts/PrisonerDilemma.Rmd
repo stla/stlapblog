@@ -1,0 +1,133 @@
+---
+title: "The prisoner's dilemma does not violate classical probability laws"
+author: "Stéphane Laurent"
+date: "4/10/2015"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=FALSE, fig.path="assets/fig/prisonner-")
+```
+
+I have come across some papers and slides about *quantum cognition*, including:
+
+- [Cold and hot cognition: Quantum probability theory and realistic psychological modeling](https://ppw.kuleuven.be/okp/_pdf/Lee2013QMOCA.pdf), by P. J. Corr
+- [Applications of quantum probability theory to dynamic decision making](https://community.apan.org/afosr/m/cognition_decision__computational_intelligence_program/121111/download.aspx), by Busemeyer, Balakrishnan and Wang
+
+These texts and other ones claim that *the [*prisoner's dilemma*](https://en.wikipedia.org/wiki/Prisoner%27s_dilemma) violates the law of total probability.*
+
+Quoting Corr's paper:
+
+> The literature shows: (1) knowing that one’s partner has defected
+> leads to a higher probability of defection; (2) knowing that one’s
+> partner has cooperated also leads to a higher probability of
+> defection; and, most troubling for Classical Probability theory, (3)
+> not knowing one’s partner’s decision leads to a higher probability of
+> cooperation.
+
+The slides by Busemeyer & al. provide some empirical data supporting this claim. The above quote has an obvious flaw, as I explain now. 
+
+I want to emphasize this is not an attempt to discredit quantum cognition. This story of violation of the TP law is older than quantum cognition, but this is where I found it. I asked on a stackexchange network about psychology whether this flaw were known, and then what is the purpose of quantum cognition about the prisoner's dilemma. I got some reactions of persons falling into the flaw. That showed me that it is at least not known by everybody, and this helped me to achieve, I hope, a better explanation, which is the content of this blog post.
+
+Consider ***two experiments***:
+
+- *The "true" prisoner's dilemma*: each of the prisoners $A$ and $B$ has the choice to cooperate or defect, without knowing the other prisoner's choice.
+
+- *The "faked" prisoner's dilemma*: each of the prisoners $A$ and $B$ has the choice to cooperate or defect, but $B$ is asked first, and $A$ knows $B$'s choice.
+
+
+Consider the two probabilities $\Pr$ and $\Pr^\ast$ respectively corresponding to these two experiments.
+
+The above quote claims that the literature shows:
+
+1. $\Pr^\ast(A \textrm{ defects} \mid B \textrm{ defects}) > 0.5$
+
+2. $\Pr^\ast(A \textrm{ defects} \mid B \textrm{ coop.}) > 0.5$
+
+3. $\Pr(A \textrm{ defects}) < 0.5$
+
+And it claims that this is troubling for Classical Probability theory. This is not troubling. But this is troubling if you assume $\Pr=\Pr^\ast$. And I believe this is the flaw in the reasoning. Indeed, the TP law shows that $\Pr(A \textrm{ defects})$ is a weighted average of $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ and $\Pr(A \textrm{ defects} \mid B \textrm{ coop.})$. Assuming $\Pr=\Pr^\ast$ implies that $\Pr(A \textrm{ defects})$, which is lower than $0.5$, would be a weighted average of two numbers higher than $0.5$, which is impossible.
+
+Of course the two experiments are totally different, and there is no reason to assume $\Pr=\Pr^\ast$. The so-called violation of the TP *actually shows* that $\Pr\neq\Pr^\ast$.
+
+I am afraid this misunderstanding of the conditional probability could have an origin in the name which is sometimes used to call it : $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ is the *probability that* $A \textrm{ defects}$ ***knowing that*** $B \textrm{ defects}$. And it looks like it can be misinterpreted as: the *probability that* $A \textrm{ defects}$ ***when $A$ knows that*** $B \textrm{ defects}$.
+
+```{r, include=FALSE}
+knitr::knit_exit()
+```
+
+_________
+
+
+
+The data are some relative frequencies: one deals with the frequentist interpretation of probability.
+
+I disagree with the claim that the law of total probability is violated here. **The conditional probabilities are misinterpreted**.
+
+Let $A$ and $B$ be the two prisoners. Consider the experiment consisting in asking them to choose between defecting or cooperating, without knowing the choice of the other prisoner. 
+
+Then, the conditional probability $P(A \textrm{ defects} \mid B \textrm{ defects})$ is the long-term *relative frequency of the event "$A$ defects" among all those experiments for which the event "$B$ defects" occurs*. 
+
+This has *nothing to do* with the probability that $A$ defects when $A$ ***knows*** that $B$ defects, hereafter denoted by $\Pr^\ast(A \textrm{ defects} \mid B \textrm{ defects})$.
+
+The law of total probability says that 
+$$
+\Pr(A \textrm{ defects}) =  \Pr(A \textrm{ defects} \mid B \textrm{ defects})\Pr(B \textrm{ defects}) +  \Pr(A \textrm{ defects} \mid B \textrm{ cooperates})\Pr(B \textrm{ cooperates}),
+$$
+thereby implying that $\Pr(A \textrm{ defects})$, as a weighted average of the two conditional probabilities $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ and $\Pr(A \textrm{ defects} \mid B \textrm{ cooperates})$, lies between these two conditional probabilities.
+
+The above mentioned papers claim that the law of total probability is violated because  $\Pr(A \textrm{ defects})$ does *not* lie between $\Pr^\ast(A \textrm{ defects} \mid B \textrm{ defects})$ and $\Pr^\ast (A \textrm{ defects} \mid B \textrm{ cooperates})$, where $\Pr^\ast (A \textrm{ defects} \mid B \textrm{ defects})$ is the probability that $A$ defects when $A$ ***knows*** that $B$ defects, and, as said before, 
+$$
+{\Pr}^\ast (A \textrm{ defects} \mid B \textrm{ defects}) \neq \Pr(A \textrm{ defects} \mid B \textrm{ defects})$$
+
+So, is it an error, or do I misunderstand the purpose behind the modeling based on quantum probability ?
+
+## EDIT: details on the difference between $\Pr$ and ${\Pr}^\ast$
+
+To explain the difference, I give the way to get an empirical estimate of these probabilites.
+
+### Experiment 1 ($\Pr$)
+
+***Ask $A$ and $B$ to perform the prisoner dilemma, without giving any information.***
+
+Repeat this experiment a large number of times, independently (with others $A$ and $B$). The estimate of  $\Pr(A \textrm{ defects})$  is the relative frequency of the experiments for which $A$ defects. The estimate of $\Pr (A \textrm{ defects} \mid B \textrm{ defects})$ is the relative frequency of the experiments for which "$A$ defects" among all those experiments for which the event "$B$ defects" occurs.
+
+### Experiment 2 ($\Pr^*$)
+
+***Ask $A$ and $B$ to perform the prisoner dilemma with $B$ first, and giving the choice of $B$ to $A$.***
+
+Then ${\Pr}^\ast (A \textrm{ defects})$ and ${\Pr}^\ast (A \textrm{ defects} \mid B \textrm{ defects})$ are estimated in the same way as before. 
+
+The *experiment* is not the same, in other words this is another probability (${\Pr}^*$) on the probability space.
+
+As you can see in Experiment 1, the conditional probability has nothing to do with the probability that $A$ defects ***when $A$ knows that $B$ defects***. In this experiment, $A$ *never* knows whether $B$ defects.
+
+Of course, if you follow the above procedure to estimate the empirical probabilities, the law of total probability cannot be violated.  This law is not really a principle, this is rather a definition (up to an elementary calculation, this is just the definition of the conditional probability). That makes no sense to say a definition is violated. If it is violated, that's because it has not been correctly used.
+
+# Summary 
+
+The law of total probability implies that  $\Pr(A \textrm{ defects})$ is a weighted average of the two conditional probabilities $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ and $\Pr(A \textrm{ defects} \mid B \textrm{ cooperates})$:
+$$
+\Pr(A \textrm{ defects}) = wavg\Bigl(\Pr(A \textrm{ defects} \mid B \textrm{ defects}), \Pr(A \textrm{ defects} \mid B \textrm{ coop.})\Bigr)
+$$
+and therefore, it lies between these two conditional probabilities. 
+
+Similalry, for the other probability ${\Pr}^\ast$, 
+$$
+{\Pr}^\ast(A \textrm{ defects}) = wavg\Bigl({\Pr}^\ast(A \textrm{ defects} \mid B \textrm{ defects}), {\Pr}^\ast(A \textrm{ defects} \mid B \textrm{ coop.})\Bigr)
+$$
+The so-called *violation of the law of total probability* is a consequence of the ***erroneous formula***:
+$$
+\Pr(A \textrm{ defects}) = wavg\Bigl({\Pr}^\ast(A \textrm{ defects} \mid B \textrm{ defects}), {\Pr}^\ast(A \textrm{ defects} \mid B \textrm{ coop.})\Bigr),
+$$
+"mixing" the two probabilities. Based on this formula, $\Pr(A \textrm{ defects})$ shoud lie between ${\Pr}^\ast(A \textrm{ defects} \mid B \textrm{ defects})$ and ${\Pr}^\ast(A \textrm{ defects} \mid B \textrm{ coop.})$. This is intuitively wrong, and this has been observed to be wrong on empirical data. But this formula is wrong.
+
+As a side note, I think that the misunderstanding could have been caused by the name *probability of $X$ knowing $Y$* to call the conditional probability of $X$ given $Y$. This has nothing to do with $X$ knowing something about $Y$:
+$$
+\text{Probability of $X$ given $Y$}
+$$
+does not mean
+$$
+\text{Probability of $X$ when $X$ knows $Y$}.
+$$
+
