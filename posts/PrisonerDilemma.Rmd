@@ -52,6 +52,8 @@ Of course the two experiments are totally different, and there is no reason to a
 
 I am afraid this misunderstanding of the conditional probability could have an origin in the name which is sometimes used to call it : $\Pr(A \textrm{ defects} \mid B \textrm{ defects})$ is the *probability that* $A \textrm{ defects}$ ***knowing that*** $B \textrm{ defects}$. And it looks like it can be misinterpreted as: the *probability that* $A \textrm{ defects}$ ***when $A$ knows that*** $B \textrm{ defects}$. And $A$ never knows whether $B$ defects in the "true" prisoner dilemma.
 
+I think I am starting to have an idea about the purpose of quantum cognition, for this example of the prisoner's dilemma. Roughly speaking, it aims to have a mathematical axiomatic system for the "cognitive state" of $A$, with a rule describing the behavior of this cognitive state when $A$ learns the choice of $B$. Quantum probability could provide such an axiomatic, according to psychologists working in that field. It would provide a mathematical model for the state of $A$ under ignorance of $B$'s choice and also how this state would move when $A$ learns $B$'s choice. This is something different than the purpose of modeling the issue of one of the two above experiments, which is achieved by classical probability theory.
+
 ```{r, include=FALSE}
 knitr::knit_exit()
 ```
