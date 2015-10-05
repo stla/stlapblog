@@ -9,6 +9,9 @@ output: html_document
 knitr::opts_chunk$set(collapse=FALSE, fig.path="assets/fig/prisonner-")
 ```
 
+***(latest update : `r Sys.time()`)***
+<br/>
+
 I have come across some papers and slides about *quantum cognition*, including:
 
 - [Cold and hot cognition: Quantum probability theory and realistic psychological modeling](https://ppw.kuleuven.be/okp/_pdf/Lee2013QMOCA.pdf), by P. J. Corr

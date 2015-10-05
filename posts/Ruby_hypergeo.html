@@ -83,42 +83,22 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Ruby_hypergeo.Rmd'>Source</a>
               <div class='lead'>
 
-<p>I have previously shown <a href="http://stla.github.io/stlapblog/posts/BS_F21_v3.html">how to efficiently evaluate the Gauss hypergeometric function using arithmetic on large integers</a>, with the help of the binary splitting algorithm.</p>
-<p>I have now written the binary splitting algorithm in Ruby. This is rather straightforward in Ruby because it automatically converts integers to the <code>Bignum</code> large integer class when needed. Moreover, numeric variables have a <code>to_r</code> method to convert to a rational number (<code>Rational</code> class). One can even directly apply the methods <code>numerator</code> and <code>denominator</code> to extract the numerator and the denominator of the rational approximation.</p>
-<pre><code>&gt;&gt; def hypergeo(a,b,c,x,m=7)
-    p = x.numerator
-    q = x.denominator
-    a1 = a.numerator
-    a2 = a.denominator
-    b1 = b.numerator
-    b2 = b.denominator
-    c1 = c.numerator
-    c2 = c.denominator
-    n=2**m
-    indexes = (1..n)
-    delta = indexes.collect{ |i| c2 * (a1 + (i - 1) * a2) * (b1 + (i - 1) * b2) * p }
-    alpha = delta 
-    beta = indexes.collect{ |i| a2 * b2 * i * (c1 + (i - 1) * c2) * q }
-    j = 1 
-    l = n
-    while j &lt; n  do
-        odd = (2..l).step(2)
-        even = (1..l-1).step(2)
-        alpha = [[odd.map{|i| beta[i-1]}, even.map{|i| alpha[i-1]}].transpose.map{|x| x.reduce(:*)}, [odd.map{|i| alpha[i-1]}, even.map{|i| delta[i-1]}].transpose.map{|x| x.reduce(:*)}].transpose.map{|x| x.reduce(:+)}
-        beta = [odd.map{|i| beta[i-1]}, even.map{|i| beta[i-1]}].transpose.map{|x| x.reduce(:*)}
-        delta = [odd.map{|i| delta[i-1]}, even.map{|i| delta[i-1]}].transpose.map{|x| x.reduce(:*)}
-        l = l/2 
-        j = 2*j
-    end
-    Rational(alpha[0],beta[0]).to_f + 1
-end</code></pre>
-<p>It seems to work fine:</p>
-<pre><code>&gt;&gt; puts hypergeo(20.5, 11.92, 19, 0.5, 7)
-8057.994139606239</code></pre>
-<p><br/></p>
+
 
 
           </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
 </body>
   <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
   <script>

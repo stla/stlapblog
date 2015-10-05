@@ -129,20 +129,20 @@ end
 <pre><code>&gt;&gt; # time consumed by the function:
 &gt;&gt; start = Time.now; set_representation(15); finish = Time.now
 &gt;&gt; puts finish - start
-0.084279003
+0.083684302
 &gt;&gt; # time consumed by the hash:
 &gt;&gt; start = Time.now; set_hash[15]; finish = Time.now
 &gt;&gt; puts finish - start
-0.080979731</code></pre>
+0.082218561</code></pre>
 <p><strong><em>But</em></strong> look what happens if I re-run the same code:</p>
 <pre><code>&gt;&gt; # time consumed by the function:
 &gt;&gt; start = Time.now; set_representation(15); finish = Time.now
 &gt;&gt; puts finish - start
-0.082714794
+0.080877005
 &gt;&gt; # time consumed by the hash:
 &gt;&gt; start = Time.now; set_hash[15]; finish = Time.now
 &gt;&gt; puts finish - start
-9.55e-07</code></pre>
+8.97e-07</code></pre>
 <p>Now, the time consumed by <code>set_hash[15]</code> is almost instantaneous! This is due to <a href="https://en.wikipedia.org/wiki/Memoization"><em>memoization</em></a> (see <a href="http://www.sitepoint.com/algorithmic-fun-ruby-hashes/">Algorithmic Fun with Ruby Hashes</a>).</p>
 </div>
 <div id="displaying-a-set" class="section level2">
@@ -184,11 +184,11 @@ end</code></pre>
 <pre><code>&gt;&gt; # time consumed by set_hash[17]:
 &gt;&gt; start = Time.now; set_hash[17]; finish = Time.now
 &gt;&gt; puts finish - start
-0.253277398
+0.243370526
 &gt;&gt; # time consumed by set_hash[16]:
 &gt;&gt; start = Time.now; set_hash[16]; finish = Time.now
 &gt;&gt; puts finish - start
-8.21e-07</code></pre>
+1.14e-06</code></pre>
 </div>
 <div id="unordered-pairs" class="section level2">
 <h2>Unordered pairs</h2>
@@ -243,6 +243,18 @@ end</code></pre>
 
 
           </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
 </body>
   <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
   <script>

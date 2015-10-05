@@ -163,7 +163,7 @@ aryToInt &lt;- function(epsilon, sizes=rep(2, length(epsilon)-1)){
 <p>As an example:</p>
 <pre class="r"><code>intToAry(29, c(3, 4, 5)) 
 ## [1] 2 1 2</code></pre>
-<p>means that <span class="math">\(29 = 2\times 1 + 1 \times 3  + 2 \times (3\times 4)\)</span>.</p>
+<p>means that <span class="math">\(29 = 2\times 1 + 1 \times 3 + 2 \times (3\times 4)\)</span>.</p>
 <p>Note that the last element of <code>sizes</code>, here <code>5</code>, is not visible in the expansion. It only fixes the maximal value of <span class="math">\(\epsilon_2\)</span>: the <span class="math">\((3,4,5)\)</span>-ary expansion of <span class="math">\(N\)</span> is <span class="math">\[
 N = \epsilon_0 + \epsilon_1 \times 3 + \epsilon_2 \times (3\times 4)
 \]</span> with <span class="math">\(\epsilon_0 \in \{0,1,2\}\)</span>, <span class="math">\(\epsilon_1 \in \{0, 1, 2, 3\}\)</span>, <span class="math">\(\epsilon_2 \in \{0, 1, 2, 3, 4\}\)</span>.</p>
@@ -220,14 +220,14 @@ system.time(
   }
 )
 ##    user  system elapsed 
-##  15.254   0.000  15.234
+##  14.429   0.000  14.431
 system.time(
   for(n in 1:(2*3*4*5*6*7*8*9)){
     L[[n]] &lt;- intToAry_Rcpp(n-1, c(2,3,4,5,6,7,8,9))
   }
 )
 ##    user  system elapsed 
-##   1.747   0.000   1.745</code></pre>
+##   1.521   0.000   1.530</code></pre>
 </div>
 </div>
 <div id="a-javascript-implementation" class="section level2">
@@ -252,6 +252,18 @@ intToAry(29, [3, 4, 5])
 
 
           </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
 </body>
   <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
   <script>
