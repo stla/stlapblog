@@ -211,7 +211,7 @@ $$H(X_n) \leq \frac{1}{1-K\epsilon}\left(H^\epsilon(X_n)  -\epsilon\log\epsilon 
 $$
 
 
-$$ \frac{H_n^\epsilon(X)}{H(X_n)} \leq 1 \leq 
+$$ \frac{H^\epsilon(X_n)}{H(X_n)} \leq 1 \leq 
 \frac{1}{1-K\epsilon}\left(\frac{H^\epsilon(X_n)}{H(X_n)} - \frac{-\epsilon \log\epsilon}{H(X_n)}\right),$$ 
 et le lemme s'ensuit. 
 
