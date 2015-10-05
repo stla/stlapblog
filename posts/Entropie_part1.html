@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Entropie d'une mesure discrète de masse infinie</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Entropie d'une mesure discrète de masse infinie</a>
+              </h3>
+              <span>04/10/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Entropie_part1.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(latest update : 2015-10-05 19:56:36)</em></strong> <br/></p>
+<p>Les investigations du présent article prennent leurs origines dans mon article <a href="https://hal.archives-ouvertes.fr/hal-01006337v3/document" title="Uniform entropy scalings">[2]</a>, et sont motivées par la détermination de l’entropie de la filtration du processus du prochain saut, à laquelle je n’ai pas encore réussi à parvenir. Bien que cela soit motivé par un problème d’entropie dans le cadre de la théorie des filtrations à temps discret négatif, le présent article ne met aucunement en jeu les filtrations et concerne uniquement des faits sur l’entropie des variables aléatoires discrètes, qui sont intéressants en eux-mêmes.</p>
+<p>Nous donnerons en particulier un critère de comparaison entre les entropies de deux variables aléatoires sur <span class="math">\(\mathbb{N}\)</span> ainsi qu’un critère de monotonie en <span class="math">\(n\)</span> de l’entropie de la loi d’une variable aléatoire sur <span class="math">\(\mathbb{N}\)</span> conditionnée à <span class="math">\(\{0, \ldots, n\}\)</span>. Bien qu’élémentaires, je n’ai trouvé ces critères nulle part dans la littérature.</p>
+<div id="les-p_n-dune-loi-discrete" class="section level2">
+<h2>Les <span class="math">\(p_n\)</span> d’une loi discrète</h2>
+<p>À travers tout l’article, nous ne considérons que des variables aléatoires (ou des probabilités) dont <em>le support</em> est <span class="math">\(\mathbb{N}\)</span> ou bien <span class="math">\(\{0, \ldots, N\}\)</span>, hormis dans la dernière partie où nous considérerons aussi des mesures sur <span class="math">\(\mathbb{N}\)</span> pas nécessairement normalisables. Afin d’unifier les deux cas nous disons alors que le support <span class="math">\(\{0, \ldots, N\}\)</span> en autorisant <span class="math">\(N=\infty\)</span>.</p>
+<p>Étant donnée une telle variable aléatoire <span class="math">\(X\)</span>, on note <span class="math">\(p_n=\Pr(X=n \mid X \leq n)\)</span> pour tout <span class="math">\(n\)</span> dans le support de <span class="math">\(X\)</span>. Notez que <span class="math">\(p_0=1\)</span>. Les <span class="math">\(p_n\)</span> déterminent la loi de <span class="math">\(X\)</span> de façon unique. En effet, on obtient après un peu de gymnastique <span class="math">\[
+\frac{\Pr(X=k)}{\Pr(X=0)} = \frac{p_k}{(1-p_{1})\cdots(1-p_k)} 
+\]</span> ainsi que <span class="math">\[
+\frac{\Pr(X\leq k)}{\Pr(X=0)} = \frac{1}{(1-p_{1})\cdots(1-p_k)},
+\]</span> et il vient alors <span class="math">\[
+\Pr(X \leq k) = (1-p_N)\cdots(1-p_{k+1})
+\]</span> et <span class="math">\[
+\Pr(X=k) = (1-p_N)\cdots(1-p_{k+1})p_{k},
+\]</span> où il s’agit d’un produit convergent lorsque <span class="math">\(N=\infty\)</span>. Notez que cette convergence se traduit par <span class="math">\(\boxed{\sum p_n &lt; \infty}\)</span>.</p>
+<p>Notez que <span class="math">\(p_n=\frac{1}{n+1}\)</span> pour la loi uniforme sur <span class="math">\(\{0, \ldots N\}\)</span>.</p>
+<div id="representation-integrale-de-lentropie" class="section level3">
+<h3>Représentation intégrale de l’entropie</h3>
+<p>L’entropie de la variable aléatoire <span class="math">\(X\)</span> admet la représentation suivante <span class="math">\[
+\boxed{H(X) = \mathbb{E}\left[\dfrac{h(p_X)}{p_X}\right]}
+\]</span> où <span class="math">\(h(p) = -p\log p - (1-p) \log(1-p)\)</span> est l’entropie d’une épreuve de Bernoulli de probabilité de succès <span class="math">\(p\)</span>. Je n’ai pas essayé d’établir cette formule directement à l’aide des formules précédentes ; il n’y a pas de raison que ce ne soit pas possible, mais nous la verrons apparaître plus tard sans faire de calcul rébarbatif, à partir d’une relation de récurrence.</p>
+<p>Remarquez que la fonction <span class="math">\(x \mapsto h(x)/x\)</span> est décroissante :</p>
+<p><img src="assets/fig/v01-plot1-1.png" title="" alt="" width="384" /></p>
+</div>
+<div id="representation-probabiliste" class="section level3">
+<h3>Représentation probabiliste</h3>
+<p>Donnons-nous des <span class="math">\(p_n\)</span>, avec <span class="math">\(p_0=1\)</span>. Considérons une suite de variables de Bernoulli indépendantes <span class="math">\({(\epsilon_k)}_{k \geq 0}\)</span> telles que <span class="math">\(p_k=\Pr(\epsilon_k=1)\)</span>. En particulier, <span class="math">\(\epsilon_0=0\)</span>, ce qui permet de définir la variable aléatoire<br /><span class="math">\[X_N = \max\bigl\{ k\in\{0, \ldots, N\} \mid \epsilon_k=1 \bigr\}.\]</span> Notez que <span class="math">\(X_N\)</span> est bien définie dans le cas <span class="math">\(N=\infty\)</span> en vertu du premier lemme de Borel-Cantelli.</p>
+<p>La loi de la variable <span class="math">\(X_N\)</span> ainsi définie est alors la même que celle de la variable aléatoire que nous avons aussi noté <span class="math">\(X\)</span> auparavant. On peut aussi définir, pout tout <span class="math">\(n \in\{0, \ldots, N\}\)</span>, <span class="math">\[\boxed{X_n = \max\bigl\{ k\in\{0, \ldots, n\} \mid \epsilon_k=1 \bigr\}}.\]</span> Il est facile de voir que “le <span class="math">\(p_k\)</span>” de la loi conditionnelle de <span class="math">\(X_N\)</span> sachant <span class="math">\(X_N \leq n\)</span> n’est autre que le <span class="math">\(p_k\)</span> de <span class="math">\(X_N\)</span>. Ainsi, la loi de <span class="math">\(X_n\)</span> est la loi conditionnelle de <span class="math">\(X_N\)</span> sachant <span class="math">\(X_N \leq n\)</span>. On a donc la loi de <span class="math">\(X_n\)</span> qui s’exprime ainsi à l’aide des <span class="math">\(p_n\)</span> : <span class="math">\[
+\Pr(X_n \leq k) = (1-p_n)\cdots(1-p_{k+1})
+\]</span> et <span class="math">\[
+\Pr(X_n=k) = (1-p_n)\cdots(1-p_{k+1})p_{k}. 
+\]</span></p>
+<p>Notez que la suite de variables aléatoires <span class="math">\(X_n\)</span> est évidemment croissante en <span class="math">\(n\)</span>.</p>
+</div>
+</div>
+<div id="entropie-residuelle" class="section level2">
+<h2>Entropie résiduelle</h2>
+<p>Reprenons des <span class="math">\(p_n\)</span>, avec <span class="math">\(p_0=1\)</span>, et considérons la variable aléatoire <span class="math">\(X\)</span> associée, ainsi que les variables aléatoires <span class="math">\(X_n\)</span>, <span class="math">\(0 \leq n \leq N\)</span>, de la représentation probabiliste.</p>
+<p>Notons <span class="math">\(\boxed{g_X(n) = H(X_n) = H(X \mid X \leq n)}\)</span>. Dans le cas <span class="math">\(N=\infty\)</span>, on a <span class="math">\(g_X(n) \to H(X)\)</span>, ceci résultant simplement du fait que <span class="math">\(\Pr(X \leq n) \to 1\)</span>.</p>
+<p>Par la représentation intégrale de l’entropie, <span class="math">\[g_X(n) = \mathbb{E}\left[\frac{h(p_{X_n})}{p_{X_n}}\right].%=\mathbb{E}\left[\frac{h(p_{X_n})}{p_{X_n}}{\boldsymbol 1}_{\{X_n&gt;0\}}\right].\]</span></p>
+<p>J’ai précédemment promis de démontrer cette formule à l’aide d’une relation de récurrence. Cette relation est <span class="math">\[H(X_{n+1}) = h(p_{n+1}) + (1-p_{n+1})H(X_n),
+\]</span> et elle découle de l’égalité <span class="math">\[H(X_n) + H(X_{n+1} \mid X_n) = H(X_{n+1}) + H(X_{n} \mid X_{n+1})
+\]</span> (les deux membres sont égaux à <span class="math">\(H(X_n,X_{n+1})\)</span>), et de <span class="math">\[H(X_{n+1} \mid X_n) = h(p_{n+1}) \qquad \text{ et} \qquad H(X_{n} \mid X_{n+1}) = p_{n+1}H(X_n).
+\]</span> De cette relation de récurrence, il vient facilement <span class="math">\[
+H(X_n)  = h(p_n) + (1-p_n)h(p_{n-1}) + (1-p_n)(1-p_{n-1})h(p_{n-2}) + \cdots + 
+(1-p_n)\cdots(1-p_{2})h(p_{1}),
+\]</span> et on obtient cette même expression lorsqu’on développe l’espérance dans la représentation intégrale.</p>
+<p>En fait, je n’utilise vraiment les <span class="math">\(X_n\)</span> que pour établir cette relation de récurrence. Ailleurs, j’utilise uniquement la loi de <span class="math">\(X_n\)</span>, et le fait qu’elle est stochastiquement croissante en <span class="math">\(n\)</span>.</p>
+<p>Le théorème suivant résulte aisément du fait que la fonction <span class="math">\(x \mapsto h(x)/x\)</span> est décroissante que <span class="math">\(X_n\)</span> est croissant en <span class="math">\(n\)</span>.</p>
+<p><strong><em>Théorème.</em></strong> <em>Si les <span class="math">\(p_n\)</span> sont décroissants en <span class="math">\(n\)</span>, alors <span class="math">\(g_X(n)\)</span> est croissant en <span class="math">\(n\)</span></em>.</p>
+<p><strong>Question.</strong> Est-ce que le cas croissant est vrai ? (<em>Si, lorsqu’on ne tient pas compte de <span class="math">\(p_0\)</span>, les <span class="math">\(p_n\)</span> sont croissants, alors <span class="math">\(g_X(n)\)</span> est décroissant ?</em>)</p>
+<p>Notons maintenant <span class="math">\(\boxed{h_X(n) = H(X \mid X \geq n)}\)</span>. La fonction <span class="math">\(h_X\)</span> est appelé <em>l’entropie résiduelle de <span class="math">\(X\)</span></em> dans la publication <a href="http://dx.doi.org/10.1017/S0269964800003016" title="A Note on the residual entropy function">[3]</a>. On note aussi <span class="math">\(r_X(n)=\frac{\Pr(X=n)}{\Pr(X \geq n)}\)</span>. La fonction <span class="math">\(r_X\)</span> est bien connue sous le nom de taux de défaillance de <span class="math">\(X\)</span>. Le théorème suivant est démontré dans <a href="http://dx.doi.org/10.1017/S0269964800003016" title="A Note on the residual entropy function">[3]</a> pour les distributions à densité :</p>
+<p><strong><em>Théorème.</em></strong> <em>Si <span class="math">\(r_X(n)\)</span> est croissant en <span class="math">\(n\)</span>, alors <span class="math">\(h_X(n)\)</span> est décroissant en <span class="math">\(n\)</span></em>.</p>
+<p><em>Preuve:</em> Supposons en un premier temps que <span class="math">\(N&lt;\infty\)</span> et posons <span class="math">\(Y_N=N-X_N\)</span>. On a alors <span class="math">\(\frac{\Pr(Y_N=n)}{\Pr(Y_N \leq n)}=r_{X_N}(N-n)\)</span>. Par conséquent, d’après le théorème précédent, <span class="math">\(g_{Y_N}(n)\)</span> est croissant si <span class="math">\(r_{X_N}\)</span> est croissant, et on conclut du fait que <span class="math">\(g_{Y_N}(n)=h_X(N-n)\)</span>. Dans le cas <span class="math">\(N=\infty\)</span>, en prenant n’importe quel entier <span class="math">\(M \geq 1\)</span>, on a, pour tout <span class="math">\(n\leq M\)</span>, <span class="math">\[
+r_{X_M}(n) = r_X(n) \frac{\Pr(X\geq n)}{\Pr(X\geq n)- \Pr(X&gt;M)}, 
+\]</span> et donc <span class="math">\(r_{X_M}\)</span> est croissant si <span class="math">\(r_X\)</span> est croissant. En raisonnant comme précédemment avec <span class="math">\(Y_M:=M-X_M\)</span>, on obtient la décroissance de <span class="math">\(h_X(n)\)</span> pour <span class="math">\(n \in \{0, \ldots M\}\)</span>.</p>
+<p><strong>Question.</strong> Est-ce que <span class="math">\(h_X(n)\)</span> est croissant lorsque <span class="math">\(r_n\)</span> est décroissant ? C’est démontré dans <a href="http://dx.doi.org/10.1017/S0269964800003016" title="A Note on the residual entropy function">[3]</a> pour les distributions à densité.</p>
+</div>
+<div id="entropie-dune-mesure-sur-mathbbn" class="section level2">
+<h2>Entropie d’une mesure sur <span class="math">\(\mathbb{N}\)</span></h2>
+<p>Précédemment, dans le cas <span class="math">\(N=\infty\)</span>, la suite <span class="math">\((p_n)\)</span> satisfaisait <span class="math">\(\sum p_n &lt; \infty\)</span>, du fait que le produit infini <span class="math">\(\prod(1-p_n)\)</span> apparait dans <span class="math">\(\Pr(X \leq k)\)</span> ou <span class="math">\(\Pr(X=k)\)</span>. Mais on peut se donner une suite <span class="math">\((p_n)\)</span> quelconque (sauf <span class="math">\(p_0=1\)</span>), et construire les variables aléatoires <span class="math">\(X_n\)</span> de la représentation probabiliste comme précedemment.</p>
+<p>La loi de <span class="math">\(X_n\)</span> est alors la troncature d’une mesure <span class="math">\(\mu\)</span> sur <span class="math">\(\mathbb{N}\)</span>, donnée par <span class="math">\[\mu(n) = \frac{p_n}{\prod_{k=1}^n (1-p_k)} = \frac{\Pr(X_n=n)}{\Pr(X_n=0)}
+\]</span> ou <span class="math">\[\mu(0:n) = \frac{1}{\prod_{k=1}^n (1-p_k)} = \frac{1}{\Pr(X_n=0)}
+\]</span> Cette mesure <span class="math">\(\mu\)</span> est normalisable si et seulement si <span class="math">\(\boxed{\sum p_n &lt; \infty}\)</span>. Dans ce cas <span class="math">\(X_n\)</span> converge en loi vers la version normalisée de <span class="math">\(\mu\)</span>. Dans l’autre cas, le lemme de Borel-Cantelli montre que <span class="math">\(X_n=n\)</span> une infinité de fois et donc que <span class="math">\(X_n \to \infty\)</span>.</p>
+<p>Réciproquement, à une mesure <span class="math">\(\mu\)</span>, on associe <span class="math">\(p_n = \dfrac{\mu(n)}{\mu(0:n)}\)</span>.</p>
+<p>Les résultats sur l’entropie de <span class="math">\(X_n\)</span> que nous avons vus dans le cas <span class="math">\(\mu(\mathbb{N}) &lt; \infty\)</span>, sont exactement les mêmes.</p>
+<div id="definition-normalisation-dentropie" class="section level3">
+<h3>Définition: normalisation d’entropie</h3>
+<p>Nous donnons une définition de l’entropie d’une mesure <span class="math">\(\mu\)</span> supportée par $.</p>
+<p>Définissons la <span class="math">\(\epsilon\)</span>-entropie d’une variable aléatoire discrète <span class="math">\(Y\)</span> par <span class="math">\[
+H^\epsilon(Y) = \inf\bigl\{H(F) \mid \Pr(F \neq Y) &lt; \epsilon\bigr\},
+\]</span> où la borne inférieure est prise sur les variables aléatoires <span class="math">\(F\)</span> qui sont (discrètes et) <span class="math">\(\sigma(Y)\)</span>-measurables. Lorsque <span class="math">\(Y\)</span> ne prend qu’un nombre fini de valeurs, on peut évidemment remplacer <span class="math">\(\inf\)</span> par <span class="math">\(\min\)</span>.</p>
+<p>Maintenant, étant donnée une mesure <span class="math">\(\mu\)</span> supportée par <span class="math">\(\mathbb{N}\)</span>, et étant donnée une fonction <span class="math">\(c\colon \mathbb{N} \to \mathbb{R}^+\)</span>, appelée <em>normalisation de l’entropie</em>, on définit <span class="math">\[
+\boxed{h_c(\mu) := \limsup_{\epsilon \to 0} \limsup_{n \to \infty} \dfrac{H^\epsilon(X_n)}{c(n)}},
+\]</span> où <span class="math">\(X_n \sim \mu(\cdot \mid 0:n)\)</span>.</p>
+<p>L’entropie <span class="math">\(h_c(\mu)\)</span> est invariante par bijection de <span class="math">\(\mathbb{N}\)</span> qui ne transforme qu’une partie finie de <span class="math">\(\mathbb{N}\)</span>.</p>
+<p>On pourrait plus généralement donner une définition relative à des <span class="math">\(A_n \nearrow \mathbb{N}\)</span> en prenant <span class="math">\(X_n \sim \mu(\cdot \mid A_n)\)</span>.</p>
+<p>Sans altérer <span class="math">\(h_c(\mu)\)</span>, on peut remplacer la définition de la <span class="math">\(\epsilon\)</span>-entropie <span class="math">\(H^\epsilon(Y)\)</span> par <span class="math">\[\inf \left\{- \sum_{i \in B} \nu(i)\log\nu(i) - \nu(B^c)\log\nu(B^c)\right\}
+\]</span> où <span class="math">\(\nu\)</span> est la loi de <span class="math">\(Y\)</span> et la borne inférieure est prise sur toutes les parties <span class="math">\(B\)</span> de l’espace d’états de <span class="math">\(Y\)</span> vérifiant <span class="math">\(\mu(B^c) &lt; \epsilon\)</span>.</p>
+<p><strong><em>Définitions.</em></strong> Nous disons que la normalisation d’entropie <span class="math">\(c(n)\)</span> est :</p>
+<ul>
+<li><p><em>propre</em> si <span class="math">\(h_c(\mu) \in ]0, \infty[\)</span>;</p></li>
+<li><p><em>exacte</em> si <span class="math">\(h_c(\mu)=1\)</span>;</p></li>
+<li><p><em>dominante</em> si <span class="math">\(h_c(\mu) &lt; \infty\)</span>;</p></li>
+<li><p><em>négligeante</em> si <span class="math">\(h_c(\mu) = 0\)</span>.</p></li>
+</ul>
+<p>La normalisation d’entropie <span class="math">\(c(n)=H(X_n)\)</span> est évidemment dominante.</p>
+<p><strong><em>Définition.</em></strong> Nous disons que <span class="math">\(\mu\)</span> est <em>d’entropie pleine</em> si la normalisation d’entropie <span class="math">\(c(n)=H(X_n)\)</span> est exacte.</p>
+</div>
+<div id="condition-suffisante-pour-quune-mesure-soit-dentropie-pleine" class="section level3">
+<h3>Condition suffisante pour qu’une mesure soit d’entropie pleine</h3>
+<p><strong><em>Lemme 1.</em></strong> <em>S’il existe <span class="math">\(K&gt;0\)</span> tel que, pour tout <span class="math">\(n\geq 1\)</span></em>, <span class="math">\[\max_{B \subset \{0, \ldots, n\}} \dfrac{H\bigl(\mu(\cdot \mid B)\bigr)}{H(X_n)} \leq K,
+\]</span> <em>alors <span class="math">\(\mu\)</span> est d’entropie pleine.</em></p>
+<p><em>Preuve.</em> Soient <span class="math">\(n\geq 1\)</span> et <span class="math">\(\epsilon \in (0,1/K)\)</span>. Soit <span class="math">\(B \subset \{0, \ldots, n\}\)</span> qui atteint le minimum dans la définition alternative de <span class="math">\(H^\epsilon(X_n)\)</span>. On note <span class="math">\(\mu_n=\mu(\cdot \mid 0:n)\)</span> la loi de <span class="math">\(X_n\)</span>. On a <span class="math">\[-\sum_{i \in B^c} \mu_n(i)\log\mu_n(i) = \mu_n(B^c)H\bigl(\mu(\cdot \mid B^c)\bigr) - \mu_n(B^c)\log\mu_n(B^c) &lt; \epsilon H\bigl(\mu(\cdot \mid B^c)\bigr) - \epsilon\log\epsilon.
+\]</span></p>
+<p><span class="math">\[H^\epsilon(X_n) = -\sum_{i\in B} \mu_n(i)\log\mu_n(i) - \mu_n(B^c)\log\mu_n(B^c)
+\]</span></p>
+<p><span class="math">\[H(X_n) = -\sum_{i \in B} \mu_n(i)\log\mu_n(i) -\sum_{i \in B^c} \mu_n(i)\log\mu_n(i).\]</span></p>
+<p>On obtient alors <span class="math">\[H(X_n) \leq H^\epsilon(X_n) + \epsilon H\bigl(\mu(\cdot \mid B^c)\bigr) - \epsilon\log\epsilon,
+\]</span> donc <span class="math">\[H(X_n) \leq \frac{1}{1-K\epsilon}\left(H^\epsilon(X_n)  -\epsilon\log\epsilon \right)
+\]</span></p>
+<p><span class="math">\[ \frac{H_n^\epsilon(X)}{H(X_n)} \leq 1 \leq 
+\frac{1}{1-K\epsilon}\left(\frac{H^\epsilon(X_n)}{H(X_n)} - \frac{-\epsilon \log\epsilon}{H(X_n)}\right),\]</span> et le lemme s’ensuit.</p>
+<p><strong><em>Lemme 2.</em></strong> <em>Si les <span class="math">\(p_n\)</span> sont décroissants, alors</em> <span class="math">\[H(X_n) &gt; -\log p_K \Pr(X_n &gt;K) 
+\]</span> <em>pour tout <span class="math">\(n &gt; K\)</span>.</em></p>
+<p><em>Preuve.</em> On utilise l’inégalité <span class="math">\[\dfrac{h(x)}{x} &gt; -\log x 
+\]</span></p>
+<p>Par la représentation intégrale de l’entropie, et du fait que les <span class="math">\(p_n\)</span> sont décroissants,<br /><span class="math">\[H(X_n) = \mathbb{E}\left[\frac{h(p_{X_n})}{p_{X_n}}\right] &gt; \dfrac{h(p_K)}{p_K}\Pr(X_n &gt;K) &gt; -\log p_K \Pr(X_n &gt;K) 
+\]</span></p>
+<p><strong><em>Application des deux lemmes.</em></strong> <em>Soit <span class="math">\(\mu\)</span> une mesure supportée par $ telle que <span class="math">\(\mu(n)\)</span> est croissant en <span class="math">\(n\)</span>, et pour laquelle les <span class="math">\(p_n\)</span> sont décroissants et vérifient <span class="math">\(\log n = O(-\log p_n)\)</span> (ou <a href="http://mathworld.wolfram.com/Big-OmegaNotation.html"><span class="math">\(-\log p_n=\Omega(\log n)\)</span></a>). Alors <span class="math">\(\mu\)</span> est d’entropie pleine</em>.</p>
+<p><em>Preuve.</em> Vérifions que la condition du Lemme 1 est satisfaite. On applique le Lemme 2 avec <span class="math">\(K=[n/2]\)</span>. Cela donne <span class="math">\(H(X_n) &gt; -\frac{1}{2}\log p_{[N/2]}\)</span>, et on a alors <span class="math">\(H(X_n) &gt; K \log n\)</span> par l’hypothèse <span class="math">\(\log n = O(\log p_n)\)</span>. Puisque <span class="math">\(H\bigl(\mu(\cdot \mid B)\bigr) \leq \log\#B \leq \log n\)</span>, la condition du Lemme 1 est satisfaite.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>Références</h2>
+<p>[1]: <a href="http://ecp.ejpecp.org/article/view/2766/2302" title="Standardness and nonstandardness of next-jump time filtrations">Laurent 2013: Standardness and nonstandardness of next-jump time filtrations</a></p>
+<p>[2]: <a href="https://hal.archives-ouvertes.fr/hal-01006337v3/document" title="Uniform entropy scalings">Laurent 2015: Uniform entropy scalings</a></p>
+<p>[3]: <a href="http://dx.doi.org/10.1017/S0269964800003016" title="A Note on the residual entropy function">Muliere, Parmigiani, Polson 1993: A Note on the residual entropy function</a></p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
