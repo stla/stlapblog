@@ -83,7 +83,7 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Entropie_part1.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>(latest update : 2015-10-05 20:45:14)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2015-10-05 20:47:54)</em></strong> <br/></p>
 <p>Les investigations du présent article prennent leurs origines dans mon article <a href="https://hal.archives-ouvertes.fr/hal-01006337v3/document" title="Uniform entropy scalings">[2]</a>, et sont motivées par la détermination de l’entropie de la filtration du processus du prochain saut, à laquelle je n’ai pas encore réussi à parvenir. Bien que cela soit motivé par un problème d’entropie dans le cadre de la théorie des filtrations à temps discret négatif, le présent article ne met aucunement en jeu les filtrations et concerne uniquement des faits sur l’entropie des variables aléatoires discrètes, qui sont intéressants en eux-mêmes.</p>
 <p>Nous donnerons en particulier un critère de comparaison entre les entropies de deux variables aléatoires sur <span class="math">\(\mathbb{N}\)</span> ainsi qu’un critère de monotonie en <span class="math">\(n\)</span> de l’entropie de la loi d’une variable aléatoire sur <span class="math">\(\mathbb{N}\)</span> conditionnée à <span class="math">\(\{0, \ldots, n\}\)</span>. Bien qu’élémentaires, je n’ai trouvé ces critères nulle part dans la littérature.</p>
 <div id="les-p_n-dune-loi-discrete" class="section level2">
@@ -193,7 +193,7 @@ H^\epsilon(Y) = \inf\bigl\{H(F) \mid \Pr(F \neq Y) &lt; \epsilon\bigr\},
 <p>Par la représentation intégrale de l’entropie, et du fait que les <span class="math">\(p_n\)</span> sont décroissants,<br /><span class="math">\[H(X_n) = \mathbb{E}\left[\frac{h(p_{X_n})}{p_{X_n}}\right] &gt; \dfrac{h(p_K)}{p_K}\Pr(X_n &gt;K) &gt; -\log p_K \Pr(X_n &gt;K) 
 \]</span></p>
 <p><strong><em>Application des deux lemmes.</em></strong> <em>Soit <span class="math">\(\mu\)</span> une mesure supportée par $ telle que <span class="math">\(\mu(n)\)</span> est croissant en <span class="math">\(n\)</span>, et pour laquelle les <span class="math">\(p_n\)</span> sont décroissants et vérifient <span class="math">\(\log n = O(-\log p_n)\)</span> (ou <a href="http://mathworld.wolfram.com/Big-OmegaNotation.html"><span class="math">\(-\log p_n=\Omega(\log n)\)</span></a>). Alors <span class="math">\(\mu\)</span> est d’entropie pleine</em>.</p>
-<p><em>Preuve.</em> Vérifions que la condition du Lemme 1 est satisfaite. On applique le Lemme 2 avec <span class="math">\(K=[n/2]\)</span>. Cela donne <span class="math">\(H(X_n) &gt; -\frac{1}{2}\log p_{[N/2]}\)</span>, et on a alors <span class="math">\(H(X_n) = Omega(\log n)\)</span> par l’hypothèse <span class="math">\(\log n = O(\log p_n)\)</span>. Puisque <span class="math">\(H\bigl(\mu(\cdot \mid B)\bigr) \leq \log\#B \leq \log n\)</span>, la condition du Lemme 1 est satisfaite.</p>
+<p><em>Preuve.</em> Vérifions que la condition du Lemme 1 est satisfaite. On applique le Lemme 2 avec <span class="math">\(K=[n/2]\)</span>. Cela donne <span class="math">\(H(X_n) &gt; -\frac{1}{2}\log p_{[n/2]}\)</span>, et on a alors <span class="math">\(H(X_n) = \Omega(\log n)\)</span> par l’hypothèse <span class="math">\(\log n = O(\log p_n)\)</span>. Puisque <span class="math">\(H\bigl(\mu(\cdot \mid B)\bigr) \leq \log\#B \leq \log n\)</span>, la condition du Lemme 1 est satisfaite.</p>
 </div>
 </div>
 <div id="references" class="section level2">
