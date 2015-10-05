@@ -232,7 +232,7 @@ $$
 
 ***Application des deux lemmes.*** *Soit $\mu$ une mesure supportée par $\mathbb{N} telle que $\mu(n)$ est croissant en $n$, et pour laquelle les $p_n$ sont décroissants et vérifient $\log n = O(-\log p_n)$ (ou [$-\log p_n=\Omega(\log n)$](http://mathworld.wolfram.com/Big-OmegaNotation.html)). Alors $\mu$ est d'entropie pleine*. 
 
-*Preuve.* Vérifions que la condition du Lemme 1 est satisfaite. On applique le Lemme 2 avec $K=[n/2]$. Cela donne $H(X_n) > -\frac{1}{2}\log p_{[N/2]}$, et on a alors $H(X_n) > K \log n$ par l'hypothèse $\log n = O(\log p_n)$. Puisque $H\bigl(\mu(\cdot \mid B)\bigr) \leq \log\#B \leq \log n$, la condition du Lemme 1 est satisfaite.
+*Preuve.* Vérifions que la condition du Lemme 1 est satisfaite. On applique le Lemme 2 avec $K=[n/2]$. Cela donne $H(X_n) > -\frac{1}{2}\log p_{[N/2]}$, et on a alors $H(X_n) = Omega(\log n)$ par l'hypothèse $\log n = O(\log p_n)$. Puisque $H\bigl(\mu(\cdot \mid B)\bigr) \leq \log\#B \leq \log n$, la condition du Lemme 1 est satisfaite.
 
 
 
