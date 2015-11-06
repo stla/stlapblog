@@ -83,7 +83,7 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/AnimatedGifs.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>(latest update : 2015-11-06 14:52:07)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2015-11-06 15:01:11)</em></strong> <br/></p>
 <p>It took me some time to find how to merge two animated gifs (using freeware only, as usual). So it is worth sharing my notes. Below are the two animated gifs used for my example.</p>
 <div style="text-align:center">
 <img src="assets/gif/compress_gausssample01.gif" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink"> <img src="assets/gif/compress_gausssample02.gif" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink">
@@ -128,7 +128,7 @@
 </div>
 <div id="r-functions" class="section level2">
 <h2>R functions</h2>
-<p>Obviously, the previous command lines are not user-friendly. I wrote some R functions to run them more conveniently (at least, for R users). Moreover, since I usually use the <a href="">animation package</a> to create my animations, these functions provide additional tools. Here are two examples of my functions, they should be enough to understand how to use them:</p>
+<p>Obviously, the previous command lines are not user-friendly. I wrote some R functions to run them more conveniently (at least, for R users). Moreover, since I usually use the <a href="http://yihui.name/animation/">animation package</a> to create my animations, these functions provide additional tools. Here are two examples of my functions, they should be enough to understand how to use them:</p>
 <pre class="r"><code>gif_append(&quot;file1.gif&quot;, &quot;file2.gif&quot;, &quot;outfile.gif&quot;, horizontal=FALSE, extra.opts=&quot;-resize 300x400&quot;)
 gif_append(&quot;file1.gif&quot;, &quot;file2.gif&quot;, &quot;outfile.gif&quot;, delay=4)
 gif_compress(&quot;file.gif&quot;, &quot;outfile.gif&quot;, extra.opts=&quot;--colors 256&quot;))</code></pre>

@@ -164,7 +164,7 @@ To know more about *gifsicle* (which not only serves to compress), take also a l
 
 ## R functions 
 
-Obviously, the previous command lines are not user-friendly. I wrote some R functions to run them more conveniently (at least, for R users). Moreover, since I usually use the [animation package]() to create my animations, these functions provide additional tools. Here are two examples of my functions, they should be enough to understand how to use them: 
+Obviously, the previous command lines are not user-friendly. I wrote some R functions to run them more conveniently (at least, for R users). Moreover, since I usually use the [animation package](http://yihui.name/animation/) to create my animations, these functions provide additional tools. Here are two examples of my functions, they should be enough to understand how to use them: 
 
 ```{r, eval=FALSE}
 gif_append("file1.gif", "file2.gif", "outfile.gif", horizontal=FALSE, extra.opts="-resize 300x400")
