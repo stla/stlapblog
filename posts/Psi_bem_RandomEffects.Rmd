@@ -288,7 +288,7 @@ I have written a Javascript program to assess the frequentist coverage of the in
 It is really good. You can see the coverage for smaller values of $I$ and $J$ by playing with this interactive implementation of my Javascript program (computations take a while - be patient):
 
 <div id="wrap">
-<iframe id="frame" src="assets/htmlframes/hbinom_logit01.html"></iframe>
+<iframe id="frame" src="assets/htmlframes/hbinom_logit02.html"></iframe>
 </div>
 
 You can see that the coverage is always better (close to the target level) at \(\Theta=0.5\). 
