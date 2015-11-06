@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Some tools for animated gifs</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Some tools for animated gifs</a>
+              </h3>
+              <span>06/11/2015</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/AnimatedGifs.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(latest update : 2015-11-06 14:52:07)</em></strong> <br/></p>
+<p>It took me some time to find how to merge two animated gifs (using freeware only, as usual). So it is worth sharing my notes. Below are the two animated gifs used for my example.</p>
+<div style="text-align:center">
+<img src="assets/gif/compress_gausssample01.gif" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink"> <img src="assets/gif/compress_gausssample02.gif" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink">
+<p style="clear: both;">
+</div>
+<div id="append-one-gif-to-the-other" class="section level2">
+<h2>Append one gif to the other</h2>
+<p>Below these are the same animations but they are merged into only one single animated gif, by appending the second one at the right to the first one.</p>
+<p><img src="assets/gif/compress_gausssample0102_horizontal.gif" /></p>
+<p>The ImageMagick command I used to create it (found on <a href="http://www.imagemagick.org/">imagemagick.org</a>) is the following one:</p>
+<pre><code>convert file1.gif&#39;[0]&#39; -coalesce \\( file2.gif&#39;[0]&#39; -coalesce \\) \\
+          +append -channel A -evaluate set 0 +channel \\
+          file1.gif -coalesce -delete 0 \\
+          null: \\( file2.gif -coalesce \\) \\
+          -gravity East -layers Composite output.gif</code></pre>
+<p>To append vertically, run:</p>
+<pre><code>convert file1.gif&#39;[0]&#39; -coalesce \\( file2.gif&#39;[0]&#39; -coalesce \\) \\
+          -append -channel A -evaluate set 0 +channel \\
+          file1.gif -coalesce -delete 0 \\
+          null: \\( file2.gif -coalesce \\) \\
+          -gravity South -layers Composite output.gif</code></pre>
+<p>and you will get this single animation:</p>
+<div style="text-align:center">
+<img src ="assets/gif/compress_gausssample0102_vertical.gif" />
+</div>
+</div>
+<div id="join-one-gif-after-the-other-one" class="section level2">
+<h2>Join one gif after the other one</h2>
+<p>One can also join the two animations, the second one after the other one, including a delay between them (4 seconds in the example below):</p>
+<pre><code>convert file1.gif -coalesce \ \( +clone -set delay 4/1 \) +swap +delete
+  \ \( file2.gif -coalesce \) \ \( +clone -set delay 4/1 \) +swap
+  +delete \ -resize 400x300 -layers optimize output.gif</code></pre>
+<div style="text-align:center">
+<img src ="assets/gif/compress_gausssample0102_join.gif" />
+</div>
+</div>
+<div id="compress-a-gif" class="section level2">
+<h2>Compress a gif</h2>
+<p>Finally I discovered <a href="http://www.lcdf.org/gifsicle/">gifsicle</a> while I was searching a way to compress an animated gif. It achieves an amazing performance, by simply running this line:</p>
+<pre><code>gifsicle -O3 --colors 256 &lt; infile.gif &gt; outfile.gif</code></pre>
+<p>To know more about <em>gifsicle</em> (which not only serves to compress), take also a look at <a href="http://graphicdesign.stackexchange.com/questions/20908/how-to-remove-every-second-frame-from-an-animated-gif/">this post on graphicdesign.stackexchange</a>.</p>
+</div>
+<div id="r-functions" class="section level2">
+<h2>R functions</h2>
+<p>Obviously, the previous command lines are not user-friendly. I wrote some R functions to run them more conveniently (at least, for R users). Moreover, since I usually use the <a href="">animation package</a> to create my animations, these functions provide additional tools. Here are two examples of my functions, they should be enough to understand how to use them:</p>
+<pre class="r"><code>gif_append(&quot;file1.gif&quot;, &quot;file2.gif&quot;, &quot;outfile.gif&quot;, horizontal=FALSE, extra.opts=&quot;-resize 300x400&quot;)
+gif_append(&quot;file1.gif&quot;, &quot;file2.gif&quot;, &quot;outfile.gif&quot;, delay=4)
+gif_compress(&quot;file.gif&quot;, &quot;outfile.gif&quot;, extra.opts=&quot;--colors 256&quot;))</code></pre>
+<p>And their code is given below:</p>
+<pre class="r"><code>gif_append &lt;- function(gif1, gif2, outgif, horizontal=TRUE, show=TRUE, extra.opts=&quot;&quot;){
+  command &lt;- ifelse(horizontal, 
+          sprintf(&quot;convert %s&#39;[0]&#39; -coalesce \\( %s&#39;[0]&#39; -coalesce \\) \\
+          +append -channel A -evaluate set 0 +channel \\
+          %s -coalesce -delete 0 \\
+          null: \\( %s -coalesce \\) \\
+          %s -gravity East -layers Composite %s&quot;, gif1, gif2, gif1, gif2, extra.opts, outgif),
+          sprintf(&quot;convert %s&#39;[0]&#39; -coalesce \\( %s&#39;[0]&#39; -coalesce \\) \\
+          -append -channel A -evaluate set 0 +channel \\
+          %s -coalesce -delete 0 \\
+          null: \\( %s -coalesce \\) \\
+          %s -gravity South -layers Composite %s&quot;, gif1, gif2, gif1, gif2, extra.opts,  outgif))
+  system.fun &lt;- if (.Platform$OS.type == &quot;windows&quot;) shell else system
+  if(show) message(&quot;Executing: &quot;, strwrap(command, exdent = 2, prefix = &quot;\n&quot;))
+  system.fun(ifelse(.Platform$OS.type == &quot;windows&quot;, sprintf(&quot;\&quot;%s\&quot;&quot;, shQuote(command)), command))
+}</code></pre>
+<pre class="r"><code>gif_join &lt;- function(gif1, gif2, outgif, delay=3, show=TRUE, extra.opts=&quot;&quot;){
+  command &lt;-  sprintf(&quot;convert %s -coalesce \\
+       \\( +clone  -set delay %s/1 \\) +swap +delete \\
+       \\( %s -coalesce \\) \\
+       \\( +clone  -set delay %s/1 \\) +swap +delete \\
+       %s -layers optimize %s&quot;, gif1, delay, gif2, delay, extra.opts, outgif)
+  system.fun &lt;- if (.Platform$OS.type == &quot;windows&quot;) shell else system
+  if(show) message(&quot;Executing: &quot;, strwrap(command, exdent = 2, prefix = &quot;\n&quot;))
+  system.fun(ifelse(.Platform$OS.type == &quot;windows&quot;, sprintf(&quot;\&quot;%s\&quot;&quot;, shQuote(command)), command))
+}</code></pre>
+<pre class="r"><code>gif_compress &lt;- function(ingif, outgif, show=TRUE, extra.opts=&quot;&quot;){
+  command &lt;-  sprintf(&quot;gifsicle -O3 %s &lt; %s &gt; %s&quot;, extra.opts, ingif, outgif)
+  system.fun &lt;- if (.Platform$OS.type == &quot;windows&quot;) shell else system
+  if(show) message(&quot;Executing: &quot;, strwrap(command, exdent = 2, prefix = &quot;\n&quot;))
+  system.fun(ifelse(.Platform$OS.type == &quot;windows&quot;, sprintf(&quot;\&quot;%s\&quot;&quot;, shQuote(command)), command))
+}</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
