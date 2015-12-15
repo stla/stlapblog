@@ -1,0 +1,73 @@
+---
+title: "La sphère de Bloch"
+date: "2015-12-15"
+header-includes:
+   - \usepackage[all]{xy}
+output: html_document
+---
+
+```{r setup0, echo=FALSE}
+knitr::opts_chunk$set(fig.path="assets/fig/Bloch-")
+```
+
+\newcommand{\ket}[1]{\left|{#1}\right\rangle}
+
+L'état quantique le plus simple est le *qubit* (aussi écrit *qbit* en français). C'est un état quantique "à deux niveaux". Dans le contexte de l'[informatique quantique](https://fr.wikipedia.org/wiki/Informatique_quantique) ou de la théorie de l'[information quantique](https://fr.wikipedia.org/wiki/Information_quantique), il est l'analogue du bit en informatique classique ou en théorie de l'information classique.  
+
+Un qubit $\ket{\psi}$ est représenté par un vecteur dans le plan complexe $\mathbb{C}^2$
+$$
+\ket{\psi} = v_0 \ket{0} + v_1 \ket{1} = v_0 \begin{pmatrix} 1 \\ 0 \end{pmatrix}+ v_1 \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} v_0 \\ v_1 \end{pmatrix}
+$$
+où $v_0$ and $v_1$ sont des nombres *complexes* satisfaisant ${|v_0|}^2+{|v_1|}^2=1$. On dit que $\ket{\psi}$ est un vecteur *normalisé* en raison de cette contrainte. 
+
+L'espace des qubits est alors de dimension $3$ : écrivant $v_k = x_k + {\rm i} y_k$ on peut vérifier que le quadruplet $(x_0,y_0,x_1,y_1)$ est sur la sphère unité de dimension $3$ dans l'espace réel euclidien de dimension $4$. 
+
+Cependant, il est possible de ne considérer qu'un espace de dimension $2$ en se restreignant aux qubits dits *purs*. Un qubit pur est en fait un représentant d'une classe de qubits équivalents pour la relation de proportionnalité :  $\ket{\psi} \sim \ket{\psi'}$ lorsque 
+$$
+\ket{\psi'} = z \ket{\psi} = \begin{pmatrix} zv_0 \\ zv_1 \end{pmatrix}
+$$
+ou le facteur de proportionnalité $z$ est un nombre *complexe*. Notez que $z$ est nécessairement de module $1$, c'est-à-dire de la forme $z=e^{i\alpha}$, et un tel facteur est appelé *facteur de phase*. 
+
+Puisqu'il existe un unique angle $\theta \in [0,\pi]$ tel que 
+$$
+|v_0| = \cos\frac{\theta}{2} \quad \text{et } \quad |v_1| = \sin\frac{\theta}{2}, 
+$$
+on peut alors toujours écrire 
+$$
+\boxed{\ket{\psi} = \cos\dfrac{\theta}{2} \lvert 0\rangle + \sin\dfrac{\theta}{2} e^{i\varphi} \lvert 1\rangle} \qquad (\star)
+$$
+modulo un facteur de phase. Les qubits purs sont les qubits de cette forme. Alternativement, on peut aussi utiliser aussi la représentation  
+$$
+\ket{\psi} = \cos\frac{\theta}{2} e^{-i\frac{\varphi}{2}} \lvert 0\rangle + \sin\frac{\theta}{2} e^{i\frac{\varphi}{2}} \lvert 1\rangle. 
+$$
+
+La motivation à considérer des qubits comme étant équivalents lorsqu'ils diffèrent par un facteur de phase est le fait que deux tels qubits définissent la même "logique probabiliste" via le principe de Born. Autrement dit, la loi de [probabilité quantique](http://stla.github.io/stlapblog/posts/PrQuantique_intro.html) définie par un qubit $\ket{\psi}$:
+$$
+\Pr\bigl(A = a_k ; \ket{\psi}\bigr) := \langle \psi, A\psi \rangle \quad \textrm{($A$ opérateur auto-adjoint)}
+$$
+ne change pas lorsqu'on multiplie $\ket{\psi}$ par un facteur de phase. En ce sens, on ne commet pas vraiment de restriction en ne considérant que des qubits purs. 
+
+L'espace des qubits purs est de dimension $2$, et il peut être représenté par une sphère, appelée [*sphère de Bloch*](https://en.wikipedia.org/wiki/Bloch_sphere), mais qui n'est rien d'autre que la [*sphère de Riemann*](https://fr.wikipedia.org/wiki/Sph%C3%A8re_de_Riemann). 
+
+En effet, l'espace des qubits purs ainsi définis est l'[espaces des rayons projectifs](https://fr.wikipedia.org/wiki/Espace_projectif_de_Hilbert) de l'espace de Hilbert $\mathbb{C}^2$, aussi appelé la [droite projective complexe](https://fr.wikipedia.org/wiki/Droite_projective), et noté  $\mathbb{C}\mathbb{P}^1$ ou $\mathbb{P}^1(\mathbb{C})$. Il est bien connu que la droite projective complexe est isomorphe l'espace $\bar{\mathbb{C}}$ des nombres complexes augmenté d'*"un point à l'infini"* (le compactifié d'Alexandroff de $\mathbb{C}$). Cet isomorphisme envoie le qubit pur $\ket{\psi}$ sur 
+$$
+\xi = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\phi}.
+$$
+Par ailleurs, il est bien connu que la projection stéréographique est un isomorphisme de  la sphère de Riemann sur $\bar{\mathbb{C}}$. 
+
+[fiche sur la droite projective complexe](./assets/docs/DroiteProjectiveComplexe_Cantat.pdf)
+
+So, in fact, the Bloch sphere is the representation of $\mathbb{C}\mathbb{P}^1$ as the [Riemann sphere](https://en.wikipedia.org/wiki/Riemann_sphere), with the help of the [stereographic projection](https://en.wikipedia.org/wiki/Stereographic_projection)
+$$
+\xi = \xi(\Psi) = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\phi}.
+$$
+
+$$
+\xymatrix{
+    A \ar[d] \ar[dr] \ar[drr] &   &   \\
+    B                         & C & D 
+}
+$$
+
+### Asymptote 
+
