@@ -1,8 +1,6 @@
 ---
 title: "La sphère de Bloch"
 date: "2015-12-15"
-header-includes:
-   - \usepackage[all]{xy}
 output: html_document
 ---
 
@@ -59,7 +57,7 @@ $$
 
 La motivation à considérer des qubits comme étant équivalents lorsqu'ils diffèrent par un facteur de phase est le fait que deux tels qubits définissent la même "logique probabiliste" via le principe de Born. Autrement dit, la loi de [probabilité quantique](http://stla.github.io/stlapblog/posts/PrQuantique_intro.html) définie par un qubit $\ket{\psi}$:
 $$
-\Pr\bigl(A = a_k ; \ket{\psi}\bigr) := \langle \psi, A\psi \rangle \quad \textrm{($A$ opérateur auto-adjoint)}
+\Pr\bigl(A = a_k ; \ket{\psi}\bigr) := \langle \psi, P_k\psi \rangle \quad \textrm{($A$ opérateur auto-adjoint)}
 $$
 ne change pas lorsqu'on multiplie $\ket{\psi}$ par un facteur de phase. En ce sens, on ne commet pas vraiment de restriction en ne considérant que des qubits purs. 
 
