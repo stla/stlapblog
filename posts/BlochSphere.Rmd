@@ -6,11 +6,27 @@ header-includes:
 output: html_document
 ---
 
+<!-- 
+<style type="text/css">
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+</style>
+-->
+
 ```{r setup0, echo=FALSE}
 knitr::opts_chunk$set(fig.path="assets/fig/Bloch-")
 ```
 
 \newcommand{\ket}[1]{\left|{#1}\right\rangle}
+
+```{r img_BlochSphere01, include=FALSE}
+if(!file.exists("./assets/img/BlochSphere_01.gif")){
+  # run asy 
+}
+```
+
 
 L'état quantique le plus simple est le *qubit* (aussi écrit *qbit* en français). C'est un état quantique "à deux niveaux". Dans le contexte de l'[informatique quantique](https://fr.wikipedia.org/wiki/Informatique_quantique) ou de la théorie de l'[information quantique](https://fr.wikipedia.org/wiki/Information_quantique), il est l'analogue du bit en informatique classique ou en théorie de l'information classique.  
 
@@ -47,27 +63,97 @@ $$
 $$
 ne change pas lorsqu'on multiplie $\ket{\psi}$ par un facteur de phase. En ce sens, on ne commet pas vraiment de restriction en ne considérant que des qubits purs. 
 
-L'espace des qubits purs est de dimension $2$, et il peut être représenté par une sphère, appelée [*sphère de Bloch*](https://en.wikipedia.org/wiki/Bloch_sphere), mais qui n'est rien d'autre que la [*sphère de Riemann*](https://fr.wikipedia.org/wiki/Sph%C3%A8re_de_Riemann). 
+L'espace des qubits purs est de dimension $2$, et il peut être représenté par une sphère, appelée [*sphère de Bloch*](https://en.wikipedia.org/wiki/Bloch_sphere), mais qui n'est rien d'autre que la [*sphère de Riemann*](https://fr.wikipedia.org/wiki/Sph%C3%A8re_de_Riemann). Les angles $\theta$ et $\phi$ correspondent aux coordonnées sphériques polaires de $\ket{\psi}$ sur cette représentation (respectivement la latitude et la longitude) :
 
-En effet, l'espace des qubits purs ainsi définis est l'[espaces des rayons projectifs](https://fr.wikipedia.org/wiki/Espace_projectif_de_Hilbert) de l'espace de Hilbert $\mathbb{C}^2$, aussi appelé la [droite projective complexe](https://fr.wikipedia.org/wiki/Droite_projective), et noté  $\mathbb{C}\mathbb{P}^1$ ou $\mathbb{P}^1(\mathbb{C})$. Il est bien connu que la droite projective complexe est isomorphe l'espace $\bar{\mathbb{C}}$ des nombres complexes augmenté d'*"un point à l'infini"* (le compactifié d'Alexandroff de $\mathbb{C}$). Cet isomorphisme envoie le qubit pur $\ket{\psi}$ sur 
-$$
-\xi = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\phi}.
-$$
-Par ailleurs, il est bien connu que la projection stéréographique est un isomorphisme de  la sphère de Riemann sur $\bar{\mathbb{C}}$. 
+<img src="./assets/img/BlochSphere_01.gif" alt="BlochSphere01" width="55%" class="center">
 
-[fiche sur la droite projective complexe](./assets/docs/DroiteProjectiveComplexe_Cantat.pdf)
+En inteprétant naïvement cette représentation, on aurait évidemment tort de penser que $\ket{1}=-\ket{0}$, comme le suggère cette représentation euclienne.   De même, l'expression $(\star)$ du qubit pur $\ket{\psi}$ comme une combinaison linéaire des deux états de base $\ket{0}$ et $\ket{1}$ ne signifie pas que cette même combinaison linéaire a lieu dans l'espace tridimensionnel.
 
-So, in fact, the Bloch sphere is the representation of $\mathbb{C}\mathbb{P}^1$ as the [Riemann sphere](https://en.wikipedia.org/wiki/Riemann_sphere), with the help of the [stereographic projection](https://en.wikipedia.org/wiki/Stereographic_projection)
-$$
-\xi = \xi(\Psi) = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\phi}.
-$$
+L'isomorphisme entre l'espace des qubits purs et la sphère de Bloch se justifie de la façon suivante. Elle repose sur le vecteur $\xi$ dessiné en rouge sur la figure, qui est la [projection stéréographique](https://fr.wikipedia.org/wiki/Projection_st%C3%A9r%C3%A9ographique) de $\ket{\psi}$ de (la représentation de) $\ket{\psi}$. Notez que sur ma figure, pour des raisons esthétiques, la projection stéréographique part du pôle Sud, alors qu'on la fait plus habituellement partir du pôle Nord. 
 
+L'espace des qubits purs précédemment définis comme des classes d'équivalence est l'[espaces des rayons projectifs](https://fr.wikipedia.org/wiki/Espace_projectif_de_Hilbert) de l'espace de Hilbert $\mathbb{C}^2$, aussi appelé la [droite projective complexe](https://fr.wikipedia.org/wiki/Droite_projective), et noté  $\mathbb{C}\mathbb{P}^1$ ou $\mathbb{P}^1(\mathbb{C})$. Il est bien connu que la droite projective complexe est isomorphe l'espace $\bar{\mathbb{C}}$ des nombres complexes augmenté d'*"un point à l'infini"* (le compactifié d'Alexandroff de $\mathbb{C}$). Cet isomorphisme envoie le qubit pur $\ket{\psi}$ sur 
 $$
-\xymatrix{
-    A \ar[d] \ar[dr] \ar[drr] &   &   \\
-    B                         & C & D 
-}
+\xi = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\phi},
 $$
+que nous appelons aussi la projection stéréographique de $\xi$. 
+Par ailleurs, il est bien connu que la projection stéréographique est un isomorphisme de la sphère de Riemann sur $\bar{\mathbb{C}}$. Le lecteur mathématicien exigeant plus de détails pourra consulter cette [fiche sur la droite projective complexe](./assets/docs/DroiteProjectiveComplexe_Cantat.pdf). 
 
-### Asymptote 
+Ainsi la *représentation* de $\ket{\psi}$ sur la sphère de Bloch est justifiée par le fait que sa projection stéréographique coïncide avec la projection stéréographique de $\ket{\psi}$ définie ci-dessus. 
+
+
+### La sphère de Bloch avec Asymptote 
+
+J'ai dessiné la sphère de Bloch avec [Asymptote](http://asymptote.sourceforge.net/). Le code utilisé est donné ci-dessous. 
+
+```
+settings.render=4;
+settings.outformat="gif";
+
+// import modules
+import graph3;
+import three;
+import solids;
+
+// overall settings
+currentprojection=orthographic(20,6,6);
+viewportmargin=(10,10);
+size(10cm);
+currentlight=((3,3,0));
+
+// variable parameters
+real r=2; 
+real theta1=0, theta2=57;
+real phi1=0, phi2=65;
+
+// axes
+xaxis3("$x$",0,r,green);
+yaxis3(YZ()*"$y$",0,r,green);
+zaxis3("$z$",0,r,green);
+
+// sphere 
+revolution ball = sphere((0,0,0), r);
+surface sball=surface(ball);
+draw(sball, lightgreen+opacity(0.2));
+// sections 
+skeleton s;
+ball.transverse(s,reltime(ball.g, 0.5),P=currentprojection);
+ball.transverse(s,reltime(ball.g, (180-theta2)/180),P=currentprojection);
+draw(s.transverse.front, solid+black);
+draw(s.transverse.back, dashed+black);
+
+// |psi> 
+triple pA = r*dir(theta2,phi2);
+label("$| \psi \rangle$", pA, N);
+
+// projection on the (xy)-plane
+triple projA = r*sin(theta2*pi/180)*dir(90, phi2);
+draw(O--projA--pA, dashed);
+draw(O--pA, black+linewidth(1pt), Arrow3(HookHead3, size=2.5mm, angle=15));
+
+// angles
+path3 arc1=arc(O, r/5, theta1, phi2, theta2, phi2);
+draw(arc1, black, Arrow3);
+triple labelpos_theta = r/5*dir(theta2/2,phi2);
+label("$\theta$", labelpos_theta, N);
+path3 arc2=arc(O, r*sin(theta2*pi/180), 90, phi1, 90, phi2);
+draw(arc2,black,Arrow3);
+triple labelpos_phi = r*sin(theta2*pi/180)*dir(90,phi2/2);
+label("$\varphi$", labelpos_phi, NW);
+
+// poles 
+triple spinup = (0,0,-r);
+dot("$|1\rangle$", spinup, S, blue);
+triple spindown = (0,0,r);
+dot("$|0\rangle$", spindown, N, blue);
+draw(O--spinup--pA, dashed);
+path3 arc3=arc(spinup, r/5, theta1, phi2, theta2/2, phi2);
+draw(L=Label(scale(1.3)*"$\frac{\theta}{2}$", position=Relative(0.7), align=N), arc3, Arrow3); 
+
+// stereographic projection  
+triple ksi = r*tan(theta2/2*pi/180)*dir(90, phi2);
+draw(O--ksi, red+linewidth(2pt), Arrow3(red, angle=15, size=3mm));
+label("$\xi$", 0.9*ksi, NNW, red);
+```
+
+
 

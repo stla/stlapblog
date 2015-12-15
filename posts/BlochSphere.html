@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>La sphère de Bloch</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">La sphère de Bloch</a>
+              </h3>
+              <span>2015-12-15</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/BlochSphere.Rmd'>Source</a>
+              <div class='lead'>
+
+<!-- 
+<style type="text/css">
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+</style>
+-->
+<p>L’état quantique le plus simple est le <em>qubit</em> (aussi écrit <em>qbit</em> en français). C’est un état quantique “à deux niveaux”. Dans le contexte de l’<a href="https://fr.wikipedia.org/wiki/Informatique_quantique">informatique quantique</a> ou de la théorie de l’<a href="https://fr.wikipedia.org/wiki/Information_quantique">information quantique</a>, il est l’analogue du bit en informatique classique ou en théorie de l’information classique.</p>
+<p>Un qubit <span class="math">\({\left|{\psi}\right\rangle}\)</span> est représenté par un vecteur dans le plan complexe <span class="math">\(\mathbb{C}^2\)</span> <span class="math">\[
+{\left|{\psi}\right\rangle} = v_0 {\left|{0}\right\rangle} + v_1 {\left|{1}\right\rangle} = v_0 \begin{pmatrix} 1 \\ 0 \end{pmatrix}+ v_1 \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} v_0 \\ v_1 \end{pmatrix}
+\]</span> où <span class="math">\(v_0\)</span> and <span class="math">\(v_1\)</span> sont des nombres <em>complexes</em> satisfaisant <span class="math">\({|v_0|}^2+{|v_1|}^2=1\)</span>. On dit que <span class="math">\({\left|{\psi}\right\rangle}\)</span> est un vecteur <em>normalisé</em> en raison de cette contrainte.</p>
+<p>L’espace des qubits est alors de dimension <span class="math">\(3\)</span> : écrivant <span class="math">\(v_k = x_k + {\rm i} y_k\)</span> on peut vérifier que le quadruplet <span class="math">\((x_0,y_0,x_1,y_1)\)</span> est sur la sphère unité de dimension <span class="math">\(3\)</span> dans l’espace réel euclidien de dimension <span class="math">\(4\)</span>.</p>
+<p>Cependant, il est possible de ne considérer qu’un espace de dimension <span class="math">\(2\)</span> en se restreignant aux qubits dits <em>purs</em>. Un qubit pur est en fait un représentant d’une classe de qubits équivalents pour la relation de proportionnalité : <span class="math">\({\left|{\psi}\right\rangle} \sim {\left|{\psi&#39;}\right\rangle}\)</span> lorsque <span class="math">\[
+{\left|{\psi&#39;}\right\rangle} = z {\left|{\psi}\right\rangle} = \begin{pmatrix} zv_0 \\ zv_1 \end{pmatrix}
+\]</span> ou le facteur de proportionnalité <span class="math">\(z\)</span> est un nombre <em>complexe</em>. Notez que <span class="math">\(z\)</span> est nécessairement de module <span class="math">\(1\)</span>, c’est-à-dire de la forme <span class="math">\(z=e^{i\alpha}\)</span>, et un tel facteur est appelé <em>facteur de phase</em>.</p>
+<p>Puisqu’il existe un unique angle <span class="math">\(\theta \in [0,\pi]\)</span> tel que <span class="math">\[
+|v_0| = \cos\frac{\theta}{2} \quad \text{et } \quad |v_1| = \sin\frac{\theta}{2}, 
+\]</span> on peut alors toujours écrire <span class="math">\[
+\boxed{{\left|{\psi}\right\rangle} = \cos\dfrac{\theta}{2} \lvert 0\rangle + \sin\dfrac{\theta}{2} e^{i\varphi} \lvert 1\rangle} \qquad (\star)
+\]</span> modulo un facteur de phase. Les qubits purs sont les qubits de cette forme. Alternativement, on peut aussi utiliser aussi la représentation<br /><span class="math">\[
+{\left|{\psi}\right\rangle} = \cos\frac{\theta}{2} e^{-i\frac{\varphi}{2}} \lvert 0\rangle + \sin\frac{\theta}{2} e^{i\frac{\varphi}{2}} \lvert 1\rangle. 
+\]</span></p>
+<p>La motivation à considérer des qubits comme étant équivalents lorsqu’ils diffèrent par un facteur de phase est le fait que deux tels qubits définissent la même “logique probabiliste” via le principe de Born. Autrement dit, la loi de <a href="http://stla.github.io/stlapblog/posts/PrQuantique_intro.html">probabilité quantique</a> définie par un qubit <span class="math">\({\left|{\psi}\right\rangle}\)</span>: <span class="math">\[
+\Pr\bigl(A = a_k ; {\left|{\psi}\right\rangle}\bigr) := \langle \psi, A\psi \rangle \quad \textrm{($A$ opérateur auto-adjoint)}
+\]</span> ne change pas lorsqu’on multiplie <span class="math">\({\left|{\psi}\right\rangle}\)</span> par un facteur de phase. En ce sens, on ne commet pas vraiment de restriction en ne considérant que des qubits purs.</p>
+<p>L’espace des qubits purs est de dimension <span class="math">\(2\)</span>, et il peut être représenté par une sphère, appelée <a href="https://en.wikipedia.org/wiki/Bloch_sphere"><em>sphère de Bloch</em></a>, mais qui n’est rien d’autre que la <a href="https://fr.wikipedia.org/wiki/Sph%C3%A8re_de_Riemann"><em>sphère de Riemann</em></a>. Les angles <span class="math">\(\theta\)</span> et <span class="math">\(\phi\)</span> correspondent aux coordonnées sphériques polaires de <span class="math">\({\left|{\psi}\right\rangle}\)</span> sur cette représentation (respectivement la latitude et la longitude) :</p>
+<p><img src="assets/img/BlochSphere_01.gif" alt="BlochSphere01" width="55%" class="center"></p>
+<p>En inteprétant naïvement cette représentation, on aurait évidemment tort de penser que <span class="math">\({\left|{1}\right\rangle}=-{\left|{0}\right\rangle}\)</span>, comme le suggère cette représentation euclienne. De même, l’expression <span class="math">\((\star)\)</span> du qubit pur <span class="math">\({\left|{\psi}\right\rangle}\)</span> comme une combinaison linéaire des deux états de base <span class="math">\({\left|{0}\right\rangle}\)</span> et <span class="math">\({\left|{1}\right\rangle}\)</span> ne signifie pas que cette même combinaison linéaire a lieu dans l’espace tridimensionnel.</p>
+<p>L’isomorphisme entre l’espace des qubits purs et la sphère de Bloch se justifie de la façon suivante. Elle repose sur le vecteur <span class="math">\(\xi\)</span> dessiné en rouge sur la figure, qui est la <a href="https://fr.wikipedia.org/wiki/Projection_st%C3%A9r%C3%A9ographique">projection stéréographique</a> de <span class="math">\({\left|{\psi}\right\rangle}\)</span> de (la représentation de) <span class="math">\({\left|{\psi}\right\rangle}\)</span>. Notez que sur ma figure, pour des raisons esthétiques, la projection stéréographique part du pôle Sud, alors qu’on la fait plus habituellement partir du pôle Nord.</p>
+<p>L’espace des qubits purs précédemment définis comme des classes d’équivalence est l’<a href="https://fr.wikipedia.org/wiki/Espace_projectif_de_Hilbert">espaces des rayons projectifs</a> de l’espace de Hilbert <span class="math">\(\mathbb{C}^2\)</span>, aussi appelé la <a href="https://fr.wikipedia.org/wiki/Droite_projective">droite projective complexe</a>, et noté <span class="math">\(\mathbb{C}\mathbb{P}^1\)</span> ou <span class="math">\(\mathbb{P}^1(\mathbb{C})\)</span>. Il est bien connu que la droite projective complexe est isomorphe l’espace <span class="math">\(\bar{\mathbb{C}}\)</span> des nombres complexes augmenté d’<em>“un point à l’infini”</em> (le compactifié d’Alexandroff de <span class="math">\(\mathbb{C}\)</span>). Cet isomorphisme envoie le qubit pur <span class="math">\({\left|{\psi}\right\rangle}\)</span> sur <span class="math">\[
+\xi = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\phi},
+\]</span> que nous appelons aussi la projection stéréographique de <span class="math">\(\xi\)</span>. Par ailleurs, il est bien connu que la projection stéréographique est un isomorphisme de la sphère de Riemann sur <span class="math">\(\bar{\mathbb{C}}\)</span>. Le lecteur mathématicien exigeant plus de détails pourra consulter cette <a href="./assets/docs/DroiteProjectiveComplexe_Cantat.pdf">fiche sur la droite projective complexe</a>.</p>
+<p>Ainsi la <em>représentation</em> de <span class="math">\({\left|{\psi}\right\rangle}\)</span> sur la sphère de Bloch est justifiée par le fait que sa projection stéréographique coïncide avec la projection stéréographique de <span class="math">\({\left|{\psi}\right\rangle}\)</span> définie ci-dessus.</p>
+<div id="la-sphere-de-bloch-avec-asymptote" class="section level3">
+<h3>La sphère de Bloch avec Asymptote</h3>
+<p>J’ai dessiné la sphère de Bloch avec <a href="http://asymptote.sourceforge.net/">Asymptote</a>. Le code utilisé est donné ci-dessous.</p>
+<pre><code>settings.render=4;
+settings.outformat=&quot;gif&quot;;
+
+// import modules
+import graph3;
+import three;
+import solids;
+
+// overall settings
+currentprojection=orthographic(20,6,6);
+viewportmargin=(10,10);
+size(10cm);
+currentlight=((3,3,0));
+
+// variable parameters
+real r=2; 
+real theta1=0, theta2=57;
+real phi1=0, phi2=65;
+
+// axes
+xaxis3(&quot;$x$&quot;,0,r,green);
+yaxis3(YZ()*&quot;$y$&quot;,0,r,green);
+zaxis3(&quot;$z$&quot;,0,r,green);
+
+// sphere 
+revolution ball = sphere((0,0,0), r);
+surface sball=surface(ball);
+draw(sball, lightgreen+opacity(0.2));
+// sections 
+skeleton s;
+ball.transverse(s,reltime(ball.g, 0.5),P=currentprojection);
+ball.transverse(s,reltime(ball.g, (180-theta2)/180),P=currentprojection);
+draw(s.transverse.front, solid+black);
+draw(s.transverse.back, dashed+black);
+
+// |psi&gt; 
+triple pA = r*dir(theta2,phi2);
+label(&quot;$| \psi \rangle$&quot;, pA, N);
+
+// projection on the (xy)-plane
+triple projA = r*sin(theta2*pi/180)*dir(90, phi2);
+draw(O--projA--pA, dashed);
+draw(O--pA, black+linewidth(1pt), Arrow3(HookHead3, size=2.5mm, angle=15));
+
+// angles
+path3 arc1=arc(O, r/5, theta1, phi2, theta2, phi2);
+draw(arc1, black, Arrow3);
+triple labelpos_theta = r/5*dir(theta2/2,phi2);
+label(&quot;$\theta$&quot;, labelpos_theta, N);
+path3 arc2=arc(O, r*sin(theta2*pi/180), 90, phi1, 90, phi2);
+draw(arc2,black,Arrow3);
+triple labelpos_phi = r*sin(theta2*pi/180)*dir(90,phi2/2);
+label(&quot;$\varphi$&quot;, labelpos_phi, NW);
+
+// poles 
+triple spinup = (0,0,-r);
+dot(&quot;$|1\rangle$&quot;, spinup, S, blue);
+triple spindown = (0,0,r);
+dot(&quot;$|0\rangle$&quot;, spindown, N, blue);
+draw(O--spinup--pA, dashed);
+path3 arc3=arc(spinup, r/5, theta1, phi2, theta2/2, phi2);
+draw(L=Label(scale(1.3)*&quot;$\frac{\theta}{2}$&quot;, position=Relative(0.7), align=N), arc3, Arrow3); 
+
+// stereographic projection  
+triple ksi = r*tan(theta2/2*pi/180)*dir(90, phi2);
+draw(O--ksi, red+linewidth(2pt), Arrow3(red, angle=15, size=3mm));
+label(&quot;$\xi$&quot;, 0.9*ksi, NNW, red);</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
