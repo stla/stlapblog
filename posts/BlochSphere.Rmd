@@ -20,8 +20,8 @@ knitr::opts_chunk$set(fig.path="assets/fig/Bloch-")
 \newcommand{\ket}[1]{\left|{#1}\right\rangle}
 
 ```{r img_BlochSphere01, include=FALSE}
-if(!file.exists("./assets/img/BlochSphere_01.gif")){
-  # run asy 
+if(!all(file.exists("./assets/img/BlochSphere_01.gif", "./assets/img/BlochSphere_02.gif"))){
+  stop()
 }
 ```
 
@@ -40,7 +40,7 @@ Cependant, il est possible de ne considérer qu'un espace de dimension $2$ en se
 $$
 \ket{\psi'} = z \ket{\psi} = \begin{pmatrix} zv_0 \\ zv_1 \end{pmatrix}
 $$
-ou le facteur de proportionnalité $z$ est un nombre *complexe*. Notez que $z$ est nécessairement de module $1$, c'est-à-dire de la forme $z=e^{i\alpha}$, et un tel facteur est appelé *facteur de phase*. 
+où le facteur de proportionnalité $z$ est un nombre *complexe*. Notez que $z$ est nécessairement de module $1$, c'est-à-dire de la forme $z=e^{i\alpha}$, et un tel facteur est appelé *facteur de phase*. 
 
 Puisqu'il existe un unique angle $\theta \in [0,\pi]$ tel que 
 $$
@@ -69,7 +69,7 @@ L'espace des qubits purs est de dimension $2$, et il peut être représenté par
 
 Toutefois cette correspondance n'est pas artificielle. L'isomorphisme entre l'espace des qubits purs et la sphère de Bloch se justifie de la façon suivante. Il repose sur le vecteur $\xi$ dessiné en rouge sur la figure, qui est la [projection stéréographique](https://fr.wikipedia.org/wiki/Projection_st%C3%A9r%C3%A9ographique) de (la représentation de) $\ket{\psi}$. Notez que sur ma figure, pour des raisons esthétiques, la projection stéréographique part du pôle Sud, alors qu'on la fait plus habituellement partir du pôle Nord. 
 
-L'espace des qubits purs précédemment définis comme des classes d'équivalence est l'[espace des rayons projectifs](https://fr.wikipedia.org/wiki/Espace_projectif_de_Hilbert) de l'espace de Hilbert $\mathbb{C}^2$, aussi appelé la [droite projective complexe](https://fr.wikipedia.org/wiki/Droite_projective), et noté  $\mathbb{C}\mathbb{P}^1$ ou $\mathbb{P}^1(\mathbb{C})$. Il est bien connu que la droite projective complexe est isomorphe l'espace $\bar{\mathbb{C}}$ des nombres complexes augmenté d'*"un point à l'infini"* (le compactifié d'Alexandroff de $\mathbb{C}$). Cet isomorphisme envoie le qubit pur $\ket{\psi}$ sur 
+L'espace des qubits purs précédemment définis comme des classes d'équivalence est l'[espace des rayons projectifs](https://fr.wikipedia.org/wiki/Espace_projectif_de_Hilbert) de l'espace de Hilbert $\mathbb{C}^2$, aussi appelé la [droite projective complexe](https://fr.wikipedia.org/wiki/Droite_projective), et noté  $\mathbb{C}\mathbb{P}^1$ ou $\mathbb{P}^1(\mathbb{C})$. Il est bien connu que la droite projective complexe est isomorphe à l'espace $\bar{\mathbb{C}}$ des nombres complexes augmenté d'*"un point à l'infini"* (le compactifié d'Alexandroff de $\mathbb{C}$). Cet isomorphisme envoie le qubit pur $\ket{\psi}$ sur 
 $$
 \xi = \frac{v_1}{v_0} = \tan\frac{\theta}{2} e^{i\varphi},
 $$
@@ -152,6 +152,13 @@ triple ksi = r*tan(theta2/2*pi/180)*dir(90, phi2);
 draw(O--ksi, red+linewidth(2pt), Arrow3(red, angle=15, size=3mm));
 label("$\xi$", 0.9*ksi, NNW, red);
 ```
+
+J'ai aussi créé le mini-poster ci-dessous, en ajoutant à la fin du code la commande 
+```
+label(scale(1.2)*minipage("blablabla... ",7cm),(0, 1.1*r, -1.0*r), align=Align);
+``` 
+
+<img src="./assets/img/BlochSphere_02.gif" alt="BlochSphere01" width="98%" class="center">
 
 
 
