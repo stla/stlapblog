@@ -1,0 +1,134 @@
+---
+title: "Introduction aux probabilités quantiques"
+date: "2015-12-19"
+output: html_document
+---
+
+\newcommand{\ket}[1]{\left|{#1}\right\rangle}
+\newcommand{\kpsi}{\ket{\psi}}
+\newcommand{\kzero}{\ket{0}}
+\newcommand{\kone}{\ket{1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=FALSE, fig.path="assets/fig/PrQuantique_Intro-")
+```
+
+***(latest update : `r Sys.time()`)***
+<br/>
+
+<!-- xxx -->
+
+Cet article vise à introduire la théorie des probabilités quantiques. Il est rédigé dans l'optique d'être lisible pour un lecteur ayant des connaissances de base sur les espaces de Hilbert. À vrai dire, j'apprends cette théorie en ce moment, et en quelque sorte ce sont mes notes personnelles sur le sujet. Pour cette raison, il est susceptible d'être modifié à tout moment. 
+
+## Exemple non formel : qubit à la Schrödinger
+
+L'amusette du [chat de Schrödinger](https://fr.wikipedia.org/wiki/Chat_de_Schr%C3%B6dinger) est bien connue. Elle est souvent présentée en disant que le chat, avant que l'on ouvre la boîte où il est enfermé, est dans l'état quantique 
+$$
+\kpsi = \frac{1}{\sqrt{2}} \kzero + \frac{1}{\sqrt{2}} \kone, 
+$$
+où $\kzero$ est assimilé à l'état de mort et $\kone$ est assimilé à l'état de vie. 
+
+Cet état quantique à deux niveaux est appelé un *qubit*. Je renvoie le lecteur à mon article sur la [sphère de Bloch](http://stla.github.io/stlapblog/posts/BlochSphere.html) pour la définition mathématique du qubit.
+
+On dit ensuite que lorsqu'on ouvre la boîte dans laquelle le chat est enfermé, il est soit dans l'état $\kzero$ soit dans l'état $\kone$ avec probabilités $1/2$ et $1/2$. Ceci est dû au *principe de Born*, dont un énoncé formel est donné dans la section suivante. 
+
+## Quantités observables (variables aléatoires)
+
+Il y a un sous-entendu de taille dans l'exemple du qubit à la Schrödinger : il n'est pas vrai en général qu'un qubit saute soit en $\kzero$ soit en $\kone$. 
+Cela dépend de quelle *quantité* on observe. Une quantité, appelée un *observable*, est représentée par une matrice auto-adjointe $A$ en probabilités quantiques. J'envoie le lecteur au livre d'[Isham][isham] pour une discussion sur la notion de *quantité* en physique. 
+
+Par le théorème de décomposition spectrale (rappelé ci-dessous), une telle matrice se décompose en une combinaison linéaire de projecteurs sur des sous-espaces orthogonaux et complémentaires. Quand l'état quantique "saute" lors de la mesure de $A$, il est projeté et renormalisé sur un de sous-espaces. Dans le cas du qubit à la Schrödinger, l'observable qui est sous-entendu "décompose" l'espace des qubits en les deux sous-espaces orthogonaux engendrés par $\kzero$ et $\kone$.  
+
+Ci-dessous, nous formulons le principe général pour les états quantiques dans $\mathbb{C}^n$, $n \geq 2$, c'est-à-dire, à l'instar du cas $n=2$, un vecteur normalisé dans $\mathbb{C}^n$. Ce principe, dit *principe de Born*, ou *postulat fondamental des probabilités quantiques*, repose sur la décomposition spectrale des matrices auto-adjointes. 
+
+<div class="title_box">
+  <div id="title" style="color:blue;font-size:15px;">Décomposition spectrale des matrices auto-adjointes</div>
+  <div id="content">Pour toute matrice auto-adjointe $A$, il existe une décomposition de $\mathbb{C}^n$ en sous-espaces orthogonaux $V_1$, $\ldots$, $V_r$ telle que 
+$$ A = \alpha_1 P_1 + \cdots + \alpha_r P_r,$$
+où $P_k=P_{V_k}$ désigne le projecteur orthogonal sur $V_k$ et les $\alpha_k$ sont des nombres distincts et **réels**.
+  </div>
+</div>
+
+<div class="title_box">
+  <div id="title" style="color:blue;font-size:15px;">Postulat fondamental des probabilités quantiques</div>
+  <div id="content">Soit $\kpsi$ un état quantique dans $\mathbb{C}^n$ et $A$ un observable, de décomposition spectrale donnée dans l'encadré précédent. Alors, lorsqu'une mesure de $A$ est effectuée quand $\kpsi$ est l'état du système, la Nature 
+  
+- choisit un nombre au hasard dans $\{1, \ldots r\}$, en choisissant $k$ avec probabilité ${\Vert P_k \kpsi \Vert}^2$, 
+
+- révèle $\alpha_k$ comme étant la valeur mesurée de $A$, 
+
+- fait sauter le système en $P_k\kpsi/{\Vert P_k \kpsi \Vert}$. 
+
+  </div>
+</div>
+
+L'observable qui n'est pas spécifié dans l'exemple du qubit à la Schrödinger pourrait être par exemple
+$$
+M = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}, 
+$$
+dont les deux vecteurs propres, $\kzero$ et $\kone$, ont pour valeurs propres respectives $0$ et $1$. 
+
+Si tel est l'observable, le principe de Born dit alors que la Nature révèle $0$ et saute en $\kzero$ ou bien révèle $1$ et saute en $\kone$. Cela [ne correspond pas à une réalité physique](http://physics.stackexchange.com/questions/146005/why-does-the-measurement-of-some-observable-a-the-measured-value-is-always-an) et peut paraître mystérieux. 
+
+On peut calculer la valeur moyenne (l'espérance) du résultat révélé par la Nature, qui se trouve être après un calcul facile
+$$
+E_\kpsi(A) = \langle \psi, A\psi \rangle = \Tr(\psi\psi^\dagger A) \qquad (\star) 
+$$
+Dans la section suivante nous verrons que si on part de cette égalité comme  principe, alors on peut retrouver la loi de probabilité associée à $\kpsi$ telle qu'elle est donnée par le principe de Born. 
+
+
+## Loi de probabilité quantique 
+
+L'expression de l'espérance du résultat de la mesure de $A$ lorsque le système est dans l'état $\kpsi$ :
+$$
+E_\kpsi(A) = \langle \psi, A\psi \rangle \qquad (\star),
+$$
+montre clairement qu'elle est linéaire en $A$, à l'instar d'une espérance en probabilités classiques. 
+
+Si on applique cette formule au projecteur $P_k=P_{V_k}$ (avec les notations de l'encadré sur le principe de Born), qui est un opérateur auto-adjoint, on trouve (du fait que $P=P^2$ lorsque $P$ est un projecteur)
+$$
+E_\kpsi(P_k) = {\Vert P_k \kpsi \Vert}^2, 
+$$
+la probabilité que "$A$ se réalise en $\alpha_k$" dans le principe de Born.
+ 
+Cela suggère de considérer que le sous-espace $V_k$ est un événement qui se confond avec l'événément "$A$ se réalise en $\alpha_k$", et que le projecteur sur un sous-espace est l'analogue de l'indicatrice d'un événement :
+$$
+{\Pr}_\kpsi(\text{$A$ se réalise en $\alpha_k$}) = {\Pr}_\kpsi(V_k) = E_\kpsi(P_k).
+$$
+
+Oublions maintenant le principe de Born et montrons comment on peut le retrouver, concernant ses deux premiers points, lorsqu'on part de $(\star)$ comme principe. Si l'on considère $E_\kpsi(A)$ comme l'analogue de l'espérance de la variable aléatoire $A$ (lorsque le système est dans l'état quantique $\kpsi$), alors suivant cette analogie on définit la transformée de Fourier de $A$ comme la fonction de la variable $t \in \mathbb{R}$
+$$
+E_\kpsi(A) = \langle \psi, e^{-itA}\psi \rangle \quad 
+$$
+L'opérateur $e^{-itA}$ est toujours bien défini lorsque $A$ est auto-adjoint et il est lui-même auto-adjoint. 
+On peut alors vérifier que (voir [Meyer, 1995][MeyerE])
+$$
+\langle \psi, e^{-itA}\psi \rangle = \sum_k e^{-it\alpha_k} {\Vert P_k \kpsi \Vert}^2
+$$
+et ceci est exactement la transformée de Fourier de la loi donnée dans le principe de Born, celle qui assigne la probabilité ${\Vert P_k \kpsi \Vert}^2$ à $\alpha_k$. 
+
+
+# Références 
+
+- [Isham CJ][isham]: Lectures on Quantum Theory. Allied Publishers, 2001.
+
+- [Meyer P-A][meyerE]: Quantum Probability for Probabilists (second edition), 1995.  
+
+- [Meyer P-A][meyerF]: Éléments de probabilités quantiques (exposés I à V) - Séminaire de probabilités (Strasbourg), tome 20 (1986), 186-312.
+
+- [Nielsen MA, Chang IL][nielsen]: Quantum Computation and Quantum Information. Cambridge University Press, 2000. 
+
+- [Williams D][williams]: Weighing the Odds: A Course in Probability and Statistics. Cambridge University Press, 2001. 
+
+<!-- -->
+
+[isham]: https://books.google.be/books?id=dVs8PcZ0Hd8C "Lectures on Quantum Theory"
+
+[meyerE]: https://books.google.be/books/about/Quantum_probability_for_probabilists.html?id=W0ucw4WwLCgC "Quantum Probability for Probabilists"
+
+[meyerF]: https://eudml.org/doc/113544 "Éléments de probabilités quantiques (exposés I à V)"
+
+[nielsen]: https://books.google.be/books?id=65FqEKQOfP8C "Quantum Computation and Quantum Information"
+
+[williams]: https://books.google.be/books?id=vmoFw0pvS1sC "Weighing the Odds" 
