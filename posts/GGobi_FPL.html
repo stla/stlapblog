@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive vizualisation of parametric curves with GGobi and Cranvas</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Interactive vizualisation of parametric curves with GGobi and Cranvas</a>
+              </h3>
+              <span>2015-12-23</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/GGobi_FPL.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Assume for example you have some data with an input variable in the first column and each other column, corresponding to an experiment, contains the values of a measurement made for each value of the input:</p>
+<pre class="r"><code># we use the dplyr format to print 
+library(dplyr)
+dat0 &lt;- tbl_df(dat0)
+print(dat0, n=5)
+## Source: local data frame [12 x 31]
+## 
+##    concentration   M01   M02   M03   M04   M05   M06   M07
+##            (dbl) (dbl) (dbl) (dbl) (dbl) (dbl) (dbl) (dbl)
+## 1     0.20125000 2.554 2.605 2.784 2.839 2.865 2.926 3.009
+## 2     0.10062500 2.098 2.059 2.191 2.292 2.361 2.295 2.430
+## 3     0.05031250 1.392 1.409 1.477 1.444 1.717 1.478 1.697
+## 4     0.02515625 0.833 0.843 0.939 0.943 0.905 0.893 1.045
+## 5     0.01257813 0.473 0.453 0.504 0.500 0.572 0.482 0.613
+## ..           ...   ...   ...   ...   ...   ...   ...   ...
+## Variables not shown: M08 (dbl), M09 (dbl), M10 (dbl), M11 (dbl), M12
+##   (dbl), M13 (dbl), M14 (dbl), M15 (dbl), M16 (dbl), M17 (dbl), M18 (dbl),
+##   M19 (dbl), M20 (dbl), M21 (dbl), M22 (dbl), M23 (dbl), M24 (dbl), M25
+##   (dbl), M26 (dbl), M27 (dbl), M28 (dbl), M29 (dbl), M30 (dbl)</code></pre>
+<p>In our example we fit a four-parameter logistic curve for each of the outcome columns:</p>
+<pre class="r"><code># first melt the data
+library(tidyr)
+ldat0 &lt;- dat0 %&gt;% gather(experiment, value, -concentration)
+# fit 
+library(nlme)
+fit &lt;- nlsList(value~SSfpl(log(concentration), A, D, logC, inverseB) | experiment, data=ldat0, na.action=na.omit) 
+Params &lt;- coef(fit)
+Params %&gt;% glimpse(width=70)
+## Observations: 30
+## Variables: 4
+## $ A        (dbl) 0.022468673, 0.011273365, 0.009305652, 0.0181901...
+## $ D        (dbl) 3.279374, 3.420839, 3.838880, 3.900046, 3.487184...
+## $ logC     (dbl) -2.737833, -2.659785, -2.551294, -2.553739, -2.9...
+## $ inverseB (dbl) 0.8823794, 0.9093874, 0.9731057, 0.9425554, 0.84...</code></pre>
+<p>Another dataset provides some information about the experiments, such as the date, and we merge it with the fitted parameters:</p>
+<pre class="r"><code>( dat1 &lt;- tbl_df(dat1) )
+## Source: local data frame [30 x 2]
+## 
+##    experiment     date
+##        (fctr)   (date)
+## 1         M01  6-03-20
+## 2         M02  6-03-20
+## 3         M03  6-03-20
+## 4         M04  6-03-20
+## 5         M05  6-03-20
+## 6         M06  6-03-20
+## 7         M07 13-03-20
+## 8         M08 13-03-20
+## 9         M09 13-03-20
+## 10        M10 13-03-20
+## ..        ...      ...
+( Params &lt;- merge(dat1, Params, by.x=&quot;experiment&quot;, by.y=&quot;row.names&quot;) %&gt;% tbl_dt )
+## Source: local data table [30 x 6]
+## 
+##    experiment     date           A        D      logC
+##        (fctr)   (date)       (dbl)    (dbl)     (dbl)
+## 1         M01  6-03-20 0.022468673 3.279374 -2.737833
+## 2         M02  6-03-20 0.011273365 3.420839 -2.659785
+## 3         M03  6-03-20 0.009305652 3.838880 -2.551294
+## 4         M04  6-03-20 0.018190183 3.900046 -2.553739
+## 5         M05  6-03-20 0.027261567 3.487184 -2.900066
+## 6         M06  6-03-20 0.015027829 4.016394 -2.518598
+## 7         M07 13-03-20 0.013061398 3.922050 -2.734026
+## 8         M08 13-03-20 0.004771255 4.658362 -2.424616
+## 9         M09 13-03-20 0.008700662 4.304961 -2.611473
+## 10        M10 13-03-20 0.020487153 4.147146 -2.764154
+## ..        ...      ...         ...      ...       ...
+## Variables not shown: inverseB (dbl)</code></pre>
+<p>Note that I transformed the dataset to a local data table with <code>tbl_dt</code>. This is nice for making the dataset used to plot the fitted curves:</p>
+<pre class="r"><code># four-parameter logistic function, message=FALSE 
+fpl &lt;- function(x,phi1,phi2,phi3,phi4){
+  phi1+(phi2-phi1)/(1+exp((phi3-x)/phi4))
+}
+x &lt;- with(dat0, seq(min(log(concentration)), max(log(concentration)), length.out=25))
+#Curves &lt;- merge(Params, Params[, list(x=x, y=fpl(x,A,D,logC,inverseB)), by=&quot;experiment&quot;], by=&quot;experiment&quot;)
+Curves &lt;- Params[, c(.SD, list(x=x, y=fpl(x,A,D,logC,inverseB))), by=&quot;experiment&quot;]
+library(ggplot2); library(scales)
+ggplot(Curves, aes(x=x, y=y, color=experiment)) + geom_line()</code></pre>
+<p><img src="assets/fig/GGobi_FPL-fittedcurves-1.png" title="" alt="" width="672" /></p>
+<p>As we see, the legend does not allow to identify a curve: there are too many. This is an opportunity to use <strong><em>GGobi</em></strong> with the help of the <strong>rggobi</strong> package:</p>
+<pre class="r"><code>library(rggobi)
+# put x and y in the first and second column
+ggdata1 &lt;- data.frame(Curves)[, taRifx::shift(seq_along(Curves), -2)]
+g &lt;- ggobi_longitudinal(ggdata1, id=experiment)</code></pre>
+<p>The above line of code opens <code>GGobi</code>. We firstly select <code>Brush</code> in the <code>Interaction</code> menu to get the graphics at left below. Then we select <code>Identify</code> in the same menu and get the graphics at right.</p>
+<div style="text-align:center">
+<img src="assets/img/ggobi/ggobi1_brush.png" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink"> <img src="assets/img/ggobi/ggobi1_identify.png" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink">
+<p style="clear: both;">
+</div>
+<p>Now, let’s look at the parameters in function of the date:</p>
+<pre class="r"><code>lParams &lt;- Params %&gt;% gather(parameter, value, -experiment, -date)
+ggplot(lParams, aes(x=date, y=value)) +  geom_point() + 
+  facet_grid(parameter~., scales=&quot;free_y&quot;) +
+  scale_x_date(labels = date_format(&quot;%m-%Y&quot;))</code></pre>
+<p><img src="assets/fig/GGobi_FPL-paramsvsdate-1.png" title="" alt="" width="672" /></p>
+<p>And let’s plot each parameter vs each other on a scatter matrix:</p>
+<pre class="r"><code>library(GGally)
+ggpairs(Params[, list(A,D,logC,inverseB)])</code></pre>
+<p><img src="assets/fig/GGobi_FPL-scatterparams-1.png" title="" alt="" width="576" /></p>
+<p>Similarly, we would like to know which experiment corresponds to one point, or even which curve. So we add the <code>Params</code> dataset to <em>GGobi</em> and we open a new display:</p>
+<pre class="r"><code>ggdata2 &lt;- data.frame(Params)
+# GGobi does not handle the Date format - convert in integer
+ggdata2 &lt;- transform(ggdata2, ndate=as.integer(date))
+g$ggdata2 &lt;- ggdata2 
+display(g[&quot;ggdata2&quot;], vars=list(X=&quot;ndate&quot;, Y=&quot;A&quot;))</code></pre>
+<p>And this becomes really fun. We can create several graphics from the two datasets and they are linked to each other:</p>
+<div style="text-align:center">
+<img src="assets/img/ggobi/ggobi_3win.png" style="border:3px solid pink">
+</div>
+<div id="using-cranvas" class="section level2">
+<h2>Using Cranvas</h2>
+<pre class="r"><code>library(cranvas)
+qdata1 &lt;- qdata(data.frame(Curves))
+qdata2 &lt;- qdata(data.frame(Params)) 
+qtime(x, y, data=qdata1, hdiv=experiment)
+qscatter(date, D, data=qdata2)
+# link the two datasets 
+id &lt;- link_cat(qdata1, &quot;experiment&quot;, qdata2, &quot;experiment&quot;)</code></pre>
+<div style="text-align:center">
+<img src="assets/img/ggobi/cranvas_2win.png" style="border:3px solid pink">
+</div>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
