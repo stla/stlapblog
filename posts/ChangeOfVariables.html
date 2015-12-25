@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The change of variables of formula for probability density functions</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">The change of variables of formula for probability density functions</a>
+              </h3>
+              <span>2015-12-25</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/ChangeOfVariables.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>“How to derive the <em>pdf</em> of the random variable <span class="math">\(Y=h(X)\)</span> when one knows the <em>pdf</em> of the random variable <span class="math">\(X\)</span>?”. This question very frequently occurs on the internet.</p>
+<p>For a general function <span class="math">\(h\)</span>, there is no direct formula to get the <em>pdf</em> of the random variable <span class="math">\(Y=h(X)\)</span> knowing the <em>pdf</em> of <span class="math">\(X\)</span> (assuming <span class="math">\(X\)</span> has a <em>pdf</em>). There is a formula in case when <span class="math">\(h\)</span> is a <em>differentiable one-to-one mapping</em> from the range (the <em>support</em>, I should say) of <span class="math">\(X\)</span> to the range of <span class="math">\(Y\)</span>.</p>
+<p>Take for example a random variable <span class="math">\(X \sim {\cal N}(\mu, \sigma^2)\)</span> and set <span class="math">\(Y=\exp(X)\)</span>. The animation below shows some simulations of <span class="math">\(X\)</span> and the corresponding values of <span class="math">\(Y\)</span>. The density of <span class="math">\(X\)</span> is shown in blue and the one of <span class="math">\(Y\)</span> is shown in orange in the vertical direction.</p>
+<div style="text-align:center">
+<img src="assets/gif/lognormal.gif" style="margin-bottom: 0.5em;">
+</div>
+<p>Now the question is: knowing the density <span class="math">\(f_{\textrm{blue}}\)</span> of <span class="math">\(X\)</span>, what is the density <span class="math">\(f_{\textrm{orange}}\)</span> of <span class="math">\(Y\)</span> ?</p>
+<p>Taking a point <span class="math">\(y\)</span> in the range of <span class="math">\(Y\)</span>, the density <span class="math">\(f_{\textrm{orange}}\)</span> provides the probability that <span class="math">\(Y\)</span> belongs to a small area <span class="math">\(\mathrm{d}y\)</span> around <span class="math">\(y\)</span> by the formula <span class="math">\[
+\Pr(Y \in \mathrm{d}y) \approx f_{\textrm{orange}}(y)|\mathrm{d}y|
+\]</span> where <span class="math">\(|\mathrm{d}y|\)</span> denotes the length of the small interval <span class="math">\(\mathrm{d}y\)</span>. This formula is not a rigorous one, but it allows to do exact derivations when it is carefully used. The probability <span class="math">\(\Pr(Y \in \mathrm{d}y)\)</span> is the pink area on this figure:</p>
+<p><img src="assets/fig/ChangeOfVariables-figure-1.png" title="" alt="" width="576" style="display: block; margin: auto;" /></p>
+<p>This probability also equals the probability <span class="math">\(\Pr(X \in \mathrm{d}x)\)</span>, shown by the grey area below the blue curve, where <span class="math">\(x=\log(y)\)</span> because of <span class="math">\(y=\exp(x)\)</span>, and <span class="math">\(\mathrm{d}x\)</span> is the small interval around <span class="math">\(x\)</span>. And one similarly has <span class="math">\[
+\Pr(X \in \mathrm{d}x) \approx f_{\textrm{blue}}(x)|\mathrm{d}x|. 
+\]</span> It is clear that <span class="math">\(|\mathrm{d}x| \neq |\mathrm{d}y|\)</span>. Recall that these two lengths are very small, hence the green function - now let us call it <span class="math">\(h\)</span> instead of <span class="math">\(\exp\)</span> - is like a segment on the interval <span class="math">\(\mathrm{d}x\)</span>, and the slope of this segment is the value <span class="math">\(h&#39;(x)\)</span> of the derivative of <span class="math">\(h\)</span> at <span class="math">\(x\)</span>. Therefore <span class="math">\(|\mathrm{d}y| \approx h&#39;(x)|\mathrm{d}x|\)</span>, and we finally get <span class="math">\[
+\Pr(Y \in \mathrm{d}y) = \Pr(X \in \mathrm{d}x)  \approx f_{\textrm{blue}}(x)\frac{|\mathrm{d}y|}{h&#39;(x)}. 
+\]</span> Expressing the right-hand side in terms of <span class="math">\(y=h(x)\)</span> instead of <span class="math">\(x=h^{-1}(y)\)</span>, this gives <span class="math">\[
+\Pr(Y \in \mathrm{d}y) \approx f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr)\frac{|\mathrm{d}y|}{h&#39;\bigl(h^{-1}(y)\bigr)}, 
+\]</span> or, because of <span class="math">\(\frac{1}{h&#39;\bigl(h^{-1}(y)\bigr)}={(h^{-1})}&#39;(y)\)</span>, this can be written <span class="math">\[
+\Pr(Y \in \mathrm{d}y) \approx {(h^{-1})}&#39;(y)\times f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr)|\mathrm{d}y|.
+\]</span> By identifying this formula by the one defining the density of <span class="math">\(Y\)</span>: <span class="math">\[
+\Pr(Y \in \mathrm{d}y) \approx f_{\textrm{orange}}(y)|\mathrm{d}y|,
+\]</span> we finally get <span class="math">\[
+f_{\textrm{orange}}(y) = {(h^{-1})}&#39;(y)\times f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr).
+\]</span> This is the so-called <em>change of variables formula</em>.</p>
+<p>Be careful about one point: this formula is not correct in general. In my example, the factor <span class="math">\(k\)</span> relating <span class="math">\(|\mathrm{d}x|\)</span> and <span class="math">\(|\mathrm{d}y|\)</span> by <span class="math">\(|\mathrm{d}y| \approx k|\mathrm{d}x|\)</span> is <span class="math">\(k = h&#39;(x)\)</span> because <span class="math">\(h&#39;(x)&gt;0\)</span> in this example (<span class="math">\(h\)</span> is increasing), and one has to take <span class="math">\(k=-h&#39;(x)\)</span> in the case <span class="math">\(h&#39;(x)&lt;0\)</span>. The general formula includes the absolute value: <span class="math">\[
+\boxed{f_{\textrm{orange}}(y) = \bigl|{(h^{-1})}&#39;(y)\bigr|\times f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr)}.
+\]</span></p>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

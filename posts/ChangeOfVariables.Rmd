@@ -1,0 +1,161 @@
+---
+title: "The change of variables of formula for probability density functions"
+date: "2015-12-25"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+
+```{r setup0, echo=FALSE}
+knitr::opts_chunk$set(fig.path="assets/fig/ChangeOfVariables-")
+source('assets/Rfunctions/polyCurve_v1.R', encoding='UTF-8')
+source('assets/Rfunctions/giftools.R', encoding='UTF-8')
+library(scales) # to use alpha()
+```
+
+```{r parameters, include=FALSE}
+sigma <- 0.5
+mu <- 4*sigma
+rgba <- col2rgb("gray")
+tgray <- rgb(rgba[1,1], rgba[2,1], rgba[3,1], alpha=95, maxColorValue=255)
+rgba <- col2rgb("pink")
+tpink <- rgb(rgba[1,1], rgba[2,1], rgba[3,1], alpha=95, maxColorValue=255)
+cex.axis <- 1.2
+lwd.axis <- 2
+ats <- sigma*seq(-4,4,by=2)+mu
+labs <- c(expression(mu-4*sigma), expression(mu-2*sigma), expression(mu), expression(mu+2*sigma), expression(mu+4*sigma))
+M <- exp(mu+1.8)
+knorm <- 16; klnorm <- knorm # scales
+cex.explabel <- 1.3
+giffile0 <- "lognormal.gif"
+giffile <- paste0("./assets/gif/", giffile0)
+```
+
+"How to derive the *pdf* of the random variable $Y=h(X)$ when one knows the *pdf* of the random variable $X$?". This question very frequently occurs on the internet. 
+
+For a general function $h$, there is no direct formula to get the *pdf* of the random variable $Y=h(X)$ knowing the *pdf* of $X$ (assuming $X$ has a *pdf*). There is a formula in case when $h$ is a *differentiable one-to-one mapping* from the range (the *support*, I should say) of $X$ to the range of $Y$. 
+
+Take for example a random variable $X \sim {\cal N}(\mu, \sigma^2)$ and set $Y=\exp(X)$. 
+The animation below shows some simulations of $X$ and the corresponding values of $Y$. The density of $X$ is shown in blue and the one of $Y$ is shown in orange in the vertical direction.
+
+```{r animation, eval=!file.exists(giffile), message=FALSE, echo=FALSE, results='hide'}
+library(animation)
+nsims <- 50
+saveGIF({
+  for (i in 1:nsims) {
+    par(mar=c(3, 1, 0.1, 1))
+    plot(0, 0, type = "n", lwd=4, col="blue", xlim=c(-2, mu+4*sigma), ylim=c(0, M), 
+         ylab=NA, xlab=NA, axes=FALSE, yaxs="i")
+    axis(1, at=ats, labels=labs, col="grey", lwd=lwd.axis, cex.axis=cex.axis)
+    abline(v=0, col="grey", lwd=lwd.axis)
+    curve(knorm*dnorm(x,mu,sigma), add=TRUE, lwd=4, col="blue", from=-0.1)
+    curve(exp(x), col="green", add=TRUE, lwd=3)
+    text(x=mu+2.6*sigma, y=exp(mu+3.5*sigma),"exp(x)", cex=cex.explabel, col="green")
+    x <- seq(0, M, length=100)
+    y <- klnorm*dlnorm(x,mu,sigma)
+    lines(-y,x, lwd=4, col="darkorange")
+    # simulations
+    set.seed(31415)
+    simulation <- rnorm(i,mu,sigma)
+    #
+    cexpoints <- rep(1,i)
+    cexpoints[i] <- 1.8
+    cols <- alpha(rep("red", i), 0.5)
+    cols[i] <- alpha("red",1)
+    points(x=simulation, y=rep(0,i), col=cols, pch=19, cex=cexpoints, xpd=TRUE)
+    points(x=rep(0,i), y=exp(simulation), col=cols, pch=19, cex=cexpoints)
+    x0 <- simulation[i] 
+    segments(x0,0,x0,exp(x0), col="green", lty=2)
+    segments(x0,exp(x0),0,exp(x0), col="green", lty=2)
+  }
+}, movie.name = giffile0, interval = 1, 
+  ani.width = 600, ani.height = 370, autobrowse=FALSE, loop=0
+)
+gif_compress(giffile0, giffile, extra.opts="--colors 256")
+file.remove(giffile0)
+```
+
+```{r, results='asis', echo=FALSE}
+cat(sprintf('<div style="text-align:center">
+<img src="%s" style="margin-bottom: 0.5em;">
+</div>', giffile))
+```
+
+Now the question is: knowing the density $f_{\textrm{blue}}$ of $X$, what is the density $f_{\textrm{orange}}$ of $Y$ ? 
+
+Taking a point $y$ in the range of $Y$, the density $f_{\textrm{orange}}$ provides the probability that $Y$ belongs to a small area $\mathrm{d}y$ around $y$ by the formula
+$$
+\Pr(Y \in \mathrm{d}y) \approx f_{\textrm{orange}}(y)|\mathrm{d}y|
+$$
+where $|\mathrm{d}y|$ denotes the length of the small interval $\mathrm{d}y$. This formula is not a rigorous one, but it allows to do exact derivations when it is carefully used. The probability $\Pr(Y \in \mathrm{d}y)$ is the pink area on this figure: 
+
+```{r figure, fig.width=6, fig.height=3.7, fig.align='center', echo=FALSE}
+x0 <- 14; x1 <- 18 # shaded area
+par(mar=c(1.5, 1, 0.1, 1))
+# normal density
+xx <- seq(mu-4*sigma, mu+4*sigma, length.out = 20)
+yy <- knorm*dnorm(xx,mu,sigma)
+plot(xx, yy, type = "n", lwd=4, col="blue", xlim=c(-2, mu+4*sigma), ylim=c(0, M), 
+      panel.first =
+        polyCurve(xx, yy, from = log(x0), to = log(x1),
+                  col = tgray, border = tgray), 
+     ylab=NA, xlab=NA, axes=FALSE, yaxs="i")
+curve(exp(x), col="green", add=TRUE, lwd=3)
+text(x=mu+2.6*sigma,y=exp(mu+3.5*sigma),"exp(x)", cex=cex.explabel, col="green")
+curve(knorm*dnorm(x,mu,sigma), add=TRUE, lwd=4, col="blue", from=-0.1)
+#axis(1, at=ats, labels=labs, col="grey", lwd=lwd.axis, cex.axis=cex.axis)
+abline(v=0, col="grey", lwd=lwd.axis)
+abline(h=0, col="grey", lwd=lwd.axis)
+# lognormal density
+x <- seq(0, M, length=100)
+y <- klnorm*dlnorm(x,mu,sigma)
+y0 <- klnorm*dlnorm(x0,mu,sigma); y1 <- klnorm*dlnorm(x1,mu,sigma)
+xx <- seq(-y0, 0, length.out = 30)
+F <- approxfun(-klnorm*dlnorm(seq(x0,x1, length.out = 20),mu,sigma), seq(x0,x1, length.out = 20))
+yy <- F(pmin(xx, -y1))
+lines(-y,x, lwd=4, col="darkorange",
+      panel.first =
+        polyCurve(xx, yy, from = min(xx), to = max(xx),
+                  col = tpink, border = tpink))
+segments(xx[1], yy[1], log(x0), x0, lty="dashed")
+segments(-klnorm*dlnorm(x1, mu,sigma), x1, log(x1), x1, lty="dashed")
+segments(log(x0), x0, log(x0), 0, lty="dashed")
+segments(log(x1), x1, log(x1), 0, lty="dashed")
+#
+axis(1, at=mean(c(log(x0),log(x1))), labels=expression(italic(x)), col="grey", lwd=lwd.axis, cex.axis=cex.axis, padj=-1.3)
+axis(2, pos=0, at=mean(c(x0,x1)), labels=NA, col="grey", lwd=lwd.axis, cex.axis=cex.axis, tcl=0.35)
+text(x=0, y=.97*mean(c(x0,x1)), labels=expression(italic(y)), pos=4, offset=0.6)
+```
+
+This probability also equals the probability $\Pr(X \in \mathrm{d}x)$, shown by the grey area below the blue curve, where $x=\log(y)$ because of $y=\exp(x)$, and $\mathrm{d}x$ is the small interval around $x$. And one similarly has 
+$$
+\Pr(X \in \mathrm{d}x) \approx f_{\textrm{blue}}(x)|\mathrm{d}x|. 
+$$
+It is clear that $|\mathrm{d}x| \neq |\mathrm{d}y|$. Recall that these two lengths are very small, hence the green function - now let us call it $h$  instead of $\exp$ - is like a segment on the interval $\mathrm{d}x$, and the slope of this segment is the value $h'(x)$ of the derivative of $h$ at $x$. Therefore $|\mathrm{d}y| \approx h'(x)|\mathrm{d}x|$, and we finally get 
+$$
+\Pr(Y \in \mathrm{d}y) = \Pr(X \in \mathrm{d}x)  \approx f_{\textrm{blue}}(x)\frac{|\mathrm{d}y|}{h'(x)}. 
+$$
+Expressing the right-hand side in terms of $y=h(x)$ instead of $x=h^{-1}(y)$, this gives 
+$$
+\Pr(Y \in \mathrm{d}y) \approx f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr)\frac{|\mathrm{d}y|}{h'\bigl(h^{-1}(y)\bigr)}, 
+$$
+or, because of $\frac{1}{h'\bigl(h^{-1}(y)\bigr)}={(h^{-1})}'(y)$, this can be written 
+$$
+\Pr(Y \in \mathrm{d}y) \approx {(h^{-1})}'(y)\times f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr)|\mathrm{d}y|.
+$$
+By identifying this formula by the one defining the density of $Y$:
+$$
+\Pr(Y \in \mathrm{d}y) \approx f_{\textrm{orange}}(y)|\mathrm{d}y|,
+$$
+we finally get
+$$
+f_{\textrm{orange}}(y) = {(h^{-1})}'(y)\times f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr).
+$$
+This is the so-called *change of variables formula*. 
+
+Be careful about one point: this formula is not correct in general. In my example, the factor $k$ relating $|\mathrm{d}x|$ and $|\mathrm{d}y|$ by $|\mathrm{d}y| \approx k|\mathrm{d}x|$ is $k = h'(x)$ because $h'(x)>0$ in this example ($h$ is increasing), and one has to take $k=-h'(x)$ in the case $h'(x)<0$. The general formula includes the absolute value:
+$$
+\boxed{f_{\textrm{orange}}(y) = \bigl|{(h^{-1})}'(y)\bigr|\times f_{\textrm{blue}}\bigl(h^{-1}(y)\bigr)}.
+$$
+
