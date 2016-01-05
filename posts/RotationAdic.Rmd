@@ -314,7 +314,7 @@ $$
 $$
 et l'espace quotient $(0,1)/\xi_1$ s'identifie à $B$.
  
-Notant $\xi_0$ la partition mesurable de $(0,1)$ en singleton, la paire de partitions mesurable $(\xi_0, \xi_1)$ s'identifie alors à la paire de tribus $({\cal F}_0, {\cal F}_1)$ définie par ${\cal F}_1=\sigma(U_1)$ et ${\cal F}_0=\sigma(U_1, U_0)$ où :
+Notant $\xi_0$ la partition mesurable de $(0,1)$ en singletons, la paire de partitions mesurables $(\xi_0, \xi_1)$ s'identifie alors à la paire de tribus $({\cal F}_0, {\cal F}_1)$ définie par ${\cal F}_1=\sigma(U_1)$ et ${\cal F}_0=\sigma(U_1, U_0)$ où :
 
 * $U_1$ est une variable aléatoire uniforme sur l'espace $(0,1)$ représenté par le petit cercle sur la figure ci-dessous, et sa réalisation correspond à un point $g_1^{-1}(U_1) \in B$  ;
 * $U_0$ est une variable aléatoire uniforme sur l'espace $(0,1)$ représenté par le grand cercle sur la figure ci-dessous, et conditionnellement $U_1$, sa réalisation est uniforme sur la classe d'équivalence du point de $B$ correspondant à $U_1$.
