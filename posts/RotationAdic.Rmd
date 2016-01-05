@@ -534,8 +534,8 @@ plot_orbit(orb, lty="dashed", col="blue")
 seq(a*theta, 1, len=100) %>% {lines(cos(.*2*pi), sin(.*2*pi), col="red", lwd=3)}
 curve(sqrt((1-a*theta)^2-x^2), from=-(1-a*theta), to=(1-a*theta), add=TRUE, col="red", lwd=2)
 curve(-sqrt((1-a*theta)^2-x^2), from=-(1-a*theta), to=(1-a*theta), add=TRUE, col="red", lwd=2)
-x1 <- Repr(x, theta)
-x2 <- H(theta)$b(x1)
+x1 <- Repr(x, theta) # representative of x
+x2 <- H(theta)$b(x1) # image of x1 on the small circle
 orb <- Class(x2, F(theta))
 x2 <- (1-a*theta)*c(cos(x2*2*pi), sin(x2*2*pi))
 x1 <- c(cos(x1*2*pi), sin(x1*2*pi))
@@ -598,13 +598,44 @@ labs()
 
 *(à faire sur la figure: dessiner le $B$ du petit cercle)*
 
+
 La partition mesurable $\xi_2 \prec \xi_1$ apparaît alors comme suit.
 Sur la figure, le point $x$ est un des points bleus de sa classe-$\xi_1$. Son représentant dans l'arc rouge est envoyé sur le point vert $x' \simeq \xi_1(x)$ du petit cercle $(0,1) \simeq (0,1)/\xi_1$ par l'application affine $g_1$, ce qui est montré la flèche.
-Mais chaque autre point vert dans  $\xi'_2(x')$ correspond lui aussi à un représentant-$\xi_1$ point sur l'arc rouge par $g_1^{-1}$, et ainsi à une classe-$\xi_1$ sur l'espace $(0,1)$ de départ (le grand cercle). 
+Mais chaque autre point vert dans  $\xi'_2(x')$ correspond lui aussi à un représentant-$\xi_1$ point sur l'arc rouge par $g_1^{-1}$, et ainsi à une classe-$\xi_1$ sur l'espace $(0,1)$ de départ (le grand cercle). La classe-$\xi_2$ de $x$ est alors la réunion de ces classes-$\xi_1$. Par exemple, dans le cas 1, on obtient ceci pour $\xi_2(x)$ (les $9$ points bleus) : 
 
-*(à faire: une figure avec les autres orbites bleues)*
+```{r case1more, echo=FALSE, fig.width=fscale*3.3, fig.align='center', trim=TRUE}
+theta <- theta0
+a <- b1
+x <- x0
+par(mar=c(0,.1,0,1))
+curve(sqrt(1-x^2), from=-1, to=1, ylim=c(-1.01,1.01), asp=1,
+      axes=FALSE, xlab=NA, ylab=NA)
+curve(-sqrt(1-x^2), from=-1, to=1, add=TRUE)
+seq(a*theta, 1, len=100) %>% {lines(cos(.*2*pi), sin(.*2*pi), col="red", lwd=3)}
+curve(sqrt((1-a*theta)^2-x^2), from=-(1-a*theta), to=(1-a*theta), add=TRUE, col="red", lwd=2)
+curve(-sqrt((1-a*theta)^2-x^2), from=-(1-a*theta), to=(1-a*theta), add=TRUE, col="red", lwd=2)
+x1 <- Repr(x, theta) # representative of x
+x2 <- H(theta)$b(x1) # image of x1 on the small circle
+orb2 <- Class(x2, F(theta))
+plot_orbit(orb2, r=(1-a*theta), lty=2, col="green")
+x_repr <- x1
+blues <- H(theta)$f(orb2) # représentants bleus de orb(x2)
+i0 <- which(blues==x1)
+for(i in seq_along(blues)){
+  x1 <- blues[i]
+  orb <- Class(x1,theta)
+  points(cos(orb*2*pi), sin(orb*2*pi), col="blue", pch=19)
+  if(length(orb)>1) plot_orbit(orb, lty="dashed", col="blue")
+  x2 <- orb2[i]
+  x2 <- (1-a*theta)*c(cos(x2*2*pi), sin(x2*2*pi))
+  x1 <- c(cos(x1*2*pi), sin(x1*2*pi))
+  arrows(x1[1], x1[2], x2[1], x2[2], lty=1, col="gray", code=ifelse(i==i0, 2, 1))
+  points(x2[1], x2[2], col="green", pch=19)
+}
+labs()
+```
 
-La classe-$\xi_2$ de $x$ dans la partition mesurable $\xi_2 \prec \xi_1$ est alors la réunion des $\#\xi'_2\bigl(\xi_1(x)\bigr)$ classes-$\xi_1$ correspondant à chaque point vert.  
+La classe-$\xi_2$ de $x$ dans la partition mesurable $\xi_2 \prec \xi_1$ est ainsi la réunion des $\#\xi'_2\bigl(\xi_1(x)\bigr)$ classes-$\xi_1$ correspondant à chaque point vert.  
 
 Elle se visualise en découpant-empilant la 1ère tour selon le découpage-empilage de la 2ème tour (dessin à droite): 
 
