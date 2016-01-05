@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw"
+    version="1.1" baseProfile="full">
+    <defs/>
+    <g>
+        <g latexdraw:type="dot" id="id126" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="190.0 90.0">
+            <circle r="3.0" fill="black" cx="190.0" cy="90.0"/>
+        </g>
+        <g latexdraw:type="dot" id="id127" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="290.0 90.0">
+            <circle r="3.0" fill="black" cx="290.0" cy="90.0"/>
+        </g>
+        <g latexdraw:type="dot" id="id128" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="240.0 40.0">
+            <circle r="3.0" fill="black" cx="240.0" cy="40.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id129" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="240.0 40.0 240.0 50.0 250.0 50.0 250.0 60.0 250.0 70.0 260.0 70.0 260.0 80.0 270.0 80.0 270.0 90.0 280.0 90.0 290.0 90.0 290.0 100.0 290.0 90.0 ">
+            <path
+                d="M 240.0 40.0 L 250.0 55.0 C 255.0 62.5 267.5 75.0 275.0 80.0 C 282.5 85.0 290.0 90.0 290.0 90.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id130" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="240.0 40.0 250.0 40.0 260.0 40.0 260.0 50.0 270.0 50.0 270.0 60.0 280.0 60.0 280.0 70.0 280.0 80.0 290.0 80.0 290.0 90.0 290.0 100.0 290.0 90.0 ">
+            <path
+                d="M 240.0 40.0 L 255.0 50.0 C 262.5 55.0 275.0 67.5 280.0 75.0 C 285.0 82.5 290.0 90.0 290.0 90.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id131" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="240.0 40.0 250.0 40.0 260.0 40.0 270.0 40.0 270.0 50.0 280.0 50.0 280.0 60.0 290.0 60.0 290.0 70.0 290.0 80.0 290.0 90.0 290.0 100.0 290.0 90.0 ">
+            <path
+                d="M 240.0 40.0 L 260.0 45.0 C 270.0 47.5 282.5 60.0 285.0 70.0 C 287.5 80.0 290.0 90.0 290.0 90.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id132" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="240.0 40.0 240.0 50.0 240.0 60.0 240.0 70.0 240.0 80.0 250.0 80.0 250.0 90.0 260.0 90.0 270.0 90.0 280.0 90.0 290.0 90.0 290.0 100.0 290.0 90.0 ">
+            <path
+                d="M 240.0 40.0 L 245.0 60.0 C 247.5 70.0 260.0 82.5 270.0 85.0 C 280.0 87.5 290.0 90.0 290.0 90.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="line" id="id133">
+            <line x1="190.0" x2="240.0" y1="90.0" y2="40.0"
+                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="dot" id="id134" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="190.0 140.0">
+            <circle r="3.0" fill="black" cx="190.0" cy="140.0"/>
+        </g>
+        <g latexdraw:type="dot" id="id135" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="290.0 140.0">
+            <circle r="3.0" fill="black" cx="290.0" cy="140.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id136" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="190.0 140.0 190.0 130.0 200.0 130.0 210.0 130.0 210.0 120.0 220.0 120.0 230.0 120.0 230.0 110.0 240.0 110.0 250.0 110.0 250.0 100.0 260.0 100.0 270.0 100.0 270.0 90.0 280.0 90.0 290.0 90.0 300.0 90.0 290.0 90.0 ">
+            <path
+                d="M 190.0 140.0 L 205.0 130.0 C 212.5 125.0 227.5 115.0 235.0 110.0 C 242.5 105.0 260.0 97.5 270.0 95.0 C 280.0 92.5 290.0 90.0 290.0 90.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id137" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="190.0 140.0 200.0 140.0 210.0 140.0 210.0 130.0 220.0 130.0 230.0 130.0 240.0 130.0 250.0 130.0 250.0 120.0 260.0 120.0 270.0 110.0 280.0 110.0 280.0 100.0 290.0 100.0 290.0 90.0 ">
+            <path
+                d="M 190.0 140.0 L 210.0 135.0 C 220.0 132.5 240.0 125.0 250.0 120.0 C 260.0 115.0 275.0 105.0 290.0 90.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id138" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="190.0 90.0 190.0 100.0 190.0 110.0 190.0 120.0 190.0 130.0 190.0 140.0 190.0 150.0 190.0 140.0 ">
+            <path
+                d="M 190.0 90.0 L 190.0 115.0 C 190.0 127.5 190.0 140.0 190.0 140.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id139" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="290.0 90.0 290.0 100.0 290.0 110.0 290.0 120.0 290.0 130.0 290.0 140.0 290.0 150.0 290.0 140.0 ">
+            <path
+                d="M 290.0 90.0 L 290.0 115.0 C 290.0 127.5 290.0 140.0 290.0 140.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="dot" id="id140" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="190.0 190.0">
+            <circle r="3.0" fill="black" cx="190.0" cy="190.0"/>
+        </g>
+        <g latexdraw:type="dot" id="id141" latexdraw:size="6.0"
+            latexdraw:dotShape="dot" latexdraw:position="290.0 190.0">
+            <circle r="3.0" fill="black" cx="290.0" cy="190.0"/>
+        </g>
+        <g latexdraw:type="line" id="id142">
+            <line x1="190.0" x2="190.0" y1="140.0" y2="190.0"
+                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="line" id="id143">
+            <line x1="290.0" x2="290.0" y1="140.0" y2="190.0"
+                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="line" id="id144">
+            <line x1="190.0" x2="290.0" y1="140.0" y2="190.0"
+                stroke-width="2.0" stroke="black" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id145" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="190.0 140.0 200.0 140.0 210.0 140.0 210.0 150.0 220.0 150.0 230.0 150.0 240.0 150.0 250.0 150.0 250.0 160.0 260.0 160.0 270.0 170.0 280.0 170.0 280.0 180.0 290.0 180.0 290.0 190.0 ">
+            <path
+                d="M 190.0 140.0 L 210.0 145.0 C 220.0 147.5 240.0 155.0 250.0 160.0 C 260.0 165.0 275.0 175.0 290.0 190.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="akinPoints" id="id146" latexdraw:pathType="1"
+            latexdraw:interval="5" latexdraw:points="190.0 140.0 190.0 150.0 200.0 150.0 200.0 160.0 210.0 160.0 220.0 160.0 220.0 170.0 230.0 170.0 240.0 170.0 240.0 180.0 250.0 180.0 260.0 180.0 270.0 180.0 270.0 190.0 280.0 190.0 290.0 190.0 300.0 190.0 290.0 190.0 280.0 190.0 290.0 190.0 ">
+            <path
+                d="M 190.0 140.0 L 205.0 150.0 C 212.5 155.0 227.5 165.0 235.0 170.0 C 242.5 175.0 260.0 182.5 270.0 185.0 C 280.0 187.5 290.0 190.0 290.0 190.0 "
+                stroke-width="2.0" stroke="black" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="text" id="id147"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="130.0">
+            <text x="130.0" y="90.0"><![CDATA[n=1]]></text>
+        </g>
+        <g latexdraw:type="text" id="id150"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="130.0">
+            <text x="130.0" y="140.0"><![CDATA[n=2]]></text>
+        </g>
+        <g latexdraw:type="text" id="id153"
+            font-family="Times New Roman" fill="black" font-size="18" latexdraw:x="130.0">
+            <text x="130.0" y="190.0"><![CDATA[n=3]]></text>
+        </g>
+    </g>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:displayBorders>false</latexdraw:displayBorders>
+            <latexdraw:autoAdjust>true</latexdraw:autoAdjust>
+            <latexdraw:ppc>50</latexdraw:ppc>
+            <latexdraw:zoom>1.75</latexdraw:zoom>
+            <latexdraw:unit>cm</latexdraw:unit>
+            <latexdraw:classicGrid>false</latexdraw:classicGrid>
+            <latexdraw:gridGap>10</latexdraw:gridGap>
+            <latexdraw:code>0</latexdraw:code>
+            <latexdraw:displayGrid>true</latexdraw:displayGrid>
+            <latexdraw:magneticGrid>true</latexdraw:magneticGrid>
+            <latexdraw:autoUpdate>true</latexdraw:autoUpdate>
+            <latexdraw:version>2.0.8</latexdraw:version>
+            <latexdraw:size>
+                <latexdraw:width>1366</latexdraw:width>
+                <latexdraw:height>742</latexdraw:height>
+            </latexdraw:size>
+            <latexdraw:position>
+                <latexdraw:x>0</latexdraw:x>
+                <latexdraw:y>0</latexdraw:y>
+            </latexdraw:position>
+            <latexdraw:dividerPosition>0.7847730600292826</latexdraw:dividerPosition>
+            <latexdraw:displayCodePanel>true</latexdraw:displayCodePanel>
+            <latexdraw:displayXScale>true</latexdraw:displayXScale>
+            <latexdraw:displayYScale>true</latexdraw:displayYScale>
+            <latexdraw:delimitorOpacity>130</latexdraw:delimitorOpacity>
+        </latexdraw:metadata>
+    </metadata>
+</svg>
