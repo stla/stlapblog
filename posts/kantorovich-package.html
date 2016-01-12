@@ -89,14 +89,16 @@
 <li>It computes the extreme joinings of two probability measures <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span> on a finite set;</li>
 <li>It computes the Kantorovich distance between these two measures, for a given distance on their finite state space.</li>
 </ul>
-<p>As long as the <code>gmp</code> package is installed, the <code>kantorovich</code> package can return the <em>exact</em> values of the extreme joinings and the exact value of the Kantorovich distance.</p>
+<p>With the help of the <code>rccd</code> and <code>gmp</code> packages, the <code>kantorovich</code> package can return the <em>exact</em> values of the extreme joinings and of the Kantorovich distance.</p>
+<div id="quick-example" class="section level2">
+<h2>Quick example</h2>
 <p>As an example, take <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span> the uniform probability measures on a finite set having three elements.</p>
 <pre class="r"><code>mu &lt;- nu &lt;- c(1/3, 1/3, 1/3)</code></pre>
 <p>The <code>ejoinings</code> function returns the extreme joinings of <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span>. In this case these are the <span class="math">\(6!\)</span> permutation matrices:</p>
 <pre class="r"><code>library(kantorovich)
-ejoinings(mu, nu)</code></pre>
-<pre><code>## Message: You should enter mu and nu in rational with the gmp package.</code></pre>
-<pre><code>## [[1]]
+ejoinings(mu, nu)
+## Message: You should enter mu and nu in rational with the gmp package.
+## [[1]]
 ##           1         2         3
 ## 1 0.3333333 0.0000000 0.0000000
 ## 2 0.0000000 0.0000000 0.3333333
@@ -132,14 +134,14 @@ ejoinings(mu, nu)</code></pre>
 ## 2 0.3333333 0.0000000 0.0000000
 ## 3 0.0000000 0.3333333 0.0000000</code></pre>
 <p>Since <code>mu</code> and <code>nu</code> were unnamed, the vector names <code>c(1,2,3)</code> has been automatically assigned to them. The Kantorovich distance between <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span> is relative to a given distance on the state space of <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span>, represented by their vector names. By default, the <code>kantorovich</code> package takes the discrete <span class="math">\(0\mathrm{-}1\)</span> distance. Obviously the Kantorovich distance is <span class="math">\(0\)</span> on this example, because <span class="math">\(\mu=\nu\)</span>.</p>
-<pre class="r"><code>kantorovich(mu, nu)</code></pre>
-<pre><code>## Message: You should enter mu and nu in rational with the gmp package.</code></pre>
-<pre><code>## [1] 0</code></pre>
-<p>Note the message returned by both the <code>ejoinings</code> and the <code>kantorovich</code> function. In order to get exact results, use rational numbers with the <code>gmp</code> package:</p>
+<pre class="r"><code>kantorovich(mu, nu)
+## Message: You should enter mu and nu in rational with the gmp package.
+## [1] 0</code></pre>
+<p>Note the message returned by both the <code>ejoinings</code> and the <code>kantorovich</code> functions. In order to get exact results, use rational numbers with the <code>gmp</code> package:</p>
 <pre class="r"><code>library(gmp)
 mu &lt;- nu &lt;- as.bigq(c(1,1,1), c(3,3,3)) # shorter: as.bigq(c(1,1,1), 3) 
-ejoinings(mu, nu)</code></pre>
-<pre><code>## [[1]]
+ejoinings(mu, nu)
+## [[1]]
 ##   1     2     3    
 ## 1 &quot;1/3&quot; &quot;0&quot;   &quot;0&quot;  
 ## 2 &quot;0&quot;   &quot;0&quot;   &quot;1/3&quot;
@@ -174,102 +176,18 @@ ejoinings(mu, nu)</code></pre>
 ## 1 &quot;0&quot;   &quot;0&quot;   &quot;1/3&quot;
 ## 2 &quot;1/3&quot; &quot;0&quot;   &quot;0&quot;  
 ## 3 &quot;0&quot;   &quot;1/3&quot; &quot;0&quot;</code></pre>
-<p>Let us try a less trivial example with a user-specified distance.</p>
+</div>
+<div id="user-specified-distance" class="section level2">
+<h2>User-specified distance</h2>
+<p>Let us try an example with a user-specified distance. Let’s say that the state space of <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span> is <span class="math">\(\{a, b, c\}\)</span>, and then we use <code>c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)</code> as the vector names.</p>
 <pre class="r"><code>mu &lt;- as.bigq(c(1,2,4), 7)
 nu &lt;- as.bigq(c(3,1,5), 9)
-names(mu) &lt;- names(nu) &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
-ejoinings(mu, nu)</code></pre>
-<pre><code>## [[1]]
-##   a      b     c      
-## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;    
-## b &quot;0&quot;    &quot;0&quot;   &quot;2/7&quot;  
-## c &quot;4/21&quot; &quot;1/9&quot; &quot;17/63&quot;
-## 
-## [[2]]
-##   a      b     c      
-## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;    
-## b &quot;4/21&quot; &quot;0&quot;   &quot;2/21&quot; 
-## c &quot;0&quot;    &quot;1/9&quot; &quot;29/63&quot;
-## 
-## [[3]]
-##   a      b      c    
-## a &quot;1/7&quot;  &quot;0&quot;    &quot;0&quot;  
-## b &quot;4/21&quot; &quot;2/21&quot; &quot;0&quot;  
-## c &quot;0&quot;    &quot;1/63&quot; &quot;5/9&quot;
-## 
-## [[4]]
-##   a      b     c      
-## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;    
-## b &quot;0&quot;    &quot;1/9&quot; &quot;11/63&quot;
-## c &quot;4/21&quot; &quot;0&quot;   &quot;8/21&quot; 
-## 
-## [[5]]
-##   a       b     c    
-## a &quot;1/7&quot;   &quot;0&quot;   &quot;0&quot;  
-## b &quot;11/63&quot; &quot;1/9&quot; &quot;0&quot;  
-## c &quot;1/63&quot;  &quot;0&quot;   &quot;5/9&quot;
-## 
-## [[6]]
-##   a      b     c      
-## a &quot;1/21&quot; &quot;0&quot;   &quot;2/21&quot; 
-## b &quot;2/7&quot;  &quot;0&quot;   &quot;0&quot;    
-## c &quot;0&quot;    &quot;1/9&quot; &quot;29/63&quot;
-## 
-## [[7]]
-##   a      b     c    
-## a &quot;2/63&quot; &quot;1/9&quot; &quot;0&quot;  
-## b &quot;2/7&quot;  &quot;0&quot;   &quot;0&quot;  
-## c &quot;1/63&quot; &quot;0&quot;   &quot;5/9&quot;
-## 
-## [[8]]
-##   a      b      c    
-## a &quot;1/21&quot; &quot;2/21&quot; &quot;0&quot;  
-## b &quot;2/7&quot;  &quot;0&quot;    &quot;0&quot;  
-## c &quot;0&quot;    &quot;1/63&quot; &quot;5/9&quot;
-## 
-## [[9]]
-##   a       b     c      
-## a &quot;2/63&quot;  &quot;1/9&quot; &quot;0&quot;    
-## b &quot;0&quot;     &quot;0&quot;   &quot;2/7&quot;  
-## c &quot;19/63&quot; &quot;0&quot;   &quot;17/63&quot;
-## 
-## [[10]]
-##   a     b     c     
-## a &quot;0&quot;   &quot;1/9&quot; &quot;2/63&quot;
-## b &quot;0&quot;   &quot;0&quot;   &quot;2/7&quot; 
-## c &quot;1/3&quot; &quot;0&quot;   &quot;5/21&quot;
-## 
-## [[11]]
-##   a      b     c      
-## a &quot;0&quot;    &quot;1/9&quot; &quot;2/63&quot; 
-## b &quot;2/7&quot;  &quot;0&quot;   &quot;0&quot;    
-## c &quot;1/21&quot; &quot;0&quot;   &quot;11/21&quot;
-## 
-## [[12]]
-##   a      b     c      
-## a &quot;0&quot;    &quot;0&quot;   &quot;1/7&quot;  
-## b &quot;2/7&quot;  &quot;0&quot;   &quot;0&quot;    
-## c &quot;1/21&quot; &quot;1/9&quot; &quot;26/63&quot;
-## 
-## [[13]]
-##   a       b     c      
-## a &quot;0&quot;     &quot;0&quot;   &quot;1/7&quot;  
-## b &quot;11/63&quot; &quot;1/9&quot; &quot;0&quot;    
-## c &quot;10/63&quot; &quot;0&quot;   &quot;26/63&quot;
-## 
-## [[14]]
-##   a     b     c      
-## a &quot;0&quot;   &quot;0&quot;   &quot;1/7&quot;  
-## b &quot;0&quot;   &quot;1/9&quot; &quot;11/63&quot;
-## c &quot;1/3&quot; &quot;0&quot;   &quot;5/21&quot; 
-## 
-## [[15]]
-##   a     b     c     
-## a &quot;0&quot;   &quot;0&quot;   &quot;1/7&quot; 
-## b &quot;0&quot;   &quot;0&quot;   &quot;2/7&quot; 
-## c &quot;1/3&quot; &quot;1/9&quot; &quot;8/63&quot;</code></pre>
-<p>Now, define a distance <span class="math">\(\rho\)</span> on the state space <span class="math">\(\{a, b, c\}\)</span> of <span class="math">\(\mu\)</span> and <span class="math">\(\nu\)</span>. A convenient way consists in firstly defining this distance as a matrix with row and column names, and then defining the distance function on <span class="math">\(\{a, b, c\}\)</span> as the one returning the entry of the matrix given by the corresponding names. The <code>bigq</code> matrices offered by the <code>gmp</code> package do not handle dimension names. But, in our example, the distance <span class="math">\(\rho\)</span> takes only integer values, therefore it is not necessary that <span class="math">\(\rho\)</span> returns a <code>bigq</code> number</p>
-<pre class="r"><code>Rho &lt;- matrix(
+names(mu) &lt;- names(nu) &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</code></pre>
+<div id="define-distance-as-a-matrix" class="section level3">
+<h3>Define distance as a matrix</h3>
+<p>The distance can be specified as a matrix.</p>
+<p>Assume the distance <span class="math">\(\rho\)</span> is given by <span class="math">\(\rho(a,b)=1\)</span>, <span class="math">\(\rho(a,c)=2\)</span> and <span class="math">\(\rho(b,c)=4\)</span>. The <code>bigq</code> matrices offered by the <code>gmp</code> package do not handle dimension names. But, in our example, the distance <span class="math">\(\rho\)</span> takes only integer values, therefore one can use a numerical matrix:</p>
+<pre class="r"><code>M &lt;- matrix(
   c(
     c(0, 1, 2),
     c(1, 0, 4),
@@ -277,12 +195,91 @@ ejoinings(mu, nu)</code></pre>
   ), 
   byrow = TRUE, nrow = 3,
   dimnames = list(c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;), c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)))
-rho &lt;- function(x,y){
-  return(Rho[x,y])
-}</code></pre>
-<pre class="r"><code>kantorovich(mu, nu, dist=rho)</code></pre>
-<pre><code>## Big Rational (&#39;bigq&#39;) :
+kantorovich(mu, nu, dist=M)
+## Big Rational (&#39;bigq&#39;) :
 ## [1] 13/63</code></pre>
+<p>If the distance takes rational values, one can proceed as before with a character matrix:</p>
+<pre class="r"><code>M &lt;- matrix(
+  c(
+    c(&quot;0&quot;, &quot;3/13&quot;, &quot;2/13&quot;),
+    c(&quot;1/13&quot;, &quot;0&quot;, &quot;4/13&quot;),
+    c(&quot;2/13&quot;, &quot;4/13&quot;, &quot;0&quot;)
+  ), 
+  byrow = TRUE, nrow = 3,
+  dimnames = list(c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;), c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)))
+kantorovich(mu, nu, dist=M)
+## Big Rational (&#39;bigq&#39;) :
+## [1] 1/63</code></pre>
+</div>
+<div id="define-distance-as-a-function" class="section level3">
+<h3>Define distance as a function</h3>
+<p>One can enter the distance as a function. In such an example, this does not sound convenient:</p>
+<pre class="r"><code>rho &lt;- function(x,y){
+  if(x==y) {
+    return(0)
+  } else {
+    if(x==&quot;a&quot; &amp;&amp; y==&quot;b&quot;) return(1)
+    if(x==&quot;a&quot; &amp;&amp; y==&quot;c&quot;) return(2)
+    if(x==&quot;b&quot; &amp;&amp; y==&quot;c&quot;) return(4)
+    return(rho(y,x))
+  } 
+}
+kantorovich(mu, nu, dist=rho)
+## Big Rational (&#39;bigq&#39;) :
+## [1] 13/63</code></pre>
+<p>Using a function could be more convenient in the case when the names are numbers:</p>
+<pre class="r"><code>names(mu) &lt;- names(nu) &lt;- 1:3</code></pre>
+<p>But one has to be aware that there are in character mode:</p>
+<pre class="r"><code>names(mu)
+## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot;</code></pre>
+<p>Thus, one can define a distance function as follows, for example with <span class="math">\(\rho(x,y)=\frac{x-y}{x+y}\)</span>:</p>
+<pre class="r"><code>rho &lt;- function(x,y){
+  x &lt;- as.numeric(x); y &lt;- as.numeric(y)
+  return(as.bigq(x-y, x+y))
+}
+kantorovich(mu, nu, dist=rho)
+## Big Rational (&#39;bigq&#39;) :
+## [1] 107/1890</code></pre>
+</div>
+</div>
+<div id="a-non-square-example" class="section level2">
+<h2>A non-square example</h2>
+<p>The <code>kantorovich</code> package also handles the case when <code>mu</code> and <code>nu</code> have different lengths, such as this example:</p>
+<pre class="r"><code>mu &lt;- as.bigq(c(1,2,4), 7)
+nu &lt;- as.bigq(c(3,1), 4)
+names(mu) &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;) 
+names(nu) &lt;- c(&quot;b&quot;, &quot;c&quot;)</code></pre>
+<p>Then it automatically assigns <span class="math">\(0\)</span> weights to the points that do not appear in the names of the shorter probability:</p>
+<pre class="r"><code>ejoinings(mu, nu)
+## Caution: some names of mu and/or nu were missing or not compatible - automatic change
+## [[1]]
+##   b      c     a  
+## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;
+## b &quot;1/28&quot; &quot;1/4&quot; &quot;0&quot;
+## c &quot;4/7&quot;  &quot;0&quot;   &quot;0&quot;
+## 
+## [[2]]
+##   b      c     a  
+## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;
+## b &quot;2/7&quot;  &quot;0&quot;   &quot;0&quot;
+## c &quot;9/28&quot; &quot;1/4&quot; &quot;0&quot;
+## 
+## [[3]]
+##   b      c      a  
+## a &quot;0&quot;    &quot;1/7&quot;  &quot;0&quot;
+## b &quot;5/28&quot; &quot;3/28&quot; &quot;0&quot;
+## c &quot;4/7&quot;  &quot;0&quot;    &quot;0&quot;
+## 
+## [[4]]
+##   b       c      a  
+## a &quot;0&quot;     &quot;1/7&quot;  &quot;0&quot;
+## b &quot;2/7&quot;   &quot;0&quot;    &quot;0&quot;
+## c &quot;13/28&quot; &quot;3/28&quot; &quot;0&quot;
+kantorovich(mu, nu)
+## Caution: some names of mu and/or nu were missing or not compatible - automatic change
+## Big Rational (&#39;bigq&#39;) :
+## [1] 13/28</code></pre>
+</div>
 
 
           </div> 
