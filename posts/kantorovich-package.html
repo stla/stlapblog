@@ -248,33 +248,32 @@ kantorovich(mu, nu, dist=rho)
 <pre class="r"><code>mu &lt;- as.bigq(c(1,2,4), 7)
 nu &lt;- as.bigq(c(3,1), 4)
 names(mu) &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;) 
-names(nu) &lt;- c(&quot;b&quot;, &quot;c&quot;)</code></pre>
-<p>Then it automatically assigns <span class="math">\(0\)</span> weights to the points that do not appear in the names of the shorter probability:</p>
-<pre class="r"><code>ejoinings(mu, nu)
+names(nu) &lt;- c(&quot;b&quot;, &quot;c&quot;)
+ejoinings(mu, nu)
 ## Caution: some names of mu and/or nu were missing or not compatible - automatic change
 ## [[1]]
-##   b      c     a  
-## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;
-## b &quot;1/28&quot; &quot;1/4&quot; &quot;0&quot;
-## c &quot;4/7&quot;  &quot;0&quot;   &quot;0&quot;
+##   b      c    
+## a &quot;1/7&quot;  &quot;0&quot;  
+## b &quot;1/28&quot; &quot;1/4&quot;
+## c &quot;4/7&quot;  &quot;0&quot;  
 ## 
 ## [[2]]
-##   b      c     a  
-## a &quot;1/7&quot;  &quot;0&quot;   &quot;0&quot;
-## b &quot;2/7&quot;  &quot;0&quot;   &quot;0&quot;
-## c &quot;9/28&quot; &quot;1/4&quot; &quot;0&quot;
+##   b      c    
+## a &quot;1/7&quot;  &quot;0&quot;  
+## b &quot;2/7&quot;  &quot;0&quot;  
+## c &quot;9/28&quot; &quot;1/4&quot;
 ## 
 ## [[3]]
-##   b      c      a  
-## a &quot;0&quot;    &quot;1/7&quot;  &quot;0&quot;
-## b &quot;5/28&quot; &quot;3/28&quot; &quot;0&quot;
-## c &quot;4/7&quot;  &quot;0&quot;    &quot;0&quot;
+##   b      c     
+## a &quot;0&quot;    &quot;1/7&quot; 
+## b &quot;5/28&quot; &quot;3/28&quot;
+## c &quot;4/7&quot;  &quot;0&quot;   
 ## 
 ## [[4]]
-##   b       c      a  
-## a &quot;0&quot;     &quot;1/7&quot;  &quot;0&quot;
-## b &quot;2/7&quot;   &quot;0&quot;    &quot;0&quot;
-## c &quot;13/28&quot; &quot;3/28&quot; &quot;0&quot;
+##   b       c     
+## a &quot;0&quot;     &quot;1/7&quot; 
+## b &quot;2/7&quot;   &quot;0&quot;   
+## c &quot;13/28&quot; &quot;3/28&quot;
 kantorovich(mu, nu)
 ## Caution: some names of mu and/or nu were missing or not compatible - automatic change
 ## Big Rational (&#39;bigq&#39;) :
