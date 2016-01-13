@@ -8,7 +8,8 @@ output: html_document
 knitr::opts_chunk$set(collapse=TRUE)
 ```
 
-I have just released a first version of the `kantorovich` package on [Github](https://github.com/stla/kantorovich).
+I have just released a first version of the `kantorovich` package on [Github](https://github.com/stla/kantorovich). It is based on the code of my post [Using R to compute the Kantorovich distance](http://stla.github.io/stlapblog/posts/KantorovichWithR.html).
+
 This package has two main features:
 
 * It computes the extreme joinings of two probability measures $\mu$ and $\nu$ on a finite set;
