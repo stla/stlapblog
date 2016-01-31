@@ -675,9 +675,51 @@ $$
 
 ## Graphe de Bratteli 
 
-Il y a deux graphes possibles à associer à la construction, selon que l'on utilise ou non des arêtes multiples.
+Cette succession de découpage-empilages se représente par un graphe de Bratteli. 
+Un chemin partant de la racine représente un point $x \in (0,1)$. 
 
-### Graphe avec arêtes multiples 
+<div style="text-align:center">
+<figure><img src="./assets/img/RotationAdic_BratteliTowers_redpath.png" width="95%" style="margin-bottom: 1em; margin-top:1em">
+<figcaption style="text-align: center; line-height:10px; font-weight:normal; font-family:times; font-size:16px; font-style:italic"></figcaption></figure>
+</div>
+
+* À la racine de l'arbre, que nous indexions par $n=-1$, l'intervalle $(0,1)$ n'est pas découpé, nous disons qu'il est constitué d'un seul bloc $B_{-1}=(0,1)$.
+
+* Au niveau $n=0$,l'intervalle $(0,1)$ est découpé en deux blocs:
+$$
+B_0 = (0, 1) = \underset{B_{00}}{\underbrace{(0, 1-\theta)}} \cup \underset{B_{01}}{\underbrace{(1-\theta, 1)}}.
+$$
+Les deux connexions entre la racine de l'arbre et un des deux sommets au niveau $n=0$ indiquent si le point $x$ est dans $B_{00}$ ou dans $B_{01}$. À ce niveau, les deux sommets fournissent la même information.  
+
+* Au niveau $n=1$, on trouve le premier découpage-empilage que nous avons vu. La base est découpée en deux morceaux :
+$$
+B_1 = \underset{B_{10}}{\underbrace{(3\theta, 1-\theta)}} \cup \underset{B_{11}}{\underbrace{(1-\theta, 1)}}.
+$$
+Ainsi, le sommet au niveau $n=1$ indique seulement si le point $x$ est dans la tour de gauche ou dans la tour de droite. Et ici, la connexion entre le niveau $n=1$ et le niveau $n=0$ indique dans quel étage de la tour se situe $x$. 
+
+* Au niveau $n=2$, on trouve le second découpage-empilage que nous avons vu. La base est découpée en deux morceaux :
+$$
+B_2 = \underset{B_{20}}{\underbrace{(3\theta, 1-\theta)}} \cup \underset{B_{21}}{\underbrace{\bigl(1-\theta, g_1^{-1}(1-2\phi)\bigr)}}.
+$$
+Le sommet au niveau $n=2$ indique dans quelle tour se situe $x$. 
+La connexion entre le niveau $n=2$ et le niveau $n=1$ n'indique *pas* dans quel étage se situe $x$, mais dans quel morceau de la tour. Par exemple, si $x$ est dans la tour de gauche, nous avons vu que ce que nous avons appelé la classe-$\xi_2$ d'équivalence de $x$ est constituée de $9$ points :
+$$
+\xi_2(x) =  \{x_1, x_{21}, x_{22}, x_{23}, x_{24}, x_{31}, x_{32}, x_{33}, x_{34}\}. 
+$$
+et que ces $9$ points sont partitionnés en trois classes-$\xi_1$ d'équivalence:
+$$
+\bigl\{\{x_1\}, \{x_{21}, x_{22}, x_{23}, x_{24}\}, \{x_{31}, x_{32}, x_{33}, x_{34}\} \bigr\},
+$$
+comme le montrent les accolades sur la figure. 
+
+On voit bien que le chemin de la racine à $n \to \infty$ va déterminer le point $x$. Au niveau $n$, on sait dans quelle tour et dans quel étage du $n$-ième découpage-empilage se situe $x$, et la longueur des étages tend vers $0$. 
+
+```{r include=FALSE}
+knitr::knit_exit()
+```
+
+____
+xxxx
 
 Le chemin représenté en rouge sur le graphe ci-dessous montre dans quel segment du découpage-empilage se situe le point $x$ à chaque étape. 
 

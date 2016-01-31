@@ -84,7 +84,7 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/RotationAdic.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>(latest update : 2016-01-05 13:45:57)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-01-31 01:58:11)</em></strong> <br/></p>
 <p>Je vais tâcher ici d’expliquer la construction de “la” filtration adique associée à une rotation. En fait, c’est une suite décroissante de partitions mesurables qu’on construit, mais il est facile de voir qu’elle correspond à la filtration d’un processus de Markov.</p>
 <p>Dans un second temps, j’expliquerai comment on obtient le graphe de Bratteli associé à cette filtration.</p>
 <div id="construction-de-la-filtration-adique" class="section level2">
@@ -232,30 +232,31 @@ $$
 </div>
 <div id="graphe-de-bratteli" class="section level2">
 <h2>Graphe de Bratteli</h2>
-<p>Il y a deux graphes possibles à associer à la construction, selon que l’on utilise ou non des arêtes multiples.</p>
-<div id="graphe-avec-aretes-multiples" class="section level3">
-<h3>Graphe avec arêtes multiples</h3>
-<p>Le chemin représenté en rouge sur le graphe ci-dessous montre dans quel segment du découpage-empilage se situe le point <span class="math">\(x\)</span> à chaque étape.</p>
+<p>Cette succession de découpage-empilages se représente par un graphe de Bratteli. Un chemin partant de la racine représente un point <span class="math">\(x \in (0,1)\)</span>.</p>
 <div style="text-align:center">
 <figure>
-<img src="assets/img/RotationAdic-bratteli1-multiple_redpath.png" width="35%" style="margin-bottom: 1em; margin-top:1em">
+<img src="assets/img/RotationAdic_BratteliTowers_redpath.png" width="95%" style="margin-bottom: 1em; margin-top:1em">
 <figcaption style="text-align: center; line-height:10px; font-weight:normal; font-family:times; font-size:16px; font-style:italic">
 </figcaption>
 </figure>
 </div>
-<p>Le premier morceau du graphe, entre la racine et le niveau <span class="math">\(n=1\)</span>, représente le premier découpage-empilage, de base <span class="math">\[
+<ul>
+<li><p>À la racine de l’arbre, que nous indexions par <span class="math">\(n=-1\)</span>, l’intervalle <span class="math">\((0,1)\)</span> n’est pas découpé, nous disons qu’il est constitué d’un seul bloc <span class="math">\(B_{-1}=(0,1)\)</span>.</p></li>
+<li><p>Au niveau <span class="math">\(n=0\)</span>,l’intervalle <span class="math">\((0,1)\)</span> est découpé en deux blocs: <span class="math">\[
+B_0 = (0, 1) = \underset{B_{00}}{\underbrace{(0, 1-\theta)}} \cup \underset{B_{01}}{\underbrace{(1-\theta, 1)}}.
+\]</span> Les deux connexions entre la racine de l’arbre et un des deux sommets au niveau <span class="math">\(n=0\)</span> indiquent si le point <span class="math">\(x\)</span> est dans <span class="math">\(B_{00}\)</span> ou dans <span class="math">\(B_{01}\)</span>. À ce niveau, les deux sommets fournissent la même information.</p></li>
+<li><p>Au niveau <span class="math">\(n=1\)</span>, on trouve le premier découpage-empilage que nous avons vu. La base est découpée en deux morceaux : <span class="math">\[
 B_1 = \underset{B_{10}}{\underbrace{(3\theta, 1-\theta)}} \cup \underset{B_{11}}{\underbrace{(1-\theta, 1)}}.
-\]</span> Le point rouge au niveau <span class="math">\(n=1\)</span> est à droite, cela indique que <span class="math">\(x\)</span> est dans la tour de droite, autrement dit que le représentant de <span class="math">\(x\)</span> dans <span class="math">\(B_1\)</span> est dans le segment <span class="math">\(B_{11}=(1-\theta, 1)\)</span>, ce qu’on peut noter <span class="math">\(\xi_1(x) \in B_{11}\)</span> en confondant la classe <span class="math">\(\xi_1(x)\)</span> et son représentant. Cette tour a <span class="math">\(4\)</span> étages, et le chemin rouge indique dans lequel de ces <span class="math">\(4\)</span> segments est situé <span class="math">\(x\)</span>. Nous notons <span class="math">\(v_1(x) \in \{0,1\}\)</span> le point rouge au niveau <span class="math">\(n=1\)</span>, ici <span class="math">\(\boxed{v_1(x)=1}\)</span>.</p>
-<p>Entre le niveau <span class="math">\(n=2\)</span> et <span class="math">\(n=1\)</span> c’est le découpage-empilage correspondant à <span class="math">\(\xi&#39;_2\)</span>, de base <span class="math">\[
-B_2 = \underset{B_{20}}{\underbrace{(0, \phi)}} \cup \underset{B_{21}}{\underbrace{(\phi, 1-\phi)}}.
-\]</span> Le point rouge montre que <span class="math">\(\xi&#39;_2(x) \in B_{20}\)</span>, ce que nous notons <span class="math">\(\boxed{v_2(x)=0}\)</span>. La tour au-dessus de <span class="math">\(B_{20}\)</span> a <span class="math">\(3\)</span> étages, représentés par les <span class="math">\(3\)</span> chemins qui connectent ce point à un point du niveau <span class="math">\(n=1\)</span>. Ces <span class="math">\(3\)</span> étages sont <span class="math">\((0, \phi)\)</span>, <span class="math">\((1-2\phi, 1-\phi)\)</span> et <span class="math">\((1-\phi,1)\)</span>. Un seul chemin, correspondant à l’étage <span class="math">\(B_{20}=(0,\phi)\)</span>, connecte <span class="math">\(v_2=0\)</span> à <span class="math">\(v_1=0\)</span>, car si <span class="math">\(\xi&#39;_2(x) \in B_{20}\)</span> alors on a nécessairement <span class="math">\(\xi_1(x) \in B_{10}\)</span> (c’est le cas 3 des trois cas possibles que nous avons précédemment énumérés). Les deux autres chemins montrent que les deux autres étages sont connectés à <span class="math">\(B_{11}\)</span>.</p>
-<p>Le découpage-empilage correspondant à la partition mesurable <span class="math">\(\xi_2\)</span> se visualise alors entre le niveau <span class="math">\(n=2\)</span> et la racine du graphe. Le point rouge <span class="math">\(v_2(x)=0\)</span> indique que <span class="math">\(x\)</span> est dans la tour de gauche. On comptabilise <span class="math">\(9\)</span> chemins possibles qui connectent ce point à la racine, qui correspondent aux <span class="math">\(9\)</span> étages de cette tour.</p>
-</div>
-<div id="graphe-sans-arete-multiple" class="section level3">
-<h3>Graphe sans arête multiple</h3>
-<p>Le graphe de Bratteli sans arête multiple s’obtient en représentant par des points à chaque niveau tous les étages du découpage-empilage.</p>
-<pre class="r"><code>knit_exit()</code></pre>
-</div>
+\]</span> Ainsi, le sommet au niveau <span class="math">\(n=1\)</span> indique seulement si le point <span class="math">\(x\)</span> est dans la tour de gauche ou dans la tour de droite. Et ici, la connexion entre le niveau <span class="math">\(n=1\)</span> et le niveau <span class="math">\(n=0\)</span> indique dans quel étage de la tour se situe <span class="math">\(x\)</span>.</p></li>
+<li><p>Au niveau <span class="math">\(n=2\)</span>, on trouve le second découpage-empilage que nous avons vu. La base est découpée en deux morceaux : <span class="math">\[
+B_2 = \underset{B_{20}}{\underbrace{(3\theta, 1-\theta)}} \cup \underset{B_{21}}{\underbrace{\bigl(1-\theta, g_1^{-1}(1-2\phi)\bigr)}}.
+\]</span> Le sommet au niveau <span class="math">\(n=2\)</span> indique dans quelle tour se situe <span class="math">\(x\)</span>. La connexion entre le niveau <span class="math">\(n=2\)</span> et le niveau <span class="math">\(n=1\)</span> n’indique <em>pas</em> dans quel étage se situe <span class="math">\(x\)</span>, mais dans quel morceau de la tour. Par exemple, si <span class="math">\(x\)</span> est dans la tour de gauche, nous avons vu que ce que nous avons appelé la classe-<span class="math">\(\xi_2\)</span> d’équivalence de <span class="math">\(x\)</span> est constituée de <span class="math">\(9\)</span> points : <span class="math">\[
+\xi_2(x) =  \{x_1, x_{21}, x_{22}, x_{23}, x_{24}, x_{31}, x_{32}, x_{33}, x_{34}\}. 
+\]</span> et que ces <span class="math">\(9\)</span> points sont partitionnés en trois classes-<span class="math">\(\xi_1\)</span> d’équivalence: <span class="math">\[
+\bigl\{\{x_1\}, \{x_{21}, x_{22}, x_{23}, x_{24}\}, \{x_{31}, x_{32}, x_{33}, x_{34}\} \bigr\},
+\]</span> comme le montrent les accolades sur la figure.</p></li>
+</ul>
+<p>On voit bien que le chemin de la racine à <span class="math">\(n \to \infty\)</span> va déterminer le point <span class="math">\(x\)</span>. Au niveau <span class="math">\(n\)</span>, on sait dans quelle tour et dans quel étage du <span class="math">\(n\)</span>-ième découpage-empilage se situe <span class="math">\(x\)</span>, et la longueur des étages tend vers <span class="math">\(0\)</span>.</p>
 </div>
 
 
