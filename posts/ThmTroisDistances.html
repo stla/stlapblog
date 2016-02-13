@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Le théorème des trois distances</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Le théorème des trois distances</a>
+              </h3>
+              <span>2016-02-13</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/ThmTroisDistances.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Le théorème des trois distances, ou des trois longueurs, est à propos de la longueur des arcs qu’on obtient lorsqu’on place sur le cercle unité les points <span class="math">\(0\)</span>, <span class="math">\(\alpha\)</span>, <span class="math">\(2\alpha\)</span>, <span class="math">\(\ldots\)</span>, <span class="math">\(n\alpha\)</span>, où <span class="math">\(\alpha\)</span> est un nombre irrationnel.</p>
+<div id="rappels-sur-les-fractions-continues" class="section level2">
+<h2>Rappels sur les fractions continues</h2>
+<div id="developpement-fini---nombre-rationnel" class="section level3">
+<h3>Développement fini - nombre rationnel</h3>
+<p>Soient <span class="math">\(a_0\geq 0\)</span>, <span class="math">\(a_1 \geq 1\)</span>, <span class="math">\(\ldots\)</span>, <span class="math">\(a_N \geq 1\)</span> des nombres entiers. On définit le nombre rationnel <span class="math">\[
+r_N = a_0 + \dfrac{1}{a_1 + \dfrac{1}{\cdots + \dfrac{1}{a_{N-1} + \dfrac{1}{a_N}}}}.
+\]</span> Le numérateur <span class="math">\(p_N\)</span> et le dénominateur <span class="math">\(q_N\)</span> de l’écriture fractionnaire irréductible <span class="math">\(r_n = \frac{p_N}{q_N}\)</span> s’obtiennent par récurrence avec les formules suivantes : <span class="math">\[
+\begin{cases}
+p_{-1} = q_{-1} = 0 \\ 
+p_0 = a_0, \, q_0 = 1 \\ 
+p_n = a_n p_{n-1} + p_{n-2}, \, q_n = a_n q_{n-1} + q_{n-2}
+\end{cases}.
+\]</span> Notons qu’on a alors <span class="math">\(q_1 = a_1\)</span>.</p>
+<p>Voyons un exemple avec R. On prend <span class="math">\(a_0=0\)</span>, <span class="math">\(a_1=1\)</span>, <span class="math">\(a_2=2\)</span> et <span class="math">\(a_3=3\)</span>.</p>
+<pre class="r"><code>a &lt;- c(0, 1, 2, 3)
+( rN &lt;- a[1] + 1/(a[2] + 1/(a[3] + 1/a[4])) )
+## 0.7</code></pre>
+<p>On peut obtenir <span class="math">\(r_N\)</span> avec la librairie <code>contfrac</code> :</p>
+<pre class="r"><code>library(contfrac)
+( rN &lt;- CF(a, finite=TRUE) )
+## 0.7</code></pre>
+<p>Les entiers <span class="math">\(p_n\)</span> et <span class="math">\(q_n\)</span> s’obtiennent avec la fonction <code>convergents</code> :</p>
+<pre class="r"><code>convergents(a)
+## $A
+## [1] 0 1 2 7
+## 
+## $B
+## [1]  1  1  3 10</code></pre>
+<p>Inversément, si on donne le nombre rationnel <span class="math">\(0.7\)</span> on peut obtenir son développement en fraction continue - les <span class="math">\(a_n\)</span> :</p>
+<pre class="r"><code>as_cf(0.7)
+##  [1] 0.0000e+00 1.0000e+00 2.0000e+00 3.0000e+00 3.7530e+14 3.0000e+00
+##  [7] 4.0000e+00 1.0000e+00 2.2518e+14 1.0000e+00</code></pre>
+<p>Comme on le voit, la fonction <code>as_cf</code> donne bien les entiers <span class="math">\(a_0=0\)</span>, <span class="math">\(a_1=1\)</span>, <span class="math">\(a_2=2\)</span> et <span class="math">\(a_3=3\)</span>, puis donne des <span class="math">\(a_n\)</span> curieux pour <span class="math">\(n \geq 4\)</span>. Cela vient du fait que <code>0.7</code> n’est pas parfaitement encodé en nombre “double” dans R :</p>
+<pre class="r"><code>print(0.7, digits=20)
+## [1] 0.69999999999999995559</code></pre>
+<p>L’algorithme qui calcule les <span class="math">\(a_n\)</span> quand on donne un nombre rationnel <span class="math">\(x\)</span> est le suivant. Il calcule<br /><span class="math">\[
+x_0=x, \, x_n = \frac{1}{\{x_{n-1}\}}
+\]</span> en s’arrêtant à l’indice <span class="math">\(N\)</span> lorsque <span class="math">\(x_N\)</span> est entier, puis calcule <span class="math">\(a_n = [x_n]\)</span>.</p>
+</div>
+<div id="developpement-infini---nombre-irrationnel" class="section level3">
+<h3>Développement infini - nombre irrationnel</h3>
+<p>Lorsque <span class="math">\(\alpha&gt;0\)</span> est un nombre irrationnel, le même algorithme ne d’arrête jamais, et produit alors une suite <span class="math">\({(a_n)}_{n \geq 0}\)</span> - le développement en fraction continue de <span class="math">\(x\)</span>.</p>
+<p>On a aussi les suites <span class="math">\({(p_n)}_{n \geq 0}\)</span> et <span class="math">\({(q_n)}_{n \geq 0}\)</span> définies de la même façon. On note de plus <span class="math">\[
+\eta_n = |q_n\alpha-p_n|.  
+\]</span> La majoration <span class="math">\(\eta_n \leq \frac{1}{q_{n+1}}\)</span> est bien connue.</p>
+</div>
+</div>
+<div id="ecriture-n-mq_k-q_k-1-r" class="section level2">
+<h2>Écriture <span class="math">\(n = mq_k + q_{k-1} + r\)</span></h2>
+<p>Soit <span class="math">\(\alpha \in ]0,1[\)</span> un nombre irrationnel. On note <span class="math">\({(a_n)}_{n \geq 0}\)</span> son développement en fraction continue.<br />Du fait que <span class="math">\(\alpha &lt; 1\)</span>, le premier “chiffre” <span class="math">\(a_0\)</span> est <span class="math">\(0\)</span>.</p>
+<p>Tout nombre entier <span class="math">\(n \geq a_1+1\)</span> s’écrit de façon unique <span class="math">\[
+n = m q_k + q_{k-1} + r
+\]</span> où <span class="math">\(k \geq 1\)</span>, <span class="math">\(1 \leq m \leq a_{k+1}\)</span> et <span class="math">\(0 \leq r &lt; q_k\)</span>.</p>
+<p>L’entier <span class="math">\(k\)</span> est déterminé par <span class="math">\[
+q_k + q_{k-1} \,\leq\, n \,&lt;\, q_{k+1} + q _k = a_{k+1}q_k + q_{k-1} + q_k
+\]</span> puis <span class="math">\(m\)</span> est déterminé par <span class="math">\[
+mq_k + q_{k-1}  %= (m-1) q_k + q_{k-1} + q_k
+\,\leq\,  n \,&lt;\,  mq_k  + q_{k-1} + q_k
+\]</span> et finalement <span class="math">\[
+r = n - (m q_k + q_{k-1})
+\]</span> La fonction ci-dessous retourne <span class="math">\(k\)</span>, <span class="math">\(m\)</span> et <span class="math">\(r\)</span>, et prend en entrée <span class="math">\((a_1, a_2, \ldots)\)</span> et <span class="math">\(n\)</span> :</p>
+<pre class="r"><code>f &lt;- function(a, n){
+  if(n&lt;a[1]+1) stop(sprintf(&quot;m must be &gt;= %s&quot;, a[1]+1))
+  q &lt;- c(1, a[1])
+  k &lt;- 1; while(q[k+1]+q[k] &lt;= n){
+    q &lt;- c(q, a[k+1]*q[k+1]+q[k])
+    k &lt;- k+1
+  }
+  m &lt;- 1; while(m*q[k] + q[k-1] + q[k] &lt;= n){
+    m &lt;- m+1
+  }
+  r &lt;- n-(m*q[k]+q[k-1])
+  cat(sprintf(&quot;k=%s, m=%s, r=%s\n&quot;, k-1, m, r))
+  return(invisible(list(k=k-1, m=m, r=r)))
+}</code></pre>
+<p>Prenons par exemple <span class="math">\(a_1=2\)</span>, <span class="math">\(a_2=3\)</span>, <span class="math">\(a_3=2\)</span>, <span class="math">\(a_4=4\)</span> (rappelons que <span class="math">\(a_0=0\)</span>). Cela donne <span class="math">\(q_1=2\)</span>, <span class="math">\(q_2 = 7\)</span>, <span class="math">\(q_3 = 16\)</span>. Et prenons<br /><span class="math">\[
+n = 2 \times q_3 + q_2 + 1 = 40
+\]</span></p>
+<pre class="r"><code>f(c(2,3,2,4), 40)
+## k=3, m=2, r=1</code></pre>
+</div>
+<div id="theoreme-des-trois-distances" class="section level2">
+<h2>Théorème des trois distances</h2>
+<p>Soit <span class="math">\(\alpha \in ]0,1[\)</span> un nombre irrationnel et <span class="math">\(n\)</span> un nombre entier. Si on place successivement les points <span class="math">\(0\)</span>, <span class="math">\(\alpha\)</span>, <span class="math">\(2\alpha\)</span>, <span class="math">\(\ldots\)</span>, <span class="math">\(n\alpha\)</span> sur le cercle unité, on dépasse un tour de cercle du moment que <span class="math">\(n \geq a_1+1\)</span>.</p>
+<p>Ces points partitionnent le cercle en un certain nombre d’arcs :</p>
+<p><img src="assets/fig/Thm3D-unnamed-chunk-8-1.png" title="" alt="" width="312" style="display: block; margin: auto;" /></p>
+<p>Le <em>théorème des trois distances</em>, ou des <em>trois longueurs</em>, donne de l’information précise quant à la longueur de ces arcs.</p>
+<p>Considérons l’écriture de <span class="math">\(n\)</span> vue auparavant : <span class="math">\[
+n = m q_k + q_{k-1} + r.
+\]</span></p>
+<p>Il y a deux possibilités :</p>
+<ul>
+<li><p>Si <span class="math">\(r=q_k-1\)</span>, il y a deux longueurs. La petite est <span class="math">\(\eta_k\)</span>. La grande est <span class="math">\(\eta_{k-1}-m\eta_k\)</span>.</p></li>
+<li><p>Sinon, il y a trois longueurs. Dans l’ordre croissant, la plus petite est <span class="math">\(\eta_k\)</span>. La seconde est <span class="math">\(\eta_{k-1}-m\eta_k\)</span>. La troisème, la plus grande est <span class="math">\(\eta_{k-1}-(m-1)\eta_k\)</span>, c’est la somme des deux autres.</p></li>
+</ul>
+<p>L’énoncé de ce théorème donné dans l’article d’<a href="http://www.theoremoftheday.org/Docs/3dAlessandriBerthe.pdf">Alessandri et Berthé</a> fournit encore plus d’informations : il fournit le nombre d’arcs qui ont chacune de ces longueurs.</p>
+<div id="application-epsilon-filet" class="section level3">
+<h3>Application : <span class="math">\(\epsilon\)</span>-filet</h3>
+<p>Dans les deux cas, la plus grande distance est toujours plus petite que <span class="math">\(\eta_{k-1}\)</span>. On sait par ailleurs, nous l’avons déjà rappelé, que <span class="math">\(\eta_{k-1} \leq \frac{1}{q_{k}}\)</span>. Choisissant alors <span class="math">\(k\)</span> tel que <span class="math">\(\frac{1}{q_{k}} &lt; \epsilon\)</span>, et <span class="math">\(n\)</span> de la forme <span class="math">\(n = m q_k + q_{k-1} + r\)</span>, le théorème montre alors que l’ensemble <span class="math">\(\{0, \alpha, \ldots, n\alpha\}\)</span> intersecte tous les arcs de longueur <span class="math">\(\epsilon\)</span>.</p>
+</div>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
