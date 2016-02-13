@@ -111,7 +111,7 @@ centralKernels &lt;- function(Mn.fun, N){
   for(k in 1:(N-1)){
     M &lt;- Mn.fun(k)
     m &lt;- nrow(M); n &lt;- ncol(M)
-    S &lt;- apply(M, 2, function(x) which(x!=0)) 
+    S &lt;- lapply(1:ncol(M), function(i) which(M[,i]!=0)) 
     dims &lt;- as.vector(dims0%*%M) 
     P &lt;- lapply(1:n, function(i){
                              as.character(dims0[S[[i]]]*M[S[[i]],i]/dims[i])
@@ -166,6 +166,10 @@ Pascal_Mn(0)
 <h3>Computing the intrinsic distances</h3>
 <p>Once one has the central kernels, one can compute the intrinsic distances, as defined in the paper <a href="http://arxiv.org/abs/1501.02166">Standardness of monotonic Markov filtrations</a>, with the help of the <a href="http://stla.github.io/stlapblog/posts/kantorovich-package.html">kantorovich package</a>. I provide the code below.</p>
 <pre class="r"><code>library(kantorovich)
+## Warning: replacing previous import by &#39;gmp::apply&#39; when loading
+## &#39;kantorovich&#39;
+## Warning: replacing previous import by &#39;gmp::as.bigq&#39; when loading
+## &#39;kantorovich&#39;
 RHO &lt;- lapply(ckernels, function(kernel) matrix(&quot;&quot;, nrow=nrow(kernel), ncol=nrow(kernel)))  
 RHO[[1]] &lt;- (diag(2) + 1) %% 2
 n &lt;- length(ckernels)-1
