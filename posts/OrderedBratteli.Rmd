@@ -1,0 +1,42 @@
+---
+title: "Ordered Bratteli graphs"
+date: "2016-02-21"
+output: html_document
+---
+
+The way one labels the edges on a Bratteli graph possibly causes some confusion for someone discovering this topic. 
+
+There are two different labellings. 
+
+- The first labelling, shown on Figure 1(a), consists in identifying 
+the edges from a vertex $v$ at level $n$ to all the vertices connected to $v$ at 
+level $n+1$. These labels allow to identify a path starting at the root vertex. 
+
+- The second labelling, shown on Figure 1(b), is done in the other direction. 
+For each vertex $v$ at level $n\geq 1$, the labels identify the edges connecting $v$ 
+to all the vertices connected to $v$ at level $n-1$. 
+Note that these labels are useless for $n=1$, because there is only one edge from 
+a vertex $v$ at level $n=1$ to the root vertex at level $n=0$. 
+
+![](./assets/img/OBfig1.png)
+
+The second labelling defines the order between the paths. To see it, it is convenient to visualize the trees shown on Figure 2. One tree is drawn for each vertex at level $n=3$. Each tree, when one reads it from the bottom to the top, shows the possible paths from this vertex to the vertices at level $n=1$. 
+
+![](./assets/img/OBfig2.png)
+
+The branches are ordered by the lexicographic order on the sequences of labels, and this corresponds to the order between the paths. 
+
+Here, one sees on the first tree: 
+
+<p style=text-align:center;>
+<span style="background-color:yellow">000x</span> < <span style="background-color:yellow">100x</span> < <span style="background-color:yellow">110x</span>
+</p>
+
+and on the second one: 
+
+<p style=text-align:center;>
+<span style="background-color:yellow">001x</span> < <span style="background-color:yellow">101x</span> < <span style="background-color:yellow">111x</span> < <span style="background-color:yellow">120x</span> < <span style="background-color:yellow">200x</span>
+</p>
+
+
+Technical details about this order can be found in the Paper *"Ordered Bratteli Diagrams, dimension groups and topological dynamics"* by Herman, Putnam \& Skau.
