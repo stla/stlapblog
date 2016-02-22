@@ -1,0 +1,99 @@
+---
+title: "Variable importance in random forests"
+date: "2016-02-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(collapse=TRUE)
+```
+
+
+Consider we run a random forest on $n$ independent realizations of a random vector $(X_1,X_2,X_3,Y)$, assuming $Y$ is a numerical response variable. 
+
+The theoretical classifier is the function $f$ such that 
+$$
+E[Y\mid X_1, X_2, X_3]=f(X_1, X_2, X_3).
+$$
+
+A random forest also returns a so-called *variable importance* $\hat I_j$ for each predicting variable $X_j$. I am going to explain what is the variable importance. 
+
+I take $j=1$ not to be invaded by the notations. 
+In the paper ["Correlation and variable importance in random forests" (Gregorutti & al)](http://arxiv.org/abs/1310.5726), it is shown that the variable importance $\hat I_1$ of $X_1$ goes to the  *population variable importance* 
+$$
+I_1 = E\left[{\bigl(Y-f(X'_1,X_2,X_3)\bigr)}^2\right] - E\left[{\bigl(Y-f(X_1,X_2,X_3)\bigr)}^2\right]
+$$
+where $X'_1$ is a random variable having the same distribution as $X_1$ but is  independent of all other random variables $X_2,X_3,Y$. It is always a nonnegative number. Roughly speaking, $X_1$ has a high importance $I_1$ if the prediction error has a high increase when one breaks the link between $X_1$ and $Y$. 
+
+The convergence $\hat I_j \to I_j$ shown by Gregorutti & al was an expected result. 
+The variable importance $\hat I_j$ of the $j$-th predictor $X_j$ is defined as follows. For each tree $t$ of the random forest, there's a classifier $\hat f_t$. The mean squared error $MSE_t$ in tree $t$ is the mean squared prediction error in the out-of-bag (*OOB*) sample of tree $t$. The $j$-th perturbed mean squared error $MSE_t^{(j)}$ is defined similarly after randomly permuting the values of $j$-th variable in the OOB sample. Finally  $\hat I_j$ is defined as the average difference $\overline{MSE}^{(j)} - \overline{MSE}$ over all trees. 
+
+Let us check this convergence with the `randomForest` package. I will take 
+$$
+f(X_1, X_2, X_3) = X_1 + X_2X_3.
+$$
+This function $f$ is of the form
+$$
+f(X_1, X_2, X_3) = f_1(X_1) + f_{23}(X_2X_3).
+$$
+It is shown in Gregorutti & al's paper that $I_1= 2Var(f_1(X_1))$ in such a case. 
+
+Before running the random forest, we will check this result and evaluate $I_2$ and $I_3$ with the help of simulations. The distribution of my random vector $(X_1,X_2,X_3,Y)$ can be seen on these simulations:
+
+```{r sims}
+set.seed(666)
+N <- 25000
+x1 <- rnorm(N)
+x2 <- x1 + rnorm(N)
+x3 <- x1 + x2 + rnorm(N)
+f <- function(x1, x2, x3)  x1 + x2*x3
+sigma <- 1
+y <- f(x1, x2, x3) + rnorm(N, sd=sigma)
+```
+
+Thus $E\left[{\bigl(Y-f(X_1,X_2,X_3)\bigr)}^2\right] = \sigma^2$ with $\sigma=1$. 
+
+The evaluation of $I_1$ with the help of simulations indeed returns a result close to $2Var(X_1)=2$:
+
+```{r I1}
+xx1 <- rnorm(N)
+( I1 <- mean((y-f(xx1,x2,x3))^2) - sigma^2 )
+```
+
+One finds $I_2 \approx I_3 \approx 40$:
+
+```{r I2I3}
+xx2 <- xx1 + rnorm(N)
+( I2 <- mean((y-f(x1,xx2,x3))^2) - sigma^2 )
+xx3 <- xx1 + xx2 + rnorm(N)
+( I3 <- mean((y-f(x1,x2,xx3))^2) - sigma^2 )
+```
+
+Now let us try the random forest on the first $n$ simulations with $n=300$.
+
+```{r XY}
+XY <- data.frame(x1, x2, x3, y)[1:300, ]
+```
+
+I firstly tune the `mtry` parameter with the `train` function of the `caret` package. Recall that `mtry` is the number of variables selected at random for the splitting in each tree. Here it can be $2$ or $3$ since there are only $3$ predictors. 
+
+```{r training, message=FALSE}
+library(caret)
+( training <- train(x=XY[,1:3], y=XY$y, tuneLength=2) )
+```
+
+The selected value of `mtry` was $2$. Now I run the random forest, requiring the  importances with the option `importance=TRUE`:
+
+```{r rf, message=FALSE}
+library(randomForest)
+rf <- randomForest(y ~ ., data=XY, importance=TRUE, mtry=training$finalModel$tuneValue$mtry)
+```
+
+The variable importances $\hat I_j$ are provided by the `importance` function as follows:
+
+```{r}
+importance(rf, type=1, scale=FALSE)
+```
+
+We could conclude they are not very close to their theoretical values. But the ratios $\hat I_j / \hat I_{j'}$ are rather good estimates of their theoretical values.

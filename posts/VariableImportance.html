@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Variable importance in random forests</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Variable importance in random forests</a>
+              </h3>
+              <span>2016-02-22</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/VariableImportance.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Consider we run a random forest on <span class="math">\(n\)</span> independent realizations of a random vector <span class="math">\((X_1,X_2,X_3,Y)\)</span>, assuming <span class="math">\(Y\)</span> is a numerical response variable.</p>
+<p>The theoretical classifier is the function <span class="math">\(f\)</span> such that <span class="math">\[
+E[Y\mid X_1, X_2, X_3]=f(X_1, X_2, X_3).
+\]</span></p>
+<p>A random forest also returns a so-called <em>variable importance</em> <span class="math">\(\hat I_j\)</span> for each predicting variable <span class="math">\(X_j\)</span>. I am going to explain what is the variable importance.</p>
+<p>I take <span class="math">\(j=1\)</span> not to be invaded by the notations. In the paper <a href="http://arxiv.org/abs/1310.5726">“Correlation and variable importance in random forests” (Gregorutti &amp; al)</a>, it is shown that the variable importance <span class="math">\(\hat I_1\)</span> of <span class="math">\(X_1\)</span> goes to the <em>population variable importance</em> <span class="math">\[
+I_1 = E\left[{\bigl(Y-f(X&#39;_1,X_2,X_3)\bigr)}^2\right] - E\left[{\bigl(Y-f(X_1,X_2,X_3)\bigr)}^2\right]
+\]</span> where <span class="math">\(X&#39;_1\)</span> is a random variable having the same distribution as <span class="math">\(X_1\)</span> but is independent of all other random variables <span class="math">\(X_2,X_3,Y\)</span>. It is always a nonnegative number. Roughly speaking, <span class="math">\(X_1\)</span> has a high importance <span class="math">\(I_1\)</span> if the prediction error has a high increase when one breaks the link between <span class="math">\(X_1\)</span> and <span class="math">\(Y\)</span>.</p>
+<p>The convergence <span class="math">\(\hat I_j \to I_j\)</span> shown by Gregorutti &amp; al was an expected result. The variable importance <span class="math">\(\hat I_j\)</span> of the <span class="math">\(j\)</span>-th predictor <span class="math">\(X_j\)</span> is defined as follows. For each tree <span class="math">\(t\)</span> of the random forest, there’s a classifier <span class="math">\(\hat f_t\)</span>. The mean squared error <span class="math">\(MSE_t\)</span> in tree <span class="math">\(t\)</span> is the mean squared prediction error in the out-of-bag (<em>OOB</em>) sample of tree <span class="math">\(t\)</span>. The <span class="math">\(j\)</span>-th perturbed mean squared error <span class="math">\(MSE_t^{(j)}\)</span> is defined similarly after randomly permuting the values of <span class="math">\(j\)</span>-th variable in the OOB sample. Finally <span class="math">\(\hat I_j\)</span> is defined as the average difference <span class="math">\(\overline{MSE}^{(j)} - \overline{MSE}\)</span> over all trees.</p>
+<p>Let us check this convergence with the <code>randomForest</code> package. I will take <span class="math">\[
+f(X_1, X_2, X_3) = X_1 + X_2X_3.
+\]</span> This function <span class="math">\(f\)</span> is of the form <span class="math">\[
+f(X_1, X_2, X_3) = f_1(X_1) + f_{23}(X_2X_3).
+\]</span> It is shown in Gregorutti &amp; al’s paper that <span class="math">\(I_1= 2Var(f_1(X_1))\)</span> in such a case.</p>
+<p>Before running the random forest, we will check this result and evaluate <span class="math">\(I_2\)</span> and <span class="math">\(I_3\)</span> with the help of simulations. The distribution of my random vector <span class="math">\((X_1,X_2,X_3,Y)\)</span> can be seen on these simulations:</p>
+<pre class="r"><code>set.seed(666)
+N &lt;- 25000
+x1 &lt;- rnorm(N)
+x2 &lt;- x1 + rnorm(N)
+x3 &lt;- x1 + x2 + rnorm(N)
+f &lt;- function(x1, x2, x3)  x1 + x2*x3
+sigma &lt;- 1
+y &lt;- f(x1, x2, x3) + rnorm(N, sd=sigma)</code></pre>
+<p>Thus <span class="math">\(E\left[{\bigl(Y-f(X_1,X_2,X_3)\bigr)}^2\right] = \sigma^2\)</span> with <span class="math">\(\sigma=1\)</span>.</p>
+<p>The evaluation of <span class="math">\(I_1\)</span> with the help of simulations indeed returns a result close to <span class="math">\(2Var(X_1)=2\)</span>:</p>
+<pre class="r"><code>xx1 &lt;- rnorm(N)
+( I1 &lt;- mean((y-f(xx1,x2,x3))^2) - sigma^2 )
+## [1] 1.989307</code></pre>
+<p>One finds <span class="math">\(I_2 \approx I_3 \approx 40\)</span>:</p>
+<pre class="r"><code>xx2 &lt;- xx1 + rnorm(N)
+( I2 &lt;- mean((y-f(x1,xx2,x3))^2) - sigma^2 )
+## [1] 40.33887
+xx3 &lt;- xx1 + xx2 + rnorm(N)
+( I3 &lt;- mean((y-f(x1,x2,xx3))^2) - sigma^2 )
+## [1] 41.33211</code></pre>
+<p>Now let us try the random forest on the first <span class="math">\(n\)</span> simulations with <span class="math">\(n=300\)</span>.</p>
+<pre class="r"><code>XY &lt;- data.frame(x1, x2, x3, y)[1:300, ]</code></pre>
+<p>I firstly tune the <code>mtry</code> parameter with the <code>train</code> function of the <code>caret</code> package. Recall that <code>mtry</code> is the number of variables selected at random for the splitting in each tree. Here it can be <span class="math">\(2\)</span> or <span class="math">\(3\)</span> since there are only <span class="math">\(3\)</span> predictors.</p>
+<pre class="r"><code>library(caret)
+( training &lt;- train(x=XY[,1:3], y=XY$y, tuneLength=2) )
+## Random Forest 
+## 
+## 300 samples
+##   3 predictors
+## 
+## No pre-processing
+## Resampling: Bootstrapped (25 reps) 
+## Summary of sample sizes: 300, 300, 300, 300, 300, 300, ... 
+## Resampling results across tuning parameters:
+## 
+##   mtry  RMSE      Rsquared   RMSE SD    Rsquared SD
+##   2     1.898910  0.8896097  0.5516993  0.04221964 
+##   3     1.933819  0.8817003  0.5185210  0.04466596 
+## 
+## RMSE was used to select the optimal model using  the smallest value.
+## The final value used for the model was mtry = 2.</code></pre>
+<p>The selected value of <code>mtry</code> was <span class="math">\(2\)</span>. Now I run the random forest, requiring the importances with the option <code>importance=TRUE</code>:</p>
+<pre class="r"><code>library(randomForest)
+rf &lt;- randomForest(y ~ ., data=XY, importance=TRUE, mtry=training$finalModel$tuneValue$mtry)</code></pre>
+<p>The variable importances <span class="math">\(\hat I_j\)</span> are provided by the <code>importance</code> function as follows:</p>
+<pre class="r"><code>importance(rf, type=1, scale=FALSE)
+##      %IncMSE
+## x1  1.241496
+## x2 22.753704
+## x3 20.228597</code></pre>
+<p>We could conclude they are not very close to their theoretical values. But the ratios <span class="math">\(\hat I_j / \hat I_{j&#39;}\)</span> are rather good estimates of their theoretical values.</p>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
