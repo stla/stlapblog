@@ -9,6 +9,11 @@ output: html_document
 \newcommand{\kzero}{\ket{0}}
 \newcommand{\kone}{\ket{1}}
 \newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\AA}{\mathcal{A}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse=FALSE, fig.path="assets/fig/PrQuantique_Intro-")
@@ -107,6 +112,35 @@ $$
 \langle \psi, e^{-itA}\psi \rangle = \sum_k e^{-it\alpha_k} {\Vert P_k \kpsi \Vert}^2
 $$
 et ceci est exactement la transformée de Fourier de la loi donnée dans le principe de Born, celle qui assigne la probabilité ${\Vert P_k \kpsi \Vert}^2$ à $\alpha_k$. 
+
+
+
+## Variables aléatoires non-commutatives 
+
+Si on effectue deux mesures successives, la probabilité du résultat obtenu dépend généralement de l'ordre dans lequel les mesures sont effectuées, du fait que le système change d'état après une mesure. 
+
+En effet, considérons deux observables $A$ et $B$ et leur décomposition spectrale :
+$$
+\begin{align*}
+A & = \alpha_1P_1 + \cdots + \alpha_rP_r, \\
+B & = \beta_1 Q_1 + \cdots + \beta_s Q_s.
+\end{align*}
+$$
+Soit $\psi$ l'état du système. La mesure de $A$ révèle $\alpha_k$ avec probabilité ${\Vert P_k\psi\Vert}^2$, et dans ce cas l'état de système saute en $P_k\psi/{\Vert P_k\psi\Vert}$. Si on effectue ensuite la mesure de $B$ il faut appliquer le principe de Born à l'état courant du système. On obtient :
+$$
+{\Pr}_\psi(\text{$A$ révèle $\alpha_k$ puis $B$ révèle $\beta_l$})
+={\Vert P_k\psi\Vert}^2\frac{{\Vert Q_lP_k \psi\Vert}^2}{{\Vert P_k\psi\Vert}^2} = {\Vert Q_lP_k \psi\Vert}^2.
+$$
+De même, lorsqu'on mesure d'abord $B$, on obtient :
+$$
+{\Pr}_\psi(\text{$B$ révèle $\beta_l$ puis $A$ révèle $\alpha_k$})
+= {\Vert P_k Q_l\psi\Vert}^2.
+$$
+On obtient la même probabilité lorsque $P_k$ et $Q_l$ commutent. *Ceci est le cas lorsque $A$ et $B$ commutent*. En effet, le théorème de décomposition spectrale implique que pour toute fonction polynomiale $g$, on a 
+$$
+g(A) = g(\alpha_1)P_1 + \cdots + g(\alpha_r)P_r,
+$$
+et par conséquent $P_k$ est une fonction polynomiale de $A$. De même, $Q_l$ est une fonction polynomiale de $B$, et donc  $P_k$ et $Q_l$ commutent si $A$ et $B$ commutent. 
 
 
 # Références 

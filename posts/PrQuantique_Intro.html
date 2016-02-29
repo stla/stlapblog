@@ -84,28 +84,28 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/PrQuantique_Intro.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>(latest update : 2015-12-19 12:44:49)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-02-29 15:13:57)</em></strong> <br/></p>
 <!-- xxx -->
 <p>Cet article vise à introduire la théorie des probabilités quantiques. Il est rédigé dans l’optique d’être lisible pour un lecteur ayant des connaissances de base sur les espaces de Hilbert. À vrai dire, j’apprends cette théorie en ce moment, et en quelque sorte ce sont mes notes personnelles sur le sujet. Pour cette raison, il est susceptible d’être modifié à tout moment.</p>
 <div id="exemple-non-formel-qubit-a-la-schrodinger" class="section level2">
 <h2>Exemple non formel : qubit à la Schrödinger</h2>
-<p>L’amusette du <a href="https://fr.wikipedia.org/wiki/Chat_de_Schr%C3%B6dinger">chat de Schrödinger</a> est bien connue. Elle est souvent présentée en disant que le chat, avant que l’on ouvre la boîte où il est enfermé, est dans l’état quantique <span class="math">\[
+<p>L’amusette du <a href="https://fr.wikipedia.org/wiki/Chat_de_Schr%C3%B6dinger">chat de Schrödinger</a> est bien connue. Elle est souvent présentée en disant que le chat, avant que l’on ouvre la boîte où il est enfermé, est dans l’état quantique <span class="math display">\[
 {{\left|{\psi}\right\rangle}}= \frac{1}{\sqrt{2}} {{\left|{0}\right\rangle}}+ \frac{1}{\sqrt{2}} {{\left|{1}\right\rangle}}, 
-\]</span> où <span class="math">\({{\left|{0}\right\rangle}}\)</span> est assimilé à l’état de mort et <span class="math">\({{\left|{1}\right\rangle}}\)</span> est assimilé à l’état de vie.</p>
+\]</span> où <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> est assimilé à l’état de mort et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span> est assimilé à l’état de vie.</p>
 <p>Cet état quantique à deux niveaux est appelé un <em>qubit</em>. Je renvoie le lecteur à mon article sur la <a href="http://stla.github.io/stlapblog/posts/BlochSphere.html">sphère de Bloch</a> pour la définition mathématique du qubit.</p>
-<p>On dit ensuite que lorsqu’on ouvre la boîte dans laquelle le chat est enfermé, il est soit dans l’état <span class="math">\({{\left|{0}\right\rangle}}\)</span> soit dans l’état <span class="math">\({{\left|{1}\right\rangle}}\)</span> avec probabilités <span class="math">\(1/2\)</span> et <span class="math">\(1/2\)</span>. Ceci est dû au <em>principe de Born</em>, dont un énoncé formel est donné dans la section suivante.</p>
+<p>On dit ensuite que lorsqu’on ouvre la boîte dans laquelle le chat est enfermé, il est soit dans l’état <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> soit dans l’état <span class="math inline">\({{\left|{1}\right\rangle}}\)</span> avec probabilités <span class="math inline">\(1/2\)</span> et <span class="math inline">\(1/2\)</span>. Ceci est dû au <em>principe de Born</em>, dont un énoncé formel est donné dans la section suivante.</p>
 </div>
 <div id="quantites-observables-variables-aleatoires" class="section level2">
 <h2>Quantités observables (variables aléatoires)</h2>
-<p>Il y a un sous-entendu de taille dans l’exemple du qubit à la Schrödinger : il n’est pas vrai en général qu’un qubit saute soit en <span class="math">\({{\left|{0}\right\rangle}}\)</span> soit en <span class="math">\({{\left|{1}\right\rangle}}\)</span>. Cela dépend de quelle <em>quantité</em> on observe. Une quantité, appelée un <em>observable</em>, est représentée par une matrice auto-adjointe <span class="math">\(A\)</span> en probabilités quantiques. J’envoie le lecteur au livre d’<a href="https://books.google.be/books?id=dVs8PcZ0Hd8C" title="Lectures on Quantum Theory">Isham</a> pour une discussion sur la notion de <em>quantité</em> en physique.</p>
-<p>Par le théorème de décomposition spectrale (rappelé ci-dessous), une telle matrice se décompose en une combinaison linéaire de projecteurs sur des sous-espaces orthogonaux et complémentaires. Quand l’état quantique “saute” lors de la mesure de <span class="math">\(A\)</span>, il est projeté et renormalisé sur un de sous-espaces. Dans le cas du qubit à la Schrödinger, l’observable qui est sous-entendu “décompose” l’espace des qubits en les deux sous-espaces orthogonaux engendrés par <span class="math">\({{\left|{0}\right\rangle}}\)</span> et <span class="math">\({{\left|{1}\right\rangle}}\)</span>.</p>
-<p>Ci-dessous, nous formulons le principe général pour les états quantiques dans <span class="math">\(\mathbb{C}^n\)</span>, <span class="math">\(n \geq 2\)</span>, c’est-à-dire, à l’instar du cas <span class="math">\(n=2\)</span>, un vecteur normalisé dans <span class="math">\(\mathbb{C}^n\)</span>. Ce principe, dit <em>principe de Born</em>, ou <em>postulat fondamental des probabilités quantiques</em>, repose sur la décomposition spectrale des matrices auto-adjointes.</p>
+<p>Il y a un sous-entendu de taille dans l’exemple du qubit à la Schrödinger : il n’est pas vrai en général qu’un qubit saute soit en <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> soit en <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>. Cela dépend de quelle <em>quantité</em> on observe. Une quantité, appelée un <em>observable</em>, est représentée par une matrice auto-adjointe <span class="math inline">\(A\)</span> en probabilités quantiques. J’envoie le lecteur au livre d’<a href="https://books.google.be/books?id=dVs8PcZ0Hd8C" title="Lectures on Quantum Theory">Isham</a> pour une discussion sur la notion de <em>quantité</em> en physique.</p>
+<p>Par le théorème de décomposition spectrale (rappelé ci-dessous), une telle matrice se décompose en une combinaison linéaire de projecteurs sur des sous-espaces orthogonaux et complémentaires. Quand l’état quantique “saute” lors de la mesure de <span class="math inline">\(A\)</span>, il est projeté et renormalisé sur un de sous-espaces. Dans le cas du qubit à la Schrödinger, l’observable qui est sous-entendu “décompose” l’espace des qubits en les deux sous-espaces orthogonaux engendrés par <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>.</p>
+<p>Ci-dessous, nous formulons le principe général pour les états quantiques dans <span class="math inline">\(\mathbb{C}^n\)</span>, <span class="math inline">\(n \geq 2\)</span>, c’est-à-dire, à l’instar du cas <span class="math inline">\(n=2\)</span>, un vecteur normalisé dans <span class="math inline">\(\mathbb{C}^n\)</span>. Ce principe, dit <em>principe de Born</em>, ou <em>postulat fondamental des probabilités quantiques</em>, repose sur la décomposition spectrale des matrices auto-adjointes.</p>
 <div class="title_box">
 <div id="title" style="color:blue;font-size:15px;">
 Décomposition spectrale des matrices auto-adjointes
 </div>
 <div id="content">
-Pour toute matrice auto-adjointe <span class="math">\(A\)</span>, il existe une décomposition de <span class="math">\(\mathbb{C}^n\)</span> en sous-espaces orthogonaux <span class="math">\(V_1\)</span>, <span class="math">\(\ldots\)</span>, <span class="math">\(V_r\)</span> telle que <span class="math">\[ A = \alpha_1 P_1 + \cdots + \alpha_r P_r,\]</span> où <span class="math">\(P_k=P_{V_k}\)</span> désigne le projecteur orthogonal sur <span class="math">\(V_k\)</span> et les <span class="math">\(\alpha_k\)</span> sont des nombres distincts et <strong>réels</strong>.
+Pour toute matrice auto-adjointe <span class="math inline">\(A\)</span>, il existe une décomposition de <span class="math inline">\(\mathbb{C}^n\)</span> en sous-espaces orthogonaux <span class="math inline">\(V_1\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(V_r\)</span> telle que <span class="math display">\[ A = \alpha_1 P_1 + \cdots + \alpha_r P_r,\]</span> où <span class="math inline">\(P_k=P_{V_k}\)</span> désigne le projecteur orthogonal sur <span class="math inline">\(V_k\)</span> et les <span class="math inline">\(\alpha_k\)</span> sont des nombres distincts et <strong>réels</strong>.
 </div>
 </div>
 <div class="title_box">
@@ -113,38 +113,56 @@ Pour toute matrice auto-adjointe <span class="math">\(A\)</span>, il existe une 
 Postulat fondamental des probabilités quantiques
 </div>
 <div id="content">
-<p>Soit <span class="math">\({{\left|{\psi}\right\rangle}}\)</span> un état quantique dans <span class="math">\(\mathbb{C}^n\)</span> et <span class="math">\(A\)</span> un observable, de décomposition spectrale donnée dans l’encadré précédent. Alors, lorsqu’une mesure de <span class="math">\(A\)</span> est effectuée quand <span class="math">\({{\left|{\psi}\right\rangle}}\)</span> est l’état du système, la Nature</p>
+<p>Soit <span class="math inline">\({{\left|{\psi}\right\rangle}}\)</span> un état quantique dans <span class="math inline">\(\mathbb{C}^n\)</span> et <span class="math inline">\(A\)</span> un observable, de décomposition spectrale donnée dans l’encadré précédent. Alors, lorsqu’une mesure de <span class="math inline">\(A\)</span> est effectuée quand <span class="math inline">\({{\left|{\psi}\right\rangle}}\)</span> est l’état du système, la Nature</p>
 <ul>
-<li><p>choisit un nombre au hasard dans <span class="math">\(\{1, \ldots r\}\)</span>, en choisissant <span class="math">\(k\)</span> avec probabilité <span class="math">\({\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}^2\)</span>,</p></li>
-<li><p>révèle <span class="math">\(\alpha_k\)</span> comme étant la valeur mesurée de <span class="math">\(A\)</span>,</p></li>
-<li><p>fait sauter le système en <span class="math">\(P_k{{\left|{\psi}\right\rangle}}/{\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}\)</span>.</p></li>
+<li><p>choisit un nombre au hasard dans <span class="math inline">\(\{1, \ldots r\}\)</span>, en choisissant <span class="math inline">\(k\)</span> avec probabilité <span class="math inline">\({\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}^2\)</span>,</p></li>
+<li><p>révèle <span class="math inline">\(\alpha_k\)</span> comme étant la valeur mesurée de <span class="math inline">\(A\)</span>,</p></li>
+<li><p>fait sauter le système en <span class="math inline">\(P_k{{\left|{\psi}\right\rangle}}/{\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}\)</span>.</p></li>
 </ul>
 </div>
 </div>
-<p>L’observable qui n’est pas spécifié dans l’exemple du qubit à la Schrödinger pourrait être par exemple <span class="math">\[
+<p>L’observable qui n’est pas spécifié dans l’exemple du qubit à la Schrödinger pourrait être par exemple <span class="math display">\[
 M = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix}, 
-\]</span> dont les deux vecteurs propres, <span class="math">\({{\left|{0}\right\rangle}}\)</span> et <span class="math">\({{\left|{1}\right\rangle}}\)</span>, ont pour valeurs propres respectives <span class="math">\(0\)</span> et <span class="math">\(1\)</span>.</p>
-<p>Si tel est l’observable, le principe de Born dit alors que la Nature révèle <span class="math">\(0\)</span> et saute en <span class="math">\({{\left|{0}\right\rangle}}\)</span> ou bien révèle <span class="math">\(1\)</span> et saute en <span class="math">\({{\left|{1}\right\rangle}}\)</span>. Cela <a href="http://physics.stackexchange.com/questions/146005/why-does-the-measurement-of-some-observable-a-the-measured-value-is-always-an">ne correspond pas à une réalité physique</a> et peut paraître mystérieux.</p>
-<p>On peut calculer la valeur moyenne (l’espérance) du résultat révélé par la Nature, qui se trouve être après un calcul facile <span class="math">\[
+\]</span> dont les deux vecteurs propres, <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>, ont pour valeurs propres respectives <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span>.</p>
+<p>Si tel est l’observable, le principe de Born dit alors que la Nature révèle <span class="math inline">\(0\)</span> et saute en <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> ou bien révèle <span class="math inline">\(1\)</span> et saute en <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>. Cela <a href="http://physics.stackexchange.com/questions/146005/why-does-the-measurement-of-some-observable-a-the-measured-value-is-always-an">ne correspond pas à une réalité physique</a> et peut paraître mystérieux.</p>
+<p>On peut calculer la valeur moyenne (l’espérance) du résultat révélé par la Nature, qui se trouve être après un calcul facile <span class="math display">\[
 E_{{\left|{\psi}\right\rangle}}(A) = \langle \psi, A\psi \rangle = {\mathrm{Tr}}(\psi\psi^\dagger A) \qquad (\star) 
-\]</span> Dans la section suivante nous verrons que si on part de cette égalité comme principe, alors on peut retrouver la loi de probabilité associée à <span class="math">\({{\left|{\psi}\right\rangle}}\)</span> telle qu’elle est donnée par le principe de Born.</p>
+\]</span> Dans la section suivante nous verrons que si on part de cette égalité comme principe, alors on peut retrouver la loi de probabilité associée à <span class="math inline">\({{\left|{\psi}\right\rangle}}\)</span> telle qu’elle est donnée par le principe de Born.</p>
 </div>
 <div id="loi-de-probabilite-quantique" class="section level2">
 <h2>Loi de probabilité quantique</h2>
-<p>L’expression de l’espérance du résultat de la mesure de <span class="math">\(A\)</span> lorsque le système est dans l’état <span class="math">\({{\left|{\psi}\right\rangle}}\)</span> : <span class="math">\[
+<p>L’expression de l’espérance du résultat de la mesure de <span class="math inline">\(A\)</span> lorsque le système est dans l’état <span class="math inline">\({{\left|{\psi}\right\rangle}}\)</span> : <span class="math display">\[
 E_{{\left|{\psi}\right\rangle}}(A) = \langle \psi, A\psi \rangle \qquad (\star),
-\]</span> montre clairement qu’elle est linéaire en <span class="math">\(A\)</span>, à l’instar d’une espérance en probabilités classiques.</p>
-<p>Si on applique cette formule au projecteur <span class="math">\(P_k=P_{V_k}\)</span> (avec les notations de l’encadré sur le principe de Born), qui est un opérateur auto-adjoint, on trouve (du fait que <span class="math">\(P=P^2\)</span> lorsque <span class="math">\(P\)</span> est un projecteur) <span class="math">\[
+\]</span> montre clairement qu’elle est linéaire en <span class="math inline">\(A\)</span>, à l’instar d’une espérance en probabilités classiques.</p>
+<p>Si on applique cette formule au projecteur <span class="math inline">\(P_k=P_{V_k}\)</span> (avec les notations de l’encadré sur le principe de Born), qui est un opérateur auto-adjoint, on trouve (du fait que <span class="math inline">\(P=P^2\)</span> lorsque <span class="math inline">\(P\)</span> est un projecteur) <span class="math display">\[
 E_{{\left|{\psi}\right\rangle}}(P_k) = {\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}^2, 
-\]</span> la probabilité que “<span class="math">\(A\)</span> se réalise en <span class="math">\(\alpha_k\)</span>” dans le principe de Born.</p>
-<p>Cela suggère de considérer que le sous-espace <span class="math">\(V_k\)</span> est un événement qui se confond avec l’événément “<span class="math">\(A\)</span> se réalise en <span class="math">\(\alpha_k\)</span>”, et que le projecteur sur un sous-espace est l’analogue de l’indicatrice d’un événement : <span class="math">\[
+\]</span> la probabilité que “<span class="math inline">\(A\)</span> se réalise en <span class="math inline">\(\alpha_k\)</span>” dans le principe de Born.</p>
+<p>Cela suggère de considérer que le sous-espace <span class="math inline">\(V_k\)</span> est un événement qui se confond avec l’événément “<span class="math inline">\(A\)</span> se réalise en <span class="math inline">\(\alpha_k\)</span>”, et que le projecteur sur un sous-espace est l’analogue de l’indicatrice d’un événement : <span class="math display">\[
 {\Pr}_{{\left|{\psi}\right\rangle}}(\text{$A$ se réalise en $\alpha_k$}) = {\Pr}_{{\left|{\psi}\right\rangle}}(V_k) = E_{{\left|{\psi}\right\rangle}}(P_k).
 \]</span></p>
-<p>Oublions maintenant le principe de Born et montrons comment on peut le retrouver, concernant ses deux premiers points, lorsqu’on part de <span class="math">\((\star)\)</span> comme principe. Si l’on considère <span class="math">\(E_{{\left|{\psi}\right\rangle}}(A)\)</span> comme l’analogue de l’espérance de la variable aléatoire <span class="math">\(A\)</span> (lorsque le système est dans l’état quantique <span class="math">\({{\left|{\psi}\right\rangle}}\)</span>), alors suivant cette analogie on définit la transformée de Fourier de <span class="math">\(A\)</span> comme la fonction de la variable <span class="math">\(t \in \mathbb{R}\)</span> <span class="math">\[
+<p>Oublions maintenant le principe de Born et montrons comment on peut le retrouver, concernant ses deux premiers points, lorsqu’on part de <span class="math inline">\((\star)\)</span> comme principe. Si l’on considère <span class="math inline">\(E_{{\left|{\psi}\right\rangle}}(A)\)</span> comme l’analogue de l’espérance de la variable aléatoire <span class="math inline">\(A\)</span> (lorsque le système est dans l’état quantique <span class="math inline">\({{\left|{\psi}\right\rangle}}\)</span>), alors suivant cette analogie on définit la transformée de Fourier de <span class="math inline">\(A\)</span> comme la fonction de la variable <span class="math inline">\(t \in \mathbb{R}\)</span> <span class="math display">\[
 E_{{\left|{\psi}\right\rangle}}(A) = \langle \psi, e^{-itA}\psi \rangle \quad 
-\]</span> L’opérateur <span class="math">\(e^{-itA}\)</span> est toujours bien défini lorsque <span class="math">\(A\)</span> est auto-adjoint et il est lui-même auto-adjoint. On peut alors vérifier que (voir <a href="https://books.google.be/books/about/Quantum_probability_for_probabilists.html?id=W0ucw4WwLCgC" title="Quantum Probability for Probabilists">Meyer, 1995</a>) <span class="math">\[
+\]</span> L’opérateur <span class="math inline">\(e^{-itA}\)</span> est toujours bien défini lorsque <span class="math inline">\(A\)</span> est auto-adjoint et il est lui-même auto-adjoint. On peut alors vérifier que (voir <a href="https://books.google.be/books/about/Quantum_probability_for_probabilists.html?id=W0ucw4WwLCgC" title="Quantum Probability for Probabilists">Meyer, 1995</a>) <span class="math display">\[
 \langle \psi, e^{-itA}\psi \rangle = \sum_k e^{-it\alpha_k} {\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}^2
-\]</span> et ceci est exactement la transformée de Fourier de la loi donnée dans le principe de Born, celle qui assigne la probabilité <span class="math">\({\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}^2\)</span> à <span class="math">\(\alpha_k\)</span>.</p>
+\]</span> et ceci est exactement la transformée de Fourier de la loi donnée dans le principe de Born, celle qui assigne la probabilité <span class="math inline">\({\Vert P_k {{\left|{\psi}\right\rangle}}\Vert}^2\)</span> à <span class="math inline">\(\alpha_k\)</span>.</p>
+</div>
+<div id="variables-aleatoires-non-commutatives" class="section level2">
+<h2>Variables aléatoires non-commutatives</h2>
+<p>Si on effectue deux mesures successives, la probabilité du résultat obtenu dépend généralement de l’ordre dans lequel les mesures sont effectuées, du fait que le système change d’état après une mesure.</p>
+<p>En effet, considérons deux observables <span class="math inline">\(A\)</span> et <span class="math inline">\(B\)</span> et leur décomposition spectrale : <span class="math display">\[
+\begin{align*}
+A &amp; = \alpha_1P_1 + \cdots + \alpha_rP_r, \\
+B &amp; = \beta_1 Q_1 + \cdots + \beta_s Q_s.
+\end{align*}
+\]</span> Soit <span class="math inline">\(\psi\)</span> l’état du système. La mesure de <span class="math inline">\(A\)</span> révèle <span class="math inline">\(\alpha_k\)</span> avec probabilité <span class="math inline">\({\Vert P_k\psi\Vert}^2\)</span>, et dans ce cas l’état de système saute en <span class="math inline">\(P_k\psi/{\Vert P_k\psi\Vert}\)</span>. Si on effectue ensuite la mesure de <span class="math inline">\(B\)</span> il faut appliquer le principe de Born à l’état courant du système. On obtient : <span class="math display">\[
+{\Pr}_\psi(\text{$A$ révèle $\alpha_k$ puis $B$ révèle $\beta_l$})
+={\Vert P_k\psi\Vert}^2\frac{{\Vert Q_lP_k \psi\Vert}^2}{{\Vert P_k\psi\Vert}^2} = {\Vert Q_lP_k \psi\Vert}^2.
+\]</span> De même, lorsqu’on mesure d’abord <span class="math inline">\(B\)</span>, on obtient : <span class="math display">\[
+{\Pr}_\psi(\text{$B$ révèle $\beta_l$ puis $A$ révèle $\alpha_k$})
+= {\Vert P_k Q_l\psi\Vert}^2.
+\]</span> On obtient la même probabilité lorsque <span class="math inline">\(P_k\)</span> et <span class="math inline">\(Q_l\)</span> commutent. <em>Ceci est le cas lorsque <span class="math inline">\(A\)</span> et <span class="math inline">\(B\)</span> commutent</em>. En effet, le théorème de décomposition spectrale implique que pour toute fonction polynomiale <span class="math inline">\(g\)</span>, on a <span class="math display">\[
+g(A) = g(\alpha_1)P_1 + \cdots + g(\alpha_r)P_r,
+\]</span> et par conséquent <span class="math inline">\(P_k\)</span> est une fonction polynomiale de <span class="math inline">\(A\)</span>. De même, <span class="math inline">\(Q_l\)</span> est une fonction polynomiale de <span class="math inline">\(B\)</span>, et donc <span class="math inline">\(P_k\)</span> et <span class="math inline">\(Q_l\)</span> commutent si <span class="math inline">\(A\)</span> et <span class="math inline">\(B\)</span> commutent.</p>
 </div>
 <div id="references" class="section level1">
 <h1>Références</h1>

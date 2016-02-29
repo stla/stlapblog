@@ -84,17 +84,17 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/IntrinsicDistances.Rmd'>Source</a>
               <div class='lead'>
 
-<p>On every <a href="http://stla.github.io/stlapblog/posts/Bratteli.html">Bratteli graph</a> there is an intrinsic family of Markov kernels, which are also called the <em>central kernels</em>. Consider for example the Pascal graph below, where the integer shown at each vertex is the number of paths from this vertex to the root vertex <span class="math">\(\varnothing\)</span>:</p>
+<p>On every <a href="http://stla.github.io/stlapblog/posts/Bratteli.html">Bratteli graph</a> there is an intrinsic family of Markov kernels, which are also called the <em>central kernels</em>. Consider for example the Pascal graph below, where the integer shown at each vertex is the number of paths from this vertex to the root vertex <span class="math inline">\(\varnothing\)</span>:</p>
 <p><img src="assets/fig/bratteli-Pascal.png" alt="bratteli-Pascal.png" width="55%" class="center"></p>
-<p>Consider the levels of the graph are indexed by the negative integers, the level <span class="math">\(n=0\)</span> being the one of the root vertex. Thus, for the example of the Pascal graph, there are <span class="math">\(|n|\)</span> vertices at level <span class="math">\(n\)</span>. We denote by <span class="math">\({\boldsymbol V}_n\)</span> the set of vertices at level <span class="math">\(n\)</span>.</p>
-<p>The intrinsic family of Markov kernels is the familiy of Markov kernels <span class="math">\({(P_n)}_{n \leq -1}\)</span> such that the source and the target of <span class="math">\(P_n\)</span> respectively are <span class="math">\({\boldsymbol V}_n\)</span> and <span class="math">\({\boldsymbol V}_{n+1}\)</span> and which are characterized by the following conditions:</p>
+<p>Consider the levels of the graph are indexed by the negative integers, the level <span class="math inline">\(n=0\)</span> being the one of the root vertex. Thus, for the example of the Pascal graph, there are <span class="math inline">\(|n|\)</span> vertices at level <span class="math inline">\(n\)</span>. We denote by <span class="math inline">\({\boldsymbol V}_n\)</span> the set of vertices at level <span class="math inline">\(n\)</span>.</p>
+<p>The intrinsic family of Markov kernels is the familiy of Markov kernels <span class="math inline">\({(P_n)}_{n \leq -1}\)</span> such that the source and the target of <span class="math inline">\(P_n\)</span> respectively are <span class="math inline">\({\boldsymbol V}_n\)</span> and <span class="math inline">\({\boldsymbol V}_{n+1}\)</span> and which are characterized by the following conditions:</p>
 <ul>
-<li><p>for each vertex <span class="math">\(v_n \in {\boldsymbol V}_n\)</span>, the support of the probability <span class="math">\(P_n(v_{n}, \cdot)\)</span> is the set of vertices at level <span class="math">\(n+1\)</span> which are connected to <span class="math">\(v_n\)</span>;</p></li>
-<li><p>for every integer <span class="math">\(n_0 \leq -1\)</span> and every vertex <span class="math">\(v_{n_0} \in {\boldsymbol V}_{n_0}\)</span>, if <span class="math">\((v_{n_0}, V_{n_0+1}, \ldots, V_0)\)</span> is a Markov vector with initial value <span class="math">\(v_{n_0}\)</span> and transition distributions <span class="math">\(\Pr(V_{n+1} \in \cdot {\mid}V_n=v_n) = P_n(v_n, \cdot)\)</span>, then the path defined by its trajectory has the uniform distribution on the set of paths going from <span class="math">\(v_{n_0}\)</span> to the root vertex <span class="math">\(\varnothing = V_0\)</span>.</p></li>
+<li><p>for each vertex <span class="math inline">\(v_n \in {\boldsymbol V}_n\)</span>, the support of the probability <span class="math inline">\(P_n(v_{n}, \cdot)\)</span> is the set of vertices at level <span class="math inline">\(n+1\)</span> which are connected to <span class="math inline">\(v_n\)</span>;</p></li>
+<li><p>for every integer <span class="math inline">\(n_0 \leq -1\)</span> and every vertex <span class="math inline">\(v_{n_0} \in {\boldsymbol V}_{n_0}\)</span>, if <span class="math inline">\((v_{n_0}, V_{n_0+1}, \ldots, V_0)\)</span> is a Markov vector with initial value <span class="math inline">\(v_{n_0}\)</span> and transition distributions <span class="math inline">\(\Pr(V_{n+1} \in \cdot {\mid}V_n=v_n) = P_n(v_n, \cdot)\)</span>, then the path defined by its trajectory has the uniform distribution on the set of paths going from <span class="math inline">\(v_{n_0}\)</span> to the root vertex <span class="math inline">\(\varnothing = V_0\)</span>.</p></li>
 </ul>
-<p>Thus <span class="math">\(P_n(v_{n}, \cdot)\)</span> is explicitely given by <span class="math">\[
+<p>Thus <span class="math inline">\(P_n(v_{n}, \cdot)\)</span> is explicitely given by <span class="math display">\[
 \boxed{P_n(v_{n}, v_{n+1}) =  \dfrac{\dim(v_{n+1})}{\dim(v_n)}}
-\]</span> where the <em>dimension</em> <span class="math">\(\dim(v)\)</span> of a vertex <span class="math">\(v\)</span> is the number of paths from a vertex <span class="math">\(v\)</span> to the root vertex <span class="math">\(\varnothing\)</span>.</p>
+\]</span> where the <em>dimension</em> <span class="math inline">\(\dim(v)\)</span> of a vertex <span class="math inline">\(v\)</span> is the number of paths from a vertex <span class="math inline">\(v\)</span> to the root vertex <span class="math inline">\(\varnothing\)</span>.</p>
 <div id="computing-the-intrinsic-kernels" class="section level3">
 <h3>Computing the intrinsic kernels</h3>
 <p>When a function <code>Mn.fun</code> returns the incidence matrices of the Bratteli graph, it is not difficult to get the dimensions of the vertices and then the intrinsic Markov kernels. The function below does this job. I use the <code>gmp</code> package to get the results in big rationals.</p>
@@ -124,7 +124,7 @@ centralKernels &lt;- function(Mn.fun, N){
   }
   return(Kernels)
 }</code></pre>
-<p>I try it below for the example of the Pascal graph. Recall that <span class="math">\(M_0\)</span> must always be a row matrix of ones.</p>
+<p>I try it below for the example of the Pascal graph. Recall that <span class="math inline">\(M_0\)</span> must always be a row matrix of ones.</p>
 <pre class="r"><code>Pascal_Mn &lt;- function(n){ 
   M &lt;- matrix(0, nrow=n+1, ncol=n+2)
   for(i in 1:(n+1)){
@@ -166,10 +166,6 @@ Pascal_Mn(0)
 <h3>Computing the intrinsic distances</h3>
 <p>Once one has the central kernels, one can compute the intrinsic distances, as defined in the paper <a href="http://arxiv.org/abs/1501.02166">Standardness of monotonic Markov filtrations</a>, with the help of the <a href="http://stla.github.io/stlapblog/posts/kantorovich-package.html">kantorovich package</a>. I provide the code below.</p>
 <pre class="r"><code>library(kantorovich)
-## Warning: replacing previous import by &#39;gmp::apply&#39; when loading
-## &#39;kantorovich&#39;
-## Warning: replacing previous import by &#39;gmp::as.bigq&#39; when loading
-## &#39;kantorovich&#39;
 RHO &lt;- lapply(ckernels, function(kernel) matrix(&quot;&quot;, nrow=nrow(kernel), ncol=nrow(kernel)))  
 RHO[[1]] &lt;- (diag(2) + 1) %% 2
 n &lt;- length(ckernels)-1
