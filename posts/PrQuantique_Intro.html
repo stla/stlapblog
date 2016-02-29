@@ -84,7 +84,7 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/PrQuantique_Intro.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>(latest update : 2016-02-29 15:13:57)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-02-29 18:42:26)</em></strong> <br/></p>
 <!-- xxx -->
 <p>Cet article vise à introduire la théorie des probabilités quantiques. Il est rédigé dans l’optique d’être lisible pour un lecteur ayant des connaissances de base sur les espaces de Hilbert. À vrai dire, j’apprends cette théorie en ce moment, et en quelque sorte ce sont mes notes personnelles sur le sujet. Pour cette raison, il est susceptible d’être modifié à tout moment.</p>
 <div id="exemple-non-formel-qubit-a-la-schrodinger" class="section level2">
@@ -121,9 +121,12 @@ Postulat fondamental des probabilités quantiques
 </ul>
 </div>
 </div>
-<p>L’observable qui n’est pas spécifié dans l’exemple du qubit à la Schrödinger pourrait être par exemple <span class="math display">\[
-M = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix}, 
-\]</span> dont les deux vecteurs propres, <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>, ont pour valeurs propres respectives <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span>.</p>
+<p>L’observable qui n’est pas spécifié dans l’exemple du qubit à la Schrödinger est <span class="math display">\[
+M = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix} = 
+0  \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix} 
++ 1  \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix} =
+0 P_{[{{\left|{0}\right\rangle}}]} + 1 P_{[{{\left|{1}\right\rangle}}]}
+\]</span> dont les deux vecteurs propres, <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>, ont pour valeur propre <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span> respectivement.</p>
 <p>Si tel est l’observable, le principe de Born dit alors que la Nature révèle <span class="math inline">\(0\)</span> et saute en <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> ou bien révèle <span class="math inline">\(1\)</span> et saute en <span class="math inline">\({{\left|{1}\right\rangle}}\)</span>. Cela <a href="http://physics.stackexchange.com/questions/146005/why-does-the-measurement-of-some-observable-a-the-measured-value-is-always-an">ne correspond pas à une réalité physique</a> et peut paraître mystérieux.</p>
 <p>On peut calculer la valeur moyenne (l’espérance) du résultat révélé par la Nature, qui se trouve être après un calcul facile <span class="math display">\[
 E_{{\left|{\psi}\right\rangle}}(A) = \langle \psi, A\psi \rangle = {\mathrm{Tr}}(\psi\psi^\dagger A) \qquad (\star) 
@@ -163,6 +166,44 @@ B &amp; = \beta_1 Q_1 + \cdots + \beta_s Q_s.
 \]</span> On obtient la même probabilité lorsque <span class="math inline">\(P_k\)</span> et <span class="math inline">\(Q_l\)</span> commutent. <em>Ceci est le cas lorsque <span class="math inline">\(A\)</span> et <span class="math inline">\(B\)</span> commutent</em>. En effet, le théorème de décomposition spectrale implique que pour toute fonction polynomiale <span class="math inline">\(g\)</span>, on a <span class="math display">\[
 g(A) = g(\alpha_1)P_1 + \cdots + g(\alpha_r)P_r,
 \]</span> et par conséquent <span class="math inline">\(P_k\)</span> est une fonction polynomiale de <span class="math inline">\(A\)</span>. De même, <span class="math inline">\(Q_l\)</span> est une fonction polynomiale de <span class="math inline">\(B\)</span>, et donc <span class="math inline">\(P_k\)</span> et <span class="math inline">\(Q_l\)</span> commutent si <span class="math inline">\(A\)</span> et <span class="math inline">\(B\)</span> commutent.</p>
+</div>
+<div id="equation-de-schrodinger-et-manipulation-dun-qubit" class="section level2">
+<h2>Équation de Schrödinger et manipulation d’un qubit</h2>
+<p>Un système quantique, tant qu’on n’effectue pas de mesure, évolue avec le temps selon <em>l’équation de Schrödinger</em> <span class="math display">\[
+\frac{{\mathrm{d}}\psi(t)}{{\mathrm{d}}t} = -{\mathrm{i}}{\mathcal{H}}\psi(t)
+\]</span> où <span class="math inline">\({\mathcal{H}}\)</span> est un opérateur auto-adjoint appelé l’opérataur <em>hamiltonien</em>. La solution de cette équation est <span class="math display">\[
+\psi(t) = U_t\psi(0)
+\quad \text{où} \;
+U_t = {\mathrm{e}}^{-{\mathrm{i}}t{\mathcal{H}}} := I + \frac{(-{\mathrm{i}}t{\mathcal{H}})}{1!} + \frac{{(-{\mathrm{i}}t{\mathcal{H}})}^2}{2!} + \cdots, 
+\]</span> et la matrice (ou l’opérateur) <span class="math inline">\(U_t\)</span> est <em>unitaire</em>, c’est-à-dire qu’elle satisfait <span class="math inline">\(U_tU_t^\dagger=U_t^\dagger U_t=U_t\)</span>, autrement dit <span class="math inline">\(U_t^{-1}=U_t^\dagger\)</span>. L’application linéaire associée à matrice unitaire préserve la norme.<br />
+On dit que <span class="math inline">\(U_t\)</span> est <em>l’opérateur d’évolution</em> du système.</p>
+<div id="application-realisation-de-la-porte-logique-non" class="section level3">
+<h3>Application : réalisation de la porte logique NON</h3>
+<p>Considérons un système quantique de dimension <span class="math inline">\(2\)</span> gouverné par le hamiltonien <span class="math display">\[
+{\mathcal{H}}= \begin{pmatrix}
+1 &amp; -1 \\
+-1 &amp; 1
+\end{pmatrix}
+\]</span> Dans ce cas, l’opérateur d’évolution à l’instant <span class="math inline">\(t\)</span> est <span class="math display">\[
+U_t = {\mathrm{e}}^{-{\mathrm{i}}t} \begin{pmatrix}
+\cos t &amp; {\mathrm{i}}\sin t \\
+{\mathrm{i}}\sin t &amp; \cos t
+\end{pmatrix}. 
+\]</span> À l’instant <span class="math inline">\(t=\frac{\pi}{2}\)</span>, <span class="math display">\[
+U_t = N:= \begin{pmatrix}
+0 &amp; 1 \\
+1 &amp; 0
+\end{pmatrix}. 
+\]</span> Ainsi, si l’état du système à l’instant <span class="math inline">\(t=0\)</span> est le qubit <span class="math display">\[
+\psi(0) = \begin{pmatrix} v_0 \\ v_1 \end{pmatrix} = v_0{{\left|{0}\right\rangle}}+ v_1{{\left|{1}\right\rangle}},
+\]</span> alors son état à l’instant <span class="math inline">\(t=\frac{\pi}{2}\)</span> est le qubit <span class="math display">\[
+\psi\bigl(\frac{\pi}{2}\bigr) =  N\psi(0) = \begin{pmatrix} v_1 \\ v_0 \end{pmatrix}.   
+\]</span> En particulier, l’action de <span class="math inline">\(N\)</span> sur les deux états de base <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span> est : <span class="math display">\[
+\begin{matrix}
+{{\left|{0}\right\rangle}}&amp; \rightarrow &amp; {{\left|{1}\right\rangle}}\\
+{{\left|{1}\right\rangle}}&amp; \rightarrow &amp; {{\left|{0}\right\rangle}}\end{matrix}.
+\]</span> Pour cette raison, on dit que <span class="math inline">\(N\)</span> est l’opérateur <em>NON</em>, par analogie avec <a href="https://fr.wikipedia.org/wiki/Fonction_NON">l’opérateur logique <em>NON</em> de l’algèbre de Boole</a> qui échange <span class="math inline">\(0\)</span> et <span class="math inline">\(1\)</span>.</p>
+</div>
 </div>
 <div id="references" class="section level1">
 <h1>Références</h1>

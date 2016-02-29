@@ -9,11 +9,15 @@ output: html_document
 \newcommand{\kzero}{\ket{0}}
 \newcommand{\kone}{\ket{1}}
 \newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\Vect}{\mathrm{Vect}}
 \newcommand{\AA}{\mathcal{A}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\HH}{\mathcal{H}}
 \newcommand{\LL}{\mathcal{L}}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\ii}{\mathrm{i}}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse=FALSE, fig.path="assets/fig/PrQuantique_Intro-")
@@ -68,11 +72,14 @@ où $P_k=P_{V_k}$ désigne le projecteur orthogonal sur $V_k$ et les $\alpha_k$ 
   </div>
 </div>
 
-L'observable qui n'est pas spécifié dans l'exemple du qubit à la Schrödinger pourrait être par exemple
+L'observable qui n'est pas spécifié dans l'exemple du qubit à la Schrödinger est
 $$
-M = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}, 
+M = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix} = 
+0  \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} 
++ 1  \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix} =
+0 P_{[\kzero]} + 1 P_{[\kone]}
 $$
-dont les deux vecteurs propres, $\kzero$ et $\kone$, ont pour valeurs propres respectives $0$ et $1$. 
+dont les deux vecteurs propres, $\kzero$ et $\kone$, ont pour valeur propre $0$ et $1$ respectivement. 
 
 Si tel est l'observable, le principe de Born dit alors que la Nature révèle $0$ et saute en $\kzero$ ou bien révèle $1$ et saute en $\kone$. Cela [ne correspond pas à une réalité physique](http://physics.stackexchange.com/questions/146005/why-does-the-measurement-of-some-observable-a-the-measured-value-is-always-an) et peut paraître mystérieux. 
 
@@ -141,6 +148,66 @@ $$
 g(A) = g(\alpha_1)P_1 + \cdots + g(\alpha_r)P_r,
 $$
 et par conséquent $P_k$ est une fonction polynomiale de $A$. De même, $Q_l$ est une fonction polynomiale de $B$, et donc  $P_k$ et $Q_l$ commutent si $A$ et $B$ commutent. 
+
+
+
+## Équation de Schrödinger et manipulation d'un qubit 
+
+Un système quantique, tant qu'on n'effectue pas de mesure, évolue avec le temps selon *l'équation de Schrödinger*
+$$
+\frac{\dd\psi(t)}{\dd t} = -\ii\HH\psi(t)
+$$
+où $\HH$ est un opérateur auto-adjoint appelé l'opérataur *hamiltonien*. 
+La solution de cette équation est 
+$$
+\psi(t) = U_t\psi(0)
+\quad \text{où} \;
+U_t = \ee^{-\ii t\HH} := I + \frac{(-\ii t\HH)}{1!} + \frac{{(-\ii t\HH)}^2}{2!} + \cdots, 
+$$
+et la matrice (ou l'opérateur) $U_t$ est *unitaire*, c'est-à-dire qu'elle satisfait $U_tU_t^\dagger=U_t^\dagger U_t=U_t$, autrement dit $U_t^{-1}=U_t^\dagger$. 
+L'application linéaire associée à matrice unitaire préserve la norme.  
+On dit que $U_t$ est *l'opérateur d'évolution* du système. 
+
+### Application : réalisation de la porte logique NON
+
+Considérons un système quantique de dimension $2$ gouverné par le hamiltonien 
+$$
+\HH = \begin{pmatrix}
+1 & -1 \\
+-1 & 1
+\end{pmatrix}
+$$
+Dans ce cas, l'opérateur d'évolution à l'instant $t$ est 
+$$
+U_t = \ee^{-\ii t} \begin{pmatrix}
+\cos t & \ii\sin t \\
+\ii\sin t & \cos t
+\end{pmatrix}. 
+$$
+À l'instant $t=\frac{\pi}{2}$, 
+$$
+U_t = N:= \begin{pmatrix}
+0 & 1 \\
+1 & 0
+\end{pmatrix}. 
+$$
+Ainsi, si l'état du système à l'instant $t=0$ est le qubit
+$$
+\psi(0) = \begin{pmatrix} v_0 \\ v_1 \end{pmatrix} = v_0\kzero + v_1\kone,
+$$
+alors son état à l'instant $t=\frac{\pi}{2}$ est le qubit
+$$
+\psi\bigl(\frac{\pi}{2}\bigr) =  N\psi(0) = \begin{pmatrix} v_1 \\ v_0 \end{pmatrix}.   
+$$
+En particulier, l'action de $N$ sur les deux états de base $\kzero$ et $\kone$ est :
+$$
+\begin{matrix}
+\kzero & \rightarrow & \kone \\
+\kone & \rightarrow & \kzero
+\end{matrix}.
+$$
+Pour cette raison, on dit que $N$ est l'opérateur *NON*, par analogie avec [l'opérateur logique *NON* de l'algèbre de Boole](https://fr.wikipedia.org/wiki/Fonction_NON) qui échange $0$ et $1$. 
+
 
 
 # Références 
