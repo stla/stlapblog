@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jonctions quantique</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Jonctions quantique</a>
+              </h3>
+              <span>2016-02-29</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/JonctionQuantique.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(latest update : 2016-02-29 21:29:29)</em></strong> <br/></p>
+<p>Supposons un état quantique <span class="math inline">\({\mathbf{v}}\in {\mathbb{C}}^m\)</span> et un autre état quantique <span class="math inline">\({\mathbf{w}}\in {\mathbb{C}}^n\)</span>.</p>
+<p>Vus conjointement, ces deux états forment un état quantique dans <span class="math inline">\({\mathbb{C}}^m\otimes{\mathbb{C}}^n\)</span> : le produit tensoriel <span class="math inline">\({\mathbf{v}}\otimes{\mathbf{w}}\)</span> de <span class="math inline">\({\mathbf{v}}\)</span> par <span class="math inline">\({\mathbf{w}}\)</span>.</p>
+<p>L’objectif du présent article est d’exposer le B-A-BA de ces systèmes de deux états quantiques. Cet article fait suite à l’<a href="http://stla.github.io/stlapblog/posts/PrQuantique_Intro.html">introduction aux probabilités quantiques</a>.</p>
+<p>Les définitions et propriétés relatives au produit tensoriel peuvent se trouver dans le <a href="https://books.google.be/books?id=dVs8PcZ0Hd8C" title="Lectures on Quantum Theory">livre d’Isham</a>.</p>
+<p>Notons ici que les vecteurs de <span class="math inline">\({\mathbb{C}}^n\otimes{\mathbb{C}}^s\)</span> ne s’écrivent pas tous comme le produit tensoriel d’un vecteut de <span class="math inline">\({\mathbb{C}}^n\)</span> avec un vecteur de <span class="math inline">\({\mathbb{C}}^s\)</span>. Nous dirons qu’un état tel que <span class="math inline">\({\mathbf{v}}\otimes{\mathbf{w}}\)</span> est un <em>état produit pur</em>.</p>
+<p>Notons aussi que si un vecteur de <span class="math inline">\({\mathbb{C}}^n\otimes{\mathbb{C}}^s\)</span> peut s’écrire comme un produit tensoriel <span class="math inline">\({\mathbf{v}}\otimes{\mathbf{w}}\)</span>, alors il ne s’écrit pas de façon unique sous cette forme : on a <span class="math display">\[
+({\mathrm{e}}^{{\mathrm{i}}\alpha}{\mathbf{v}}) \otimes ({\mathrm{e}}^{-{\mathrm{i}}\alpha}{\mathbf{w}}) = {\mathbf{v}}\otimes{\mathbf{w}}.
+\]</span> La paire <span class="math inline">\(({\mathbf{v}}, {\mathbf{w}})\)</span> est unique modulo une telle transformation par un facteur de phase <span class="math display">\[
+{\mathbf{v}}\mapsto {\mathrm{e}}^{{\mathrm{i}}\alpha}{\mathbf{v}}, {\mathbf{w}}\mapsto {\mathrm{e}}^{-{\mathrm{i}}\alpha}{\mathbf{w}}.
+\]</span> Toutefois, comme nous l’avions déjà remarqué dans l’article sur <a href="http://stla.github.io/stlapblog/posts/BlochSphere.html">la sphère de Bloch</a>, deux vecteur différant d’un facteur de phase, comme <span class="math inline">\({\mathbf{v}}\)</span> et <span class="math inline">\({\mathrm{e}}^{{\mathrm{i}}\alpha}{\mathbf{v}}\)</span>, définissent la même loi de probabilité quantique.</p>
+<div id="passage-dun-observable-pour-un-systeme-au-systeme-joint" class="section level2">
+<h2>Passage d’un observable pour un système au système joint</h2>
+<p>Si <span class="math inline">\(A\)</span> est un observable pour le premier système, de décomposition spectrale <span class="math display">\[
+A = \alpha_1 P_1 + \cdots + \alpha_r P_r,
+\]</span> alors <span class="math inline">\(A\)</span> devient <span class="math inline">\(A \otimes I\)</span> dans le système joint. Sa décomposition spectrale est <span class="math display">\[
+A \otimes I = \alpha_1 (P_1\otimes I) + \cdots + \alpha_r (P_r\otimes I).
+\]</span></p>
+<p>Si une mesure est effectuée lorsque l’état du système produit est <span class="math inline">\({\mathbf{v}}\otimes{\mathbf{w}}\)</span>, alors le résultat est <span class="math inline">\(\alpha_i\)</span> avec probabilité <span class="math inline">\({\Vert P_i {\mathbf{v}}\Vert}^2\)</span>, et le nouvel état du système est <span class="math display">\[
+{(\Vert P_i {\mathbf{v}}\Vert)}^{-1} (P_i {\mathbf{v}}) \otimes {\mathbf{w}}.
+\]</span> Le nouvel état est donc encore un état produit pur, et l’état du second système n’a pas changé.</p>
+<p>Similairement, si <span class="math inline">\(B\)</span> est un observable pour le second système, de décomposition spectrale <span class="math display">\[
+B = \beta_1 Q_1 + \cdots + \beta_s Q_s,
+\]</span> alors <span class="math inline">\(B\)</span> devient <span class="math inline">\(I \otimes B\)</span> dans le système joint. Sa décomposition spectrale est <span class="math display">\[
+I \otimes B = \beta_1 (Q_1\otimes I) + \cdots + \beta_r (Q_r\otimes I).
+\]</span> Les observables <span class="math inline">\(A \otimes I\)</span> et <span class="math inline">\(I \otimes B\)</span> commutent : <span class="math display">\[
+(A \otimes I) (I \otimes B) =  (I \otimes B) (A \otimes I) = A \otimes B.
+\]</span> Comme nous l’avons vu dans l’article précédent, <span class="math inline">\((A \otimes I)\)</span> et <span class="math inline">\((I \otimes B)\)</span> “se comportent comme des variables aléatoires indépendantes”, c’est-à-dire qu’il revient au même de mesurer <span class="math inline">\((A \otimes I)\)</span> puis <span class="math inline">\((I \otimes B)\)</span> ou de mesurer <span class="math inline">\((I \otimes B)\)</span> puis <span class="math inline">\((A \otimes I)\)</span>. Plus précisément : <!--
+$$
+\begin{align*}
+{\Pr}_{\bv\otimes\bw}(\text{$A \otimes I$ révèle $\alpha_i$ puis $I \otimes B$ révèle $\beta_j$}) & = 
+{\Pr}_{\bv\otimes\bw}(\text{$I \otimes B$ révèle $\beta_j$ puis $A \otimes I$ révèle $\alpha_i$}) \\
+ & = {\Pr}_{\bv}(\text{$A$ révèle $\alpha_i$}) {\Pr}_{\bw}(\text{$B$ révèle $\beta_j$}).
+\end{align*}
+$$
+--> <span class="math display">\[
+\begin{multline}
+{\Pr}_{{\mathbf{v}}\otimes{\mathbf{w}}}(\text{$A \otimes I$ révèle $\alpha_i$ puis $I \otimes B$ révèle $\beta_j$})  \\ = 
+{\Pr}_{{\mathbf{v}}\otimes{\mathbf{w}}}(\text{$I \otimes B$ révèle $\beta_j$ puis $A \otimes I$ révèle $\alpha_i$}) \\
+  = {\Pr}_{{\mathbf{v}}}(\text{$A$ révèle $\alpha_i$}) {\Pr}_{{\mathbf{w}}}(\text{$B$ révèle $\beta_j$}).
+\end{multline}
+\]</span></p>
+</div>
+<div id="base-de-mathbbcmotimesmathbbcn" class="section level2">
+<h2>Base de <span class="math inline">\({\mathbb{C}}^m\otimes{\mathbb{C}}^n\)</span></h2>
+<p>Si <span class="math inline">\((a_i)\)</span> est une base de <span class="math inline">\({\mathbb{C}}^m\)</span> et <span class="math inline">\((b_j)\)</span> est une base de <span class="math inline">\({\mathbb{C}}^n\)</span> alors <span class="math inline">\((a_i \otimes b_j)\)</span> est une base de <span class="math inline">\({\mathbb{C}}^m\otimes{\mathbb{C}}^n\)</span>.</p>
+<p>Dans le cas où <span class="math inline">\(m=n=2\)</span>, rappelons qu’on note <span class="math inline">\({{\left|{0}\right\rangle}}\)</span> et <span class="math inline">\({{\left|{1}\right\rangle}}\)</span> les deux vecteurs de base : <span class="math display">\[
+{{\left|{0}\right\rangle}}= \begin{pmatrix}1 \\ 0\end{pmatrix}  \quad \text{et } 
+{{\left|{1}\right\rangle}}= \begin{pmatrix}0 \\ 1\end{pmatrix}.  
+\]</span> Il est courant de noter <span class="math display">\[
+{\left|{00}\right\rangle} = {{\left|{0}\right\rangle}}{{\left|{0}\right\rangle}}:= {{\left|{0}\right\rangle}}\otimes{{\left|{0}\right\rangle}}= \begin{pmatrix} 1 &amp; 0\\ 0 &amp; 0\end{pmatrix} = \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0\end{pmatrix}
+\]</span> <span class="math display">\[
+{\left|{01}\right\rangle} = {{\left|{0}\right\rangle}}{{\left|{1}\right\rangle}}:= {{\left|{0}\right\rangle}}\otimes{{\left|{1}\right\rangle}}= \begin{pmatrix} 0 &amp; 1\\ 0 &amp; 0\end{pmatrix} = \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0\end{pmatrix},
+\]</span> <span class="math display">\[
+{\left|{10}\right\rangle} = {{\left|{1}\right\rangle}}{{\left|{0}\right\rangle}}:= {{\left|{1}\right\rangle}}\otimes{{\left|{0}\right\rangle}}= \begin{pmatrix} 0 &amp; 0\\ 1 &amp; 0\end{pmatrix} = \begin{pmatrix} 0 \\ 0\\ 1 \\ 0\end{pmatrix},
+\]</span> <span class="math display">\[
+{\left|{11}\right\rangle} = {{\left|{1}\right\rangle}}{{\left|{1}\right\rangle}}:= {{\left|{1}\right\rangle}}\otimes{{\left|{1}\right\rangle}}= \begin{pmatrix} 0 &amp; 0\\ 0 &amp; 1\end{pmatrix} = \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1\end{pmatrix}.
+\]</span></p>
+</div>
+<div id="letat-de-bell" class="section level2">
+<h2>L’état de Bell</h2>
+<p>L’état <span class="math display">\[
+\psi = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ 0 \\ 0 \\ 1\end{pmatrix} = 
+\frac{1}{\sqrt{2}}\bigl({\left|{00}\right\rangle} + {\left|{11}\right\rangle} \bigr) \in {\mathbb{C}}^2\otimes{\mathbb{C}}^2
+\]</span> est connu pour ne pas pouvoir s’exprimer sous la forme <span class="math inline">\({\mathbf{v}}\otimes{\mathbf{w}}\)</span>. On dit qu’il est <em>intriqué</em>.</p>
+<p>Regardons ce qui se passe lorsque le système est dans cet état et que l’on effectue la mesure de <span class="math inline">\(M \otimes I\)</span>, où <span class="math display">\[
+M = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix} = 
+0  \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix} 
++ 1  \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix} =
+0 P_{[{{\left|{0}\right\rangle}}]} + 1 P_{[{{\left|{1}\right\rangle}}]}. 
+\]</span> Le produit tensoriel jouit de la propriété <span class="math inline">\(P_{U \otimes V} = P_U \otimes P_V\)</span>, donc la décomposition spectrale de <span class="math inline">\(M \otimes I\)</span> est (puisque <span class="math inline">\(I=P_{{\mathbb{C}}^2}\)</span>) <span class="math display">\[
+M \otimes I = 0 P_{W_0} + 1 P_{W_1}.
+\]</span> où <span class="math inline">\(W_0 = [{{\left|{0}\right\rangle}}]\otimes{\mathbb{C}}^2\)</span> et <span class="math inline">\(W_1 = [{{\left|{1}\right\rangle}}]\otimes{\mathbb{C}}^2\)</span>. Notons que <span class="math display">\[
+\begin{align*}
+W_0 = [{{\left|{0}\right\rangle}}]\otimes{\mathbb{C}}^2 &amp; =  [{{\left|{0}\right\rangle}}]\otimes \bigl([{{\left|{0}\right\rangle}}] + [{{\left|{1}\right\rangle}}]\bigr) =
+[{{\left|{0}\right\rangle}}]\otimes[{{\left|{0}\right\rangle}}] +  [{{\left|{0}\right\rangle}}]\otimes[{{\left|{1}\right\rangle}}]  = 
+[{{\left|{0}\right\rangle}}\otimes{{\left|{0}\right\rangle}}] +  [{{\left|{0}\right\rangle}}\otimes {{\left|{1}\right\rangle}}] \\ 
+&amp; = [{\left|{00}\right\rangle}] + [{\left|{01}\right\rangle}] = [{\left|{00}\right\rangle}, {\left|{01}\right\rangle}].
+\end{align*}
+\]</span> On a <span class="math display">\[
+\psi - \frac{1}{\sqrt{2}} {\left|{00}\right\rangle} = {\left|{11}\right\rangle}
+\]</span> et donc <span class="math display">\[
+\langle \psi - \frac{1}{\sqrt{2}} {\left|{00}\right\rangle},  {\left|{00}\right\rangle} \rangle 
+= \langle \psi - \frac{1}{\sqrt{2}} {\left|{00}\right\rangle},  {\left|{01}\right\rangle} \rangle = 0
+\]</span> donc <span class="math inline">\(\psi - \frac{1}{\sqrt{2}} {\left|{00}\right\rangle} \perp W_0\)</span>. En outre, <span class="math inline">\(\frac{1}{\sqrt{2}} {\left|{00}\right\rangle} \in W_0\)</span>, donc <span class="math display">\[
+P_{W_0} \psi = \frac{1}{\sqrt{2}} {\left|{00}\right\rangle} 
+\quad \text{et } P_{W_1} \psi = \frac{1}{\sqrt{2}} {\left|{11}\right\rangle}.  
+\]</span> Ainsi, la mesure de <span class="math inline">\(M\otimes I\)</span> produit l’un des résultats suivants, chacun avec probabilité <span class="math inline">\(\frac12\)</span> :</p>
+<ul>
+<li><p>la mesure révèle <span class="math inline">\(0\)</span> et l’état saute en <span class="math inline">\({\left|{00}\right\rangle} = {{\left|{0}\right\rangle}}\otimes{{\left|{0}\right\rangle}}\)</span></p></li>
+<li><p>la mesure révèle <span class="math inline">\(1\)</span> et l’état saute en <span class="math inline">\({\left|{11}\right\rangle} = {{\left|{1}\right\rangle}}\otimes{{\left|{1}\right\rangle}}\)</span></p></li>
+</ul>
+<p>On vérifie alors aisément que si on effectue ensuite la mesure de <span class="math inline">\(I \times M\)</span>, on obtient alors le même résultat que celui de la première mesure.</p>
+</div>
+<div id="references" class="section level1">
+<h1>Références</h1>
+<ul>
+<li><p><a href="https://books.google.be/books?id=dVs8PcZ0Hd8C" title="Lectures on Quantum Theory">Isham CJ</a>: Lectures on Quantum Theory. Allied Publishers, 2001.</p></li>
+<li><p><a href="http://dept-info.labri.fr/~ges/ENSEIGNEMENT/CALCULQ/polycop_calculq.pdf" title="Introduction à l&#39;information quantique">Leroyer Y et Sénizergues G</a>: Introduction à l’information quantique. Polycopié ENSEIRB-MATMECA, année 2014-2015.</p></li>
+<li><p><a href="https://books.google.be/books?id=vmoFw0pvS1sC" title="Weighing the Odds">Williams D</a>: Weighing the Odds: A Course in Probability and Statistics. Cambridge University Press, 2001.</p></li>
+</ul>
+<!-- -->
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

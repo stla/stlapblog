@@ -1,0 +1,192 @@
+---
+title: "Jonctions quantique"
+date: "2016-02-29"
+output: html_document
+---
+
+***(latest update : `r Sys.time()`)***
+<br/>
+
+
+\newcommand{\ket}[1]{\left|{#1}\right\rangle}
+\newcommand{\kpsi}{\ket{\psi}}
+\newcommand{\kzero}{\ket{0}}
+\newcommand{\kone}{\ket{1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\AA}{\mathcal{A}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+
+
+Supposons un état quantique $\bv \in \C^m$ et un autre état quantique $\bw \in \C^n$. 
+
+Vus conjointement, ces deux états forment un état quantique dans $\C^m\otimes\C^n$ : le produit tensoriel $\bv\otimes\bw$ de $\bv$ par $\bw$. 
+
+L'objectif du présent article est d'exposer le B-A-BA de ces systèmes de deux états quantiques. Cet article fait suite à l'[introduction aux probabilités quantiques](http://stla.github.io/stlapblog/posts/PrQuantique_Intro.html). 
+
+Les définitions et propriétés relatives au produit tensoriel peuvent se trouver dans le [livre d'Isham][isham].
+
+Notons ici que les vecteurs de $\C^n\otimes\C^s$ ne s'écrivent pas tous comme le produit tensoriel d'un vecteut de $\C^n$ avec un vecteur de $\C^s$. Nous dirons qu'un état tel que $\bv\otimes\bw$ est un *état produit pur*.
+
+Notons aussi que si un vecteur de $\C^n\otimes\C^s$ peut s'écrire comme un produit tensoriel $\bv\otimes\bw$, alors il ne s'écrit pas de façon unique sous cette forme : on a 
+$$
+(\ee^{\ii\alpha}\bv) \otimes (\ee^{-\ii\alpha}\bw) = \bv\otimes\bw.
+$$
+La paire $(\bv, \bw)$ est unique modulo une telle transformation par un facteur de phase
+$$
+\bv \mapsto \ee^{\ii\alpha}\bv, \bw \mapsto \ee^{-\ii\alpha}\bw.
+$$
+Toutefois, comme nous l'avions déjà remarqué dans l'article sur [la sphère de Bloch](http://stla.github.io/stlapblog/posts/BlochSphere.html), deux vecteur différant d'un facteur de phase, comme $\bv$ et $\ee^{\ii\alpha}\bv$, définissent la même loi de probabilité quantique. 
+
+
+## Passage d'un observable pour un système au système joint
+
+Si $A$ est un observable pour le premier système, de décomposition spectrale
+$$
+A = \alpha_1 P_1 + \cdots + \alpha_r P_r,
+$$
+alors $A$ devient $A \otimes I$ dans le système joint. Sa décomposition spectrale est 
+$$
+A \otimes I = \alpha_1 (P_1\otimes I) + \cdots + \alpha_r (P_r\otimes I).
+$$
+
+Si une mesure est effectuée lorsque l'état du système produit est $\bv\otimes\bw$, alors 
+le résultat est $\alpha_i$ avec probabilité ${\Vert P_i \bv \Vert}^2$, et le nouvel état du système est 
+$$
+{(\Vert P_i \bv \Vert)}^{-1} (P_i \bv) \otimes \bw.
+$$
+Le nouvel état est donc encore un état produit pur, et l'état du second système n'a pas changé. 
+
+Similairement, si $B$ est un observable pour le second système, de décomposition spectrale
+$$
+B = \beta_1 Q_1 + \cdots + \beta_s Q_s,
+$$
+alors $B$ devient $I \otimes B$ dans le système joint. Sa décomposition spectrale est 
+$$
+I \otimes B = \beta_1 (Q_1\otimes I) + \cdots + \beta_r (Q_r\otimes I).
+$$
+Les observables $A \otimes I$ et $I \otimes B$ commutent :
+$$
+(A \otimes I) (I \otimes B) =  (I \otimes B) (A \otimes I) = A \otimes B.
+$$
+Comme nous l'avons vu dans l'article précédent, $(A \otimes I)$ et $(I \otimes B)$ "se comportent comme des variables aléatoires indépendantes", c'est-à-dire qu'il revient au même de mesurer $(A \otimes I)$ puis $(I \otimes B)$ ou de mesurer $(I \otimes B)$ puis $(A \otimes I)$. Plus précisément :
+<!--
+$$
+\begin{align*}
+{\Pr}_{\bv\otimes\bw}(\text{$A \otimes I$ révèle $\alpha_i$ puis $I \otimes B$ révèle $\beta_j$}) & = 
+{\Pr}_{\bv\otimes\bw}(\text{$I \otimes B$ révèle $\beta_j$ puis $A \otimes I$ révèle $\alpha_i$}) \\
+ & = {\Pr}_{\bv}(\text{$A$ révèle $\alpha_i$}) {\Pr}_{\bw}(\text{$B$ révèle $\beta_j$}).
+\end{align*}
+$$
+-->
+$$
+\begin{multline}
+{\Pr}_{\bv\otimes\bw}(\text{$A \otimes I$ révèle $\alpha_i$ puis $I \otimes B$ révèle $\beta_j$})  \\ = 
+{\Pr}_{\bv\otimes\bw}(\text{$I \otimes B$ révèle $\beta_j$ puis $A \otimes I$ révèle $\alpha_i$}) \\
+  = {\Pr}_{\bv}(\text{$A$ révèle $\alpha_i$}) {\Pr}_{\bw}(\text{$B$ révèle $\beta_j$}).
+\end{multline}
+$$
+
+## Base de $\C^m\otimes\C^n$
+
+Si $(a_i)$ est une base de $\C^m$ et $(b_j)$ est une base de $\C^n$ alors $(a_i \otimes b_j)$ est une base de $\C^m\otimes\C^n$. 
+
+Dans le cas où $m=n=2$, rappelons qu'on note $\kzero$ et $\kone$ les deux vecteurs de base :
+$$
+\kzero = \begin{pmatrix}1 \\ 0\end{pmatrix}  \quad \text{et } 
+\kone = \begin{pmatrix}0 \\ 1\end{pmatrix}.  
+$$
+Il est courant de noter 
+$$
+\ket{00} = \kzero\kzero := \kzero\otimes\kzero = \begin{pmatrix} 1 & 0\\ 0 & 0\end{pmatrix} = \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0\end{pmatrix}
+$$
+$$
+\ket{01} = \kzero\kone := \kzero\otimes\kone = \begin{pmatrix} 0 & 1\\ 0 & 0\end{pmatrix} = \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0\end{pmatrix},
+$$
+$$
+\ket{10} = \kone\kzero := \kone\otimes\kzero = \begin{pmatrix} 0 & 0\\ 1 & 0\end{pmatrix} = \begin{pmatrix} 0 \\ 0\\ 1 \\ 0\end{pmatrix},
+$$
+$$
+\ket{11} = \kone\kone := \kone\otimes\kone = \begin{pmatrix} 0 & 0\\ 0 & 1\end{pmatrix} = \begin{pmatrix} 0 \\ 0 \\ 0 \\ 1\end{pmatrix}.
+$$
+
+
+## L'état de Bell
+
+L'état 
+$$
+\psi = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ 0 \\ 0 \\ 1\end{pmatrix} = 
+\frac{1}{\sqrt{2}}\bigl(\ket{00} + \ket{11} \bigr) \in \C^2\otimes\C^2
+$$
+est connu pour ne pas pouvoir s'exprimer sous la forme $\bv\otimes\bw$. 
+On dit qu'il est *intriqué*. 
+
+Regardons ce qui se passe lorsque le système est dans cet état et que l'on effectue la mesure de $M \otimes I$, où 
+$$
+M = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix} = 
+0  \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} 
++ 1  \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix} =
+0 P_{[\kzero]} + 1 P_{[\kone]}. 
+$$
+Le produit tensoriel jouit de la propriété $P_{U \otimes V} = P_U \otimes P_V$, 
+donc la décomposition spectrale de $M \otimes I$ est (puisque $I=P_{\C^2}$)
+$$
+M \otimes I = 0 P_{W_0} + 1 P_{W_1}.
+$$
+où $W_0 = [\kzero]\otimes\C^2$ et $W_1 = [\kone]\otimes\C^2$.
+Notons que
+$$
+\begin{align*}
+W_0 = [\kzero]\otimes\C^2 & =  [\kzero]\otimes \bigl([\kzero] + [\kone]\bigr) =
+[\kzero]\otimes[\kzero] +  [\kzero]\otimes[\kone]  = 
+[\kzero\otimes\kzero] +  [\kzero \otimes \kone] \\ 
+& = [\ket{00}] + [\ket{01}] = [\ket{00}, \ket{01}].
+\end{align*}
+$$
+On a 
+$$
+\psi - \frac{1}{\sqrt{2}} \ket{00} = \ket{11}
+$$
+et donc 
+$$
+\langle \psi - \frac{1}{\sqrt{2}} \ket{00},  \ket{00} \rangle 
+= \langle \psi - \frac{1}{\sqrt{2}} \ket{00},  \ket{01} \rangle = 0
+$$
+donc $\psi - \frac{1}{\sqrt{2}} \ket{00} \perp W_0$. 
+En outre, $\frac{1}{\sqrt{2}} \ket{00} \in W_0$, donc 
+$$
+P_{W_0} \psi = \frac{1}{\sqrt{2}} \ket{00} 
+\quad \text{et } P_{W_1} \psi = \frac{1}{\sqrt{2}} \ket{11}.  
+$$
+Ainsi, la mesure de $M\otimes I$ produit l'un des résultats suivants, chacun avec probabilité $\frac12$ :
+
+- la mesure révèle $0$ et l'état saute en $\ket{00} = \kzero\otimes\kzero$ 
+
+- la mesure révèle $1$ et l'état saute en $\ket{11} = \kone\otimes\kone$
+
+On vérifie alors aisément que si on effectue ensuite la mesure de $I \times M$, on obtient alors le même résultat que celui de la première mesure. 
+
+
+# Références 
+
+- [Isham CJ][isham]: Lectures on Quantum Theory. Allied Publishers, 2001.
+
+- [Leroyer Y et Sénizergues G][leroyer]: Introduction à l'information quantique. Polycopié ENSEIRB-MATMECA, année 2014-2015.
+
+- [Williams D][williams]: Weighing the Odds: A Course in Probability and Statistics. Cambridge University Press, 2001. 
+
+<!-- -->
+
+[isham]: https://books.google.be/books?id=dVs8PcZ0Hd8C "Lectures on Quantum Theory"
+
+[leroyer]: http://dept-info.labri.fr/~ges/ENSEIGNEMENT/CALCULQ/polycop_calculq.pdf "Introduction à l'information quantique"
+
+[williams]: https://books.google.be/books?id=vmoFw0pvS1sC "Weighing the Odds" 
+
