@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Le principe d'incertitude de Heisenberg</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Le principe d'incertitude de Heisenberg</a>
+              </h3>
+              <span>2016-03-02</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/Heisenberg.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(latest update : 2016-03-02 16:58:33)</em></strong> <br/></p>
+<p>Cet article fait suite à l’<a href="http://stla.github.io/stlapblog/posts/PrQuantique_Intro.html">introduction aux probabilités quantiques</a>. Nous y avons vu que le résultat moyen (l’espérance) de la mesure d’un observable <span class="math inline">\(A\)</span> lorsque le système est dans l’état <span class="math inline">\(\psi\)</span> est <span class="math display">\[
+E_\psi(A) = \langle \psi, A\psi \rangle.
+\]</span> Intéressons-nous maintenant à la variance de la mesure, que nous notons <span class="math inline">\({\mathrm{Var}}_\psi(A)\)</span>. Écrivons<br />
+<span class="math display">\[
+A = \alpha_1P_1 + \cdots + \alpha_rP_r,
+\]</span> la décomposition spectrale d’un observable <span class="math inline">\(A\)</span>. Nous avions remarqué dans le précédent article que, en vertu du théorème de décomposition spectrale, on a alors <span class="math display">\[
+g(A) = g(\alpha_1)P_1 + \cdots + g(\alpha_r)P_r
+\]</span> pour toute fonction polynomiale <span class="math inline">\(g\)</span> (et <span class="math inline">\(g(A)\)</span> est alors bien une matrice auto-adjointe). Donc <span class="math display">\[
+A^2 = \alpha_1^2P_1 + \cdots + \alpha_r^2P_r
+\]</span> et l’espérance du carré du résultat de la mesure de <span class="math inline">\(A\)</span> est alors <span class="math inline">\(E_\psi(A^2)\)</span>. Donc <span class="math display">\[
+{\mathrm{Var}}_\psi(A) = E_\psi(A^2) - {\bigl(E_\psi(A)\bigr)}^2.
+\]</span> Le lecteur est supposé connaître les deux expressions classiques de la variance d’une variable aléatoire. On peut aussi introduire un observable qui prend les valeurs <span class="math inline">\({\bigl(\alpha_i - E_\psi(A)\bigr)}^2\)</span>, et <span class="math inline">\({\mathrm{Var}}_\psi(A)\)</span> est alors l’espérance (“sous <span class="math inline">\(\psi\)</span>”) de cet observable. Celui-ci est simplement <span class="math inline">\(\tilde A^2\)</span> où <span class="math display">\[
+\tilde A = A - E_\psi(A)I 
+\]</span> est à nouveau une fonction polynomiale de <span class="math inline">\(A\)</span>, ainsi que son carré <span class="math inline">\(\tilde A^2\)</span>. Ainsi, <span class="math display">\[
+{\mathrm{Var}}_\psi(A) = E_\psi(\tilde A^2) = \langle \psi, \tilde A^2\psi \rangle = 
+\langle \tilde A\psi, \tilde A\psi \rangle = {\Vert \tilde A \psi \Vert}^2.
+\]</span></p>
+<p>Le principe d’incertitude de Heisenberg est une relation entre les variances <span class="math inline">\({\mathrm{Var}}_\psi(A)\)</span> et <span class="math inline">\({\mathrm{Var}}_\psi(B)\)</span> des mesures de deux observables <span class="math inline">\(A\)</span> et <span class="math inline">\(B\)</span>. C’est un théorème qui se déduit du principe de Born. Nous allons montrer comment y parvenir.</p>
+<p>Introduisons un second observable <span class="math inline">\(B\)</span> et, de même que pour <span class="math inline">\(A\)</span>, la matrice <span class="math inline">\(\tilde B = B - E_\psi(B)I\)</span>. La matrice <span class="math inline">\(\tilde A \tilde B\)</span> n’est pas auto-adjointe en général, mais on peut l’écrire <span class="math display">\[
+\tilde A \tilde B = G + {\mathrm{i}}H
+\]</span> où les matrices <span class="math display">\[
+G = \frac{\tilde A \tilde B + \tilde B \tilde A}{2} \quad \text{et }\;  
+H = \frac{\tilde A \tilde B - \tilde B \tilde A}{2{\mathrm{i}}} = \frac{AB - BA}{2{\mathrm{i}}} 
+\]</span> sont auto-adjointes. On a alors <span class="math display">\[
+\langle \psi, \tilde A \tilde B \psi \rangle =
+\langle \psi, G \psi \rangle + {\mathrm{i}}\langle \psi, H \psi \rangle 
+\]</span> et, du fait que <span class="math inline">\(\langle \psi, G \psi \rangle\)</span> et <span class="math inline">\(\langle \psi, H \psi \rangle\)</span> sont des nombres réels, <span class="math display">\[
+{\bigl| \langle \psi, \tilde A \tilde B \psi \rangle \bigr|}^2 = {\bigl| \langle \psi, G \psi \rangle \bigr|}^2 + {\bigl| \langle \psi, H \psi \rangle \bigr|}^2, 
+\]</span> ce dont on déduit <span class="math display">\[
+\bigl| \langle \psi, H \psi \rangle \bigr| \leq \bigl| \langle \psi, \tilde A \tilde B \psi \rangle \bigr| = \bigl| \langle \tilde A \psi,  \tilde B \psi \rangle \bigr|. 
+\]</span> D’autre part, l’inégalité de Cauchy-Schwarz donne <span class="math display">\[
+\bigl| \langle \tilde A \psi,  \tilde B \psi \rangle \bigr| \leq \Vert \tilde A\psi\Vert \Vert \tilde B \psi \Vert = \sqrt{{\mathrm{Var}}_\psi(A)} \sqrt{{\mathrm{Var}}_\psi(B)}.
+\]</span> En combinant ces deux inégalités, et en notant <span class="math inline">\(\sigma_\psi(\cdot)=\sqrt{{\mathrm{Var}}_\psi(\cdot)}\)</span>, nous obtenons :</p>
+<div class="title_box">
+<div id="title" style="color:blue;font-size:15px;">
+Principe d’incertitude de Heisenberg
+</div>
+<div id="content" style="text-align:center;font-size:19px">
+<span class="math inline">\(\sigma_\psi(A)\sigma_\psi(B) \geq \bigl| \langle \psi, H \psi \rangle \bigr| \quad \text{où } H = \dfrac{AB - BA}{2{\mathrm{i}}}.\)</span>
+</div>
+</div>
+<div id="interpretation-du-principe" class="section level2">
+<h2>Interprétation du principe</h2>
+<p>Ce principe est parfois interprété comme une impossibilité de mesurer deux quantités avec exactitude. Cette interprétation n’est pas correcte. Le principe donne un minorant du produit des écarts-type <span class="math inline">\(\sigma_\psi(A)\)</span> et <span class="math inline">\(\sigma_\psi(B)\)</span>. Il est donc pertinent dans la situation où on effectue un grand nombre de fois les mesures de <span class="math inline">\(A\)</span> et de <span class="math inline">\(B\)</span> lorsqu’<em>à chaque fois</em>, le système est dans l’état <span class="math inline">\(\psi\)</span>. Le principe n’a aucune pertinence dans le cas de mesures successives ou simultanées de <span class="math inline">\(A\)</span> et de <span class="math inline">\(B\)</span>.</p>
+</div>
+<div id="reference" class="section level1">
+<h1>Référence</h1>
+<ul>
+<li><a href="https://books.google.be/books?id=vmoFw0pvS1sC" title="Weighing the Odds">Williams D</a>: Weighing the Odds: A Course in Probability and Statistics. Cambridge University Press, 2001.</li>
+</ul>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

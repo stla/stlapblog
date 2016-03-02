@@ -1,0 +1,116 @@
+---
+title: "Le principe d'incertitude de Heisenberg"
+date: "2016-03-02"
+output: html_document
+---
+
+***(latest update : `r Sys.time()`)***
+<br/>
+
+\newcommand{\ket}[1]{\left|{#1}\right\rangle}
+\newcommand{\kpsi}{\ket{\psi}}
+\newcommand{\kzero}{\ket{0}}
+\newcommand{\kone}{\ket{1}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\AA}{\mathcal{A}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\R}{\mathbb{R}}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\ii}{\mathrm{i}}
+
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+
+
+Cet article fait suite à l'[introduction aux probabilités quantiques](http://stla.github.io/stlapblog/posts/PrQuantique_Intro.html). 
+Nous y avons vu que le résultat moyen (l'espérance) de la mesure d'un observable $A$ lorsque le système est dans l'état $\psi$ est 
+$$
+E_\psi(A) = \langle \psi, A\psi \rangle.
+$$
+Intéressons-nous maintenant à la variance de la mesure, que nous notons  $\Var_\psi(A)$. 
+Écrivons  
+$$
+A = \alpha_1P_1 + \cdots + \alpha_rP_r,
+$$
+la décomposition spectrale d'un observable $A$. 
+Nous avions remarqué dans le précédent article que, en vertu du théorème de décomposition spectrale, on a alors
+$$
+g(A) = g(\alpha_1)P_1 + \cdots + g(\alpha_r)P_r
+$$
+pour toute fonction polynomiale $g$ (et $g(A)$ est alors bien une matrice auto-adjointe). Donc
+$$
+A^2 = \alpha_1^2P_1 + \cdots + \alpha_r^2P_r
+$$
+et l'espérance du carré du résultat de la mesure de $A$ est alors $E_\psi(A^2)$. 
+Donc 
+$$
+\Var_\psi(A) = E_\psi(A^2) - {\bigl(E_\psi(A)\bigr)}^2.
+$$
+Le lecteur est supposé connaître les deux expressions classiques de la variance d'une variable aléatoire. 
+On peut aussi introduire un observable qui prend les valeurs ${\bigl(\alpha_i - E_\psi(A)\bigr)}^2$, et $\Var_\psi(A)$ est alors l'espérance ("sous $\psi$") de cet observable. Celui-ci est simplement $\tilde A^2$ où 
+$$
+\tilde A = A - E_\psi(A)I 
+$$
+est à nouveau une fonction polynomiale de $A$, ainsi que son carré $\tilde A^2$. Ainsi, 
+$$
+\Var_\psi(A) = E_\psi(\tilde A^2) = \langle \psi, \tilde A^2\psi \rangle = 
+\langle \tilde A\psi, \tilde A\psi \rangle = {\Vert \tilde A \psi \Vert}^2.
+$$
+
+Le principe d'incertitude de Heisenberg est une relation entre les variances $\Var_\psi(A)$ et $\Var_\psi(B)$ des mesures de deux observables $A$ et $B$. 
+C'est un théorème qui se déduit du principe de Born. Nous allons montrer comment y parvenir. 
+
+Introduisons un second observable $B$ et, de même que pour $A$, la matrice $\tilde B = B - E_\psi(B)I$. 
+La matrice $\tilde A \tilde B$ n'est pas auto-adjointe en général, mais on peut l'écrire
+$$
+\tilde A \tilde B = G + \ii H
+$$
+où les matrices 
+$$
+G = \frac{\tilde A \tilde B + \tilde B \tilde A}{2} \quad \text{et }\;  
+H = \frac{\tilde A \tilde B - \tilde B \tilde A}{2\ii} = \frac{AB - BA}{2\ii} 
+$$
+sont auto-adjointes.
+On a alors 
+$$
+\langle \psi, \tilde A \tilde B \psi \rangle =
+\langle \psi, G \psi \rangle + \ii \langle \psi, H \psi \rangle 
+$$
+et, du fait que $\langle \psi, G \psi \rangle$ et $\langle \psi, H \psi \rangle$ sont des nombres réels, 
+$$
+{\bigl| \langle \psi, \tilde A \tilde B \psi \rangle \bigr|}^2 = {\bigl| \langle \psi, G \psi \rangle \bigr|}^2 + {\bigl| \langle \psi, H \psi \rangle \bigr|}^2, 
+$$
+ce dont on déduit
+$$
+\bigl| \langle \psi, H \psi \rangle \bigr| \leq \bigl| \langle \psi, \tilde A \tilde B \psi \rangle \bigr| = \bigl| \langle \tilde A \psi,  \tilde B \psi \rangle \bigr|. 
+$$
+D'autre part, l'inégalité de Cauchy-Schwarz donne 
+$$
+\bigl| \langle \tilde A \psi,  \tilde B \psi \rangle \bigr| \leq \Vert \tilde A\psi\Vert \Vert \tilde B \psi \Vert = \sqrt{\Var_\psi(A)} \sqrt{\Var_\psi(B)}.
+$$
+En combinant ces deux inégalités, et en notant $\sigma_\psi(\cdot)=\sqrt{\Var_\psi(\cdot)}$,  nous obtenons :
+
+
+<div class="title_box">
+  <div id="title" style="color:blue;font-size:15px;">Principe d'incertitude de Heisenberg</div>
+  <div id="content" style="text-align:center;font-size:19px">
+  $\sigma_\psi(A)\sigma_\psi(B) \geq \bigl| \langle \psi, H \psi \rangle \bigr|  \quad \text{où } H = \dfrac{AB - BA}{2\ii}.$
+  </div>
+</div>
+
+
+## Interprétation du principe 
+
+Ce principe est parfois interprété comme une impossibilité de mesurer deux quantités avec exactitude. Cette interprétation n'est pas correcte. 
+Le principe donne un minorant du produit des écarts-type $\sigma_\psi(A)$ et $\sigma_\psi(B)$. Il est donc pertinent dans la situation où on effectue un grand nombre de fois les mesures de $A$ et de $B$ lorsqu'*à chaque fois*, le système est dans l'état $\psi$. Le principe n'a aucune pertinence dans le cas de mesures successives ou simultanées de $A$ et de $B$.
+
+# Référence 
+
+- [Williams D][williams]: Weighing the Odds: A Course in Probability and Statistics. Cambridge University Press, 2001. 
+
+[williams]: https://books.google.be/books?id=vmoFw0pvS1sC "Weighing the Odds" 

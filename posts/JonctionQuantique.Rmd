@@ -1,5 +1,5 @@
 ---
-title: "Jonctions quantique"
+title: "Jonction de deux systèmes quantiques"
 date: "2016-02-29"
 output: html_document
 ---
@@ -70,7 +70,7 @@ B = \beta_1 Q_1 + \cdots + \beta_s Q_s,
 $$
 alors $B$ devient $I \otimes B$ dans le système joint. Sa décomposition spectrale est 
 $$
-I \otimes B = \beta_1 (Q_1\otimes I) + \cdots + \beta_r (Q_r\otimes I).
+I \otimes B = \beta_1 (I\otimes Q_1) + \cdots + \beta_r (I\otimes Q_s).
 $$
 Les observables $A \otimes I$ et $I \otimes B$ commutent :
 $$

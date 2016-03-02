@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Jonctions quantique</title>
+  <title>Jonction de deux systèmes quantiques</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="" />
@@ -78,13 +78,13 @@
           <ol id="posts">
             <li class="post">
               <h3>
-                <a href="#">Jonctions quantique</a>
+                <a href="#">Jonction de deux systèmes quantiques</a>
               </h3>
               <span>2016-02-29</span><br/>
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/JonctionQuantique.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>(latest update : 2016-02-29 21:29:29)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-03-02 17:03:49)</em></strong> <br/></p>
 <p>Supposons un état quantique <span class="math inline">\({\mathbf{v}}\in {\mathbb{C}}^m\)</span> et un autre état quantique <span class="math inline">\({\mathbf{w}}\in {\mathbb{C}}^n\)</span>.</p>
 <p>Vus conjointement, ces deux états forment un état quantique dans <span class="math inline">\({\mathbb{C}}^m\otimes{\mathbb{C}}^n\)</span> : le produit tensoriel <span class="math inline">\({\mathbf{v}}\otimes{\mathbf{w}}\)</span> de <span class="math inline">\({\mathbf{v}}\)</span> par <span class="math inline">\({\mathbf{w}}\)</span>.</p>
 <p>L’objectif du présent article est d’exposer le B-A-BA de ces systèmes de deux états quantiques. Cet article fait suite à l’<a href="http://stla.github.io/stlapblog/posts/PrQuantique_Intro.html">introduction aux probabilités quantiques</a>.</p>
@@ -108,7 +108,7 @@ A \otimes I = \alpha_1 (P_1\otimes I) + \cdots + \alpha_r (P_r\otimes I).
 <p>Similairement, si <span class="math inline">\(B\)</span> est un observable pour le second système, de décomposition spectrale <span class="math display">\[
 B = \beta_1 Q_1 + \cdots + \beta_s Q_s,
 \]</span> alors <span class="math inline">\(B\)</span> devient <span class="math inline">\(I \otimes B\)</span> dans le système joint. Sa décomposition spectrale est <span class="math display">\[
-I \otimes B = \beta_1 (Q_1\otimes I) + \cdots + \beta_r (Q_r\otimes I).
+I \otimes B = \beta_1 (I\otimes Q_1) + \cdots + \beta_r (I\otimes Q_s).
 \]</span> Les observables <span class="math inline">\(A \otimes I\)</span> et <span class="math inline">\(I \otimes B\)</span> commutent : <span class="math display">\[
 (A \otimes I) (I \otimes B) =  (I \otimes B) (A \otimes I) = A \otimes B.
 \]</span> Comme nous l’avons vu dans l’article précédent, <span class="math inline">\((A \otimes I)\)</span> et <span class="math inline">\((I \otimes B)\)</span> “se comportent comme des variables aléatoires indépendantes”, c’est-à-dire qu’il revient au même de mesurer <span class="math inline">\((A \otimes I)\)</span> puis <span class="math inline">\((I \otimes B)\)</span> ou de mesurer <span class="math inline">\((I \otimes B)\)</span> puis <span class="math inline">\((A \otimes I)\)</span>. Plus précisément : <!--
