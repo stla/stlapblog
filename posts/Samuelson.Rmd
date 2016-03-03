@@ -1,0 +1,48 @@
+---
+title: "Le pari de Samuelson"
+date: "2016-03-03"
+output: html_document
+---
+
+Comme je l'ai expliqué [ailleurs](http://stla.github.io/stlapblog/posts/PrisonerDilemma.html), les résultats empiriques de l'expérience du dilemme du prisonnier ne violent pas la loi des probabilités totales, contrairement à ce qui est prétendu dans la littérature sur la cognition quantique. 
+
+Dans le même contexte, j'ai entendu ce jour un propos semblable en écoutant l'émission [*"Notre pensée est-elle quantique ?"*](http://www.franceculture.fr/emissions/science-publique/notre-pensee-est-elle-quantique) sur France Culture. 
+
+L'expérience en question est décrite ainsi sur la page [Quantum cognition de Wikipedia](https://en.wikipedia.org/wiki/Quantum_cognition) :
+
+> Suppose a person is given an opportunity to play two rounds of the following gamble: a coin toss will determine whether the subject wins $200 or loses $100. Suppose the subject has decided to play the first round, and does so. Some subjects are then given the result (win or lose) of the first round, while other subjects are not yet given any information about the results. The experimenter then asks whether the subject wishes to play the second round. Performing this experiment with real subjects gives the following results:
+1) When subjects believe they won the first round, the majority of subjects choose to play again on the second round.
+2) When subjects believe they lost the first round, the majority of subjects choose to play again on the second round.
+Given these two separate choices, according to the sure thing principle of rational decision theory, they should also play the second round even if they don’t know or think about the outcome of the first round. But, experimentally, when subjects are not told the results of the first round, the majority of them decline to play a second round. **This finding violates the law of total probability**, [...]
+
+Dans l'émission *"Notre pensée est-elle quantique ?"* (aux environs de 37:00), l'invité Michel Bitbol donne les chiffres suivants :
+
+1. $60\%$ des sujets informés qu'ils ont perdu le premier tour décident de jouer le second tour ;
+2. $70\%$ des sujets informés qu'ils ont gagné le premier tour décident de jouer le second tour ; 
+3. $35\%$ des sujets à qui on ne révèle pas le résultat qu'ils obtiennent au premier tour décident de jouer le second tour.
+
+Nous ne pouvons pas nier qu'il y a là un comportement irrationnel. Mais le fait que $35\%$ n'est pas situé entre $60\%$ et $70\%$ prête visiblement à penser que la loi des probabilités totales est violée. 
+
+Le raisonnement - erroné - qui mène à cette conclusion est le même que celui concluant que l'expérience du [dilemme du prisonnier](http://stla.github.io/stlapblog/posts/PrisonerDilemma.html) viole la loi des probabilités totales. Il consiste à appliquer cette loi de la façon suivante :
+$$
+\begin{multline}
+\Pr(\text{joue 2nd tour}) = 
+\Pr(\text{joue 2nd tour} \mid \text{perd 1er tour})\Pr(\text{perd 1er tour}) \\ 
++ \Pr(\text{joue 2nd tour} \mid \text{gagne 1er tour})\Pr(\text{gagne 1er tour}),
+\end{multline}
+$$
+qui montre bien que la probabilité $\Pr(\text{joue 2nd tour})$ doit être situé entre la probabilité conditionnelle $\Pr(\text{joue 2nd tour} \mid \text{perd 1er tour})$ et la probabilité conditionnelle $\Pr(\text{joue 2nd tour} \mid \text{gagne 1er tour})$. 
+
+L'erreur commise est la même : dans une confusion totale, la formule des probabilités totales est appliquée en mélangeant des probabilités modélisant des expériences différentes. Une autre curiosité dans ce raisonnement est de considérer que $\Pr(\text{joue 2nd tour})$ est la même chose que $\Pr(\text{joue 2nd tour} \mid \text{pas informé})$. 
+
+J'ai déjà détaillé ces confusions dans l'article sur [le dilemme du prisonnier](http://stla.github.io/stlapblog/posts/PrisonerDilemma.html). Je reprends plus brièvement ici. Il y a deux expériences différentes :
+
+- dans la première expérience, le joueur n'est pas informé de son résultat au premier tour, ce qui est modélisé par une probabilité $\Pr$ ;
+
+- dans la seconde expérience, le joueur est informé de son résultat au premier tour, ce qui est modélise par une probabilité ${\Pr}^*$. 
+
+Dans la seconde expérience, ${\Pr}^*(\text{joue le 2nd tour} \mid \text{perd le 1er tour})$ se lit : *la probabilité de jouer le second tour <u>quand on sait</u> qu'on a perdu le premier tour*. Dans la première expérience, ${\Pr}(\text{joue le 2nd tour} \mid \text{perd le 1er tour})$ se lit : *la probabilité de jouer le second tour quand on a perdu le premier tour*, mais dans cette expérience le joueur n'est pas informé de l'issue de son premier tour. Ces deux probabilités sont évidemment différentes, et l'erreur consiste à les confondre dans la formule des probabilités totales. C'est, il me semble, le fait que le symbole "$|$" utilisé pour les probabilités conditionnelles se lise couramment *"sachant que"*, qui prête à cette confusion. Les joueurs ont des comportements différents dans les deux expériences. Mais la loi des probabilités totales, pour chacune des deux expériences, a bien lieu, sans quoi ce serait les règles d'addition et de multiplication qui seraient violées.
+
+
+
+
