@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Using a LKJ prior in Stan</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Using a LKJ prior in Stan</a>
+              </h3>
+              <span>2016-03-07</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/StanLKJprior.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>There are two ways to use a LKJ prior distribution for a correlation matrix in STAN. The first one assigns the distribution on the correlation matrix, whereas the second one assigns the distribution on the lower Cholesky factor of the correlation matrix. I am going to show an example for a trivariate normal sample with a fixed mean: <span class="math display">\[
+y_i \sim_{\text{iid}} {\cal N}\left(
+\begin{pmatrix}
+0 \\ 0 \\ 0
+\end{pmatrix}, \Sigma\right).
+\]</span> Recall the relation between the covariance matrix and the correlation matrix: <span class="math display">\[
+\begin{pmatrix}
+\sigma_{1}^2 &amp; \sigma_{12} &amp; \sigma_{13} \\
+\sigma_{12} &amp; \sigma_2^2 &amp; \sigma_{23} \\
+\sigma_{13} &amp; \sigma_{23} &amp; \sigma_3^2
+\end{pmatrix}
+= 
+\begin{pmatrix}
+\sigma_{1}^2 &amp; 0 &amp; 0 \\
+0 &amp; \sigma_2^2 &amp; 0 \\
+0 &amp; 0 &amp; \sigma_3^2
+\end{pmatrix}
+\Omega 
+\begin{pmatrix}
+\sigma_{1}^2 &amp; 0 &amp; 0 \\
+0 &amp; \sigma_2^2 &amp; 0 \\
+0 &amp; 0 &amp; \sigma_3^2
+\end{pmatrix}
+\]</span> This operation is performed in Stan by the function <code>quad_form_diag</code>.</p>
+<p>I do not assume the reader familiar with Stan or the <code>rstan</code> package, so I will comment each step.</p>
+<p>First I load the <code>rstan</code> package with the usual options:</p>
+<pre class="r"><code>library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())</code></pre>
+<p>I will run Stan on these simulated data:</p>
+<pre class="r"><code>set.seed(666)
+Omega &lt;- rbind(
+  c(1, 0.3, 0.2),
+  c(0.3, 1, 0.1),
+  c(0.2, 0.1, 1)
+)
+sigma &lt;- c(1, 2, 3)
+Sigma &lt;- diag(sigma) %*% Omega %*% diag(sigma)
+N &lt;- 100
+y &lt;- mvtnorm::rmvnorm(N, c(0,0,0), Sigma)</code></pre>
+<div id="prior-on-the-correlation-matrix" class="section level2">
+<h2>Prior on the correlation matrix</h2>
+<p>Below is the Stan code for the Bayesian model assigning a LKJ prior on the correlation matrix <span class="math inline">\(\Omega\)</span>. I use the LKJ distribution with shape parameter <span class="math inline">\(1\)</span>, which is the uniform distribution on the space of correlation matrices.</p>
+<pre class="r"><code>stancode1 &lt;- &#39;data {
+  int&lt;lower=1&gt; N; // number of observations
+  int&lt;lower=1&gt; J; // dimension of observations
+  vector[J] y[N]; // observations
+  vector[J] Zero; // a vector of Zeros (fixed means of observations)
+}
+parameters {
+  corr_matrix[J] Omega; 
+  vector&lt;lower=0&gt;[J] sigma; 
+}
+transformed parameters {
+  cov_matrix[J] Sigma; 
+  Sigma &lt;- quad_form_diag(Omega, sigma); 
+}
+model {
+  y ~ multi_normal(Zero,Sigma); // sampling distribution of the observations
+  sigma ~ gamma(1, 0.0001); // prior on the standard deviations
+  Omega ~ lkj_corr(1); // LKJ prior on the correlation matrix 
+}&#39;</code></pre>
+<p>The <code>stan_model</code> function of the <code>rstan</code> package runs the Stan compilation of the model.</p>
+<pre class="r"><code>stanmodel1 &lt;- stan_model(model_code = stancode1, model_name=&quot;stanmodel1&quot;)</code></pre>
+<p>Note that this function only takes the Stan code as input. Once the model is compiled, the <code>stanmodel</code> object can be used to run the model on different datasets with the <code>sampling</code> function.</p>
+<p>The data must be passed to the <code>sampling</code> function into a list:</p>
+<pre class="r"><code>standata &lt;- list(J = ncol(y), N=N, y = y, Zero=rep(0, ncol(y)))</code></pre>
+<p>The algorithms used by Stan to generate the posterior distributions require initial values of the parameters. One can let the <code>sampling</code> function generate random initial values, or pass them in its <code>init</code> argument. I prefer to give my initial values. More precisely, one must pass to the <code>init</code> argument a function that returns the initial values in a list (see <code>?sampling</code>).</p>
+<p>Here is the way I use to generate initial values. Firstly, I write a function that returns some estimates of the parameters, taking the observations as input and allowing to randomly perturb these observations:</p>
+<pre class="r"><code>estimates &lt;- function(y, perturb=FALSE){
+  if(perturb) y &lt;- y + rnorm(length(y), 0, 1)
+  sigma &lt;- sqrt(diag(var(y)))
+  Omega &lt;- cor(y)
+  return(list(sigma=sigma, Omega=Omega))
+}</code></pre>
+<p>I run Stan with several chains, for instance four chains. The function passed to the <code>init</code> argument of the <code>sampling</code> function takes an optional argument <code>chain_id</code>. For the first chain, I use the estimates calculated from the original data as initial values, and for the other chains I use the estimates calculated from the disturbed original data:</p>
+<pre class="r"><code>inits &lt;- function(chain_id){
+  values &lt;- estimates(standata$y, perturb = chain_id &gt; 1)
+  return(values)
+}</code></pre>
+<p>Now we are ready to run Stan:</p>
+<pre class="r"><code>samples &lt;- sampling(stanmodel1, data = standata, init=inits, 
+                    iter = 10000, warmup = 1000, chains = 4)</code></pre>
+<p>Some numerical problems occur but they are benign. It is not abnormal to get some messages such as</p>
+<pre><code>validate transformed params: Sigma is not positive definite
+validate transformed params: Sigma is not symmetric. Sigma[1,2] = -nan, but Sigma[2,1] = -nan 
+Exception thrown at line 23: lkj_corr_log: y is not positive definite
+validate transformed params: Sigma is not symmetric. Sigma[1,2] = inf, but Sigma[2,1] = inf</code></pre>
+<p>These problems will not occur with the LKJ prior on the Cholesky factor.</p>
+<p>I like to use the <code>coda</code> package for output analysis. This is the way I use to store the samples in a <code>coda</code> object:</p>
+<pre class="r"><code>library(coda)
+codasamples &lt;- do.call(mcmc.list, 
+  plyr::alply(rstan::extract(samples, permuted=FALSE), 2, mcmc))</code></pre>
+</div>
+<div id="prior-on-the-cholesky-factor" class="section level2">
+<h2>Prior on the Cholesky factor</h2>
+<p>The correlation matrix <span class="math inline">\(\Omega\)</span> has a Cholesky factorization <span class="math inline">\(\Omega = LL&#39;\)</span> where <span class="math inline">\(L\)</span> is a lower triangular matrix. Instead of assigning a prior distribution on <span class="math inline">\(\Omega\)</span>, on can assign a prior dsitribution on <span class="math inline">\(L\)</span>. By this way, the numerical problems encountered with the previous way are overcome, and this way is also better for a speed perspective.</p>
+<pre class="r"><code>stancode2 &lt;- &#39;data {
+  int&lt;lower=1&gt; N; // number of observations
+  int&lt;lower=1&gt; J; // dimension of observations
+  vector[J] y[N]; // observations
+  vector[J] Zero; // a vector of Zeros (fixed means of observations)
+}
+parameters {
+  cholesky_factor_corr[J] Lcorr;  
+  vector&lt;lower=0&gt;[J] sigma; 
+}
+model {
+  y ~ multi_normal_cholesky(Zero, diag_pre_multiply(sigma, Lcorr));
+  sigma ~ gamma(1, 0.0001);
+  Lcorr ~ lkj_corr_cholesky(1);
+}
+generated quantities {
+  matrix[J,J] Omega;
+  matrix[J,J] Sigma;
+  Omega &lt;- multiply_lower_tri_self_transpose(Lcorr);
+  Sigma &lt;- quad_form_diag(Omega, sigma); 
+}&#39;</code></pre>
+<p>Note the <code>generated quantities</code> block as compared to the <code>transformed quantities</code> block in the first code. The objects declared in the <code>transformed parameters</code> block are intended to be used in the likelihood of the data, whereas the objects declared in the <code>generated quantities</code> block are not.</p>
+<p>Now we only have to change the <code>estimates</code> function:</p>
+<pre class="r"><code>estimates &lt;- function(y, perturb=FALSE){
+  if(perturb) y &lt;- y + rnorm(length(y), 0, 1)
+  Lcorr &lt;- t(chol(cor(y)))
+  sigma &lt;- sqrt(diag(var(y)))
+  return(list(Lcorr=Lcorr, sigma=sigma))
+}</code></pre>
+<p>Then compile and run as before:</p>
+<pre class="r"><code>stanmodel2 &lt;- stan_model(model_code = stancode2, model_name=&quot;stanmodel2&quot;)
+samples &lt;- sampling(stanmodel2, data = standata, init=inits, 
+                    iter = 10000, warmup = 1000, chains = 4)</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

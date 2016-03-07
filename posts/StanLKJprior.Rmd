@@ -1,0 +1,205 @@
+---
+title: "Using a LKJ prior in Stan"
+date: "2016-03-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+```
+
+There are two ways to use a LKJ prior distribution for a correlation matrix in STAN. The first one assigns the distribution on the correlation matrix, whereas the second one assigns the distribution on the lower Cholesky factor of the correlation matrix. 
+I am going to show an example for a trivariate normal sample with a fixed mean:
+$$
+y_i \sim_{\text{iid}} {\cal N}\left(
+\begin{pmatrix}
+0 \\ 0 \\ 0
+\end{pmatrix}, \Sigma\right).
+$$
+Recall the relation between the covariance matrix and the correlation matrix:
+$$
+\begin{pmatrix}
+\sigma_{1}^2 & \sigma_{12} & \sigma_{13} \\
+\sigma_{12} & \sigma_2^2 & \sigma_{23} \\
+\sigma_{13} & \sigma_{23} & \sigma_3^2
+\end{pmatrix}
+= 
+\begin{pmatrix}
+\sigma_{1}^2 & 0 & 0 \\
+0 & \sigma_2^2 & 0 \\
+0 & 0 & \sigma_3^2
+\end{pmatrix}
+\Omega 
+\begin{pmatrix}
+\sigma_{1}^2 & 0 & 0 \\
+0 & \sigma_2^2 & 0 \\
+0 & 0 & \sigma_3^2
+\end{pmatrix}
+$$
+This operation is performed in Stan by the function `quad_form_diag`. 
+
+I do not assume the reader familiar with Stan or the `rstan` package, so I will comment each step. 
+
+First I load the `rstan` package with the usual options:
+
+```{r}
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+I will run Stan on these simulated data:
+
+```{r}
+set.seed(666)
+Omega <- rbind(
+  c(1, 0.3, 0.2),
+  c(0.3, 1, 0.1),
+  c(0.2, 0.1, 1)
+)
+sigma <- c(1, 2, 3)
+Sigma <- diag(sigma) %*% Omega %*% diag(sigma)
+N <- 100
+y <- mvtnorm::rmvnorm(N, c(0,0,0), Sigma)
+```
+
+
+## Prior on the correlation matrix
+
+Below is the Stan code for the Bayesian model assigning a LKJ prior on the correlation matrix $\Omega$. 
+I use the LKJ distribution with shape parameter $1$, which is the uniform distribution on the space of correlation matrices.
+
+```{r}
+stancode1 <- 'data {
+  int<lower=1> N; // number of observations
+  int<lower=1> J; // dimension of observations
+  vector[J] y[N]; // observations
+  vector[J] Zero; // a vector of Zeros (fixed means of observations)
+}
+parameters {
+  corr_matrix[J] Omega; 
+  vector<lower=0>[J] sigma; 
+}
+transformed parameters {
+  cov_matrix[J] Sigma; 
+  Sigma <- quad_form_diag(Omega, sigma); 
+}
+model {
+  y ~ multi_normal(Zero,Sigma); // sampling distribution of the observations
+  sigma ~ gamma(1, 0.0001); // prior on the standard deviations
+  Omega ~ lkj_corr(1); // LKJ prior on the correlation matrix 
+}'
+```
+
+The `stan_model` function of the `rstan` package runs the Stan compilation of the model. 
+
+```{r compilation, eval=TRUE, cache=TRUE}
+stanmodel1 <- stan_model(model_code = stancode1, model_name="stanmodel1")
+```
+
+Note that this function only takes the Stan code as input. Once the model is compiled, the `stanmodel` object can be used to run the model on different datasets with the `sampling` function. 
+
+The data must be passed to the `sampling` function into a list:
+
+```{r}
+standata <- list(J = ncol(y), N=N, y = y, Zero=rep(0, ncol(y)))
+```
+
+The algorithms used by Stan to generate the posterior distributions require initial values of the parameters. One can let the `sampling` function generate random initial values, or pass them in its `init` argument. I prefer to give my initial values. More precisely, one must pass to the `init` argument a function that returns the initial values in a list (see `?sampling`). 
+
+Here is the way I use to generate initial values. Firstly, I write a function that returns some estimates of the parameters, taking the observations as input and allowing to randomly perturb these observations:  
+
+```{r}
+estimates <- function(y, perturb=FALSE){
+  if(perturb) y <- y + rnorm(length(y), 0, 1)
+  sigma <- sqrt(diag(var(y)))
+  Omega <- cor(y)
+  return(list(sigma=sigma, Omega=Omega))
+}
+```
+
+I run Stan with several chains, for instance four chains. The function passed to the `init` argument of the `sampling` function takes an optional argument `chain_id`. For the first chain, I use the estimates calculated from the original data as initial values, and for the other chains I use the estimates calculated from the disturbed original data:
+
+```{r}
+inits <- function(chain_id){
+  values <- estimates(standata$y, perturb = chain_id > 1)
+  return(values)
+}
+```
+
+Now we are ready to run Stan:
+
+```{r sampling1}
+samples <- sampling(stanmodel1, data = standata, init=inits, 
+                    iter = 10000, warmup = 1000, chains = 4)
+```
+
+Some numerical problems occur but they are benign. It is not abnormal to get some messages such as 
+```
+validate transformed params: Sigma is not positive definite
+validate transformed params: Sigma is not symmetric. Sigma[1,2] = -nan, but Sigma[2,1] = -nan 
+Exception thrown at line 23: lkj_corr_log: y is not positive definite
+validate transformed params: Sigma is not symmetric. Sigma[1,2] = inf, but Sigma[2,1] = inf
+```
+
+These problems will not occur with the LKJ prior on the Cholesky factor. 
+
+I like to use the `coda` package for output analysis. 
+This is the way I use to store the samples in a `coda` object:
+
+```{r}
+library(coda)
+codasamples <- do.call(mcmc.list, 
+  plyr::alply(rstan::extract(samples, permuted=FALSE), 2, mcmc))
+```
+
+
+## Prior on the Cholesky factor 
+
+The correlation matrix $\Omega$ has a Cholesky factorization $\Omega = LL'$ where $L$ is a lower triangular matrix. 
+Instead of assigning a prior distribution on $\Omega$, on can assign a prior dsitribution on $L$. By this way, the numerical problems encountered with the previous way are overcome, and this way is also better for a speed perspective. 
+
+```{r}
+stancode2 <- 'data {
+  int<lower=1> N; // number of observations
+  int<lower=1> J; // dimension of observations
+  vector[J] y[N]; // observations
+  vector[J] Zero; // a vector of Zeros (fixed means of observations)
+}
+parameters {
+  cholesky_factor_corr[J] Lcorr;  
+  vector<lower=0>[J] sigma; 
+}
+model {
+  y ~ multi_normal_cholesky(Zero, diag_pre_multiply(sigma, Lcorr));
+  sigma ~ gamma(1, 0.0001);
+  Lcorr ~ lkj_corr_cholesky(1);
+}
+generated quantities {
+  matrix[J,J] Omega;
+  matrix[J,J] Sigma;
+  Omega <- multiply_lower_tri_self_transpose(Lcorr);
+  Sigma <- quad_form_diag(Omega, sigma); 
+}'
+```
+
+Note the `generated quantities` block as compared to the `transformed quantities` block in the first code. The objects declared in the `transformed parameters` block are intended to be used in the likelihood of the data, whereas the objects declared in the `generated quantities` block are not.
+
+Now we only have to change the `estimates` function:
+```{r}
+estimates <- function(y, perturb=FALSE){
+  if(perturb) y <- y + rnorm(length(y), 0, 1)
+  Lcorr <- t(chol(cor(y)))
+  sigma <- sqrt(diag(var(y)))
+  return(list(Lcorr=Lcorr, sigma=sigma))
+}
+```
+
+Then compile and run as before:
+
+```{r compilation2, eval=FALSE}
+stanmodel2 <- stan_model(model_code = stancode2, model_name="stanmodel2")
+samples <- sampling(stanmodel2, data = standata, init=inits, 
+                    iter = 10000, warmup = 1000, chains = 4)
+```
+
