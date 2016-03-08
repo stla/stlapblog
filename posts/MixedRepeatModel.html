@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>An example of mixed model with repeated measures</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">An example of mixed model with repeated measures</a>
+              </h3>
+              <span>2016-03-08</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/MixedRepeatModel.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>This article is under progress</em></strong></p>
+<p><strong><em>(latest update : 2016-03-08 08:04:53)</em></strong> <br/></p>
+<p>The purpose of this article is to show how to fit a model to a dataset such as the one shown on the graphic below in SAS, R, and JAGS. The reader is assumed to have read <a href="http://stla.github.io/stlapblog/posts/AV1R_SASandR.html">the article on the random effects one-way ANOVA</a>. Roughly speaking, the model of the present article consists of two random effects one-way ANOVA models at two different timepoints, including a correlation between these two models.</p>
+<pre class="r"><code>ggplot(dat, aes(x=Timepoint, y=y, color=Group)) + geom_point()</code></pre>
+<p><img src="assets/fig/MixedRepeatedModel-plotdata-1.png" title="" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>The dataset is the following one:</p>
+<pre class="r"><code>print(dat, digits=3)</code></pre>
+<pre><code>##    Timepoint Group Repeat     y
+## 1         t1  grp1      1 10.42
+## 2         t1  grp1      2 10.34
+## 3         t1  grp1      3 14.93
+## 4         t1  grp1      4 12.42
+## 5         t1  grp2      1  4.63
+## 6         t1  grp2      2  6.08
+## 7         t1  grp2      3  6.01
+## 8         t1  grp2      4  8.58
+## 9         t1  grp3      1 29.47
+## 10        t1  grp3      2 28.33
+## 11        t1  grp3      3 27.07
+## 12        t1  grp3      4 26.51
+## 13        t2  grp1      1  3.53
+## 14        t2  grp1      2  5.27
+## 15        t2  grp1      3  4.11
+## 16        t2  grp1      4  4.34
+## 17        t2  grp2      1  4.94
+## 18        t2  grp2      2  5.39
+## 19        t2  grp2      3  4.37
+## 20        t2  grp2      4  4.15
+## 21        t2  grp3      1  5.26
+## 22        t2  grp3      2  5.19
+## 23        t2  grp3      3  4.73
+## 24        t2  grp3      4  4.71</code></pre>
+<p>The records are taken on three groups at two timepoints. Four measures are recorded for each group at each timepoint. We make the assumption that the within-group variance is the same for the three groups at each timepoint, but we assume a different within-group variance for the two timepoints, as clearly shown by the graphic.</p>
+<p>We use the indexes <span class="math inline">\(i\)</span>, <span class="math inline">\(j\)</span> and <span class="math inline">\(k\)</span> to respectively denote the timepoint, the group and the observation.</p>
+<p>Since the records at the two timepoints are taken on the same groups, we require a correlation between the records of a same group taken at the two timepoints. A way to go consists in assuming that the theoretical pairs of means <span class="math inline">\((\mu_{1j}, \mu_{2j})\)</span> of the groups are random effects following a bivariate normal distribution: <span class="math display">\[
+\begin{pmatrix}
+\mu_{1j} \\ \mu_{2j}
+\end{pmatrix} 
+\sim_{\text{iid}} {\cal N}\left(\begin{pmatrix}
+\mu_{1} \\ \mu_{2}
+\end{pmatrix}, 
+\begin{pmatrix}
+\sigma^2_{b_1} &amp; \rho_b\sigma_{b_1}\sigma_{b_2} \\
+\rho_b\sigma_{b_1}\sigma_{b_2}  &amp; \sigma^2_{b_2}
+\end{pmatrix}
+\right),
+\]</span> centered around the theoretical pair of means <span class="math inline">\((\mu_1, \mu_2)\)</span> at the two timepoints. Then one assumes that for each timepoint <span class="math inline">\(i\)</span>, the observations follow a normal distribution within each group <span class="math inline">\(j\)</span>, with, as said before, a within-variance <span class="math inline">\(\sigma^2_{w_i}\)</span> for each timepoint <span class="math inline">\(i\)</span>: <span class="math display">\[
+(y_{ijk} \mid \mu_{ij}) \sim_{\text{iid}} {\cal N}(\mu_{ij}, \sigma^2_{w_i}).
+\]</span></p>
+<div id="fitting-the-model-in-sas" class="section level2">
+<h2>Fitting the model in SAS</h2>
+<p>The following SAS code fits the above model.</p>
+<pre><code>PROC MIXED DATA=dat COVTEST ;
+    CLASS Timepoint Group Repeat ;
+    MODEL y = Timepoint ;
+    RANDOM Timepoint / SUBJECT=Group type=UN G GCORR ;
+    REPEATED Repeat / SUBJECT=Group*Timepoint GROUP=Timepoint type=VC R RCORR ;   
+RUN; QUIT; </code></pre>
+<p>The <code>type=UN</code> option in the <code>RANDOM</code> statement specifies the “unstructured” type of the between variance matrix <span class="math inline">\(\Sigma_b=\begin{pmatrix} \sigma^2_{b_1} &amp; \rho_b\sigma_{b_1}\sigma_{b_2} \\ \rho_b\sigma_{b_1}\sigma_{b_2} &amp; \sigma^2_{b_2} \end{pmatrix}\)</span>.</p>
+<p>The <code>type=VC</code> option together with the <code>GROUP=Timepoint</code> option in the <code>REPEATED</code> statement specify the within variance matrix <span class="math display">\[
+\Sigma_{w_i} = \begin{pmatrix} 
+\sigma_{w_i} &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; \sigma_{w_i}  &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; \sigma_{w_i} &amp;  0 \\
+0 &amp; 0 &amp; 0 &amp; \sigma_{w_i} 
+\end{pmatrix}
+\]</span> for each timepoint <span class="math inline">\(i\)</span>.</p>
+</div>
+<div id="fitting-the-model-in-r-with-nlme" class="section level2">
+<h2>Fitting the model in R with <code>nlme</code></h2>
+<p>The R syntax with the <code>lme</code> function of the <code>nlme</code> package is the following one:</p>
+<pre class="r"><code>library(nlme)
+lme(y ~ Timepoint, data=dat, random= list(Group = pdSymm(~ 0+Timepoint )), 
+    weights = varIdent(form = ~ Group:Timepoint | Timepoint) )</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##   Data: dat 
+##   Log-restricted-likelihood: -38.33932
+##   Fixed: y ~ Timepoint 
+## (Intercept) Timepointt2 
+##    15.39774   -10.73188 
+## 
+## Random effects:
+##  Formula: ~0 + Timepoint | Group
+##  Structure: General positive-definite
+##             StdDev     Corr  
+## Timepointt1 11.1168180 Tmpnt1
+## Timepointt2  0.2066217 1     
+## Residual     1.7433792       
+## 
+## Variance function:
+##  Structure: Different standard deviations per stratum
+##  Formula: ~Group:Timepoint | Timepoint 
+##  Parameter estimates:
+##        t1        t2 
+## 1.0000000 0.3154435 
+## Number of Observations: 24
+## Number of Groups: 3</code></pre>
+<p>The <code>Fixed</code> part of the output returns <code>15.39774</code> as the estimate of <span class="math inline">\(\mu_1\)</span> and <code>-10.73188</code> as the estimate of <span class="math inline">\(\mu_2-\mu_1\)</span>, hence the estimate of <code>mu_2</code> is:</p>
+<pre class="r"><code>15.39774 - 10.73188 
+## [1] 4.66586</code></pre>
+<p>The <code>Random effects</code> part of the output returns the estimates of the two between standard deviations <span class="math inline">\(\sigma_{b_1}\)</span> and <span class="math inline">\(\sigma_{b_2}\)</span>, and the correlation <span class="math inline">\(\rho\)</span> (the estimate <code>1</code> looks pathological). The <code>Residual</code> standard deviation is the estimate of the within-standard deviation <span class="math inline">\(\sigma_{w_1}\)</span> at timepoint <code>t1</code>. One can see that <code>t1</code> is taken as a reference level in the parameter estimates given in the <code>Variance function</code> part of the output. The estimate corresponding to <code>t2</code>, here <code>0.3154435</code>, is the ratio of the estimates of <span class="math inline">\(\sigma_{w_2}\)</span> by <span class="math inline">\(\sigma_{w_1}\)</span>. Thus the estimate of <span class="math inline">\(\sigma_{w_2}\)</span> is:</p>
+<pre class="r"><code>1.7433792 * 0.3154435
+## [1] 0.5499376</code></pre>
+</div>
+<div id="fitting-the-model-with-jags-and-rjags" class="section level2">
+<h2>Fitting the model with JAGS (and <code>rjags</code>)</h2>
+<p>In order to use JAGS, one needs the integer indices for the timepoint and the group. Since the <code>Timepoint</code> and <code>Group</code> columns have the <code>factor</code> class, one simply uses the <code>as.integer</code> function to get the indexes:</p>
+<pre class="r"><code>str(dat)
+## &#39;data.frame&#39;:    24 obs. of  4 variables:
+##  $ Timepoint: Factor w/ 2 levels &quot;t1&quot;,&quot;t2&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Group    : Factor w/ 3 levels &quot;grp1&quot;,&quot;grp2&quot;,..: 1 1 1 1 2 2 2 2 3 3 ...
+##  $ Repeat   : int  1 2 3 4 1 2 3 4 1 2 ...
+##  $ y        : num  10.42 10.34 14.93 12.42 4.63 ...
+dat &lt;- transform(dat, timepoint=as.integer(Timepoint), group=as.integer(Group))
+head(dat)
+##   Timepoint Group Repeat         y timepoint group
+## 1        t1  grp1      1 10.417068         1     1
+## 2        t1  grp1      2 10.337811         1     1
+## 3        t1  grp1      3 14.925376         1     1
+## 4        t1  grp1      4 12.421879         1     1
+## 5        t1  grp2      1  4.627043         1     2
+## 6        t1  grp2      2  6.075636         1     2</code></pre>
+<p>The JAGS code of the model must be written in a text file. I like to do so with the help of the <code>write.model</code> function of the <code>R2WinBUGS</code> package:</p>
+<pre class="r"><code>jagsfile &lt;- &quot;JAGSmodel.txt&quot; 
+jagsmodel &lt;- function(){
+  for(i in 1:ngroups){
+    mu[i,1:2] ~ dmnorm(Mu[1:2], Omega[1:2,1:2])
+  }
+  for(k in 1:n){
+    y[k] ~ dnorm(mu[group[k], timepoint[k]], precw[timepoint[k]])
+  }
+  Omega ~ dwish(Omega0, df0)
+  Mu[1] ~ dnorm(0, 0.001) # overall mean timepoint 1
+  Mu[2] ~ dnorm(0, 0.001) # overall mean timepoint 2
+  precw[1] ~ dgamma(1, 0.001) # inverse within variance timepoint 1
+  precw[2] ~ dgamma(1, 0.001) # inverse within variance timepoint 2
+  sigmaw1 &lt;- 1/sqrt(precw[1])
+  sigmaw2 &lt;- 1/sqrt(precw[2])
+  Sigma &lt;- inverse(Omega)
+  sigmab1 &lt;- sqrt(Sigma[1,1])
+  sigmab2 &lt;- sqrt(Sigma[2,2])
+  rhob &lt;- Sigma[1,2]/(sigmab1*sigmab2)
+}
+R2WinBUGS::write.model(jagsmodel, jagsfile)</code></pre>
+<p>All the data parameters must be passed in the <code>jags.model</code> function into a list:</p>
+<pre class="r"><code>jagsdata &lt;- list(y=dat$y, ngroups=nlevels(dat$Group), n=length(dat$y), 
+             timepoint=dat$timepoint, group=dat$group,
+             Omega0 = 100*diag(2), df0=2)</code></pre>
+<p>The initial values of the MCMC sampler performed by JAGS must be passed into a list of lists: one list for each chain. As I explained in <a href="http://stla.github.io/stlapblog/posts/StanLKJprior.html">this article</a>, I firstly write a function which takes the dataset as input and allowing to randomly perturb these observations, and which returns some estimates of the parameters (frequentist or rough estimates) :</p>
+<pre class="r"><code>estimates &lt;- function(dat, perturb=FALSE){
+  if(perturb) dat$y &lt;- dat$y + rnorm(length(dat$y), 0, 1)
+  mu &lt;-  matrix(aggregate(y~timepoint:group, data=dat, FUN=mean)$y, ncol=2, byrow=TRUE)
+  Mu &lt;- colMeans(mu)
+  Omega &lt;- solve(cov(mu))
+  precw1 &lt;- mean(1/aggregate(y~Group, data=subset(dat, Timepoint==&quot;t1&quot;), FUN=var)$y)
+  precw2 &lt;- mean(1/aggregate(y~Group, data=subset(dat, Timepoint==&quot;t2&quot;), FUN=var)$y)
+  precw &lt;- c(precw1, precw2)
+  return(list(mu=mu, Mu=Mu, Omega=Omega, precw=precw))
+}</code></pre>
+<p>Then I take the estimates derived from the original data for the first chain and the estimates derived from the disturbed data for the other chains:</p>
+<pre class="r"><code>inits1 &lt;- estimates(dat)
+inits2 &lt;- estimates(dat, perturb=TRUE)
+inits3 &lt;- estimates(dat, perturb=TRUE)
+inits &lt;- list(inits1,inits2,inits3)</code></pre>
+<p>Now everything is ready in order to run JAGS. It is fast for this model, so I do not hesitate to use <code>100000</code> iterations:</p>
+<pre class="r"><code>library(rjags)
+jagsmodel &lt;- jags.model(jagsfile,
+                   data = jagsdata, 
+                   inits = inits, 
+                   n.chains = length(inits))
+## Compiling model graph
+##    Resolving undeclared variables
+##    Allocating nodes
+## Graph information:
+##    Observed stochastic nodes: 24
+##    Unobserved stochastic nodes: 8
+##    Total graph size: 119
+## 
+## Initializing model
+update(jagsmodel, 10000) # warm-up
+samples &lt;- coda.samples(jagsmodel, 
+                        c(&quot;Mu&quot;, &quot;sigmaw1&quot;, &quot;sigmaw2&quot;, &quot;sigmab1&quot;, &quot;sigmab2&quot;, &quot;rhob&quot;), 
+                        n.iter= 100000)
+</code></pre>
+<p>Below are the summary statistics of the posterior samples:</p>
+<pre class="r"><code>summary(samples)</code></pre>
+<pre><code>## 
+## Iterations = 10001:110000
+## Thinning interval = 1 
+## Number of chains = 3 
+## Sample size per chain = 1e+05 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##             Mean     SD  Naive SE Time-series SE
+## Mu[1]   14.28321 8.4946 0.0155090      0.0241549
+## Mu[2]    4.54792 4.8537 0.0088616      0.0141019
+## rhob     0.02376 0.4916 0.0008975      0.0012161
+## sigmab1 14.20751 8.7894 0.0160472      0.0224238
+## sigmab2  7.74525 4.9291 0.0089992      0.0131554
+## sigmaw1  1.69662 0.4060 0.0007413      0.0009543
+## sigmaw2  0.54119 0.1293 0.0002360      0.0003035
+## 
+## 2. Quantiles for each variable:
+## 
+##            2.5%     25%      50%     75%   97.5%
+## Mu[1]   -4.0976  9.9844 14.62762 19.0399 30.4904
+## Mu[2]   -5.3235  2.0952  4.58973  7.0539 14.1923
+## rhob    -0.8576 -0.3701  0.03227  0.4229  0.8740
+## sigmab1  6.0244  9.0631 11.88938 16.4270 36.2287
+## sigmab2  3.2654  4.9045  6.43505  8.9157 20.2065
+## sigmaw1  1.1175  1.4128  1.62777  1.8995  2.6812
+## sigmaw2  0.3565  0.4510  0.51923  0.6060  0.8546</code></pre>
+<p>Except for <span class="math inline">\(\sigma_{b_2}\)</span> and <span class="math inline">\(\rho_b\)</span>, the estimates are quite similar to the ones provided by <code>lme</code>.</p>
+<p>I noted that <span class="math inline">\(\sigma_{b_2}\)</span> is still overestimated when I fit the model on a larger sample size, while <span class="math inline">\(\rho_b\)</span> is underestimated.</p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

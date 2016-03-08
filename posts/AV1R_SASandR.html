@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>One-way random effects ANOVA in SAS and R</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">One-way random effects ANOVA in SAS and R</a>
+              </h3>
+              <span>2016-03-08</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/AV1R_SASandR.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>The purpose of this article is to show how to fit a one-way ANOVA model with random effects in SAS and R. It is also intented to prepare the reader to <a href="http://stla.github.io/stlapblog/posts/MixedRepeatedModel.html">a more complicated model</a>.</p>
+<p>We will use the following simulated dataset for illustration:</p>
+<pre class="r"><code>set.seed(666)
+I &lt;- 3 # number of groups
+J &lt;- 4 # number of replicates per group
+mu &lt;- 2 # overall mean
+sigmab &lt;- sqrt(2) # between standard deviation
+sigmaw &lt;- 1 # within standard deviation
+Group &lt;- LETTERS[gl(I,J)] # factor levels
+y &lt;- c(sapply(rnorm(I,mu,sigmab), function(mui) rnorm(J, mui, sigmaw))) # observations
+dat &lt;- data.frame(y=y, Group=Group)
+print(dat, digits=3)</code></pre>
+<pre><code>##         y Group
+## 1   5.094     A
+## 2   0.848     A
+## 3   3.824     A
+## 4   1.759     A
+## 5   4.046     B
+## 6   3.056     B
+## 7   4.807     B
+## 8   6.999     B
+## 9  -0.272     C
+## 10  2.362     C
+## 11 -0.222     C
+## 12  1.632     C</code></pre>
+<p>The data are shown on the graphic below:</p>
+<pre class="r"><code>ggplot(dat, aes(x=Group, y=y)) + geom_point()</code></pre>
+<p><img src="assets/fig/AV1RSASR-plotdata-1.png" title="" alt="" width="384" style="display: block; margin: auto;" /></p>
+<p>The ANOVA model with random effects is a usual way to model such data. Here the group is the random factor.</p>
+<p>Denoting by <span class="math inline">\(y_{jk}\)</span> the <span class="math inline">\(k\)</span>-th measure in group <span class="math inline">\(j\)</span>, the model is <span class="math display">\[
+y_{jk} = \mu + \alpha_j + \epsilon_{jk} 
+\]</span> where:</p>
+<ul>
+<li><p><span class="math inline">\(\mu\)</span> is the overall mean,</p></li>
+<li><p><span class="math inline">\(\alpha_j\)</span> is the random deviation between the mean of group <span class="math inline">\(j\)</span> and the overall mean, that is to say <span class="math inline">\(\mu_j:=\mu+\alpha_j\)</span> is the mean of group <span class="math inline">\(j\)</span>,</p></li>
+<li><p><span class="math inline">\(\epsilon_{jk}\)</span> is the random deviation between the <span class="math inline">\(k\)</span>-th measure <span class="math inline">\(y_{jk}\)</span> of group <span class="math inline">\(j\)</span> and the mean <span class="math inline">\(\mu_j\)</span>,</p></li>
+</ul>
+<p>and the distributional assumptions are: <span class="math display">\[
+\alpha_j \sim {\cal N}(0, \sigma_b^2) 
+\quad \text{and }\; 
+\epsilon_{jk} \sim {\cal N}(0, \sigma_w^2)
+\]</span> The variances <span class="math inline">\(\sigma_b^2\)</span> et <span class="math inline">\(\sigma_w^2\)</span> are the <em>between</em> variance and the <em>within</em> variance respectively (between-groups and within-group).</p>
+<p>One can also write this model in a hierarchical way (this is the way I used to simulate the data): <span class="math display">\[\mu_j  \sim {\cal N}(\mu, \sigma^2_b), 
+\qquad (y_{jk} \mid \mu_j) \sim {\cal N}(\mu_j, \sigma^2_w).\]</span></p>
+<p>This model is coded as follows in SAS:</p>
+<pre><code>PROC MIXED DATA=dat COVTEST CL;
+    CLASS Group ;
+    MODEL y= ;
+    RANDOM Group G GCORR ; 
+RUN; QUIT; </code></pre>
+<p>The instructions <code>COVTEST</code>, <code>CL</code>, <code>G</code> and <code>GCORR</code> are optional. They provide more things in the output. The name <code>G</code> refers to the <span class="math inline">\(G\)</span>-matrix in the SAS terminology, which is the covariance matrix of the random effects. The name <code>GCORR</code> refers to the corresponding correlation matrix.</p>
+<p>One can fit this model in R with the <code>lmer</code> function of the <code>lme4</code> package:</p>
+<pre class="r"><code>library(lme4)
+( fit &lt;- lmer(y ~ (1|Group), data=dat) )</code></pre>
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: y ~ (1 | Group)
+##    Data: dat
+## REML criterion at convergence: 48.2565
+## Random effects:
+##  Groups   Name        Std.Dev.
+##  Group    (Intercept) 1.738   
+##  Residual             1.663   
+## Number of obs: 12, groups:  Group, 3
+## Fixed Effects:
+## (Intercept)  
+##       2.828</code></pre>
+<p>One can also fit it with the <code>lme</code> function of the <code>nlme</code> package:</p>
+<pre class="r"><code>library(nlme)
+lme(y ~ 1, random = ~1|Group, data=dat)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##   Data: dat 
+##   Log-restricted-likelihood: -24.12826
+##   Fixed: y ~ 1 
+## (Intercept) 
+##    2.827707 
+## 
+## Random effects:
+##  Formula: ~1 | Group
+##         (Intercept) Residual
+## StdDev:    1.737895 1.663373
+## 
+## Number of Observations: 12
+## Number of Groups: 3</code></pre>
+<div id="the-almost-equivalent-repeated-measures-model" class="section level3">
+<h3>The (almost) equivalent repeated measures model</h3>
+<p>The random effects yield a correlation between the measures within a same group. Precisely, the four-tuples of measures <span class="math inline">\((y_{j1}, y_{j3}, y_{j3}, y_{j4})\)</span> are independent of each other, and follow a multivariate Gaussian distribution with mean <span class="math inline">\((\mu,\mu,\mu,\mu)\)</span> and covariance matrix <span class="math display">\[
+\Sigma = 
+\begin{pmatrix}
+\sigma_b^2+ \sigma_w^2 &amp; \sigma_b^2 &amp;  \sigma_b^2 &amp; \sigma_b^2 \\
+\sigma_b^2 &amp; \sigma_b^2 + \sigma_w^2 &amp;  \sigma_b^2 &amp; \sigma_b^2 \\
+\sigma_b^2   &amp; \sigma_b^2 &amp;  \sigma_b^2 + \sigma_w^2 &amp; \sigma_b^2 \\
+\sigma_b^2  &amp; \sigma_b^2 &amp;  \sigma_b^2 &amp; \sigma_b^2 + \sigma_w^2 
+\end{pmatrix}.
+\]</span> This kind of distribution is said to be <em>exchangeable</em>. That means that the distribution is invariant by permutations.</p>
+<p>From this point of view, the model is called a <em>repeated measures</em> model. Such a correlation structure is said to be of the <em>compound symmetry</em> type in the SAS terminology, and is specified by the <code>type=CS</code> instruction:</p>
+<pre><code>PROC MIXED DATA=dat ;
+    CLASS Group ;
+    MODEL y= ;  
+    REPEATED / SUBJECT=Group type=CS R RCORR ; 
+RUN; QUIT; </code></pre>
+<p>The instructions <code>R</code> and <code>RCORR</code> are optional. They provide the estimate of the covariance matrix and the estimate of the correlation matrix.</p>
+<p>It is cleaner to add a column in the dataset to indicate the repetitions:</p>
+<pre class="r"><code>dat$Repeat &lt;- rep(1:J, times=I) 
+print(dat, digits=3)</code></pre>
+<pre><code>##         y Group Repeat
+## 1   5.094     A      1
+## 2   0.848     A      2
+## 3   3.824     A      3
+## 4   1.759     A      4
+## 5   4.046     B      1
+## 6   3.056     B      2
+## 7   4.807     B      3
+## 8   6.999     B      4
+## 9  -0.272     C      1
+## 10  2.362     C      2
+## 11 -0.222     C      3
+## 12  1.632     C      4</code></pre>
+<p>and to include it in the SAS code :</p>
+<pre><code>PROC MIXED data=dat;
+    CLASS Group Repeat;
+    MODEL y= ;  
+    REPEATED Repeat / SUBJECT=Group type=CS R RCORR ;
+RUN; </code></pre>
+<p>This is not necessary here since the index of the repetition has no importance because of the symmetry of the correlation structure. But this column is important for other correlation structures.</p>
+<p>There is only one difference between the random effects model and the repeated mesures model. With the first model, the correlation between two measures inside a same group is <span class="math inline">\(\sigma_b^2/(\sigma_b^2 + \sigma_w^2)\)</span>, and then it is constrained to be positive, whereas there is no positivity constraint with the second model.</p>
+<p>This kind of model belongs to the <em>generalized linear models</em> (GLS) family. One can fit this model in R with the <code>gls</code> function of the <code>nlme</code> package:</p>
+<pre class="r"><code>library(nlme)
+gls(y ~ 1, data=dat, correlation=corCompSymm(form= ~ 1 | Group))</code></pre>
+<pre><code>## Generalized least squares fit by REML
+##   Model: y ~ 1 
+##   Data: dat 
+##   Log-restricted-likelihood: -24.12826
+## 
+## Coefficients:
+## (Intercept) 
+##    2.827707 
+## 
+## Correlation Structure: Compound symmetry
+##  Formula: ~1 | Group 
+##  Parameter estimate(s):
+##       Rho 
+## 0.5218981 
+## Degrees of freedom: 12 total; 11 residual
+## Residual standard error: 2.405634</code></pre>
+<p>The residual error returned by <code>gls</code> is the estimate of the total standard deviation, which is <span class="math inline">\(\sqrt{\sigma_b^2+\sigma_w^2}\)</span> in the random effects model. It also returns an estimated of the correlation. This is the parameter named <code>Rho</code> in the output. In the random effects model, this correlation is <span class="math inline">\(\frac{\sigma_b^2}{\sigma_b^2+\sigma_w^2}\)</span>.</p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

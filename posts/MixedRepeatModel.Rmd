@@ -1,0 +1,242 @@
+---
+title: "An example of mixed model with repeated measures"
+date: "2016-03-08"
+output: html_document
+---
+
+***This article is under progress***
+
+***(latest update : `r Sys.time()`)***
+<br/>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center", fig.path="./assets/fig/MixedRepeatedModel-")
+library(ggplot2)
+fscale <- 1
+```
+
+```{r data, echo=FALSE}
+I <-  3
+J <-  4
+set.seed(444) 
+### simulation of overall means ###
+Mu.t1 <- 20
+Mu.t2 <- 5
+Mu <- c(Mu.t1, Mu.t2)
+names(Mu) <- c("t1", "t2")
+sigmab.t1 <-  8
+sigmab.t2 <- 1
+rho <- 0.2
+Sigma <- rbind(
+	c(sigmab.t1^2, rho*sigmab.t1*sigmab.t2),
+	c(rho*sigmab.t1*sigmab.t2, sigmab.t2^2)
+	)
+mu <- mvtnorm::rmvnorm(I, Mu, Sigma)
+### simulation within-lots ###
+sigmaw.t1 <- 2
+sigmaw.t2 <- 0.5
+y.t1 <- c(sapply(mu[,"t1"], function(m) rnorm(J, m, sigmaw.t1)))
+y.t2 <- c(sapply(mu[,"t2"], function(m) rnorm(J, m, sigmaw.t2)))
+### constructs the dataset ####
+Timepoint <- rep(c("t1", "t2"), each=I*J)
+Group <- paste0("grp", rep(gl(I,J), times=2))
+Repeat <- rep(1:J, times=2*I) 
+dat <- data.frame(
+	Timepoint=Timepoint,
+	Group=Group,
+	Repeat=Repeat, 
+	y=c(y.t1,y.t2)
+	)
+dat$Timepoint <- relevel(dat$Timepoint, "t1") 
+```
+
+The purpose of this article is to show how to fit a model to a dataset such as the one shown on the graphic below in SAS, R, and JAGS. 
+The reader is assumed to have read [the article on the random effects one-way  ANOVA](http://stla.github.io/stlapblog/posts/AV1R_SASandR.html). 
+Roughly speaking, the model of the present article consists of two random effects one-way ANOVA models at two different timepoints, including a correlation between these two models.
+
+```{r plotdata, fig.width=fscale*5, fig.height=fscale*4}
+ggplot(dat, aes(x=Timepoint, y=y, color=Group)) + geom_point()
+```
+
+The dataset is the following one:
+```{r}
+print(dat, digits=3)
+```
+
+
+The records are taken on three groups at two timepoints. 
+Four measures are recorded for each group at each timepoint. 
+We make the assumption that the within-group variance is the same for the three groups at each timepoint, but we assume a different within-group variance for the two timepoints, as clearly shown by the graphic. 
+
+We use the indexes $i$, $j$ and $k$ to respectively denote the timepoint, the group and the observation.
+
+Since the records at the two timepoints are taken on the same groups, we require a correlation between the records of a same group taken at the two timepoints. 
+A way to go consists in assuming that the theoretical pairs of means $(\mu_{1j}, \mu_{2j})$ of the groups are random effects following a bivariate normal distribution:
+$$
+\begin{pmatrix}
+\mu_{1j} \\ \mu_{2j}
+\end{pmatrix} 
+\sim_{\text{iid}} {\cal N}\left(\begin{pmatrix}
+\mu_{1} \\ \mu_{2}
+\end{pmatrix}, 
+\begin{pmatrix}
+\sigma^2_{b_1} & \rho_b\sigma_{b_1}\sigma_{b_2} \\
+\rho_b\sigma_{b_1}\sigma_{b_2}  & \sigma^2_{b_2}
+\end{pmatrix}
+\right),
+$$
+centered around the theoretical pair of means $(\mu_1, \mu_2)$ at the two timepoints.
+Then one assumes that for each timepoint $i$, the observations follow a normal distribution within each group $j$, with, as said before, a within-variance $\sigma^2_{w_i}$ for each timepoint $i$:
+$$
+(y_{ijk} \mid \mu_{ij}) \sim_{\text{iid}} {\cal N}(\mu_{ij}, \sigma^2_{w_i}).
+$$
+
+## Fitting the model in SAS 
+
+The following SAS code fits the above model.
+
+```
+PROC MIXED DATA=dat COVTEST ;
+	CLASS Timepoint Group Repeat ;
+	MODEL y = Timepoint ;
+	RANDOM Timepoint / SUBJECT=Group type=UN G GCORR ;
+	REPEATED Repeat / SUBJECT=Group*Timepoint GROUP=Timepoint type=VC R RCORR ;   
+RUN; QUIT; 
+```
+
+The `type=UN` option in the `RANDOM` statement specifies the "unstructured" type of the between variance matrix $\Sigma_b=\begin{pmatrix}
+\sigma^2_{b_1} & \rho_b\sigma_{b_1}\sigma_{b_2} \\
+\rho_b\sigma_{b_1}\sigma_{b_2}  & \sigma^2_{b_2}
+\end{pmatrix}$. 
+
+The `type=VC` option together with the `GROUP=Timepoint` option in the `REPEATED` statement specify the within variance matrix 
+$$
+\Sigma_{w_i} = \begin{pmatrix} 
+\sigma_{w_i} & 0 & 0 & 0 \\
+0 & \sigma_{w_i}  & 0 & 0 \\
+0 & 0 & \sigma_{w_i} &  0 \\
+0 & 0 & 0 & \sigma_{w_i} 
+\end{pmatrix}
+$$
+for each timepoint $i$. 
+
+
+## Fitting the model in R with `nlme`
+
+The R syntax with the `lme` function of the `nlme` package is the following one:
+
+```{r nlme, message=FALSE}
+library(nlme)
+lme(y ~ Timepoint, data=dat, random= list(Group = pdSymm(~ 0+Timepoint )), 
+	weights = varIdent(form = ~ Group:Timepoint | Timepoint) )
+```
+
+The `Fixed` part of the output returns `15.39774` as the estimate of $\mu_1$ and 
+`-10.73188` as the estimate of $\mu_2-\mu_1$, hence the estimate of `mu_2` is:
+
+```{r, collapse=TRUE}
+15.39774 - 10.73188 
+```
+
+The `Random effects` part of the output returns the estimates of the two between standard deviations $\sigma_{b_1}$ and $\sigma_{b_2}$, and the correlation $\rho$ 
+(the estimate `1` looks pathological). 
+The `Residual` standard deviation is the estimate of the within-standard deviation $\sigma_{w_1}$ at timepoint `t1`. One can see that `t1` is taken as a reference level in the parameter estimates given in the `Variance function` part of the output. The estimate corresponding to `t2`, here `0.3154435`, is the ratio of the estimates of $\sigma_{w_2}$ by $\sigma_{w_1}$. Thus the estimate of  $\sigma_{w_2}$ is: 
+```{r, collapse=TRUE}
+1.7433792 * 0.3154435
+```
+
+
+
+## Fitting the model with JAGS (and `rjags`)
+
+In order to use JAGS, one needs the integer indices for the timepoint and the group. Since the `Timepoint` and `Group` columns have the `factor` class, one simply uses the `as.integer` function to get the indexes: 
+
+```{r, collapse=TRUE}
+str(dat)
+dat <- transform(dat, timepoint=as.integer(Timepoint), group=as.integer(Group))
+head(dat)
+```
+
+The JAGS code of the model must be written in a text file. I like to do so with the help of the `write.model` function of the `R2WinBUGS` package:
+
+```{r}
+jagsfile <- "JAGSmodel.txt" 
+jagsmodel <- function(){
+  for(i in 1:ngroups){
+    mu[i,1:2] ~ dmnorm(Mu[1:2], Omega[1:2,1:2])
+  }
+  for(k in 1:n){
+    y[k] ~ dnorm(mu[group[k], timepoint[k]], precw[timepoint[k]])
+  }
+  Omega ~ dwish(Omega0, df0)
+  Mu[1] ~ dnorm(0, 0.001) # overall mean timepoint 1
+  Mu[2] ~ dnorm(0, 0.001) # overall mean timepoint 2
+  precw[1] ~ dgamma(1, 0.001) # inverse within variance timepoint 1
+  precw[2] ~ dgamma(1, 0.001) # inverse within variance timepoint 2
+  sigmaw1 <- 1/sqrt(precw[1])
+  sigmaw2 <- 1/sqrt(precw[2])
+  Sigma <- inverse(Omega)
+  sigmab1 <- sqrt(Sigma[1,1])
+  sigmab2 <- sqrt(Sigma[2,2])
+  rhob <- Sigma[1,2]/(sigmab1*sigmab2)
+}
+R2WinBUGS::write.model(jagsmodel, jagsfile)
+```
+
+All the data parameters must be passed in the `jags.model` function into a list:
+
+```{r}
+jagsdata <- list(y=dat$y, ngroups=nlevels(dat$Group), n=length(dat$y), 
+             timepoint=dat$timepoint, group=dat$group,
+             Omega0 = 100*diag(2), df0=2)
+```
+
+The initial values of the MCMC sampler performed by JAGS must be passed into a list of lists: one list for each chain. As I explained in [this article](http://stla.github.io/stlapblog/posts/StanLKJprior.html), I firstly write a function which takes the dataset as input and allowing to randomly perturb these observations, and which returns some estimates of the parameters (frequentist or rough estimates) :
+
+```{r}
+estimates <- function(dat, perturb=FALSE){
+  if(perturb) dat$y <- dat$y + rnorm(length(dat$y), 0, 1)
+  mu <-  matrix(aggregate(y~timepoint:group, data=dat, FUN=mean)$y, ncol=2, byrow=TRUE)
+  Mu <- colMeans(mu)
+  Omega <- solve(cov(mu))
+  precw1 <- mean(1/aggregate(y~Group, data=subset(dat, Timepoint=="t1"), FUN=var)$y)
+  precw2 <- mean(1/aggregate(y~Group, data=subset(dat, Timepoint=="t2"), FUN=var)$y)
+  precw <- c(precw1, precw2)
+  return(list(mu=mu, Mu=Mu, Omega=Omega, precw=precw))
+}
+```
+
+Then I take the estimates derived from the original data for the first chain and the estimates derived from the disturbed data for the other chains:
+
+```{r}
+inits1 <- estimates(dat)
+inits2 <- estimates(dat, perturb=TRUE)
+inits3 <- estimates(dat, perturb=TRUE)
+inits <- list(inits1,inits2,inits3)
+```
+
+Now everything is ready in order to run JAGS. It is fast for this model, so I do not hesitate to use `100000` iterations:
+
+```{r, message=FALSE, collapse=TRUE}
+library(rjags)
+jagsmodel <- jags.model(jagsfile,
+                   data = jagsdata, 
+                   inits = inits, 
+                   n.chains = length(inits))
+update(jagsmodel, 10000) # warm-up
+samples <- coda.samples(jagsmodel, 
+                        c("Mu", "sigmaw1", "sigmaw2", "sigmab1", "sigmab2", "rhob"), 
+                        n.iter= 100000)
+```
+
+Below are the summary statistics of the posterior samples:
+
+```{r}
+summary(samples)
+```
+
+Except for $\sigma_{b_2}$ and $\rho_b$, the estimates are quite similar to the ones provided by `lme`. 
+
+I noted that $\sigma_{b_2}$ is still overestimated when I fit the model on a larger sample size, while $\rho_b$ is underestimated. 
+
+

@@ -1,0 +1,150 @@
+---
+title: "One-way random effects ANOVA in SAS and R"
+date: "2016-03-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center", fig.path="./assets/fig/AV1RSASR-")
+library(ggplot2)
+fscale <- 1
+```
+
+The purpose of this article is to show how to fit a one-way ANOVA model with random effects in SAS and R. It is also intented to prepare the reader to [a more complicated model](http://stla.github.io/stlapblog/posts/MixedRepeatedModel.html). 
+
+We will use the following simulated dataset for illustration:
+
+```{r data}
+set.seed(666)
+I <- 3 # number of groups
+J <- 4 # number of replicates per group
+mu <- 2 # overall mean
+sigmab <- sqrt(2) # between standard deviation
+sigmaw <- 1 # within standard deviation
+Group <- LETTERS[gl(I,J)] # factor levels
+y <- c(sapply(rnorm(I,mu,sigmab), function(mui) rnorm(J, mui, sigmaw))) # observations
+dat <- data.frame(y=y, Group=Group)
+print(dat, digits=3)
+```
+
+The data are shown on the graphic below:
+
+```{r plotdata, fig.width=fscale*4, fig.height=fscale*4}
+ggplot(dat, aes(x=Group, y=y)) + geom_point()
+```
+
+The ANOVA model with random effects is a usual way to model such data. 
+Here the group is the random factor. 
+
+Denoting by $y_{jk}$ the $k$-th measure in group $j$, the model is
+$$
+y_{jk} = \mu + \alpha_j + \epsilon_{jk} 
+$$
+where:
+
+- $\mu$ is the overall mean,
+
+- $\alpha_j$ is the random deviation between the mean of group $j$ and the overall mean, that is to say $\mu_j:=\mu+\alpha_j$ is the mean of group $j$,
+
+- $\epsilon_{jk}$ is the random deviation between the $k$-th measure $y_{jk}$ of group $j$ and the mean $\mu_j$, 
+
+and the distributional assumptions are:
+$$
+\alpha_j \sim {\cal N}(0, \sigma_b^2) 
+\quad \text{and }\; 
+\epsilon_{jk} \sim {\cal N}(0, \sigma_w^2)
+$$
+The variances $\sigma_b^2$ et $\sigma_w^2$ are the *between* variance and the *within* variance respectively (between-groups and within-group).
+
+One can also write this model in a hierarchical way (this is the way I used to simulate the data):
+$$\mu_j  \sim {\cal N}(\mu, \sigma^2_b), 
+\qquad (y_{jk} \mid \mu_j) \sim {\cal N}(\mu_j, \sigma^2_w).$$
+
+This model is coded as follows in SAS:
+
+```
+PROC MIXED DATA=dat COVTEST CL;
+	CLASS Group ;
+	MODEL y= ;
+	RANDOM Group G GCORR ; 
+RUN; QUIT; 
+```
+
+The instructions `COVTEST`, `CL`, `G` and `GCORR` are optional. They provide more things in the output. The name `G` refers to the $G$-matrix in the SAS terminology, which is the covariance matrix of the random effects. The name `GCORR` refers to the corresponding correlation matrix. 
+
+One can fit this model in R with the `lmer` function of the `lme4` package:
+
+```{r lme4, message=FALSE}
+library(lme4)
+( fit <- lmer(y ~ (1|Group), data=dat) )
+```
+
+One can also fit it with the `lme` function of the `nlme` package:
+
+```{r lme, message=FALSE}
+library(nlme)
+lme(y ~ 1, random = ~1|Group, data=dat)
+```
+
+
+### The (almost) equivalent repeated measures model
+
+The random effects yield a correlation between the measures within a same group. 
+Precisely, the four-tuples of measures  $(y_{j1}, y_{j3}, y_{j3}, y_{j4})$ are independent of each other, and follow a multivariate Gaussian distribution with mean $(\mu,\mu,\mu,\mu)$ and covariance matrix
+$$
+\Sigma = 
+\begin{pmatrix}
+\sigma_b^2+ \sigma_w^2 & \sigma_b^2 &  \sigma_b^2 & \sigma_b^2 \\
+\sigma_b^2 & \sigma_b^2 + \sigma_w^2 &  \sigma_b^2 & \sigma_b^2 \\
+\sigma_b^2   & \sigma_b^2 &  \sigma_b^2 + \sigma_w^2 & \sigma_b^2 \\
+\sigma_b^2  & \sigma_b^2 &  \sigma_b^2 & \sigma_b^2 + \sigma_w^2 
+\end{pmatrix}.
+$$
+This kind of distribution is said to be *exchangeable*. That means that the distribution is invariant by permutations. 
+
+From this point of view, the model is called a *repeated measures* model. 
+Such a correlation structure is said to be of the *compound symmetry* type in the SAS terminology, and is specified by the `type=CS` instruction:
+
+```
+PROC MIXED DATA=dat ;
+	CLASS Group ;
+	MODEL y= ;	
+	REPEATED / SUBJECT=Group type=CS R RCORR ; 
+RUN; QUIT; 
+```
+
+The instructions `R` and `RCORR` are optional. They provide the estimate of the covariance matrix and the estimate of the correlation matrix. 
+
+It is cleaner to add a column in the dataset to indicate the repetitions:
+
+```{r}
+dat$Repeat <- rep(1:J, times=I) 
+print(dat, digits=3)
+```
+
+and to include it in the SAS code :
+
+```
+PROC MIXED data=dat;
+	CLASS Group Repeat;
+	MODEL y= ;	
+	REPEATED Repeat / SUBJECT=Group type=CS R RCORR ;
+RUN; 
+```
+
+This is not necessary here since the index of the repetition has no importance because of the symmetry of the correlation structure. But this column is important for other correlation structures.
+
+There is only one difference between the random effects model and the repeated mesures model. With the first model, the correlation between two measures inside a same group is $\sigma_b^2/(\sigma_b^2 + \sigma_w^2)$, and then it is constrained to be positive, whereas there is no positivity constraint with the second model. 
+
+This kind of model belongs to the *generalized linear models* (GLS) family. One can fit this model in R with the `gls` function of the `nlme` package:
+
+```{r}
+library(nlme)
+gls(y ~ 1, data=dat, correlation=corCompSymm(form= ~ 1 | Group))
+```
+
+The residual error returned by `gls` is the estimate of the total standard deviation, which is $\sqrt{\sigma_b^2+\sigma_w^2}$ in the random effects model. 
+It also returns an estimated of the correlation. This is the parameter named `Rho` in the output. In the random effects model, this correlation is  $\frac{\sigma_b^2}{\sigma_b^2+\sigma_w^2}$.
+
+
+
