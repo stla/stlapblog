@@ -143,7 +143,7 @@ transformed parameters {
 }
 model {
   y ~ multi_normal(Zero,Sigma); // sampling distribution of the observations
-  sigma ~ gamma(1, 0.0001); // prior on the standard deviations
+  sigma ~ cauchy(0, 5); // prior on the standard deviations
   Omega ~ lkj_corr(1); // LKJ prior on the correlation matrix 
 }&#39;</code></pre>
 <p>The <code>stan_model</code> function of the <code>rstan</code> package runs the Stan compilation of the model.</p>
@@ -165,7 +165,7 @@ model {
   return(values)
 }</code></pre>
 <p>Now we are ready to run Stan:</p>
-<pre class="r"><code>samples &lt;- sampling(stanmodel1, data = standata, init=inits, 
+<pre class="r"><code>samples1 &lt;- sampling(stanmodel1, data = standata, init=inits, 
                     iter = 10000, warmup = 1000, chains = 4)</code></pre>
 <p>Some numerical problems occur but they are benign. It is not abnormal to get some messages such as</p>
 <pre><code>validate transformed params: Sigma is not positive definite
@@ -175,8 +175,10 @@ validate transformed params: Sigma is not symmetric. Sigma[1,2] = inf, but Sigma
 <p>These problems will not occur with the LKJ prior on the Cholesky factor.</p>
 <p>I like to use the <code>coda</code> package for output analysis. This is the way I use to store the samples in a <code>coda</code> object:</p>
 <pre class="r"><code>library(coda)
-codasamples &lt;- do.call(mcmc.list, 
-  plyr::alply(rstan::extract(samples, permuted=FALSE), 2, mcmc))</code></pre>
+codasamples1 &lt;- do.call(mcmc.list, 
+  plyr::alply(rstan::extract(samples1, 
+                             pars=c(&quot;sigma&quot;, &quot;Omega[1,2]&quot;, &quot;Omega[1,3]&quot;, &quot;Omega[2,3]&quot;), 
+                             permuted=FALSE), 2, mcmc))</code></pre>
 </div>
 <div id="prior-on-the-cholesky-factor" class="section level2">
 <h2>Prior on the Cholesky factor</h2>
@@ -193,7 +195,7 @@ parameters {
 }
 model {
   y ~ multi_normal_cholesky(Zero, diag_pre_multiply(sigma, Lcorr));
-  sigma ~ gamma(1, 0.0001);
+  sigma ~ cauchy(0, 5);
   Lcorr ~ lkj_corr_cholesky(1);
 }
 generated quantities {
@@ -212,8 +214,71 @@ generated quantities {
 }</code></pre>
 <p>Then compile and run as before:</p>
 <pre class="r"><code>stanmodel2 &lt;- stan_model(model_code = stancode2, model_name=&quot;stanmodel2&quot;)
-samples &lt;- sampling(stanmodel2, data = standata, init=inits, 
+samples2 &lt;- sampling(stanmodel2, data = standata, init=inits, 
                     iter = 10000, warmup = 1000, chains = 4)</code></pre>
+<pre class="r"><code>library(coda)
+codasamples2 &lt;- do.call(mcmc.list, 
+  plyr::alply(rstan::extract(samples2, 
+                             pars=c(&quot;sigma&quot;, &quot;Omega[1,2]&quot;, &quot;Omega[1,3]&quot;, &quot;Omega[2,3]&quot;), 
+                             permuted=FALSE), 2, mcmc))</code></pre>
+</div>
+<div id="comparison-of-results" class="section level2">
+<h2>Comparison of results</h2>
+<p>Results are almost identical:</p>
+<pre class="r"><code>summary(codasamples1)</code></pre>
+<pre><code>## 
+## Iterations = 1:9000
+## Thinning interval = 1 
+## Number of chains = 4 
+## Sample size per chain = 9000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##              Mean      SD  Naive SE Time-series SE
+## sigma[1]   0.9132 0.06627 0.0003493      0.0004186
+## sigma[2]   2.2080 0.16003 0.0008434      0.0009858
+## sigma[3]   3.5181 0.25318 0.0013344      0.0016278
+## Omega[1,2] 0.2118 0.09544 0.0005030      0.0005972
+## Omega[1,3] 0.2380 0.09379 0.0004943      0.0005830
+## Omega[2,3] 0.1477 0.09771 0.0005150      0.0006090
+## 
+## 2. Quantiles for each variable:
+## 
+##                2.5%     25%    50%    75%  97.5%
+## sigma[1]    0.79449 0.86688 0.9094 0.9549 1.0545
+## sigma[2]    1.92073 2.09639 2.1982 2.3093 2.5496
+## sigma[3]    3.06211 3.34134 3.5048 3.6785 4.0492
+## Omega[1,2]  0.01965 0.14766 0.2138 0.2779 0.3921
+## Omega[1,3]  0.04763 0.17587 0.2404 0.3032 0.4136
+## Omega[2,3] -0.04694 0.08168 0.1484 0.2149 0.3347</code></pre>
+<pre class="r"><code>summary(codasamples2)</code></pre>
+<pre><code>## 
+## Iterations = 1:9000
+## Thinning interval = 1 
+## Number of chains = 4 
+## Sample size per chain = 9000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##              Mean      SD  Naive SE Time-series SE
+## sigma[1]   0.9129 0.06625 0.0003492      0.0004088
+## sigma[2]   2.2075 0.16108 0.0008489      0.0009963
+## sigma[3]   3.5213 0.25203 0.0013283      0.0015606
+## Omega[1,2] 0.2118 0.09509 0.0005012      0.0005955
+## Omega[1,3] 0.2386 0.09420 0.0004965      0.0005896
+## Omega[2,3] 0.1476 0.09670 0.0005096      0.0006101
+## 
+## 2. Quantiles for each variable:
+## 
+##                2.5%     25%    50%    75%  97.5%
+## sigma[1]    0.79501 0.86661 0.9087 0.9550 1.0549
+## sigma[2]    1.91973 2.09503 2.1978 2.3093 2.5487
+## sigma[3]    3.07313 3.34663 3.5053 3.6820 4.0570
+## Omega[1,2]  0.02205 0.14742 0.2140 0.2783 0.3910
+## Omega[1,3]  0.04772 0.17610 0.2412 0.3040 0.4161
+## Omega[2,3] -0.04386 0.08225 0.1490 0.2142 0.3310</code></pre>
 </div>
 
 

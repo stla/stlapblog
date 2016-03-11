@@ -86,14 +86,14 @@ transformed parameters {
 }
 model {
   y ~ multi_normal(Zero,Sigma); // sampling distribution of the observations
-  sigma ~ gamma(1, 0.0001); // prior on the standard deviations
+  sigma ~ cauchy(0, 5); // prior on the standard deviations
   Omega ~ lkj_corr(1); // LKJ prior on the correlation matrix 
 }'
 ```
 
 The `stan_model` function of the `rstan` package runs the Stan compilation of the model. 
 
-```{r compilation, eval=TRUE, cache=TRUE}
+```{r compilation1, eval=TRUE, cache=TRUE}
 stanmodel1 <- stan_model(model_code = stancode1, model_name="stanmodel1")
 ```
 
@@ -130,7 +130,7 @@ inits <- function(chain_id){
 Now we are ready to run Stan:
 
 ```{r sampling1}
-samples <- sampling(stanmodel1, data = standata, init=inits, 
+samples1 <- sampling(stanmodel1, data = standata, init=inits, 
                     iter = 10000, warmup = 1000, chains = 4)
 ```
 
@@ -149,8 +149,10 @@ This is the way I use to store the samples in a `coda` object:
 
 ```{r}
 library(coda)
-codasamples <- do.call(mcmc.list, 
-  plyr::alply(rstan::extract(samples, permuted=FALSE), 2, mcmc))
+codasamples1 <- do.call(mcmc.list, 
+  plyr::alply(rstan::extract(samples1, 
+                             pars=c("sigma", "Omega[1,2]", "Omega[1,3]", "Omega[2,3]"), 
+                             permuted=FALSE), 2, mcmc))
 ```
 
 
@@ -172,7 +174,7 @@ parameters {
 }
 model {
   y ~ multi_normal_cholesky(Zero, diag_pre_multiply(sigma, Lcorr));
-  sigma ~ gamma(1, 0.0001);
+  sigma ~ cauchy(0, 5);
   Lcorr ~ lkj_corr_cholesky(1);
 }
 generated quantities {
@@ -197,9 +199,26 @@ estimates <- function(y, perturb=FALSE){
 
 Then compile and run as before:
 
-```{r compilation2, eval=FALSE}
+```{r compilation2, eval=TRUE, cache=TRUE}
 stanmodel2 <- stan_model(model_code = stancode2, model_name="stanmodel2")
-samples <- sampling(stanmodel2, data = standata, init=inits, 
+samples2 <- sampling(stanmodel2, data = standata, init=inits, 
                     iter = 10000, warmup = 1000, chains = 4)
+```
+
+```{r}
+library(coda)
+codasamples2 <- do.call(mcmc.list, 
+  plyr::alply(rstan::extract(samples2, 
+                             pars=c("sigma", "Omega[1,2]", "Omega[1,3]", "Omega[2,3]"), 
+                             permuted=FALSE), 2, mcmc))
+```
+
+## Comparison of results 
+
+Results are almost identical:
+
+```{r}
+summary(codasamples1)
+summary(codasamples2)
 ```
 
