@@ -164,7 +164,7 @@ $$
 \quad \text{où} \;
 U_t = \ee^{-\ii t\HH} := I + \frac{(-\ii t\HH)}{1!} + \frac{{(-\ii t\HH)}^2}{2!} + \cdots, 
 $$
-et la matrice (ou l'opérateur) $U_t$ est *unitaire*, c'est-à-dire qu'elle satisfait $U_tU_t^\dagger=U_t^\dagger U_t=U_t$, autrement dit $U_t^{-1}=U_t^\dagger$. 
+et la matrice (ou l'opérateur) $U_t$ est *unitaire*, c'est-à-dire qu'elle satisfait $U_tU_t^\dagger=U_t^\dagger U_t=I$, autrement dit $U_t^{-1}=U_t^\dagger$. 
 L'application linéaire associée à matrice unitaire préserve la norme.  
 On dit que $U_t$ est *l'opérateur d'évolution* du système. 
 
