@@ -84,8 +84,7 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/MixedRepeatModel.Rmd'>Source</a>
               <div class='lead'>
 
-<p><strong><em>This article is under progress</em></strong></p>
-<p><strong><em>(latest update : 2016-03-08 08:04:53)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-03-11 16:48:02)</em></strong> <br/></p>
 <p>The purpose of this article is to show how to fit a model to a dataset such as the one shown on the graphic below in SAS, R, and JAGS. The reader is assumed to have read <a href="http://stla.github.io/stlapblog/posts/AV1R_SASandR.html">the article on the random effects one-way ANOVA</a>. Roughly speaking, the model of the present article consists of two random effects one-way ANOVA models at two different timepoints, including a correlation between these two models.</p>
 <pre class="r"><code>ggplot(dat, aes(x=Timepoint, y=y, color=Group)) + geom_point()</code></pre>
 <p><img src="assets/fig/MixedRepeatedModel-plotdata-1.png" title="" alt="" width="480" style="display: block; margin: auto;" /></p>
@@ -262,11 +261,10 @@ jagsmodel &lt;- jags.model(jagsfile,
 ##    Unobserved stochastic nodes: 8
 ##    Total graph size: 119
 ## 
-## Initializing model
 update(jagsmodel, 10000) # warm-up
 samples &lt;- coda.samples(jagsmodel, 
-                        c(&quot;Mu&quot;, &quot;sigmaw1&quot;, &quot;sigmaw2&quot;, &quot;sigmab1&quot;, &quot;sigmab2&quot;, &quot;rhob&quot;), 
-                        n.iter= 100000)
+          c(&quot;Mu&quot;, &quot;sigmaw1&quot;, &quot;sigmaw2&quot;, &quot;sigmab1&quot;, &quot;sigmab2&quot;, &quot;rhob&quot;), 
+            n.iter= 100000)
 </code></pre>
 <p>Below are the summary statistics of the posterior samples:</p>
 <pre class="r"><code>summary(samples)</code></pre>
@@ -280,26 +278,26 @@ samples &lt;- coda.samples(jagsmodel,
 ##    plus standard error of the mean:
 ## 
 ##             Mean     SD  Naive SE Time-series SE
-## Mu[1]   14.28321 8.4946 0.0155090      0.0241549
-## Mu[2]    4.54792 4.8537 0.0088616      0.0141019
-## rhob     0.02376 0.4916 0.0008975      0.0012161
-## sigmab1 14.20751 8.7894 0.0160472      0.0224238
-## sigmab2  7.74525 4.9291 0.0089992      0.0131554
-## sigmaw1  1.69662 0.4060 0.0007413      0.0009543
-## sigmaw2  0.54119 0.1293 0.0002360      0.0003035
+## Mu[1]   14.28034 8.5724 0.0156510      0.0246798
+## Mu[2]    4.53484 4.8979 0.0089422      0.0145076
+## rhob     0.02137 0.4934 0.0009008      0.0012364
+## sigmab1 14.28748 9.1460 0.0166983      0.0235993
+## sigmab2  7.79166 5.0868 0.0092871      0.0140087
+## sigmaw1  1.70017 0.4070 0.0007431      0.0009628
+## sigmaw2  0.54100 0.1295 0.0002365      0.0003034
 ## 
 ## 2. Quantiles for each variable:
 ## 
 ##            2.5%     25%      50%     75%   97.5%
-## Mu[1]   -4.0976  9.9844 14.62762 19.0399 30.4904
-## Mu[2]   -5.3235  2.0952  4.58973  7.0539 14.1923
-## rhob    -0.8576 -0.3701  0.03227  0.4229  0.8740
-## sigmab1  6.0244  9.0631 11.88938 16.4270 36.2287
-## sigmab2  3.2654  4.9045  6.43505  8.9157 20.2065
-## sigmaw1  1.1175  1.4128  1.62777  1.8995  2.6812
-## sigmaw2  0.3565  0.4510  0.51923  0.6060  0.8546</code></pre>
+## Mu[1]   -4.2311  9.9415 14.63012 19.0634 30.5565
+## Mu[2]   -5.4210  2.0740  4.56833  7.0506 14.2447
+## rhob    -0.8615 -0.3753  0.02889  0.4204  0.8741
+## sigmab1  6.0102  9.0890 11.91345 16.5015 36.6755
+## sigmab2  3.2646  4.9196  6.46472  8.9685 20.3516
+## sigmaw1  1.1208  1.4156  1.63077  1.9049  2.6887
+## sigmaw2  0.3565  0.4507  0.51845  0.6055  0.8553</code></pre>
 <p>Except for <span class="math inline">\(\sigma_{b_2}\)</span> and <span class="math inline">\(\rho_b\)</span>, the estimates are quite similar to the ones provided by <code>lme</code>.</p>
-<p>I noted that <span class="math inline">\(\sigma_{b_2}\)</span> is still overestimated when I fit the model on a larger sample size, while <span class="math inline">\(\rho_b\)</span> is underestimated.</p>
+<p>I noted that <span class="math inline">\(\sigma_{b_2}\)</span> is still overestimated when I fit the model on a larger sample size, while <span class="math inline">\(\rho_b\)</span> is underestimated. I will come back to this point in <a href="http://stla.github.io/stlapblog/posts/LKJvsWishart.html">the next article</a>.</p>
 </div>
 
 
