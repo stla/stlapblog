@@ -85,7 +85,7 @@
               <div class='lead'>
 
 <p><strong><em>(latest update : 2016-03-11 16:58:18)</em></strong> <br/></p>
-<p>As I noted at then end of <a href="http://stla.github.io/stlapblog/posts/MixedRepeatModel.html">this article</a>, JAGS returned an overestimate of the between-standard deviation <span class="math inline">\(\sigma_{b_2}\)</span>. This is how I simulated the data, with <code>I=3</code> and <code>J=4</code>:</p>
+<p>As I noted at then end of <a href="http://stla.github.io/stlapblog/posts/MixedRepeatModel.html">this article</a>, JAGS returned an overestimate of the between-standard deviation <span class="math inline">\(\sigma_{b_2}\)</span>. This is how I simulated the data, with <code>I=3</code> (number of groups) and <code>J=4</code> (number of replicates per group):</p>
 <pre class="r"><code>simdata &lt;- function(I, J){
   set.seed(444) 
   ### simulation of overall means ###
