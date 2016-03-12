@@ -111,7 +111,7 @@ $$
 
 Oublions maintenant le principe de Born et montrons comment on peut le retrouver, concernant ses deux premiers points, lorsqu'on part de $(\star)$ comme principe. Si l'on considère $E_\kpsi(A)$ comme l'analogue de l'espérance de la variable aléatoire $A$ (lorsque le système est dans l'état quantique $\kpsi$), alors suivant cette analogie on définit la transformée de Fourier de $A$ comme la fonction de la variable $t \in \mathbb{R}$
 $$
-E_\kpsi(A) = \langle \psi, e^{-itA}\psi \rangle \quad 
+E_\kpsi(e^{-itA}) = \langle \psi, e^{-itA}\psi \rangle \quad 
 $$
 L'opérateur $e^{-itA}$ est toujours bien défini lorsque $A$ est auto-adjoint et il est lui-même auto-adjoint. 
 On peut alors vérifier que (voir [Meyer, 1995][MeyerE])

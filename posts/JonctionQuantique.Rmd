@@ -171,7 +171,7 @@ Ainsi, la mesure de $M\otimes I$ produit l'un des résultats suivants, chacun av
 
 - la mesure révèle $1$ et l'état saute en $\ket{11} = \kone\otimes\kone$
 
-On vérifie alors aisément que si on effectue ensuite la mesure de $I \times M$, on obtient alors le même résultat que celui de la première mesure. 
+On vérifie alors aisément que si on effectue ensuite la mesure de $I \otimes M$, on obtient alors le même résultat que celui de la première mesure. 
 
 
 # Références 
