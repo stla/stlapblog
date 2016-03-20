@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Confidence intervals for linear combinations of variances</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Confidence intervals for linear combinations of variances</a>
+              </h3>
+              <span>2016-03-19</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/ConfIntervalsVariances.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Let <span class="math inline">\(x_i\)</span>’s be some observations of independent random variables <span class="math inline">\(X_i \sim \theta_i \dfrac{\chi^2_{d_i}}{d_i}\)</span>. In this article we will take a look at some methods to get a confidence interval about a linear combination of the <span class="math inline">\(\theta_i\)</span>’s. This situation occurs when we are interested in the variances of interest in an ANOVA model with random effects.</p>
+<div id="satterthwaite-method" class="section level2">
+<h2>Satterthwaite method</h2>
+<p>In order to get a confidence interval about a linear combination <span class="math inline">\(\sum a_i\theta_i\)</span> with nonnegative coefficents <span class="math inline">\(a_i\)</span>, the Satterthwaite approximation consists in doing as if <span class="math display">\[
+\sum a_i X_i \sim \left(\sum a_i\theta_i\right) \frac{\chi^2_\nu}{\nu}
+\quad \textrm{with }\; 
+\nu = \frac{{\left(\sum a_ix_i\right)}^2}{\sum\dfrac{{(a_i x_i)}^2}{d_i}}.
+\]</span> Thus, taking a <span class="math inline">\(100(1-\alpha)\%\)</span>-dispersion interval <span class="math inline">\([b^-, b^+]\)</span> of the <span class="math inline">\(\chi^2_\nu\)</span> distribution, one gets the approximate <span class="math inline">\(100(1-\alpha)\%\)</span>-confidence interval about <span class="math inline">\(\sum a_i\theta_i\)</span>: <span class="math display">\[
+\left[\nu\frac{\sum a_ix_i}{b^+}, \nu\frac{\sum a_ix_i}{b^-}\right].
+\]</span> This interval is returned by the <code>ciSatt</code> function below, taking the quantiles <span class="math inline">\(\chi^2_\nu\bigl(\frac{\alpha}{2}\bigr)\)</span> and <span class="math inline">\(\chi^2_\nu\bigl(1-\frac{\alpha}{2}\bigr)\)</span> for <span class="math inline">\(b^-\)</span> and <span class="math inline">\(b^+\)</span> respectively.</p>
+<pre class="r"><code>ciSatt &lt;- function(x, dofs, a, alpha=0.05){
+  s &lt;- sum(a*x)
+  nu &lt;- s^2/sum((a*x)^2/dofs)
+  lwr &lt;- s*nu/qchisq(1-alpha/2, nu) 
+  upr &lt;- s*nu/qchisq(alpha/2,nu) 
+  return(c(&quot;lwr&quot;=lwr, &quot;upr&quot;=upr))
+}</code></pre>
+</div>
+<div id="graybill-wangs-method" class="section level2">
+<h2>Graybill &amp; Wang’s method</h2>
+<p><a href="http://www.jstor.org/stable/pdf/2287174.pdf" title="Confidence Intervals on Nonnegative Linear Combinations of Variances">Graybill &amp; Wang</a> provided another method for nonnegative linear combinations. Their approximate <span class="math inline">\(100(1-\alpha)\%\)</span>-confidence interval about <span class="math inline">\(\sum a_i\theta_i\)</span> is <span class="math display">\[
+\left[\sum a_i x_i - \sqrt{\sum{(G_ia_ix_i)}^2}, \sum a_i x_i +  \sqrt{\sum{(H_ia_ix_i)}^2}\right]
+\]</span> where <span class="math display">\[
+G_i = 1 - \frac{d_i}{\chi^2_{d_i}\bigl(1-\frac{\alpha}{2}\bigr)} 
+\quad \text{and }\; 
+H_i = \frac{d_i}{\chi^2_{d_i}\bigl(\frac{\alpha}{2}\bigr)} - 1. 
+\]</span></p>
+</div>
+<div id="ting-als-generalization" class="section level2">
+<h2>Ting &amp; al’s generalization</h2>
+<p>Graybill &amp; Wang’s confidence interval has been generalized to the case when some <span class="math inline">\(a_i\)</span> are negative by <a href="http://www.tandfonline.com/doi/abs/10.1080/00949659008811240?journalCode=gscs20" title="Confidence intervals on linear combinations of variance components that are unrestricted in sign">Ting &amp; al</a> (see also <a href="https://books.google.be/books?id=yTMQRkuYCswC" title="Design and Analysis of Gauge R&amp;R Studies">Burdick &amp; al</a>). It is returned by the function <code>ciTing</code> given below.</p>
+<pre class="r"><code>ciTing &lt;- function(x, dofs, a, alpha=0.05){
+  G &lt;- 1 - sapply(dofs, function(d){ d/qchisq(1-alpha/2,d) }) 
+  H &lt;- sapply(dofs, function(d){ d/qchisq(alpha/2,d) }) - 1
+  s &lt;- sum(a*x)
+  if(all(a&gt;0)){ # this is Graybill &amp; Wang&#39;s confidence interval
+    lwr &lt;- s - sqrt(sum((G*a*x)^2))
+    upr &lt;- s + sqrt(sum((H*a*x)^2))
+    return(c(&quot;lwr&quot;=lwr, &quot;upr&quot;=upr))
+  }
+  pos &lt;- which(a&gt;0); neg &lt;- which(a&lt;0)
+  A12 &lt;- sum(sapply(pos, function(q){
+    sapply(neg, function(r){
+      Fqr &lt;- qf(1-alpha/2, dofs[q], dofs[r]) # alpha/2 in the article is an error
+      Lqr &lt;- ((Fqr-1)^2 - G[q]^2*Fqr^2 - H[r]^2)/Fqr
+      return(Lqr*a[q]*x[q]*a[r]*x[r])
+    })
+  }))
+  B12 &lt;- sum(sapply(pos, function(q){
+    sapply(neg, function(r){
+      Fqr &lt;- qf(alpha/2, dofs[q], dofs[r]) # 1-alpha/2 in the article is an error
+      Lqr &lt;- ((Fqr-1)^2 - H[q]^2*Fqr^2 - G[r]^2)/Fqr
+      return(Lqr*a[q]*x[q]*a[r]*x[r])
+    })
+  }))
+  lwr &lt;- s - sqrt(sum((G[pos]*a[pos]*x[pos])^2) + sum((H[neg]*a[neg]*x[neg])^2) - A12)
+  upr &lt;- s + sqrt(sum((H[pos]*a[pos]*x[pos])^2) + sum((G[neg]*a[neg]*x[neg])^2) - B12)
+  return(c(&quot;lwr&quot;=lwr, &quot;upr&quot;=upr))
+}</code></pre>
+<p>We will study the performance of this confidence interval on an example. Some improvements of this interval are given in <a href="http://www.tandfonline.com/doi/abs/10.1080/00949659008811240?journalCode=gscs20" title="Confidence intervals on linear combinations of variance components that are unrestricted in sign">Ting &amp; al</a>’s paper, but we do not provide them here.</p>
+</div>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Consider a balanced three-way ANOVA model with one fixed factor and two random factors: <span class="math display">\[
+y_{hijk} = \underset{\mu_h}{\underbrace{\mu + A_h}} + B_i + C_j 
++ {(AB)}_{hi} + {(AC)}_{hj} +  {(BC)}_{ij} 
+ + {(ABC)}_{hij} + \epsilon_{hijk}, \\ 
+\quad h = 1,\ldots, H, 
+\quad i = 1,\ldots, I, 
+\quad j = 1, \ldots, J, 
+\quad k = 1, \ldots, K.
+\]</span></p>
+<p><span class="math display">\[
+\scriptsize
+\begin{array}{lccc}
+\text{Source} &amp; \text{dof} &amp; \text{Mean square} &amp; \text{Expected mean square} \\
+B &amp; I-1 &amp; S^2_B &amp; \theta_B = \sigma^2_E + K \sigma^2_{ABC} + HK \sigma^2_{BC} + JK \sigma^2_{AB} + HJK \sigma^2_B \\
+C &amp; J-1 &amp; S^2_C &amp; \theta_C = \sigma^2_E + K \sigma^2_{ABC} + HK \sigma^2_{BC} + IK \sigma^2_{AC} + HIK \sigma^2_C \\
+A \times B &amp; (H-1)(I-1) &amp; S^2_{AB} &amp; \theta_{AB}= \sigma^2_E + K \sigma^2_{ABC} + JK \sigma^2_{AB} \\
+B \times C &amp; (I-1)(J-1) &amp; S^2_{BC} &amp; \theta_{BC} = \sigma^2_E + K \sigma^2_{ABC} + HK \sigma^2_{BC} \\
+A \times C &amp; (H-1)(J-1) &amp; S^2_{AC} &amp; \theta_{AC} = \sigma^2_E + K \sigma^2_{ABC} + IK \sigma^2_{AC}
+\\
+A \times B \times C &amp; (H-1)(J-1)(K-1) &amp; S^2_{ABC} &amp; \theta_{ABC} = \sigma^2_E + K \sigma^2_{ABC} \\
+E &amp; n - HIJ &amp; S^2_E &amp; \theta_E = \sigma^2_E
+\end{array}
+\]</span> In matricial form, the variance components and the expected mean squares are related by <span class="math display">\[
+\small
+\begin{pmatrix}
+\theta_B \\ \theta_C \\ \theta_{AB} \\ \theta_{BC} \\ \theta_{AC} \\ \theta_{ABC} \\ \theta_E
+\end{pmatrix}
+= 
+\begin{pmatrix}
+HJK &amp; 0 &amp; JK &amp; HK &amp; 0 &amp; K &amp; 1 \\
+0 &amp; HIK &amp; 0 &amp; HK &amp; IK &amp; K &amp; 1 \\
+0 &amp; 0 &amp; JK &amp; 0 &amp; 0 &amp; K &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; HK &amp; 0 &amp; K &amp; 1 \\ 
+0 &amp; 0 &amp; 0 &amp; 0 &amp; IK &amp; K &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; K &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}
+\begin{pmatrix}
+\sigma^2_B \\ \sigma^2_C \\ \sigma^2_{AB} \\ \sigma^2_{BC} \\ \sigma^2_{AC} \\ \sigma^2_{ABC} \\ \sigma^2_E
+\end{pmatrix}
+\]</span> and conversely, <span class="math display">\[
+\small
+\begin{pmatrix}
+\sigma^2_B \\ \sigma^2_C \\ \sigma^2_{AB} \\ \sigma^2_{BC} \\ \sigma^2_{AC} \\ \sigma^2_{ABC} \\ \sigma^2_E
+\end{pmatrix}
+= 
+\begin{pmatrix}
+\frac{1}{HJK} &amp; 0 &amp; -\frac{1}{HJK} &amp; -\frac{1}{HJK} &amp; 0 &amp; \frac{1}{HJK} &amp; 0 \\
+0 &amp; \frac{1}{HIK} &amp; 0 &amp; -\frac{1}{HIK} &amp; -\frac{1}{HIK} &amp; \frac{1}{HIK} &amp; 0 \\ 
+0 &amp; 0 &amp; \frac{1}{JK} &amp; 0 &amp; 0 &amp; -\frac{1}{JK} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; \frac{1}{HK} &amp; 0 &amp; -\frac{1}{HK} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; \frac{1}{IK} &amp; -\frac{1}{IK} &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \frac{1}{K} &amp; -\frac{1}{K} \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 
+\end{pmatrix}
+\begin{pmatrix}
+\theta_B \\ \theta_C \\ \theta_{AB} \\ \theta_{BC} \\ \theta_{AC} \\ \theta_{ABC} \\ \theta_E
+\end{pmatrix}
+\]</span></p>
+<p>We look for a confidence interval about the reproductibily variance of factor <span class="math inline">\(B\)</span>: <span class="math display">\[
+\sigma^2_{\textrm{repro}, B} = \sigma^2_B + \sigma^2_{AB} + \sigma^2_{BC} + \sigma^2_{ABC} 
+\]</span> which is the linear combination of the expected mean squares <span class="math display">\[
+\small
+\begin{multline}
+\frac{1}{HJK} \theta_B + \left(\frac{1}{JK}-\frac{1}{HJK}\right)\theta_{AB} + \left(\frac{1}{HK}-\frac{1}{HJK}\right)\theta_{BC} \\ 
++ \left(\frac{1}{HJK}-\frac{1}{JK} + \frac{1}{K}-\frac{1}{HK}\right)\theta_{ABC} 
+- \frac{1}{K} \theta_E \\
+= \frac{1}{HJK}\left(\theta_B + (H-1)\theta_{AB} + (J-1)\theta_{BC} + (1-H-HJ-J)\theta_{ABC} - HJ\theta_E \right) \quad (\ast)
+\end{multline}
+\]</span> and is estimated by <span class="math display">\[
+\frac{1}{HJK}\left(S^2_B + (H-1)S^2_{AB} + (J-1)S^2_{BC} + (1-H-HJ-J)S^2_{ABC} - HJS^2_E \right).
+\]</span></p>
+<div id="checking-the-coverage" class="section level3">
+<h3>Checking the coverage</h3>
+<p>Let us check the frequentist coverage of the confidence interval. We firstly write a function to sample the mean squares:</p>
+<pre class="r"><code>rMeanSquares &lt;- function(nsims, H, I, J, K, sigma2B=1, sigma2C=1, sigma2AB=1, sigma2BC=1, sigma2AC=1, sigma2ABC=1, sigma2E=1){
+  VCnames &lt;- c(&quot;B&quot;, &quot;C&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;AC&quot;, &quot;ABC&quot;, &quot;E&quot;) 
+  VC &lt;- setNames(c(sigma2B, sigma2C, sigma2AB, sigma2BC, sigma2AC, sigma2ABC, sigma2E), VCnames)
+  dofs &lt;- setNames(c(I-1, J-1, (H-1)*(I-1), (I-1)*(J-1), (H-1)*(J-1), (H-1)*(J-1)*(K-1), H*I*J*(K-1)), VCnames)
+  M &lt;- rbind(
+    c(H*J*K, 0, J*K, H*K, 0, K, 1),
+    c(0, H*I*K, 0, H*K, I*K, K, 1), 
+    c(0, 0, J*K, 0, 0, K, 1), 
+    c(0, 0, 0, H*K, 0, K, 1),
+    c(0, 0, 0, 0, I*K, K, 1), 
+    c(0, 0, 0, 0, 0,K, 1),
+    c(0, 0, 0, 0, 0, 0, 1)
+  )
+  thetas &lt;- setNames(as.vector(M %*% VC), VCnames)
+  sims &lt;- matrix(numeric(1), nrow=nsims, ncol=7)
+  colnames(sims) &lt;- VCnames
+  for(j in VCnames){
+    sims[,j] &lt;- thetas[j]/dofs[j]*rchisq(nsims, dofs[j])
+  }
+  attr(sims, &quot;VC&quot;) &lt;- VC
+  attr(sims, &quot;dofs&quot;) &lt;- dofs
+  return(sims)
+}</code></pre>
+<p>Here we simulate the mean squares using not too small values of the degress of freedom.</p>
+<pre class="r"><code># simulations
+H &lt;- 10; I &lt;- 15; J &lt;- 10; K &lt;- 5
+nsims &lt;- 10000
+sims &lt;- rMeanSquares(nsims, H=H, I=I, J=J, K=K)
+dofs &lt;- attr(sims, &quot;dofs&quot;)
+VC &lt;- attr(sims, &quot;VC&quot;)
+sigma2Brepro &lt;- sum(VC[c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;)])
+# linear combination
+a &lt;- 1/K*c(1/H/J, 1/J-1/H/J, 1/H-1/H/J, 1/H/J-1/J+1-1/H, -1)
+# confidence intervals
+Bounds &lt;- matrix(numeric(1), nrow=nsims, ncol=2)
+colnames(Bounds) &lt;- c(&quot;lwr&quot;, &quot;upr&quot;)
+for(i in 1:nsims){
+  Bounds[i,] &lt;- ciTing(sims[i,c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;, &quot;E&quot;)], dofs[c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;, &quot;E&quot;)], a=a)
+}
+# coverage of the upper one-sided interval:
+mean(Bounds[,&quot;lwr&quot;] &lt; sigma2Brepro)
+## [1] 0.9697
+# coverage of the lower one-sided interval:
+mean(Bounds[,&quot;upr&quot;] &gt; sigma2Brepro)
+## [1] 0.981
+# coverage of the two-sided interval:
+mean(Bounds[,&quot;lwr&quot;] &lt; sigma2Brepro &amp; Bounds[,&quot;upr&quot;] &gt; sigma2Brepro)
+## [1] 0.9507</code></pre>
+<p>As we observe, the difference between the coverage obtained from the simulations and the nominal coverage does not exceed <span class="math inline">\(1\%\)</span> for each of the three confidence intervals (upper one-sided, lower one-sided and two-sided).</p>
+</div>
+<div id="a-small-degrees-of-freedom-example" class="section level3">
+<h3>A small degrees of freedom example</h3>
+<p>Now let us assess the frequentist coverage with <span class="math inline">\(H=3\)</span>, <span class="math inline">\(I=3\)</span>, <span class="math inline">\(J=3\)</span> and <span class="math inline">\(K=5\)</span>.</p>
+<pre class="r"><code># simulations
+H &lt;- 3; I &lt;- 3; J &lt;- 3; K &lt;- 5
+nsims &lt;- 10000
+set.seed(666)
+sims &lt;- rMeanSquares(nsims, H=H, I=I, J=J, K=K)
+dofs &lt;- attr(sims, &quot;dofs&quot;)
+VC &lt;- attr(sims, &quot;VC&quot;)
+sigma2Brepro &lt;- sum(VC[c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;)])
+# linear combination
+a &lt;- 1/K*c(1/H/J, 1/J-1/H/J, 1/H-1/H/J, 1/H/J-1/J+1-1/H, -1)
+# confidence intervals
+Bounds &lt;- matrix(numeric(1), nrow=nsims, ncol=2)
+colnames(Bounds) &lt;- c(&quot;lwr&quot;, &quot;upr&quot;)
+for(i in 1:nsims){
+  Bounds[i,] &lt;- ciTing(sims[i,c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;, &quot;E&quot;)], dofs[c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;, &quot;E&quot;)], a=a)
+}
+# coverage of the upper one-sided interval:
+mean(Bounds[,&quot;lwr&quot;] &lt; sigma2Brepro)
+## [1] 0.9496
+# coverage of the lower one-sided interval:
+mean(Bounds[,&quot;upr&quot;] &gt; sigma2Brepro)
+## [1] 0.9995
+# coverage of the two-sided interval:
+mean(Bounds[,&quot;lwr&quot;] &lt; sigma2Brepro &amp; Bounds[,&quot;upr&quot;] &gt; sigma2Brepro)
+## [1] 0.9491</code></pre>
+<p>This time, the coverage is not so close to the nominal level. The upper one-sided confidence interval (<code>[lwr, Inf[</code>) is too short, and the lower one-sided confidence interval (<code>]-Inf, upr]</code>) is too long.<br />
+In other words, the lower bound and the upper bound are higher than desired.<br />
+Let’s have a look to the bounds:</p>
+<pre class="r"><code>head(Bounds, 10)
+##             lwr       upr
+##  [1,] 2.7472674  86.87765
+##  [2,] 3.9919586 212.14470
+##  [3,] 0.6890338  20.96861
+##  [4,] 2.1775242  40.13811
+##  [5,] 1.8697206  85.46661
+##  [6,] 1.9688034 155.66416
+##  [7,] 1.4805632 108.91109
+##  [8,] 1.4817979  26.15695
+##  [9,] 1.6689184  57.09501
+## [10,] 1.3509618  18.37216</code></pre>
+<p>The upper bound is quite big (<span class="math inline">\(\sigma_{\textrm{repro},B}=4\)</span> here).</p>
+</div>
+<div id="shortening-the-intervals-with-the-satterthwaite-approximation" class="section level3">
+<h3>Shortening the intervals with the Satterthwaite approximation</h3>
+<p>Recall our linear combination of the mean squares:</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp; a_1 S^2_B + a_2 S^2_{AB} + a_3 S^2_{BC} + a_4 S^2_{ABC} + a_5 S^2_E \\ 
+= &amp; a_1 x_1 + a_2 x_2 + a_3 x_3 + a_4 x_4 + a_5 x_5
+\end{align*}
+\]</span> with coefficients <span class="math inline">\(a_1,a_2,a_3,a_4&gt;0\)</span>, <span class="math inline">\(a_5&lt;0\)</span>, and degrees of freedom <span class="math inline">\(2\)</span>, <span class="math inline">\(4\)</span>, <span class="math inline">\(4\)</span>, <span class="math inline">\(16\)</span> and <span class="math inline">\(108\)</span>.</p>
+<p>A degree of freedom of <span class="math inline">\(2\)</span> is pretty small, and it could be the cause of the large upper bound.<br />
+To circumvent this problem, we could try to replace <span class="math inline">\(a_1x_1 + a_2x_2\)</span> with its Satterthwaite approximation: <span class="math display">\[
+\underset{y}{\underbrace{a_1 x_1 + a_2 x_2}} + a_3 x_3 + a_4 x_4 + a_5 x_5
+\]</span> and then apply the Ting &amp; al interval to the new linear combination <span class="math inline">\(y+a_3 x_3 + a_4 x_4 + a_5 x_5\)</span>. Let’s look what it gives for the second row of simulations:</p>
+<pre class="r"><code>x &lt;- sims[2, c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;, &quot;E&quot;)]
+dofs &lt;- c(2, 4, 4, 16, 108)
+y &lt;- sum(a[1:2]*x[1:2])
+nu &lt;- y^2/sum((a[1:2]*x[1:2])^2/dofs[1:2])
+x_new &lt;- c(y, x[3], x[4], x[5])
+dofs_new &lt;- c(nu, dofs[3], dofs[4], dofs[5])
+a_new &lt;- c(1, a[3], a[4], a[5])
+# original interval:
+ciTing(x, dofs, a)
+##        lwr        upr 
+##   3.991959 212.144698
+# new interval:
+ciTing(x_new, dofs_new, a_new)
+##       lwr       upr 
+##  3.332372 79.301873</code></pre>
+<p>The upper bound is considerably smaller. Now let’s have a look at the coverage when we apply this method to the previous simulations:</p>
+<pre class="r"><code># confidence intervals
+Bounds_new &lt;- matrix(numeric(1), nrow=nsims, ncol=2)
+colnames(Bounds_new) &lt;- c(&quot;lwr&quot;, &quot;upr&quot;)
+for(i in 1:nsims){
+  x &lt;- sims[i, c(&quot;B&quot;, &quot;AB&quot;, &quot;BC&quot;, &quot;ABC&quot;, &quot;E&quot;)]
+  y &lt;- sum(a[1:2]*x[1:2])
+  nu &lt;- y^2/sum((a[1:2]*x[1:2])^2/dofs[1:2])
+  x_new &lt;- c(y, x[3], x[4], x[5])
+  dofs_new &lt;- c(nu, dofs[3], dofs[4], dofs[5])
+  Bounds_new[i,] &lt;- ciTing(x_new, dofs_new, a_new)
+}
+# coverage of the upper one-sided interval:
+mean(Bounds_new[,&quot;lwr&quot;] &lt; sigma2Brepro)
+## [1] 0.9759
+# coverage of the lower one-sided interval:
+mean(Bounds_new[,&quot;upr&quot;] &gt; sigma2Brepro)
+## [1] 0.9967
+# coverage of the two-sided interval:
+mean(Bounds_new[,&quot;lwr&quot;] &lt; sigma2Brepro &amp; Bounds_new[,&quot;upr&quot;] &gt; sigma2Brepro)
+## [1] 0.9726</code></pre>
+<p>This time, the upper one-sided interval achieves a coverage close to the nominal value. The lower one-sided interval still have a too large coverage, but the upper bounds we get are generally pretty shorter:</p>
+<pre class="r"><code>head(Bounds)
+##            lwr       upr
+## [1,] 2.7472674  86.87765
+## [2,] 3.9919586 212.14470
+## [3,] 0.6890338  20.96861
+## [4,] 2.1775242  40.13811
+## [5,] 1.8697206  85.46661
+## [6,] 1.9688034 155.66416
+head(Bounds_new)
+##            lwr        upr
+## [1,] 2.3231901  24.761722
+## [2,] 3.3323718  79.301873
+## [3,] 0.5833824   6.020251
+## [4,] 2.0399168  17.245143
+## [5,] 1.6179591  32.873508
+## [6,] 1.8678017 119.880194</code></pre>
+<p>Note that the method we proposed here is not intended to be a general one. The only thing we propose to the user is to explore the performance of the confidence intervals with the help of simulations for a specific design (values of <span class="math inline">\(H\)</span>, <span class="math inline">\(I\)</span>, <span class="math inline">\(J\)</span> and <span class="math inline">\(K\)</span>) and the expected values of the variance components. We also recall that <a href="http://www.tandfonline.com/doi/abs/10.1080/00949659008811240?journalCode=gscs20" title="Confidence intervals on linear combinations of variance components that are unrestricted in sign">Ting &amp; al</a>’s paper provides some improvements of the confidence intervals that we did not consider here.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Graybill &amp; Wang: <em>Confidence Intervals on Nonnegative Linear Combinations of Variances</em>. Journal of the American Statistical Association 75 (1980), 869-873.</p>
+<p>Ting, Burdick, Graybill, Jeyaratman &amp; Lu: <em>Confidence intervals on linear combinations of variance components that are unrestricted in sign</em>. Journal of Statistical Computation and Simulation 35 (1990), 135-143.</p>
+<p>Burdick, Borror, Montgomery: <em>Design and Analysis of Gauge R&amp;R Studies</em>. SIAM 2005.</p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

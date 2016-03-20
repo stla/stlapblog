@@ -1,0 +1,362 @@
+---
+title: "Confidence intervals for linear combinations of variances"
+date: "2016-03-19"
+output: html_document
+---
+
+\newcommand{\EE}{\mathbb{E}}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Let $x_i$'s be some observations of independent random variables $X_i \sim \theta_i \dfrac{\chi^2_{d_i}}{d_i}$. 
+In this article we will take a look at some methods to get a confidence interval about a linear combination of the $\theta_i$'s. This situation occurs when we are interested in the variances of interest in an ANOVA model with random effects. 
+
+## Satterthwaite method
+
+ In order to get a confidence interval about a linear combination $\sum a_i\theta_i$ with nonnegative coefficents $a_i$, the Satterthwaite approximation consists in doing as if
+$$
+\sum a_i X_i \sim \left(\sum a_i\theta_i\right) \frac{\chi^2_\nu}{\nu}
+\quad \textrm{with }\; 
+\nu = \frac{{\left(\sum a_ix_i\right)}^2}{\sum\dfrac{{(a_i x_i)}^2}{d_i}}.
+$$
+Thus, taking a $100(1-\alpha)\%$-dispersion interval $[b^-, b^+]$ of the $\chi^2_\nu$ distribution, one gets the approximate $100(1-\alpha)\%$-confidence interval about $\sum a_i\theta_i$:
+$$
+\left[\nu\frac{\sum a_ix_i}{b^+}, \nu\frac{\sum a_ix_i}{b^-}\right].
+$$
+This interval is returned by the `ciSatt` function below, taking the quantiles $\chi^2_\nu\bigl(\frac{\alpha}{2}\bigr)$ and $\chi^2_\nu\bigl(1-\frac{\alpha}{2}\bigr)$ for $b^-$ and $b^+$ respectively.
+
+```{r}
+ciSatt <- function(x, dofs, a, alpha=0.05){
+  s <- sum(a*x)
+  nu <- s^2/sum((a*x)^2/dofs)
+  lwr <- s*nu/qchisq(1-alpha/2, nu) 
+  upr <- s*nu/qchisq(alpha/2,nu) 
+  return(c("lwr"=lwr, "upr"=upr))
+}
+```
+
+## Graybill & Wang's method
+
+[Graybill & Wang][GW] provided another method for nonnegative linear combinations. 
+Their approximate $100(1-\alpha)\%$-confidence interval about $\sum a_i\theta_i$ is 
+$$
+\left[\sum a_i x_i - \sqrt{\sum{(G_ia_ix_i)}^2}, \sum a_i x_i +  \sqrt{\sum{(H_ia_ix_i)}^2}\right]
+$$
+where 
+$$
+G_i = 1 - \frac{d_i}{\chi^2_{d_i}\bigl(1-\frac{\alpha}{2}\bigr)} 
+\quad \text{and }\; 
+H_i = \frac{d_i}{\chi^2_{d_i}\bigl(\frac{\alpha}{2}\bigr)} - 1. 
+$$
+
+## Ting & al's generalization
+
+Graybill & Wang's confidence interval has been generalized to the case when some $a_i$ are negative by [Ting & al][TBGJL] (see also [Burdick & al][BBM]). 
+It is returned by the function `ciTing` given below. 
+
+```{r}
+ciTing <- function(x, dofs, a, alpha=0.05){
+  G <- 1 - sapply(dofs, function(d){ d/qchisq(1-alpha/2,d) }) 
+  H <- sapply(dofs, function(d){ d/qchisq(alpha/2,d) }) - 1
+  s <- sum(a*x)
+  if(all(a>0)){ # this is Graybill & Wang's confidence interval
+    lwr <- s - sqrt(sum((G*a*x)^2))
+    upr <- s + sqrt(sum((H*a*x)^2))
+    return(c("lwr"=lwr, "upr"=upr))
+  }
+  pos <- which(a>0); neg <- which(a<0)
+  A12 <- sum(sapply(pos, function(q){
+    sapply(neg, function(r){
+      Fqr <- qf(1-alpha/2, dofs[q], dofs[r]) # alpha/2 in the article is an error
+      Lqr <- ((Fqr-1)^2 - G[q]^2*Fqr^2 - H[r]^2)/Fqr
+      return(Lqr*a[q]*x[q]*a[r]*x[r])
+    })
+  }))
+  B12 <- sum(sapply(pos, function(q){
+    sapply(neg, function(r){
+      Fqr <- qf(alpha/2, dofs[q], dofs[r]) # 1-alpha/2 in the article is an error
+      Lqr <- ((Fqr-1)^2 - H[q]^2*Fqr^2 - G[r]^2)/Fqr
+      return(Lqr*a[q]*x[q]*a[r]*x[r])
+    })
+  }))
+  lwr <- s - sqrt(sum((G[pos]*a[pos]*x[pos])^2) + sum((H[neg]*a[neg]*x[neg])^2) - A12)
+  upr <- s + sqrt(sum((H[pos]*a[pos]*x[pos])^2) + sum((G[neg]*a[neg]*x[neg])^2) - B12)
+  return(c("lwr"=lwr, "upr"=upr))
+}
+```
+
+We will study the performance of this confidence interval on an example. 
+Some improvements of this interval are given in [Ting & al][TBGJL]'s paper, but we do not provide them here.
+
+
+## Example 
+
+Consider a balanced three-way ANOVA model with one fixed factor and two random factors:
+$$
+y_{hijk} = \underset{\mu_h}{\underbrace{\mu + A_h}} + B_i + C_j 
++ {(AB)}_{hi} + {(AC)}_{hj} +  {(BC)}_{ij} 
+ + {(ABC)}_{hij} + \epsilon_{hijk}, \\ 
+\quad h = 1,\ldots, H, 
+\quad i = 1,\ldots, I, 
+\quad j = 1, \ldots, J, 
+\quad k = 1, \ldots, K.
+$$
+
+$$
+\scriptsize
+\begin{array}{lccc}
+\text{Source} & \text{dof} & \text{Mean square} & \text{Expected mean square} \\
+B & I-1 & S^2_B & \theta_B = \sigma^2_E + K \sigma^2_{ABC} + HK \sigma^2_{BC} + JK \sigma^2_{AB} + HJK \sigma^2_B \\
+C & J-1 & S^2_C & \theta_C = \sigma^2_E + K \sigma^2_{ABC} + HK \sigma^2_{BC} + IK \sigma^2_{AC} + HIK \sigma^2_C \\
+A \times B & (H-1)(I-1) & S^2_{AB} & \theta_{AB}= \sigma^2_E + K \sigma^2_{ABC} + JK \sigma^2_{AB} \\
+B \times C & (I-1)(J-1) & S^2_{BC} & \theta_{BC} = \sigma^2_E + K \sigma^2_{ABC} + HK \sigma^2_{BC} \\
+A \times C & (H-1)(J-1) & S^2_{AC} & \theta_{AC} = \sigma^2_E + K \sigma^2_{ABC} + IK \sigma^2_{AC}
+\\
+A \times B \times C & (H-1)(J-1)(K-1) & S^2_{ABC} & \theta_{ABC} = \sigma^2_E + K \sigma^2_{ABC} \\
+E & n - HIJ & S^2_E & \theta_E = \sigma^2_E
+\end{array}
+$$
+In matricial form, the variance components and the expected mean squares are related by
+$$
+\small
+\begin{pmatrix}
+\theta_B \\ \theta_C \\ \theta_{AB} \\ \theta_{BC} \\ \theta_{AC} \\ \theta_{ABC} \\ \theta_E
+\end{pmatrix}
+= 
+\begin{pmatrix}
+HJK & 0 & JK & HK & 0 & K & 1 \\
+0 & HIK & 0 & HK & IK & K & 1 \\
+0 & 0 & JK & 0 & 0 & K & 1 \\
+0 & 0 & 0 & HK & 0 & K & 1 \\ 
+0 & 0 & 0 & 0 & IK & K & 1 \\
+0 & 0 & 0 & 0 & 0 & K & 1 \\
+0 & 0 & 0 & 0 & 0 & 0 & 1
+\end{pmatrix}
+\begin{pmatrix}
+\sigma^2_B \\ \sigma^2_C \\ \sigma^2_{AB} \\ \sigma^2_{BC} \\ \sigma^2_{AC} \\ \sigma^2_{ABC} \\ \sigma^2_E
+\end{pmatrix}
+$$
+and conversely, 
+$$
+\small
+\begin{pmatrix}
+\sigma^2_B \\ \sigma^2_C \\ \sigma^2_{AB} \\ \sigma^2_{BC} \\ \sigma^2_{AC} \\ \sigma^2_{ABC} \\ \sigma^2_E
+\end{pmatrix}
+= 
+\begin{pmatrix}
+\frac{1}{HJK} & 0 & -\frac{1}{HJK} & -\frac{1}{HJK} & 0 & \frac{1}{HJK} & 0 \\
+0 & \frac{1}{HIK} & 0 & -\frac{1}{HIK} & -\frac{1}{HIK} & \frac{1}{HIK} & 0 \\ 
+0 & 0 & \frac{1}{JK} & 0 & 0 & -\frac{1}{JK} & 0 \\
+0 & 0 & 0 & \frac{1}{HK} & 0 & -\frac{1}{HK} & 0 \\
+0 & 0 & 0 & 0 & \frac{1}{IK} & -\frac{1}{IK} & 0 \\
+0 & 0 & 0 & 0 & 0 & \frac{1}{K} & -\frac{1}{K} \\
+0 & 0 & 0 & 0 & 0 & 0 & 1 
+\end{pmatrix}
+\begin{pmatrix}
+\theta_B \\ \theta_C \\ \theta_{AB} \\ \theta_{BC} \\ \theta_{AC} \\ \theta_{ABC} \\ \theta_E
+\end{pmatrix}
+$$
+
+We look for a confidence interval about the reproductibily variance of factor $B$:
+$$
+\sigma^2_{\textrm{repro}, B} = \sigma^2_B + \sigma^2_{AB} + \sigma^2_{BC} + \sigma^2_{ABC} 
+$$
+which is the linear combination of the expected mean squares
+$$
+\small
+\begin{multline}
+\frac{1}{HJK} \theta_B + \left(\frac{1}{JK}-\frac{1}{HJK}\right)\theta_{AB} + \left(\frac{1}{HK}-\frac{1}{HJK}\right)\theta_{BC} \\ 
++ \left(\frac{1}{HJK}-\frac{1}{JK} + \frac{1}{K}-\frac{1}{HK}\right)\theta_{ABC} 
+- \frac{1}{K} \theta_E \\
+= \frac{1}{HJK}\left(\theta_B + (H-1)\theta_{AB} + (J-1)\theta_{BC} + (1-H-HJ-J)\theta_{ABC} - HJ\theta_E \right) \quad (\ast)
+\end{multline}
+$$
+and is estimated by 
+$$
+\frac{1}{HJK}\left(S^2_B + (H-1)S^2_{AB} + (J-1)S^2_{BC} + (1-H-HJ-J)S^2_{ABC} - HJS^2_E \right).
+$$
+
+
+### Checking the coverage
+
+Let us check the frequentist coverage of the confidence interval. We firstly write a function to sample the mean squares:
+
+```{r}
+rMeanSquares <- function(nsims, H, I, J, K, sigma2B=1, sigma2C=1, sigma2AB=1, sigma2BC=1, sigma2AC=1, sigma2ABC=1, sigma2E=1){
+  VCnames <- c("B", "C", "AB", "BC", "AC", "ABC", "E") 
+  VC <- setNames(c(sigma2B, sigma2C, sigma2AB, sigma2BC, sigma2AC, sigma2ABC, sigma2E), VCnames)
+  dofs <- setNames(c(I-1, J-1, (H-1)*(I-1), (I-1)*(J-1), (H-1)*(J-1), (H-1)*(J-1)*(K-1), H*I*J*(K-1)), VCnames)
+  M <- rbind(
+    c(H*J*K, 0, J*K, H*K, 0, K, 1),
+    c(0, H*I*K, 0, H*K, I*K, K, 1), 
+    c(0, 0, J*K, 0, 0, K, 1), 
+    c(0, 0, 0, H*K, 0, K, 1),
+    c(0, 0, 0, 0, I*K, K, 1), 
+    c(0, 0, 0, 0, 0,K, 1),
+    c(0, 0, 0, 0, 0, 0, 1)
+  )
+  thetas <- setNames(as.vector(M %*% VC), VCnames)
+  sims <- matrix(numeric(1), nrow=nsims, ncol=7)
+  colnames(sims) <- VCnames
+  for(j in VCnames){
+    sims[,j] <- thetas[j]/dofs[j]*rchisq(nsims, dofs[j])
+  }
+  attr(sims, "VC") <- VC
+  attr(sims, "dofs") <- dofs
+  return(sims)
+}
+```
+
+Here we simulate the mean squares using not too small values of the degress of freedom. 
+
+```{r simulations1, collapse=TRUE, cache=TRUE}
+# simulations
+H <- 10; I <- 15; J <- 10; K <- 5
+nsims <- 10000
+sims <- rMeanSquares(nsims, H=H, I=I, J=J, K=K)
+dofs <- attr(sims, "dofs")
+VC <- attr(sims, "VC")
+sigma2Brepro <- sum(VC[c("B", "AB", "BC", "ABC")])
+# linear combination
+a <- 1/K*c(1/H/J, 1/J-1/H/J, 1/H-1/H/J, 1/H/J-1/J+1-1/H, -1)
+# confidence intervals
+Bounds <- matrix(numeric(1), nrow=nsims, ncol=2)
+colnames(Bounds) <- c("lwr", "upr")
+for(i in 1:nsims){
+  Bounds[i,] <- ciTing(sims[i,c("B", "AB", "BC", "ABC", "E")], dofs[c("B", "AB", "BC", "ABC", "E")], a=a)
+}
+# coverage of the upper one-sided interval:
+mean(Bounds[,"lwr"] < sigma2Brepro)
+# coverage of the lower one-sided interval:
+mean(Bounds[,"upr"] > sigma2Brepro)
+# coverage of the two-sided interval:
+mean(Bounds[,"lwr"] < sigma2Brepro & Bounds[,"upr"] > sigma2Brepro)
+```
+
+As we observe, the difference between the coverage obtained from the simulations and the nominal coverage does not exceed $1\%$ for each of the three confidence intervals (upper one-sided, lower one-sided and two-sided).
+
+
+### A small degrees of freedom example
+
+Now let us assess the frequentist coverage with $H=3$, $I=3$, $J=3$ and $K=5$. 
+
+```{r simulations2, collapse=TRUE, cache=TRUE}
+# simulations
+H <- 3; I <- 3; J <- 3; K <- 5
+nsims <- 10000
+set.seed(666)
+sims <- rMeanSquares(nsims, H=H, I=I, J=J, K=K)
+dofs <- attr(sims, "dofs")
+VC <- attr(sims, "VC")
+sigma2Brepro <- sum(VC[c("B", "AB", "BC", "ABC")])
+# linear combination
+a <- 1/K*c(1/H/J, 1/J-1/H/J, 1/H-1/H/J, 1/H/J-1/J+1-1/H, -1)
+# confidence intervals
+Bounds <- matrix(numeric(1), nrow=nsims, ncol=2)
+colnames(Bounds) <- c("lwr", "upr")
+for(i in 1:nsims){
+  Bounds[i,] <- ciTing(sims[i,c("B", "AB", "BC", "ABC", "E")], dofs[c("B", "AB", "BC", "ABC", "E")], a=a)
+}
+# coverage of the upper one-sided interval:
+mean(Bounds[,"lwr"] < sigma2Brepro)
+# coverage of the lower one-sided interval:
+mean(Bounds[,"upr"] > sigma2Brepro)
+# coverage of the two-sided interval:
+mean(Bounds[,"lwr"] < sigma2Brepro & Bounds[,"upr"] > sigma2Brepro)
+```
+
+This time, the coverage is not so close to the nominal level. 
+The upper one-sided confidence interval (`[lwr, Inf[`) is too short, and 
+the lower one-sided confidence interval (`]-Inf, upr]`) is too long.  
+In other words, the lower bound and the upper bound are higher than desired.  
+Let's have a look to the bounds:
+
+```{r, collapse=TRUE}
+head(Bounds, 10)
+```
+
+The upper bound is quite big ($\sigma_{\textrm{repro},B}=4$ here).
+
+### Shortening the intervals with the Satterthwaite approximation
+
+Recall our linear combination of the mean squares:
+
+$$
+\begin{align*}
+& a_1 S^2_B + a_2 S^2_{AB} + a_3 S^2_{BC} + a_4 S^2_{ABC} + a_5 S^2_E \\ 
+= & a_1 x_1 + a_2 x_2 + a_3 x_3 + a_4 x_4 + a_5 x_5
+\end{align*}
+$$
+with coefficients $a_1,a_2,a_3,a_4>0$, $a_5<0$, and degrees of freedom $2$, $4$, $4$, $16$ and $108$. 
+
+A degree of freedom of $2$ is pretty small, and it could be the cause of the large upper bound.  
+To circumvent this problem, we could try to replace $a_1x_1 + a_2x_2$ with its 
+Satterthwaite approximation: 
+$$
+\underset{y}{\underbrace{a_1 x_1 + a_2 x_2}} + a_3 x_3 + a_4 x_4 + a_5 x_5
+$$
+and then apply the Ting & al interval to the new linear combination $y+a_3 x_3 + a_4 x_4 + a_5 x_5$. 
+Let's look what it gives for the second row of simulations:
+
+```{r, collapse=TRUE}
+x <- sims[2, c("B", "AB", "BC", "ABC", "E")]
+dofs <- c(2, 4, 4, 16, 108)
+y <- sum(a[1:2]*x[1:2])
+nu <- y^2/sum((a[1:2]*x[1:2])^2/dofs[1:2])
+x_new <- c(y, x[3], x[4], x[5])
+dofs_new <- c(nu, dofs[3], dofs[4], dofs[5])
+a_new <- c(1, a[3], a[4], a[5])
+# original interval:
+ciTing(x, dofs, a)
+# new interval:
+ciTing(x_new, dofs_new, a_new)
+```
+
+The upper bound is considerably smaller. Now let's have a look at the coverage when we apply this method to the previous simulations:
+
+```{r simulations3, collapse=TRUE, cache=TRUE}
+# confidence intervals
+Bounds_new <- matrix(numeric(1), nrow=nsims, ncol=2)
+colnames(Bounds_new) <- c("lwr", "upr")
+for(i in 1:nsims){
+  x <- sims[i, c("B", "AB", "BC", "ABC", "E")]
+  y <- sum(a[1:2]*x[1:2])
+  nu <- y^2/sum((a[1:2]*x[1:2])^2/dofs[1:2])
+  x_new <- c(y, x[3], x[4], x[5])
+  dofs_new <- c(nu, dofs[3], dofs[4], dofs[5])
+  Bounds_new[i,] <- ciTing(x_new, dofs_new, a_new)
+}
+# coverage of the upper one-sided interval:
+mean(Bounds_new[,"lwr"] < sigma2Brepro)
+# coverage of the lower one-sided interval:
+mean(Bounds_new[,"upr"] > sigma2Brepro)
+# coverage of the two-sided interval:
+mean(Bounds_new[,"lwr"] < sigma2Brepro & Bounds_new[,"upr"] > sigma2Brepro)
+```
+
+This time, the upper one-sided interval achieves a coverage close to the nominal value. The lower one-sided interval still have a too large coverage, but the upper bounds we get are generally pretty shorter:
+
+```{r, collapse=TRUE}
+head(Bounds)
+head(Bounds_new)
+```
+
+
+Note that the method we proposed here is not intended to be a general one. The only thing we propose to the user is to explore the performance of the confidence intervals with the help of simulations for a specific design (values of $H$, $I$, $J$ and $K$) and the expected values of the variance components. We also recall that [Ting & al][TBGJL]'s paper provides some improvements of the confidence intervals that we did not consider here.
+
+
+## References 
+
+Graybill & Wang: *Confidence Intervals on Nonnegative Linear Combinations of Variances*. Journal of the American Statistical Association 75 (1980), 869-873. 
+
+Ting, Burdick, Graybill, Jeyaratman & Lu: *Confidence intervals on linear combinations of variance components that are unrestricted in sign*. Journal of Statistical Computation and Simulation 35 (1990), 135-143.
+
+Burdick, Borror, Montgomery: *Design and Analysis of Gauge R&R Studies*. SIAM 2005.
+
+[GW]: http://www.jstor.org/stable/pdf/2287174.pdf "Confidence Intervals on Nonnegative Linear Combinations of Variances"
+
+[TBGJL]: http://www.tandfonline.com/doi/abs/10.1080/00949659008811240?journalCode=gscs20 "Confidence intervals on linear combinations of variance components that are unrestricted in sign"
+
+[BBM]: https://books.google.be/books?id=yTMQRkuYCswC "Design and Analysis of Gauge R&R Studies"
