@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dealing with rounded data</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Dealing with rounded data</a>
+              </h3>
+              <span>2016-03-24</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/RoundedData.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Real “continuous” data are always rounded. For instance, I already had to deal with these data:</p>
+<pre class="r"><code>head(dat, 15)
+##    factor1 factor2   y
+## 1       A1      B1 0.1
+## 2       A1      B1 0.1
+## 3       A1      B1 0.1
+## 4       A1      B1 0.1
+## 5       A1      B1 0.1
+## 6       A1      B1 0.1
+## 7       A1      B1 0.3
+## 8       A1      B1 0.3
+## 9       A1      B1 0.1
+## 10      A1      B2 0.2
+## 11      A1      B2 0.1
+## 12      A1      B2 0.1
+## 13      A1      B2 0.1
+## 14      A1      B2 0.0
+## 15      A1      B2 0.0</code></pre>
+<p>These data were recorded by a measurement device with one decimal precision. Thus, a value of <span class="math inline">\(0.1\)</span> actually means the value lies between <span class="math inline">\(0.05\)</span> and <span class="math inline">\(0.15\)</span>. A value of <span class="math inline">\(0\)</span> actually means the value lies beteen <span class="math inline">\(0\)</span> and <span class="math inline">\(0.05\)</span> (these are nonnegative measurements).</p>
+<p>In fact these are intervals data:</p>
+<pre class="r"><code>dat1 &lt;- transform(dat, low = pmax(0,y-0.05), up = y+0.05)
+head(dat1, 15)
+##    factor1 factor2   y  low   up
+## 1       A1      B1 0.1 0.05 0.15
+## 2       A1      B1 0.1 0.05 0.15
+## 3       A1      B1 0.1 0.05 0.15
+## 4       A1      B1 0.1 0.05 0.15
+## 5       A1      B1 0.1 0.05 0.15
+## 6       A1      B1 0.1 0.05 0.15
+## 7       A1      B1 0.3 0.25 0.35
+## 8       A1      B1 0.3 0.25 0.35
+## 9       A1      B1 0.1 0.05 0.15
+## 10      A1      B2 0.2 0.15 0.25
+## 11      A1      B2 0.1 0.05 0.15
+## 12      A1      B2 0.1 0.05 0.15
+## 13      A1      B2 0.1 0.05 0.15
+## 14      A1      B2 0.0 0.00 0.05
+## 15      A1      B2 0.0 0.00 0.05</code></pre>
+<p>Thus, assuming for instance that the true values of the measurements follow a log-normal distribution:</p>
+<p><img src="assets/fig/RoundedData-logNdensity-1.png" title="" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>then one should use a rounded log-normal distribution to model the data:</p>
+<p><img src="assets/fig/RoundedData-logNrounded-1.png" title="" alt="" width="480" style="display: block; margin: auto;" /></p>
+<p>By the way, one would get a problem if one intended to fit a log-normal distribution to the <code>y</code> values, because there are some zero values.</p>
+<div id="using-the-grouped-package" class="section level2">
+<h2>Using the <code>grouped</code> package</h2>
+<p>One way to deal with this issue is to use the <code>grouped</code> R package. It allows to fit linear regression models to grouped data. It is very easy to use:</p>
+<pre class="r"><code>library(grouped)
+fit &lt;- grouped(cbind(low, up) ~  factor1*factor2, link=&quot;log&quot;, data=dat1)
+summary(fit)
+## 
+## Call:
+## grouped(formula = cbind(low, up) ~ factor1 * factor2, link = &quot;log&quot;,     data = dat1)
+## 
+## Model Summary:
+##  log.Lik    AIC     BIC
+##  -44.711 99.421 107.739
+## 
+## Coefficients:
+##                     Esimate Std.error t.value p.value
+## (Intercept)          -2.111     0.217   -9.73  &lt;0.001
+## factor1A2             0.551     0.289    1.90   0.065
+## factor2B2            -0.574     0.301   -1.90   0.065
+## factor1A2:factor2B2  -0.551     0.414   -1.33   0.193
+## 
+## Random-Effect:
+##       value std.error link.distribution
+## sigma 0.579    0.0821        log-normal
+## 
+## Optimization:
+## Convergence: 0 
+## max(|grad|): 0.00015 
+##  Outer iter: 1</code></pre>
+<p>The <code>grouped</code> package provides confidence intervals “<span class="math inline">\(\textrm{estimate}\pm z_{1-\frac{\alpha}{2}}\textrm{stderr}\)</span>”:</p>
+<pre class="r"><code>confint(fit)
+##                           2.5 %     97.5 %
+## (Intercept)         -2.53560037 -1.6854123
+## factor1A2           -0.01637233  1.1174238
+## factor2B2           -1.16437699  0.0168808
+## factor1A2:factor2B2 -1.36285840  0.2617881</code></pre>
+<p>This method to get confidence intervals is an asymptotic one, and they are possibly too short for small sample sizes.</p>
+</div>
+<div id="a-bayesian-solution-using-stan" class="section level2">
+<h2>A Bayesian solution using STAN</h2>
+<p>With STAN, one can assign a rounded log-normal distribution to the observations with the help of the <code>categorical</code> distribution.</p>
+<p>We use the <code>cut</code> function to create the classes of the measurements:</p>
+<pre class="r"><code>cuts &lt;- c(0, seq(0.05, max(dat$y)+0.1, by=0.1), Inf)
+dat2 &lt;- transform(dat, class=cut(y, cuts, right=FALSE))
+summary(dat2)
+##  factor1 factor2       y                  class   
+##  A1:19   B1:19   Min.   :0.0000   [0,0.05)   : 6  
+##  A2:20   B2:20   1st Qu.:0.1000   [0.05,0.15):23  
+##                  Median :0.1000   [0.15,0.25): 3  
+##                  Mean   :0.1385   [0.25,0.35): 4  
+##                  3rd Qu.:0.1500   [0.35,0.45): 2  
+##                  Max.   :0.5000   [0.45,0.55): 1  
+##                                   [0.55,Inf) : 0</code></pre>
+<p>There is no value beyond <span class="math inline">\(0.55\)</span>, hence we will fit such a categorical distribution:</p>
+<p><img src="assets/fig/RoundedData-logNrounded2-1.png" title="" alt="" width="480" style="display: block; margin: auto;" /> where the probabilities of the classes are given by the <em>cdf</em> of the log-normal distribution: <span class="math display">\[
+\Pr\bigl([a,b)\bigr) = \Phi\left(\frac{\log(b)-\mu}{\sigma}\right) - \Phi\left(\frac{\log(a)-\mu}{\sigma} \right).
+\]</span></p>
+<p>The support of the <code>categorical</code> distribution in STAN is <span class="math inline">\(1\)</span>, <span class="math inline">\(2\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(K\)</span>, so we have to encode each class by an integer:</p>
+<pre class="r"><code>dat2 &lt;- transform(dat2, ycat=as.integer(class))
+head(dat2, 15)
+##    factor1 factor2   y       class ycat
+## 1       A1      B1 0.1 [0.05,0.15)    2
+## 2       A1      B1 0.1 [0.05,0.15)    2
+## 3       A1      B1 0.1 [0.05,0.15)    2
+## 4       A1      B1 0.1 [0.05,0.15)    2
+## 5       A1      B1 0.1 [0.05,0.15)    2
+## 6       A1      B1 0.1 [0.05,0.15)    2
+## 7       A1      B1 0.3 [0.25,0.35)    4
+## 8       A1      B1 0.3 [0.25,0.35)    4
+## 9       A1      B1 0.1 [0.05,0.15)    2
+## 10      A1      B2 0.2 [0.15,0.25)    3
+## 11      A1      B2 0.1 [0.05,0.15)    2
+## 12      A1      B2 0.1 [0.05,0.15)    2
+## 13      A1      B2 0.1 [0.05,0.15)    2
+## 14      A1      B2 0.0    [0,0.05)    1
+## 15      A1      B2 0.0    [0,0.05)    1</code></pre>
+<p>Now we write and compile the STAN model:</p>
+<pre class="r"><code>library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+stancode &lt;- &quot;
+data {
+  int&lt;lower=1&gt; N;       // number of observations
+  int&lt;lower=1&gt; ycat[N]; // observations
+  int&lt;lower=1&gt; P;       // number of parameters
+  matrix[N,P] X;        // model matrix
+  int&lt;lower=1&gt; K;       // number of categories
+  vector[K-1] cuts;     // the cuts 0.05, 0.15, ..., 0.55
+}
+parameters {
+  vector[P] beta; 
+  real&lt;lower=0&gt; sigma;
+}
+transformed parameters {
+  vector[N] mu;
+  simplex[K] p[N];
+  mu &lt;- X*beta;
+  for(i in 1:N){
+    p[i][1] &lt;- Phi((log(cuts[1])-mu[i])/sigma);
+    for(j in 2:(K-1)){
+      p[i][j] &lt;-  Phi((log(cuts[j])-mu[i])/sigma) - Phi((log(cuts[j-1])-mu[i])/sigma);
+    }
+  p[i][K] &lt;- 1.0 - sum(p[i][1:(K-1)]);
+  }
+}
+model {
+  for(i in 1:N) ycat[i] ~ categorical(p[i]);
+  beta ~ normal(0, 20); // prior on the regression coefficients
+  sigma ~ cauchy(0, 5); // prior on the standard deviation
+}
+&quot;
+# Compilation
+stanmodel &lt;- stan_model(model_code = stancode, model_name=&quot;rounded 2-way ANOVA&quot;)</code></pre>
+<p>And we run the STAN sampler:</p>
+<pre class="r"><code># Stan data
+K &lt;- length(cuts)-1
+X &lt;- model.matrix(~factor1*factor2, data=dat2)
+standata &lt;- list(ycat=dat2$ycat, N=nrow(dat2), K=K, cuts=cuts[2:K], X=X, P=ncol(X))
+# Run Stan
+samples &lt;- sampling(stanmodel, data = standata, 
+                    iter = 11000, warmup = 1000, chains = 4)
+# Outputs
+library(coda)
+codasamples &lt;- do.call(mcmc.list, 
+    plyr::alply(rstan::extract(samples, permuted=FALSE, 
+                                pars=c(&quot;beta&quot;, &quot;sigma&quot;)), 2, mcmc))
+summary(codasamples)
+## 
+## Iterations = 1:10000
+## Thinning interval = 1 
+## Number of chains = 4 
+## Sample size per chain = 10000 
+## 
+## 1. Empirical mean and standard deviation for each variable,
+##    plus standard error of the mean:
+## 
+##            Mean     SD  Naive SE Time-series SE
+## beta[1] -2.1228 0.2411 0.0012055      0.0022252
+## beta[2]  0.5479 0.3240 0.0016199      0.0029783
+## beta[3] -0.5780 0.3369 0.0016843      0.0031244
+## beta[4] -0.5470 0.4629 0.0023146      0.0042449
+## sigma    0.6537 0.1032 0.0005162      0.0008849
+## 
+## 2. Quantiles for each variable:
+## 
+##             2.5%     25%     50%     75%    97.5%
+## beta[1] -2.60292 -2.2815 -2.1209 -1.9626 -1.65339
+## beta[2] -0.09319  0.3348  0.5483  0.7637  1.18396
+## beta[3] -1.24907 -0.7990 -0.5791 -0.3557  0.08303
+## beta[4] -1.46832 -0.8486 -0.5450 -0.2444  0.37006
+## sigma    0.48257  0.5813  0.6429  0.7145  0.88888</code></pre>
+<p>The estimates of the regression parameters are almost the same as the ones provided by the <code>grouped</code> package, and confidence intervals are a bit larger. The estimate of <span class="math inline">\(\sigma\)</span> is a bit different.</p>
+<p>Of course, the major advantage of the Bayesian way is that it can be used for any parametric model, not only the linear regression models.</p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

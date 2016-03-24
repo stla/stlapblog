@@ -1,0 +1,191 @@
+---
+title: "Dealing with rounded data"
+date: "2016-03-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align="center", collapse=TRUE, fig.path="./assets/fig/RoundedData-")
+library(ggplot2)
+fscale <- 1
+```
+
+```{r, include=FALSE}
+dat <- structure(list(factor1 = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 
+1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 
+2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 
+2L), .Label = c("A1", "A2"), class = "factor"), factor2 = structure(c(1L, 
+1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 
+2L, 2L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 
+2L, 2L, 2L, 2L, 2L, 2L), .Label = c("B1", "B2"), class = "factor"), 
+    y = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.3, 0.3, 0.1, 0.2, 0.1, 
+    0.1, 0.1, 0, 0, 0.1, 0, 0.1, 0.1, 0.5, 0.1, 0.4, 0.1, 0.3, 
+    0.1, 0.1, 0.3, 0.2, 0.4, 0.1, 0.1, 0, 0.1, 0.1, 0.2, 0.1, 
+    0, 0, 0.1)), .Names = c("factor1", "factor2", "y"), class = "data.frame", row.names = c(NA, 
+39L))
+```
+
+Real "continuous" data are always rounded. For instance, I already had to deal with these data:
+
+```{r}
+head(dat, 15)
+```
+
+These data were recorded by a measurement device with one decimal precision. 
+Thus, a value of $0.1$ actually means the value lies between $0.05$ and $0.15$. 
+A value of $0$ actually means the value lies beteen $0$ and $0.05$ (these are nonnegative measurements). 
+
+In fact these are intervals data:
+
+```{r}
+dat1 <- transform(dat, low = pmax(0,y-0.05), up = y+0.05)
+head(dat1, 15)
+```
+
+Thus, assuming for instance that the true values of the measurements follow a log-normal distribution:
+
+```{r logNdensity, fig.width=fscale*5, fig.height=fscale*4, echo=FALSE}
+mu <- -2; sigma <- 1
+ggplot(data.frame(x=c(0, 1.2)), aes(x)) + stat_function(fun=dlnorm, args=list(meanlog=mu, sdlog=sigma)) + ylab("") + xlab("true measurement")
+```
+
+then one should use a rounded log-normal distribution to model the data:
+
+```{r logNrounded, fig.width=fscale*5, fig.height=fscale*4, echo=FALSE}
+lo <- c(0, seq(0.05, 1.05, by=0.1))
+up <- c(0.05, seq(0.15, 1.15, by=0.1))
+x <- c(0.025, seq(0.05, 1.05, by=0.1)+0.05) 
+cuts <- c(0, seq(0.05, max(x)+0.1, by=0.1), Inf)
+classes <- cut(x, cuts, right=FALSE)
+dd <- data.frame(class=classes, lo=lo, up=up)
+dd <- transform(dd, Pr=plnorm(up, mu, sigma)-plnorm(lo, mu, sigma))
+ggplot(data=dd, aes(x=class, y=Pr)) +
+  geom_bar(stat="identity", colour="black", fill="pink") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ylab("Pr(class)") + xlab("class of y")
+```
+
+
+By the way, one would get a problem if one intended to fit a log-normal distribution to the `y` values, because there are some zero values.  
+
+
+## Using the `grouped` package 
+
+One way to deal with this issue is to use the `grouped` R package. It allows to fit linear regression models to grouped data. It is very easy to use:
+
+```{r grouped, message=FALSE}
+library(grouped)
+fit <- grouped(cbind(low, up) ~  factor1*factor2, link="log", data=dat1)
+summary(fit)
+```
+
+The `grouped` package provides confidence intervals "$\textrm{estimate}\pm z_{1-\frac{\alpha}{2}}\textrm{stderr}$":
+
+```{r}
+confint(fit)
+```
+
+This method to get confidence intervals is an asymptotic one, and they are possibly too short for small sample sizes.
+
+## A Bayesian solution using STAN 
+
+With STAN, one can assign a rounded log-normal distribution to the observations with 
+the help of the `categorical` distribution. 
+
+We use the `cut` function to create the classes of the measurements:
+
+```{r}
+cuts <- c(0, seq(0.05, max(dat$y)+0.1, by=0.1), Inf)
+dat2 <- transform(dat, class=cut(y, cuts, right=FALSE))
+summary(dat2)
+```
+
+There is no value beyond $0.55$, hence we will fit such a categorical distribution:
+
+```{r logNrounded2, fig.width=fscale*5, fig.height=fscale*4, echo=FALSE}
+lo <- c(0, seq(0.05, 0.55, by=0.1))
+up <- c(0.05, seq(0.15, 0.55, by=0.1), Inf)
+x <- c(0.025, seq(0.05, 0.55, by=0.1)+0.05) 
+cuts <- c(0, seq(0.05, max(x), by=0.1), Inf)
+classes <- cut(x, cuts, right=FALSE)
+dd <- data.frame(class=classes, lo=lo, up=up)
+dd <- transform(dd, Pr=plnorm(up, mu, sigma)-plnorm(lo, mu, sigma))
+ggplot(data=dd, aes(x=class, y=Pr)) +
+  geom_bar(stat="identity", colour="black", fill="pink") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  ylab("Pr(class)") + xlab("class of y")
+```
+where the probabilities of the classes are given by the *cdf* of the log-normal distribution:
+$$
+\Pr\bigl([a,b)\bigr) = \Phi\left(\frac{\log(b)-\mu}{\sigma}\right) - \Phi\left(\frac{\log(a)-\mu}{\sigma} \right).
+$$
+
+The support of the `categorical` distribution in STAN is $1$, $2$, $\ldots$, $K$, so we have to encode each class by an integer:
+
+```{r}
+dat2 <- transform(dat2, ycat=as.integer(class))
+head(dat2, 15)
+```
+
+Now we write and compile the STAN model:
+
+```{r standmodel, message=FALSE, cache=TRUE}
+library(rstan)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+stancode <- "
+data {
+  int<lower=1> N;       // number of observations
+  int<lower=1> ycat[N]; // observations
+  int<lower=1> P;       // number of parameters
+  matrix[N,P] X;        // model matrix
+  int<lower=1> K;       // number of categories
+  vector[K-1] cuts;     // the cuts 0.05, 0.15, ..., 0.55
+}
+parameters {
+  vector[P] beta; 
+  real<lower=0> sigma;
+}
+transformed parameters {
+  vector[N] mu;
+  simplex[K] p[N];
+  mu <- X*beta;
+  for(i in 1:N){
+    p[i][1] <- Phi((log(cuts[1])-mu[i])/sigma);
+    for(j in 2:(K-1)){
+      p[i][j] <-  Phi((log(cuts[j])-mu[i])/sigma) - Phi((log(cuts[j-1])-mu[i])/sigma);
+    }
+  p[i][K] <- 1.0 - sum(p[i][1:(K-1)]);
+  }
+}
+model {
+  for(i in 1:N) ycat[i] ~ categorical(p[i]);
+  beta ~ normal(0, 20); // prior on the regression coefficients
+  sigma ~ cauchy(0, 5); // prior on the standard deviation
+}
+"
+# Compilation
+stanmodel <- stan_model(model_code = stancode, model_name="rounded 2-way ANOVA")
+```
+
+And we run the STAN sampler:
+
+```{r stansamples, message=FALSE, cache=TRUE}
+# Stan data
+K <- length(cuts)-1
+X <- model.matrix(~factor1*factor2, data=dat2)
+standata <- list(ycat=dat2$ycat, N=nrow(dat2), K=K, cuts=cuts[2:K], X=X, P=ncol(X))
+# Run Stan
+samples <- sampling(stanmodel, data = standata, 
+                    iter = 11000, warmup = 1000, chains = 4)
+# Outputs
+library(coda)
+codasamples <- do.call(mcmc.list, 
+    plyr::alply(rstan::extract(samples, permuted=FALSE, 
+                                pars=c("beta", "sigma")), 2, mcmc))
+summary(codasamples)
+```
+
+The estimates of the regression parameters are almost the same as the ones provided by the `grouped` package, and confidence intervals are a bit larger. The estimate of $\sigma$ is a bit different. 
+
+Of course, the major advantage of the Bayesian way is that it can be used for any parametric model, not only the linear regression models. 
