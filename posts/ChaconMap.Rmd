@@ -1,0 +1,41 @@
+---
+title: "The Chacon map in R"
+author: "Stéphane Laurent"
+date: "2016-05-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path="./assets/fig/ChaconMap-")
+fscale <- 1
+```
+
+
+The `Chacon` function below is an implementation of the Chacon transformation of the unit interval $(0,1)$. The definition of the Chacon transformation can be found in [this thesis](https://cdr.lib.unc.edu/indexablecontent/uuid:bfc41b0c-b048-440f-9a57-533e02ea4f76).
+
+```{r}
+Chacon <- function(x){ 
+  n <- 1L
+  while(3L^(n+1L)*x >= 3L^(n+1L) - 1L) n <- n+1L 
+  while(3L^(n+1L)*x >= 2L*3L^n - 2L && 3L*x < 2L) n <- n+1L
+  i <- 1L; A <- c(0L, 2L, 6L, 4L)/9L
+  while(i < n){
+    A <- c(A, A + 2L/3L^(i+2L), 1L - 1L/3L^(i+1L), A + 4L/3L^(i+2L))
+    i <- i+1L
+  }
+  dists <- x-A
+  j <- which(dists >= 0 & 3L^(n+1L)*dists < 2)
+  return(A[j+1L]+dists[j]) 
+}
+```
+
+Below is a plot of the Chacon transformation.
+
+```{r ChaconPlot, fig.width=fscale*5, fig.height=fscale*5}
+par(mar=c(4,4,0,0))
+u <- seq(0, 0.995, by=.005) 
+Cu <- sapply(u, Chacon)
+plot(u, Cu, pch=19, cex=0.2, asp=1, xlim=c(0,1), pty="s")
+```
+
+This is probably rather useless.
