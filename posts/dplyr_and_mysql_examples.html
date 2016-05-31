@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gestion de données avec `dplyr` et `(My)SQL`</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Gestion de données avec `dplyr` et `(My)SQL`</a>
+              </h3>
+              <span>2016-05-31</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/dplyr_and_mysql_examples.Rmd'>Source</a>
+              <div class='lead'>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<style type="text/css">
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: none;
+    padding-right:30px;
+    padding-bottom:0;
+    padding-top:0
+}</style>
+<p>Cet article fournit des exemples de gestion de données dans R avec la librairie <code>dplyr</code>, et les commandes équivalentes avec <code>MySQL</code>.</p>
+<div id="commandes-simples" class="section level2">
+<h2>Commandes simples</h2>
+<p>Les exemples seront appliqués au tableau de données suivant :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Joe&quot;</span>, <span class="st">&quot;Joe&quot;</span>, <span class="st">&quot;Bill&quot;</span>, <span class="st">&quot;Jim&quot;</span>, <span class="st">&quot;Kate&quot;</span>),
+  <span class="dt">Value =</span> <span class="kw">c</span>(<span class="fl">10.1</span>, <span class="dv">13</span>, <span class="dv">9</span>, <span class="fl">7.7</span>, -<span class="dv">3</span>),
+  <span class="dt">Indic =</span> <span class="kw">c</span>(0L, 1L, 1L, 2L, 2L),
+  <span class="dt">Status =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">FALSE</span>),
+  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>
+)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>On peut le créer ainsi dans <code>MySQL</code> :</p>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">CREATE</span> <span class="kw">TABLE</span> `dat1` (
+`Name` <span class="dt">varchar</span>(<span class="dv">15</span>),
+`Value` <span class="dt">double</span>,
+`Indic` <span class="dt">int</span>(<span class="dv">11</span>),
+`Status` tinyint(<span class="dv">1</span>)
+);
+<span class="kw">INSERT</span> <span class="kw">INTO</span> `dat1` <span class="kw">VALUES</span>
+(<span class="st">&#39;Joe&#39;</span>,<span class="fl">10.1</span>,<span class="dv">0</span>,<span class="dv">1</span>),(<span class="st">&#39;Joe&#39;</span>,<span class="dv">13</span>,<span class="dv">1</span>,<span class="dv">1</span>),(<span class="st">&#39;Bill&#39;</span>,<span class="dv">9</span>,<span class="dv">1</span>,<span class="dv">1</span>),(<span class="st">&#39;Jim&#39;</span>,<span class="fl">7.7</span>,<span class="dv">2</span>,<span class="dv">0</span>),(<span class="st">&#39;Kate&#39;</span>,-<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">0</span>);</code></pre></div>
+<div id="selectionner-des-colonnes" class="section level3">
+<h3>Sélectionner des colonnes</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(dat1, Name, Value)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Value` <span class="kw">FROM</span> dat1;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="supprimer-des-colonnes" class="section level3">
+<h3>Supprimer des colonnes</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(dat1, -Name, -Value)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">ALTER</span> <span class="kw">TABLE</span> `dat1`
+  <span class="kw">DROP</span> <span class="kw">COLUMN</span> `Name`, <span class="kw">DROP</span> <span class="kw">COLUMN</span> `Value`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>Plus d’infos pour <code>SQL</code> :</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/6346120/how-do-i-drop-multiple-columns-with-a-single-alter-table-statement">drop columns</a></li>
+</ul>
+</div>
+<div id="supprimer-des-lignes" class="section level3">
+<h3>Supprimer des lignes</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 &lt;-<span class="st"> </span>dat1[-<span class="kw">which</span>(dat1$Name==<span class="st">&quot;Joe&quot;</span>),]</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">DELETE</span> <span class="kw">FROM</span> `dat1` 
+  <span class="kw">WHERE</span> `Name`=<span class="st">&#39;Joe&#39;</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="renommer-une-colonne" class="section level3">
+<h3>Renommer une colonne</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rename</span>(dat1, <span class="dt">Score =</span> Value)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Value` <span class="kw">AS</span> `Score`, `Indic`, `Status` 
+  <span class="kw">FROM</span> `dat1`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Score</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>Dans <code>MySQL</code>, on peut aussi utiliser la méthode suivante qui est plus directe, avec elle on n’a pas besoin de taper les noms des autres colonnes :</p>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">ALTER</span> <span class="kw">TABLE</span> `dat1` 
+  <span class="kw">CHANGE</span> `Value` `Score` <span class="dt">double</span> <span class="kw">NOT</span> <span class="kw">NULL</span>;</code></pre></div>
+<p>Notez qu’on dû spécifier le type de la colonne (<code>double</code>).</p>
+<p>Plus d’infos :</p>
+<ul>
+<li><p><a href="http://stackoverflow.com/questions/174582/how-do-i-rename-a-column-in-a-database-table-using-sql">How do I rename a column in a database table using SQL?</a></p></li>
+<li><p><a href="http://dba.stackexchange.com/questions/62051/alter-table-rename-a-column">ALTER TABLE - Rename a column</a></p></li>
+</ul>
+</div>
+<div id="filtrer" class="section level3">
+<h3>Filtrer</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(dat1, Value &gt;<span class="st"> </span><span class="dv">8</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> dat1 
+  <span class="kw">WHERE</span> `Value` &gt; <span class="dv">8</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(dat1, Value &gt;<span class="st"> </span><span class="dv">8</span>, Indic==<span class="dv">1</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> dat1 
+  <span class="kw">WHERE</span> `Value` &gt; <span class="dv">8</span> <span class="kw">AND</span> Indic = <span class="dv">1</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">13</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Bill</td>
+<td align="right">9</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p>Voici des exemples de conditions sur les chaînes de caractères :</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(stringr)
+<span class="co"># noms contenant &quot;J&quot;</span>
+<span class="kw">filter</span>(dat1, <span class="kw">str_detect</span>(Name, <span class="st">&quot;J&quot;</span>))
+<span class="co"># noms commençant par &quot;J&quot;</span>
+<span class="kw">filter</span>(dat1, <span class="kw">str_detect</span>(Name, <span class="st">&quot;^J&quot;</span>))
+<span class="co"># noms terminant par &quot;e&quot;</span>
+<span class="kw">filter</span>(dat1, <span class="kw">str_detect</span>(Name, <span class="st">&quot;e$&quot;</span>))
+<span class="co"># noms contenant &quot;o&quot; ou &quot;K&quot;</span>
+<span class="kw">filter</span>(dat1, <span class="kw">str_detect</span>(Name, <span class="st">&quot;[oK]&quot;</span>))</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="co">/* noms contenant &quot;J&quot; */</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
+  <span class="kw">WHERE</span> `Name` <span class="kw">LIKE</span> <span class="st">&#39;%J%&#39;</span>;
+<span class="co">/* noms commençant par &quot;J&quot; */</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
+  <span class="kw">WHERE</span> `Name` <span class="kw">LIKE</span> <span class="st">&#39;J%&#39;</span>;
+<span class="co">/* noms terminant par &quot;e&quot; */</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
+  <span class="kw">WHERE</span> `Name` <span class="kw">LIKE</span> <span class="st">&#39;%e&#39;</span>;
+<span class="co">/* noms contenant &quot;o&quot; ou &quot;K&quot; */</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
+  <span class="kw">WHERE</span> `Name` <span class="kw">LIKE</span> <span class="st">&#39;%o%&#39;</span> <span class="kw">OR</span> Name <span class="kw">LIKE</span> <span class="st">&#39;%K%&#39;</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="transformer-une-colonne" class="section level3">
+<h3>Transformer une colonne</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(dat1, <span class="dt">Value=</span>Value*<span class="dv">2</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">UPDATE</span> `dat1` <span class="kw">SET</span> `Value` = `Value`*<span class="dv">2</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">20.2</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">26.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">18.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">15.4</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-6.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>La fonction <code>mutate</code> permet aussi de mettre le résultat dans une nouvelle colonne :</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(dat1, <span class="dt">x=</span>Value*<span class="dv">2</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Value`, `Indic`, `Value` * <span class="dv">2</span> <span class="kw">AS</span> `x`
+  <span class="kw">FROM</span> `dat1`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+<th align="right">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+<td align="right">20.2</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="right">26.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="right">18.0</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="right">15.4</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="right">-6.0</td>
+</tr>
+</tbody>
+</table>
+<p>Pour éviter de sélectionner toutes les colonnes dans <code>SQL</code>, on peut d’abord créer une nouvelle colonne puis utiliser <code>UPDATE</code> comme précédemment :</p>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">ALTER</span> <span class="kw">TABLE</span> `dat1` <span class="kw">ADD</span> `x` <span class="dt">double</span>;
+<span class="kw">UPDATE</span> `dat1` <span class="kw">SET</span> `x` = `Value`*<span class="dv">2</span>;</code></pre></div>
+<p>Avec la fonction <code>transmute</code>, le résultat ne contient que les nouvelles colonnes :</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(<span class="kw">transmute</span>(dat1, <span class="dt">x=</span>Value*<span class="dv">2</span>, <span class="dt">y=</span>Indic<span class="dv">+1</span>))</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Value` * <span class="dv">2</span> <span class="kw">AS</span> `x`, `Indic` + <span class="dv">1</span> <span class="kw">AS</span> `y`
+  <span class="kw">FROM</span> `dat1`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">x</th>
+<th align="right">y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">20.2</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">26.0</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="right">18.0</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="right">15.4</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="right">-6.0</td>
+<td align="right">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="modifier-la-valeur-dans-une-cellule" class="section level3">
+<h3>Modifier la valeur dans une cellule</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1$Value[<span class="kw">which</span>(dat1$Name==<span class="st">&quot;Bill&quot;</span>)] &lt;-<span class="st"> </span><span class="fl">8.5</span></code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">UPDATE</span> `dat1`
+  <span class="kw">SET</span> `Value` = <span class="fl">8.5</span> 
+  <span class="kw">WHERE</span> `Name` = <span class="st">&#39;Bill&#39;</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">8.5</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="trier-selon-une-colonne" class="section level3">
+<h3>Trier selon une colonne</h3>
+<ul>
+<li>dans l’ordre croissant :</li>
+</ul>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">arrange</span>(dat1, Value)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
+  <span class="kw">ORDER</span> <span class="kw">BY</span> `Value`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>dans l’ordre décroissant :</li>
+</ul>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">arrange</span>(dat1, <span class="kw">desc</span>(Value))</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
+  <span class="kw">ORDER</span> <span class="kw">BY</span> `Value` <span class="kw">DESC</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="aggregation" class="section level2">
+<h2>Aggrégation</h2>
+<div id="moyennes" class="section level3">
+<h3>Moyennes</h3>
+<p>On obtient aussi la moyenne de <code>Values</code> pour chaque valeur de <code>Name</code> :</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Name) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">m=</span><span class="kw">mean</span>(Value))</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, <span class="fu">AVG</span>(`Value`) <span class="kw">AS</span> `m` 
+  <span class="kw">FROM</span> `dat1` 
+  <span class="kw">GROUP</span> <span class="kw">BY</span> `Name`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">m</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.00</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.70</td>
+</tr>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">11.55</td>
+</tr>
+<tr class="even">
+<td align="left">Kate</td>
+<td align="right">-3.00</td>
+</tr>
+</tbody>
+</table>
+<p>Si on veut obtenir les moyennes puis appliquer une autre requête, il suffit d’enchaîner les commandes avec <code>dplyr</code> ; par contre, avec <code>SQL</code>, il faut encapsuler le premier tableau avant d’appliquer la seconde requête :</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Name) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">m=</span><span class="kw">mean</span>(Value)) %&gt;%<span class="st"> </span><span class="kw">filter</span>(m&gt;<span class="dv">8</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `m`
+  <span class="kw">FROM</span> (<span class="kw">SELECT</span> `Name`, <span class="fu">AVG</span>(`Value`) <span class="kw">AS</span> `m`
+        <span class="kw">FROM</span> `dat1`
+        <span class="kw">GROUP</span> <span class="kw">BY</span> `Name`) 
+        <span class="kw">AS</span> `temp`
+  <span class="kw">WHERE</span> `m`&gt;<span class="dv">8</span>;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">m</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.00</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">11.55</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="comptages" class="section level3">
+<h3>Comptages</h3>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Name) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">Count=</span><span class="kw">n</span>())</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, <span class="fu">count</span>(*) <span class="kw">AS</span> `Count`
+  <span class="kw">FROM</span> `dat1`
+  <span class="kw">GROUP</span> <span class="kw">BY</span> `Name`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Kate</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="jonction-de-deux-tableaux" class="section level2">
+<h2>Jonction de deux tableaux</h2>
+<p>Dans les exemples qui suivent, nous utilisons ce deuxième tableau de données :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat2 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Bill&quot;</span>, <span class="st">&quot;Brian&quot;</span>),
+  <span class="dt">Country =</span> <span class="kw">c</span>(<span class="st">&quot;USA&quot;</span>, <span class="st">&quot;Scotland&quot;</span>), 
+  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>
+)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="left">Country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="left">USA</td>
+</tr>
+<tr class="even">
+<td align="left">Brian</td>
+<td align="left">Scotland</td>
+</tr>
+</tbody>
+</table>
+<div id="jonction-interne" class="section level3">
+<h3>Jonction interne</h3>
+<p>La commande R classique (qui n’utilise pas <code>dplyr</code>) est <code>merge(dat1, dat2, by=&quot;Name&quot;)</code>.</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">inner_join</span>(dat1, dat2, <span class="dt">by=</span><span class="st">&quot;Name&quot;</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> 
+  `dat1` <span class="kw">INNER</span> <span class="kw">JOIN</span> `dat2` 
+  <span class="kw">USING</span> (`Name`);</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+<th align="left">Country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">USA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="jonction-a-gauche" class="section level3">
+<h3>Jonction à gauche</h3>
+<p>commande R classique : <code>merge(dat1, dat2, by=&quot;Name&quot;, all.x=TRUE)</code></p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">left_join</span>(dat1, dat2, <span class="dt">by=</span><span class="st">&quot;Name&quot;</span>)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> 
+  `dat1` <span class="kw">LEFT</span> <span class="kw">JOIN</span> `dat2` 
+  <span class="kw">USING</span> (`Name`);</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+<th align="left">Country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">USA</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="jonction-a-droite" class="section level3">
+<h3>Jonction à droite</h3>
+<p>commande R classique : <code>merge(dat1, dat2, by=&quot;Name&quot;, all.y=TRUE)</code></p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">right_join</span>(dat1, dat2, <span class="dt">by=</span><span class="st">&quot;Name&quot;</span>) </code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> 
+  `dat1` <span class="kw">RIGHT</span> <span class="kw">JOIN</span> `dat2` 
+  <span class="kw">USING</span> (`Name`);</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+<th align="left">Country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">USA</td>
+</tr>
+<tr class="even">
+<td align="left">Brian</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Scotland</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="jonction-complete" class="section level3">
+<h3>Jonction complète</h3>
+<p>commande R classique : <code>merge(dat1, dat2, all=TRUE)</code></p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">full_join</span>(dat1, dat2)</code></pre></div>
+</td>
+<td>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql">(<span class="kw">SELECT</span> * <span class="kw">FROM</span> 
+  `dat1` <span class="kw">LEFT</span> <span class="kw">JOIN</span> `dat2`
+  <span class="kw">USING</span> (`Name`))
+<span class="kw">UNION</span> 
+(<span class="kw">SELECT</span> * <span class="kw">FROM</span> 
+  `dat1` <span class="kw">RIGHT</span> <span class="kw">JOIN</span> `dat2`
+  <span class="kw">USING</span> (`Name`)
+  <span class="kw">WHERE</span> `dat1`.`Name` <span class="kw">IS</span> <span class="kw">NULL</span>);</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+<th align="left">Country</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">USA</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Brian</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">Scotland</td>
+</tr>
+</tbody>
+</table>
+<p>Autres types de jonction (<code>semi_join</code>, <code>anti_join</code>):</p>
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html">Two-table verbs</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

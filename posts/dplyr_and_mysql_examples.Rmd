@@ -1,0 +1,549 @@
+---
+title: "Gestion de données avec `dplyr` et `(My)SQL`"
+date: "2016-05-31"
+output: html_document
+---
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+library(dplyr)
+```
+
+<style type="text/css">
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: none;
+    padding-right:30px;
+    padding-bottom:0;
+    padding-top:0
+}</style>
+
+Cet article fournit des exemples de gestion de données dans R avec la librairie `dplyr`, et les commandes équivalentes avec `MySQL`. 
+
+
+## Commandes simples
+
+Les exemples seront appliqués au tableau de données suivant :
+
+```{r, eval=TRUE}
+dat1 <- data.frame(
+  Name = c("Joe", "Joe", "Bill", "Jim", "Kate"),
+  Value = c(10.1, 13, 9, 7.7, -3),
+  Indic = c(0L, 1L, 1L, 2L, 2L),
+  Status = c(TRUE, TRUE, TRUE, FALSE, FALSE),
+  stringsAsFactors = FALSE
+)
+```
+
+```{r, eval=TRUE, echo=FALSE}
+kable(dat1)
+```
+
+On peut le créer ainsi dans `MySQL` :
+
+```sql
+CREATE TABLE `dat1` (
+`Name` varchar(15),
+`Value` double,
+`Indic` int(11),
+`Status` tinyint(1)
+);
+INSERT INTO `dat1` VALUES
+('Joe',10.1,0,1),('Joe',13,1,1),('Bill',9,1,1),('Jim',7.7,2,0),('Kate',-3,2,0);
+```
+
+### Sélectionner des colonnes
+
+<div><table class='container-fluid' style="margin-left:0">
+<tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr>
+<tr><td>
+```r
+select(dat1, Name, Value)
+```
+</td><td>
+```sql
+SELECT `Name`, `Value` FROM dat1;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(select(dat1, Name, Value))
+```
+
+
+### Supprimer des colonnes 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+select(dat1, -Name, -Value)
+```
+</td><td>
+```sql
+ALTER TABLE `dat1`
+  DROP COLUMN `Name`, DROP COLUMN `Value`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(select(dat1, -Name, -Value))
+```
+
+Plus d'infos pour `SQL` :
+
+* [drop columns](http://stackoverflow.com/questions/6346120/how-do-i-drop-multiple-columns-with-a-single-alter-table-statement)
+
+
+### Supprimer des lignes 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+dat1 <- dat1[-which(dat1$Name=="Joe"),]
+```
+</td><td>
+```sql
+DELETE FROM `dat1` 
+  WHERE `Name`='Joe';
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(dat1[-which(dat1$Name=="Joe"),])
+```
+
+
+### Renommer une colonne 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+rename(dat1, Score = Value)
+```
+</td><td>
+```sql
+SELECT `Name`, `Value` AS `Score`, `Indic`, `Status` 
+  FROM `dat1`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(rename(dat1, Score = Value))
+```
+
+Dans `MySQL`, on peut aussi utiliser la méthode suivante qui est plus directe, avec elle on n'a pas besoin de taper les noms des autres colonnes :
+
+```sql
+ALTER TABLE `dat1` 
+  CHANGE `Value` `Score` double NOT NULL;
+```
+
+Notez qu'on dû spécifier le type de la colonne (`double`).
+
+Plus d'infos :
+
+* [How do I rename a column in a database table using SQL?](http://stackoverflow.com/questions/174582/how-do-i-rename-a-column-in-a-database-table-using-sql)
+
+* [ALTER TABLE - Rename a column](http://dba.stackexchange.com/questions/62051/alter-table-rename-a-column)
+
+
+### Filtrer 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+filter(dat1, Value > 8)
+```
+</td><td>
+```sql
+SELECT * FROM dat1 
+  WHERE `Value` > 8;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(filter(dat1, Value > 8))
+```
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+filter(dat1, Value > 8, Indic==1)
+```
+</td><td>
+```sql
+SELECT * FROM dat1 
+  WHERE `Value` > 8 AND Indic = 1;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(filter(dat1, Value>8, Indic==1))
+```
+
+Voici des exemples de conditions sur les chaînes de caractères :
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```{r, eval=FALSE}
+library(stringr)
+# noms contenant "J"
+filter(dat1, str_detect(Name, "J"))
+# noms commençant par "J"
+filter(dat1, str_detect(Name, "^J"))
+# noms terminant par "e"
+filter(dat1, str_detect(Name, "e$"))
+# noms contenant "o" ou "K"
+filter(dat1, str_detect(Name, "[oK]"))
+```
+</td><td>
+```sql
+/* noms contenant "J" */
+SELECT * FROM `dat1`
+  WHERE `Name` LIKE '%J%';
+/* noms commençant par "J" */
+SELECT * FROM `dat1`
+  WHERE `Name` LIKE 'J%';
+/* noms terminant par "e" */
+SELECT * FROM `dat1`
+  WHERE `Name` LIKE '%e';
+/* noms contenant "o" ou "K" */
+SELECT * FROM `dat1`
+  WHERE `Name` LIKE '%o%' OR Name LIKE '%K%';
+```
+</td></tr></table></div>
+
+
+### Transformer une colonne 
+
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+mutate(dat1, Value=Value*2)
+```
+</td><td>
+```sql
+UPDATE `dat1` SET `Value` = `Value`*2;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(mutate(dat1, Value=Value*2))
+```
+
+La fonction `mutate` permet aussi de mettre le résultat dans une nouvelle colonne :
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+mutate(dat1, x=Value*2)
+```
+</td><td>
+```sql
+SELECT `Name`, `Value`, `Indic`, `Value` * 2 AS `x`
+  FROM `dat1`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(mutate(dat1, x=Value*2))
+```
+
+Pour éviter de sélectionner toutes les colonnes dans `SQL`, on peut d'abord créer une nouvelle colonne puis utiliser `UPDATE` comme précédemment :
+
+```sql 
+ALTER TABLE `dat1` ADD `x` double;
+UPDATE `dat1` SET `x` = `Value`*2;
+```
+
+
+Avec la fonction `transmute`, le résultat ne contient que les nouvelles colonnes : 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+mutate(transmute(dat1, x=Value*2, y=Indic+1))
+```
+</td><td>
+```sql
+SELECT `Value` * 2 AS `x`, `Indic` + 1 AS `y`
+  FROM `dat1`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(transmute(dat1, x=Value*2, y=Indic+1))
+```
+
+### Modifier la valeur dans une cellule 
+
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+dat1$Value[which(dat1$Name=="Bill")] <- 8.5
+```
+</td><td>
+```sql
+UPDATE `dat1`
+  SET `Value` = 8.5 
+  WHERE `Name` = 'Bill';
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+local({
+dat1$Value[which(dat1$Name=="Bill")] <- 8.5
+kable(dat1)})
+```
+
+
+### Trier selon une colonne
+
+* dans l'ordre croissant : 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+arrange(dat1, Value)
+```
+</td><td>
+```sql
+SELECT * FROM `dat1`
+  ORDER BY `Value`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(arrange(dat1, Value))
+```
+
+* dans l'ordre décroissant :
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+arrange(dat1, desc(Value))
+```
+</td><td>
+```sql
+SELECT * FROM `dat1`
+  ORDER BY `Value` DESC;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(arrange(dat1, desc(Value)))
+```
+
+
+## Aggrégation 
+
+### Moyennes
+
+On obtient aussi la moyenne de `Values` pour chaque valeur de `Name` :
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+dat1 %>% group_by(Name) %>% summarise(m=mean(Value))
+```
+</td><td>
+```sql
+SELECT `Name`, AVG(`Value`) AS `m` 
+  FROM `dat1` 
+  GROUP BY `Name`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(dat1 %>% group_by(Name) %>% summarise(m=mean(Value)))
+```
+
+Si on veut obtenir les moyennes puis appliquer une autre requête, il suffit d'enchaîner les commandes avec `dplyr` ; par contre, avec `SQL`, il faut encapsuler le premier tableau avant d'appliquer la seconde requête : 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+dat1 %>% group_by(Name) %>% summarise(m=mean(Value)) %>% filter(m>8)
+```
+</td><td>
+```sql
+SELECT `Name`, `m`
+  FROM (SELECT `Name`, AVG(`Value`) AS `m`
+        FROM `dat1`
+        GROUP BY `Name`) 
+        AS `temp`
+  WHERE `m`>8;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(dat1 %>% group_by(Name) %>% summarise(m=mean(Value)) %>% filter(m>8))
+```
+
+### Comptages
+
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+dat1 %>% group_by(Name) %>% summarise(Count=n())
+```
+</td><td>
+```sql
+SELECT `Name`, count(*) AS `Count`
+  FROM `dat1`
+  GROUP BY `Name`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(dat1 %>% group_by(Name) %>% summarise(Count=n()))
+```
+
+
+## Jonction de deux tableaux
+
+Dans les exemples qui suivent, nous utilisons ce deuxième tableau de données :
+
+```{r, eval=TRUE}
+dat2 <- data.frame(
+  Name = c("Bill", "Brian"),
+  Country = c("USA", "Scotland"), 
+  stringsAsFactors = FALSE
+)
+```
+
+```{r, eval=TRUE, echo=FALSE}
+kable(dat2)
+```
+
+### Jonction interne
+
+La commande R classique (qui n'utilise pas `dplyr`) est `merge(dat1, dat2, by="Name")`.
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+inner_join(dat1, dat2, by="Name")
+```
+</td><td>
+```sql
+SELECT * FROM 
+  `dat1` INNER JOIN `dat2` 
+  USING (`Name`);
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(inner_join(dat1, dat2, by="Name"))
+```
+
+
+
+### Jonction à gauche
+
+commande R classique : `merge(dat1, dat2, by="Name", all.x=TRUE)`
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+left_join(dat1, dat2, by="Name")
+```
+</td><td>
+```sql
+SELECT * FROM 
+  `dat1` LEFT JOIN `dat2` 
+  USING (`Name`);
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(left_join(dat1, dat2, by="Name"))
+```
+
+
+### Jonction à droite
+
+commande R classique : `merge(dat1, dat2, by="Name", all.y=TRUE)`
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+right_join(dat1, dat2, by="Name") 
+```
+</td><td>
+```sql
+SELECT * FROM 
+  `dat1` RIGHT JOIN `dat2` 
+  USING (`Name`);
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(right_join(dat1, dat2, by="Name") )
+```
+
+
+### Jonction complète 
+
+commande R classique : `merge(dat1, dat2, all=TRUE)`
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+full_join(dat1, dat2)
+```
+</td><td>
+```sql
+(SELECT * FROM 
+  `dat1` LEFT JOIN `dat2`
+  USING (`Name`))
+UNION 
+(SELECT * FROM 
+  `dat1` RIGHT JOIN `dat2`
+  USING (`Name`)
+  WHERE `dat1`.`Name` IS NULL);
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(full_join(dat1, dat2, by="Name"))
+```
+
+Autres types de jonction (`semi_join`, `anti_join`):
+
+* [Two-table verbs](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html)
+
