@@ -55,6 +55,7 @@ knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
 library(dplyr)
 ```
 
+
 <style type="text/css">
 table {
     border-collapse: collapse;
@@ -109,7 +110,7 @@ INSERT INTO `dat1` VALUES
 ```r
 select(dat1, Name, Value)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Name`, `Value` FROM dat1;
 ```
@@ -126,7 +127,7 @@ kable(select(dat1, Name, Value))
 ```r
 select(dat1, -Name, -Value)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 ALTER TABLE `dat1`
   DROP COLUMN `Name`, DROP COLUMN `Value`;
@@ -148,7 +149,7 @@ Plus d'infos pour `SQL` :
 ```r
 dat1 <- dat1[-which(dat1$Name=="Joe"),]
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 DELETE FROM `dat1` 
   WHERE `Name`='Joe';
@@ -166,7 +167,7 @@ kable(dat1[-which(dat1$Name=="Joe"),])
 ```r
 rename(dat1, Score = Value)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Name`, `Value` AS `Score`, `Indic`, `Status` 
   FROM `dat1`;
@@ -199,7 +200,7 @@ Plus d'infos :
 ```r
 filter(dat1, Value > 8)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM dat1 
   WHERE `Value` > 8;
@@ -214,7 +215,7 @@ kable(filter(dat1, Value > 8))
 ```r
 filter(dat1, Value > 8, Indic==1)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM dat1 
   WHERE `Value` > 8 AND Indic = 1;
@@ -239,7 +240,7 @@ filter(dat1, str_detect(Name, "e$"))
 # noms contenant "o" ou "K"
 filter(dat1, str_detect(Name, "[oK]"))
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 /* noms contenant "J" */
 SELECT * FROM `dat1`
@@ -264,7 +265,7 @@ SELECT * FROM `dat1`
 ```r
 mutate(dat1, Value=Value*2)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 UPDATE `dat1` SET `Value` = `Value`*2;
 ```
@@ -280,7 +281,7 @@ La fonction `mutate` permet aussi de mettre le résultat dans une nouvelle colon
 ```r
 mutate(dat1, x=Value*2)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Name`, `Value`, `Indic`, `Value` * 2 AS `x`
   FROM `dat1`;
@@ -298,14 +299,31 @@ ALTER TABLE `dat1` ADD `x` double;
 UPDATE `dat1` SET `x` = `Value`*2;
 ```
 
+On peut facilement ajouter une colonne constante au tableau :
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+mutate(dat1, x='Hello')
+```
+</td><td style="padding-right:0px">
+```sql
+SELECT *, 'Hello' AS x
+  FROM `dat1`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(mutate(dat1, x='Hello'))
+```
+
 
 Avec la fonction `transmute`, le résultat ne contient que les nouvelles colonnes : 
 
 <div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
 ```r
-mutate(transmute(dat1, x=Value*2, y=Indic+1))
+transmute(dat1, x=Value*2, y=Indic+1)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Value` * 2 AS `x`, `Indic` + 1 AS `y`
   FROM `dat1`;
@@ -323,7 +341,7 @@ kable(transmute(dat1, x=Value*2, y=Indic+1))
 ```r
 dat1$Value[which(dat1$Name=="Bill")] <- 8.5
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 UPDATE `dat1`
   SET `Value` = 8.5 
@@ -346,7 +364,7 @@ kable(dat1)})
 ```r
 arrange(dat1, Value)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM `dat1`
   ORDER BY `Value`;
@@ -363,7 +381,7 @@ kable(arrange(dat1, Value))
 ```r
 arrange(dat1, desc(Value))
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM `dat1`
   ORDER BY `Value` DESC;
@@ -385,7 +403,7 @@ On obtient aussi la moyenne de `Values` pour chaque valeur de `Name` :
 ```r
 dat1 %>% group_by(Name) %>% summarise(m=mean(Value))
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Name`, AVG(`Value`) AS `m` 
   FROM `dat1` 
@@ -403,7 +421,7 @@ Si on veut obtenir les moyennes puis appliquer une autre requête, il suffit d'e
 ```r
 dat1 %>% group_by(Name) %>% summarise(m=mean(Value)) %>% filter(m>8)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Name`, `m`
   FROM (SELECT `Name`, AVG(`Value`) AS `m`
@@ -425,7 +443,7 @@ kable(dat1 %>% group_by(Name) %>% summarise(m=mean(Value)) %>% filter(m>8))
 ```r
 dat1 %>% group_by(Name) %>% summarise(Count=n())
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT `Name`, count(*) AS `Count`
   FROM `dat1`
@@ -462,7 +480,7 @@ La commande R classique (qui n'utilise pas `dplyr`) est `merge(dat1, dat2, by="N
 ```r
 inner_join(dat1, dat2, by="Name")
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM 
   `dat1` INNER JOIN `dat2` 
@@ -484,7 +502,7 @@ commande R classique : `merge(dat1, dat2, by="Name", all.x=TRUE)`
 ```r
 left_join(dat1, dat2, by="Name")
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM 
   `dat1` LEFT JOIN `dat2` 
@@ -505,7 +523,7 @@ commande R classique : `merge(dat1, dat2, by="Name", all.y=TRUE)`
 ```r
 right_join(dat1, dat2, by="Name") 
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 SELECT * FROM 
   `dat1` RIGHT JOIN `dat2` 
@@ -526,7 +544,7 @@ commande R classique : `merge(dat1, dat2, all=TRUE)`
 ```r
 full_join(dat1, dat2)
 ```
-</td><td>
+</td><td style="padding-right:0px">
 ```sql
 (SELECT * FROM 
   `dat1` LEFT JOIN `dat2`
@@ -547,3 +565,135 @@ Autres types de jonction (`semi_join`, `anti_join`):
 
 * [Two-table verbs](https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html)
 
+
+## Du format large au format long ("unpivot")
+
+Nous utilisons ici le tableau de données suivant :
+
+```{r, eval=TRUE}
+longdata <- data.frame(
+  Name = c("Joe", "Bill"),
+  Age = c(19L, 21L),
+  Score1 = c(5, 9),
+  Score2 = c(4, 8)
+)
+```
+
+```{r, eval=TRUE, echo=FALSE}
+kable(longdata)
+```
+
+Pour transformer ce tableau en un tableau au format long, avec `Name` et `Age` comme variables, on peut utiliser la fonction `melt` de la librairie `reshape2` :
+
+```r
+reshape2::melt(longdata, id=c("Name", "Age"), value.name="Value")
+```
+
+La librairie `tidyr` est le successeur de la librairie `reshape2`. 
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+library(tidyr)
+gather(longdata, Score, Value, -c(Name,Age))
+```
+</td><td style="padding-right:0px">
+```sql
+SELECT `Name`, `Age`, 'Score1' AS `Variable`, `Score1` AS `Value`
+  FROM `longdata`
+UNION ALL
+SELECT `Name`, `Age`, 'Score2' AS `Variable`, `Score2` AS `Value`
+  FROM `longdata`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+library(tidyr)
+kable(gather(longdata, Score, Value, -c(Name,Age)))
+```
+
+Avec `MySQL`, nous avons simplement créé un tableau pour chaque valeur de la variable `Score` puis nous avons empilé les deux tableaux avec `UNION ALL`.
+
+```
+mysql> SELECT `Name`, `Age`, 'Score1' AS `Score`, `Score1` AS `Value`
+    ->   FROM `longdata`;
++------+------+--------+-------+
+| Name | Age  | Score  | Value |
++------+------+--------+-------+
+| Joe  |   19 | Score1 |     5 |
+| Bill |   21 | Score1 |     9 |
++------+------+--------+-------+
+2 rows in set (0.00 sec)
+```
+
+
+
+## Du format large au format long ("pivot")
+
+```{r, eval=TRUE, include=FALSE}
+widedata <- gather(longdata, Score, Value, -c(Name,Age))
+```
+
+Nous utilisons ici le tableau créé précedemment à partir du tableau `longdata`, et nous allons reconstruire `longdata` à partir de celui-ci.
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+widedata <- gather(longdata, Score, Value, -c(Name,Age))
+```
+</td><td style="padding-right:0px">
+```sql
+CREATE TABLE `widedata` AS 
+  SELECT `Name`, `Age`, 'Score1' AS `Score`, `Score1` AS `Value` 
+    FROM `longdata`
+  UNION ALL 
+  SELECT `Name`, `Age`, 'Score2' AS `Score`, `Score2` AS `Value` 
+    FROM `longdata`;
+```
+</td></tr></table></div>
+
+Dans R, on peut utiliser la commande `dcast` de la librairie `reshape2` :
+
+```r
+reshape2::dcast(widedata, Name + Age ~ Score, value.var="Value")
+```
+
+
+<div><table class='container-fluid' style="margin-left:0"><tr><td><b><i>R:</i></b></td><td><b><i>MySQL:</i></b></td></tr> <tr><td>
+```r
+library(tidyr)
+spread(widedata, Score, Value)
+```
+</td><td style="padding-right:0px">
+```sql
+SELECT Name, Age,
+  MAX( IF( Score='Score1', `Value`, NULL ) ) AS `Score1`,
+  MAX( IF( Score='Score2', `Value`, NULL ) ) AS `Score2`
+  FROM widedata
+  GROUP BY `Name`, `Age`;
+```
+</td></tr></table></div>
+
+```{r, eval=TRUE, echo=FALSE}
+kable(spread(widedata, Score, Value))
+```
+
+Détaillons la procédure `MySQL`. Si on retire l'opérateur `MAX` et la commande `GROUP BY`, on obtient :
+
+```
+mysql> SELECT Name, Age,
+    -> IF( Score='Score1', `Value`, NULL ) AS `Score1`,
+    -> IF( Score='Score2', `Value`, NULL ) AS `Score2`
+    -> FROM widedata;
++------+------+--------+--------+
+| Name | Age  | Score1 | Score2 |
++------+------+--------+--------+
+| Joe  |   19 |      5 |   NULL |
+| Bill |   21 |      9 |   NULL |
+| Joe  |   19 |   NULL |      4 |
+| Bill |   21 |   NULL |      8 |
++------+------+--------+--------+
+4 rows in set (0.00 sec)
+```
+
+(on aurait le même résultat si on utilisait ``````CASE WHEN `Score`='Score1' THEN `Value` END`````` à la place de `IF(...)`.)
+
+L'idée consiste alors à manipuler le tableau en regroupant par `Name` et `Age`, et à utiliser `MAX` pour garder la valeur numérique (par exemple, `MAX` appliqué à `5` et `NULL` retourne `5`).

@@ -216,7 +216,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(dat1, Name, Value)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Value` <span class="kw">FROM</span> dat1;</code></pre></div>
 </td>
 </tr>
@@ -269,7 +269,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">select</span>(dat1, -Name, -Value)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">ALTER</span> <span class="kw">TABLE</span> `dat1`
   <span class="kw">DROP</span> <span class="kw">COLUMN</span> `Name`, <span class="kw">DROP</span> <span class="kw">COLUMN</span> `Value`;</code></pre></div>
 </td>
@@ -327,7 +327,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 &lt;-<span class="st"> </span>dat1[-<span class="kw">which</span>(dat1$Name==<span class="st">&quot;Joe&quot;</span>),]</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">DELETE</span> <span class="kw">FROM</span> `dat1` 
   <span class="kw">WHERE</span> `Name`=<span class="st">&#39;Joe&#39;</span>;</code></pre></div>
 </td>
@@ -385,7 +385,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rename</span>(dat1, <span class="dt">Score =</span> Value)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Value` <span class="kw">AS</span> `Score`, `Indic`, `Status` 
   <span class="kw">FROM</span> `dat1`;</code></pre></div>
 </td>
@@ -460,7 +460,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(dat1, Value &gt;<span class="st"> </span><span class="dv">8</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> dat1 
   <span class="kw">WHERE</span> `Value` &gt; <span class="dv">8</span>;</code></pre></div>
 </td>
@@ -511,7 +511,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(dat1, Value &gt;<span class="st"> </span><span class="dv">8</span>, Indic==<span class="dv">1</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> dat1 
   <span class="kw">WHERE</span> `Value` &gt; <span class="dv">8</span> <span class="kw">AND</span> Indic = <span class="dv">1</span>;</code></pre></div>
 </td>
@@ -565,7 +565,7 @@ table, th, td {
 <span class="co"># noms contenant &quot;o&quot; ou &quot;K&quot;</span>
 <span class="kw">filter</span>(dat1, <span class="kw">str_detect</span>(Name, <span class="st">&quot;[oK]&quot;</span>))</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="co">/* noms contenant &quot;J&quot; */</span>
 <span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
   <span class="kw">WHERE</span> `Name` <span class="kw">LIKE</span> <span class="st">&#39;%J%&#39;</span>;
@@ -599,7 +599,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(dat1, <span class="dt">Value=</span>Value*<span class="dv">2</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">UPDATE</span> `dat1` <span class="kw">SET</span> `Value` = `Value`*<span class="dv">2</span>;</code></pre></div>
 </td>
 </tr>
@@ -662,7 +662,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(dat1, <span class="dt">x=</span>Value*<span class="dv">2</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Value`, `Indic`, `Value` * <span class="dv">2</span> <span class="kw">AS</span> `x`
   <span class="kw">FROM</span> `dat1`;</code></pre></div>
 </td>
@@ -720,6 +720,76 @@ table, th, td {
 <p>Pour éviter de sélectionner toutes les colonnes dans <code>SQL</code>, on peut d’abord créer une nouvelle colonne puis utiliser <code>UPDATE</code> comme précédemment :</p>
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">ALTER</span> <span class="kw">TABLE</span> `dat1` <span class="kw">ADD</span> `x` <span class="dt">double</span>;
 <span class="kw">UPDATE</span> `dat1` <span class="kw">SET</span> `x` = `Value`*<span class="dv">2</span>;</code></pre></div>
+<p>On peut facilement ajouter une colonne constante au tableau :</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(dat1, <span class="dt">x=</span><span class="st">&#39;Hello&#39;</span>)</code></pre></div>
+</td>
+<td style="padding-right:0px">
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> *, <span class="st">&#39;Hello&#39;</span> <span class="kw">AS</span> x
+  <span class="kw">FROM</span> `dat1`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Value</th>
+<th align="right">Indic</th>
+<th align="left">Status</th>
+<th align="left">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">10.1</td>
+<td align="right">0</td>
+<td align="left">TRUE</td>
+<td align="left">Hello</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">13.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">Hello</td>
+</tr>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">9.0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="left">Hello</td>
+</tr>
+<tr class="even">
+<td align="left">Jim</td>
+<td align="right">7.7</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="left">Hello</td>
+</tr>
+<tr class="odd">
+<td align="left">Kate</td>
+<td align="right">-3.0</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+<td align="left">Hello</td>
+</tr>
+</tbody>
+</table>
 <p>Avec la fonction <code>transmute</code>, le résultat ne contient que les nouvelles colonnes :</p>
 <div>
 <table class="container-fluid" style="margin-left:0">
@@ -733,9 +803,9 @@ table, th, td {
 </tr>
 <tr>
 <td>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mutate</span>(<span class="kw">transmute</span>(dat1, <span class="dt">x=</span>Value*<span class="dv">2</span>, <span class="dt">y=</span>Indic<span class="dv">+1</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmute</span>(dat1, <span class="dt">x=</span>Value*<span class="dv">2</span>, <span class="dt">y=</span>Indic<span class="dv">+1</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Value` * <span class="dv">2</span> <span class="kw">AS</span> `x`, `Indic` + <span class="dv">1</span> <span class="kw">AS</span> `y`
   <span class="kw">FROM</span> `dat1`;</code></pre></div>
 </td>
@@ -789,7 +859,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1$Value[<span class="kw">which</span>(dat1$Name==<span class="st">&quot;Bill&quot;</span>)] &lt;-<span class="st"> </span><span class="fl">8.5</span></code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">UPDATE</span> `dat1`
   <span class="kw">SET</span> `Value` = <span class="fl">8.5</span> 
   <span class="kw">WHERE</span> `Name` = <span class="st">&#39;Bill&#39;</span>;</code></pre></div>
@@ -859,7 +929,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">arrange</span>(dat1, Value)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
   <span class="kw">ORDER</span> <span class="kw">BY</span> `Value`;</code></pre></div>
 </td>
@@ -925,7 +995,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">arrange</span>(dat1, <span class="kw">desc</span>(Value))</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> `dat1`
   <span class="kw">ORDER</span> <span class="kw">BY</span> `Value` <span class="kw">DESC</span>;</code></pre></div>
 </td>
@@ -995,7 +1065,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Name) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">m=</span><span class="kw">mean</span>(Value))</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, <span class="fu">AVG</span>(`Value`) <span class="kw">AS</span> `m` 
   <span class="kw">FROM</span> `dat1` 
   <span class="kw">GROUP</span> <span class="kw">BY</span> `Name`;</code></pre></div>
@@ -1044,7 +1114,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Name) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">m=</span><span class="kw">mean</span>(Value)) %&gt;%<span class="st"> </span><span class="kw">filter</span>(m&gt;<span class="dv">8</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `m`
   <span class="kw">FROM</span> (<span class="kw">SELECT</span> `Name`, <span class="fu">AVG</span>(`Value`) <span class="kw">AS</span> `m`
         <span class="kw">FROM</span> `dat1`
@@ -1090,7 +1160,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat1 %&gt;%<span class="st"> </span><span class="kw">group_by</span>(Name) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(<span class="dt">Count=</span><span class="kw">n</span>())</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, <span class="fu">count</span>(*) <span class="kw">AS</span> `Count`
   <span class="kw">FROM</span> `dat1`
   <span class="kw">GROUP</span> <span class="kw">BY</span> `Name`;</code></pre></div>
@@ -1169,7 +1239,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">inner_join</span>(dat1, dat2, <span class="dt">by=</span><span class="st">&quot;Name&quot;</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> 
   `dat1` <span class="kw">INNER</span> <span class="kw">JOIN</span> `dat2` 
   <span class="kw">USING</span> (`Name`);</code></pre></div>
@@ -1215,7 +1285,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">left_join</span>(dat1, dat2, <span class="dt">by=</span><span class="st">&quot;Name&quot;</span>)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> 
   `dat1` <span class="kw">LEFT</span> <span class="kw">JOIN</span> `dat2` 
   <span class="kw">USING</span> (`Name`);</code></pre></div>
@@ -1289,7 +1359,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">right_join</span>(dat1, dat2, <span class="dt">by=</span><span class="st">&quot;Name&quot;</span>) </code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> * <span class="kw">FROM</span> 
   `dat1` <span class="kw">RIGHT</span> <span class="kw">JOIN</span> `dat2` 
   <span class="kw">USING</span> (`Name`);</code></pre></div>
@@ -1342,7 +1412,7 @@ table, th, td {
 <td>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">full_join</span>(dat1, dat2)</code></pre></div>
 </td>
-<td>
+<td style="padding-right:0px">
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql">(<span class="kw">SELECT</span> * <span class="kw">FROM</span> 
   `dat1` <span class="kw">LEFT</span> <span class="kw">JOIN</span> `dat2`
   <span class="kw">USING</span> (`Name`))
@@ -1415,6 +1485,210 @@ table, th, td {
 <li><a href="https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html">Two-table verbs</a></li>
 </ul>
 </div>
+</div>
+<div id="du-format-large-au-format-long-unpivot" class="section level2">
+<h2>Du format large au format long (“unpivot”)</h2>
+<p>Nous utilisons ici le tableau de données suivant :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">longdata &lt;-<span class="st"> </span><span class="kw">data.frame</span>(
+  <span class="dt">Name =</span> <span class="kw">c</span>(<span class="st">&quot;Joe&quot;</span>, <span class="st">&quot;Bill&quot;</span>),
+  <span class="dt">Age =</span> <span class="kw">c</span>(19L, 21L),
+  <span class="dt">Score1 =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">9</span>),
+  <span class="dt">Score2 =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">8</span>)
+)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Age</th>
+<th align="right">Score1</th>
+<th align="right">Score2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">19</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Bill</td>
+<td align="right">21</td>
+<td align="right">9</td>
+<td align="right">8</td>
+</tr>
+</tbody>
+</table>
+<p>Pour transformer ce tableau en un tableau au format long, avec <code>Name</code> et <code>Age</code> comme variables, on peut utiliser la fonction <code>melt</code> de la librairie <code>reshape2</code> :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reshape2::<span class="kw">melt</span>(longdata, <span class="dt">id=</span><span class="kw">c</span>(<span class="st">&quot;Name&quot;</span>, <span class="st">&quot;Age&quot;</span>), <span class="dt">value.name=</span><span class="st">&quot;Value&quot;</span>)</code></pre></div>
+<p>La librairie <code>tidyr</code> est le successeur de la librairie <code>reshape2</code>.</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyr)
+<span class="kw">gather</span>(longdata, Score, Value, -<span class="kw">c</span>(Name,Age))</code></pre></div>
+</td>
+<td style="padding-right:0px">
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> `Name`, `Age`, <span class="st">&#39;Score1&#39;</span> <span class="kw">AS</span> `Variable`, `Score1` <span class="kw">AS</span> `Value`
+  <span class="kw">FROM</span> `longdata`
+<span class="kw">UNION</span> <span class="kw">ALL</span>
+<span class="kw">SELECT</span> `Name`, `Age`, <span class="st">&#39;Score2&#39;</span> <span class="kw">AS</span> `Variable`, `Score2` <span class="kw">AS</span> `Value`
+  <span class="kw">FROM</span> `longdata`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Age</th>
+<th align="left">Score</th>
+<th align="right">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">19</td>
+<td align="left">Score1</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">Bill</td>
+<td align="right">21</td>
+<td align="left">Score1</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td align="left">Joe</td>
+<td align="right">19</td>
+<td align="left">Score2</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Bill</td>
+<td align="right">21</td>
+<td align="left">Score2</td>
+<td align="right">8</td>
+</tr>
+</tbody>
+</table>
+<p>Avec <code>MySQL</code>, nous avons simplement créé un tableau pour chaque valeur de la variable <code>Score</code> puis nous avons empilé les deux tableaux avec <code>UNION ALL</code>.</p>
+<pre><code>mysql&gt; SELECT `Name`, `Age`, &#39;Score1&#39; AS `Score`, `Score1` AS `Value`
+    -&gt;   FROM `longdata`;
++------+------+--------+-------+
+| Name | Age  | Score  | Value |
++------+------+--------+-------+
+| Joe  |   19 | Score1 |     5 |
+| Bill |   21 | Score1 |     9 |
++------+------+--------+-------+
+2 rows in set (0.00 sec)</code></pre>
+</div>
+<div id="du-format-large-au-format-long-pivot" class="section level2">
+<h2>Du format large au format long (“pivot”)</h2>
+<p>Nous utilisons ici le tableau créé précedemment à partir du tableau <code>longdata</code>, et nous allons reconstruire <code>longdata</code> à partir de celui-ci.</p>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">widedata &lt;-<span class="st"> </span><span class="kw">gather</span>(longdata, Score, Value, -<span class="kw">c</span>(Name,Age))</code></pre></div>
+</td>
+<td style="padding-right:0px">
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">CREATE</span> <span class="kw">TABLE</span> `widedata` <span class="kw">AS</span> 
+  <span class="kw">SELECT</span> `Name`, `Age`, <span class="st">&#39;Score1&#39;</span> <span class="kw">AS</span> `Score`, `Score1` <span class="kw">AS</span> `Value` 
+    <span class="kw">FROM</span> `longdata`
+  <span class="kw">UNION</span> <span class="kw">ALL</span> 
+  <span class="kw">SELECT</span> `Name`, `Age`, <span class="st">&#39;Score2&#39;</span> <span class="kw">AS</span> `Score`, `Score2` <span class="kw">AS</span> `Value` 
+    <span class="kw">FROM</span> `longdata`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<p>Dans R, on peut utiliser la commande <code>dcast</code> de la librairie <code>reshape2</code> :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reshape2::<span class="kw">dcast</span>(widedata, Name +<span class="st"> </span>Age ~<span class="st"> </span>Score, <span class="dt">value.var=</span><span class="st">&quot;Value&quot;</span>)</code></pre></div>
+<div>
+<table class="container-fluid" style="margin-left:0">
+<tr>
+<td>
+<b><i>R:</i></b>
+</td>
+<td>
+<b><i>MySQL:</i></b>
+</td>
+</tr>
+<tr>
+<td>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyr)
+<span class="kw">spread</span>(widedata, Score, Value)</code></pre></div>
+</td>
+<td style="padding-right:0px">
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span> Name, Age,
+  <span class="fu">MAX</span>( <span class="kw">IF</span>( Score=<span class="st">&#39;Score1&#39;</span>, `Value`, <span class="kw">NULL</span> ) ) <span class="kw">AS</span> `Score1`,
+  <span class="fu">MAX</span>( <span class="kw">IF</span>( Score=<span class="st">&#39;Score2&#39;</span>, `Value`, <span class="kw">NULL</span> ) ) <span class="kw">AS</span> `Score2`
+  <span class="kw">FROM</span> widedata
+  <span class="kw">GROUP</span> <span class="kw">BY</span> `Name`, `Age`;</code></pre></div>
+</td>
+</tr>
+</table>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="right">Age</th>
+<th align="right">Score1</th>
+<th align="right">Score2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bill</td>
+<td align="right">21</td>
+<td align="right">9</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">Joe</td>
+<td align="right">19</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p>Détaillons la procédure <code>MySQL</code>. Si on retire l’opérateur <code>MAX</code> et la commande <code>GROUP BY</code>, on obtient :</p>
+<pre><code>mysql&gt; SELECT Name, Age,
+    -&gt; IF( Score=&#39;Score1&#39;, `Value`, NULL ) AS `Score1`,
+    -&gt; IF( Score=&#39;Score2&#39;, `Value`, NULL ) AS `Score2`
+    -&gt; FROM widedata;
++------+------+--------+--------+
+| Name | Age  | Score1 | Score2 |
++------+------+--------+--------+
+| Joe  |   19 |      5 |   NULL |
+| Bill |   21 |      9 |   NULL |
+| Joe  |   19 |   NULL |      4 |
+| Bill |   21 |   NULL |      8 |
++------+------+--------+--------+
+4 rows in set (0.00 sec)</code></pre>
+<p>(on aurait le même résultat si on utilisait <code>CASE WHEN `Score`='Score1' THEN `Value` END</code> à la place de <code>IF(...)</code>.)</p>
+<p>L’idée consiste alors à manipuler le tableau en regroupant par <code>Name</code> et <code>Age</code>, et à utiliser <code>MAX</code> pour garder la valeur numérique (par exemple, <code>MAX</code> appliqué à <code>5</code> et <code>NULL</code> retourne <code>5</code>).</p>
 </div>
 
 
