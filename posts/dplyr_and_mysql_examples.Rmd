@@ -583,7 +583,7 @@ longdata <- data.frame(
 kable(longdata)
 ```
 
-Pour transformer ce tableau en un tableau au format long, avec `Name` et `Age` comme variables, on peut utiliser la fonction `melt` de la librairie `reshape2` :
+Pour transformer ce tableau en un tableau au format long, avec `Name` et `Age` comme variables identifiantes, on peut utiliser la fonction `melt` de la librairie `reshape2` :
 
 ```r
 reshape2::melt(longdata, id=c("Name", "Age"), value.name="Value")

@@ -1519,7 +1519,7 @@ table, th, td {
 </tr>
 </tbody>
 </table>
-<p>Pour transformer ce tableau en un tableau au format long, avec <code>Name</code> et <code>Age</code> comme variables, on peut utiliser la fonction <code>melt</code> de la librairie <code>reshape2</code> :</p>
+<p>Pour transformer ce tableau en un tableau au format long, avec <code>Name</code> et <code>Age</code> comme variables identifiantes, on peut utiliser la fonction <code>melt</code> de la librairie <code>reshape2</code> :</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reshape2::<span class="kw">melt</span>(longdata, <span class="dt">id=</span><span class="kw">c</span>(<span class="st">&quot;Name&quot;</span>, <span class="st">&quot;Age&quot;</span>), <span class="dt">value.name=</span><span class="st">&quot;Value&quot;</span>)</code></pre></div>
 <p>La librairie <code>tidyr</code> est le successeur de la librairie <code>reshape2</code>.</p>
 <div>
