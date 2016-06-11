@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tests de capacité de raisonnement abstrait du Selor</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Tests de capacité de raisonnement abstrait du Selor</a>
+              </h3>
+              <span>2016-06-11</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/TestsSelor.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Voici un exemple de question du test de “capacité de raisonnement abstrait” du Selor, issu du <a href="http://www.selor.be/fr/tests/tests-sur-pc/capacit%C3%A9-de-raisonnement-abstrait/">test d’entraînement en ligne</a> :</p>
+<p><img src="assets/img/q1.png" alt="" /></p>
+<p>C’est assez facile de deviner le principe : chacun des cinq “boutons”, lorsqu’il est sélectionné, produit une transformation sur la figure de base.</p>
+<p>Cette question fait parties des questions faciles du test. On observe que les deux premières figures changent de forme : le cercle devient un carré, le carré devient un cercle. Puisque le bouton 2 est sélectionné pour ces figures, mais pas pour la troisième, on devine donc que l’action de ce bouton est le changement de la forme.</p>
+<p>Le bouton 1 est sélectionné pour les trois figures. On peut aussi deviner son action : il change la taille de la figure. Quand la figure de base est petite, la figure finale est grande, et vice-versa.</p>
+<p>Le bouton 3 est sélectionné pour la première et troisième figures. Nous avons vu que le grand cercle de la troisième figure se transforme en petit cercle par le bouton 1. Il reste à ajouter le trait vertical pour obtenir la figure finale. On devine donc que c’est l’action du bouton 3 : il ajoute le trait vertical. Sur la première figure de base, il y a un trait vertical, et il n’y est plus sur la figure finale. L’action de ce bouton est donc d’ajouter un trait vertical s’il n’y en a pas, et de le supprimer s’il y en a un.</p>
+<p>On dispose de 1min30 pour répondre à chaque question du test d’entrainement en ligne. Ce n’est pas facile de faire ce raisonnement en un temps si court.</p>
+<p>Passons à la deuxième question :</p>
+<p><img src="assets/img/q2.png" alt="" /></p>
+<p>Cela semble plus compliqué, il va être difficile de résoudre la devinette en 1min30.</p>
+<p>En fait, cela devient assez simple lorsqu’on connaît la liste de transformations possibles :</p>
+<ul>
+<li><p>“<strong>T</strong>” : change la taille de la figure</p></li>
+<li><p>“<strong>C</strong>” : <em>change la couleur de la figure</em></p></li>
+<li><p>“<strong>F</strong>” : <em>change la forme de la figure</em></p></li>
+<li><p>“<strong>-</strong>” : <em>ajoute/supprime un trait vertical</em></p></li>
+<li><p>“<strong>|</strong>” : <em>ajoute/supprime un trait horizontal</em></p></li>
+<li><p>“<strong>&lt;-&gt;</strong>” : <em>permute les figures</em></p></li>
+</ul>
+<p>Dans cette question, il y a deux figures de base. Il faut aussi savoir que chaque bouton produit la même transformation sur les deux figures.</p>
+<p>Ces règles, je ne les ai pas trouvées sur le site du Selor, mais dans <a href="http://www.orseu-concours.com/blog/preparation-au-test-de-raisonnement-abstrait-du-selor-ce-quil-faut-savoir/">le livre publié par l’ORSEU</a>, en vente à 29€ en librairie.</p>
+<p>Connaissant ces règles, il devient aisé de voir que :</p>
+<ul>
+<li><p>le bouton 1 change la couleur</p></li>
+<li><p>le bouton 3 permute les figures</p></li>
+<li><p>le bouton 2 ajoute/supprime un trait vertical</p></li>
+<li><p>le bouton 4 ajoute/supprime un trait horizontal</p></li>
+</ul>
+<p>Suivant les conseils du livre de l’ORSEU, on reporte ces transformations dans un tableau :</p>
+<table style="width:33%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">C</td>
+<td align="center">|</td>
+<td align="center">&lt;-&gt;</td>
+<td align="center">-</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>Puis on obtient que la bonne réponse est B en appliquant ces transformations aux deux figures de la question.</p>
+<p>Les test du Selor peuvent changer. Rien ne garantit qu’il faudra toujours appliquer ces mêmes règles. Mais si elles changent, on peut espérer qu’elles ne feront que varier légèrement. Il faudra alors deviner ces variations sur les questions.</p>
+<p>Question suivante :</p>
+<p><img src="assets/img/q3.png" alt="" /></p>
+<p>On peut deviner que le bouton 2, qui agit sur la ligne 1 et la ligne 3 mais pas sur la ligne 2, produit l’une des deux actions suivantes : il permute les figures, ou bien il change leur forme. S’il changeait leur forme, on voit sur la ligne 1 qu’il faudrait encore appliquer deux actions : changer la couleur et changer la taille. Mais il reste un seul bouton sélectionné, le bouton 1. Donc le bouton 2 permute les figures, et on voit alors sur la ligne 1 que le bouton 1 ajoute/supprime un trait vertical. Il est alors facile de trouver l’action du bouton 3 sur la ligne 2 ou la ligne 3 : celui-ci change la taille. On obtient finalement :</p>
+<table style="width:33%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">|</td>
+<td align="center">&lt;-&gt;</td>
+<td align="center">T</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>La bonne réponse est alors la E.</p>
+<p>Question suivante :</p>
+<p><img src="assets/img/q4.png" alt="" /></p>
+<p>Comme dans la question précédente, on voit que le bouton 3 change la forme ou permute les figures. On élimine la première possibilité, parce qu’en supposant qu’il change la forme, il faudrait encore deux actions pour obtenir les figures finales de la ligne 3 : changer la taille et ajouter/supprimer un trait vertical. C’est ensuite facile de compléter le tableau, on obtient :</p>
+<table style="width:33%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">-</td>
+<td align="center">C</td>
+<td align="center">&lt;-&gt;</td>
+<td align="center">T</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>La bonne réponse est la C.</p>
+<p>Question suivante :</p>
+<p><img src="assets/img/q5.png" alt="" /></p>
+<p>Il y a une “astuce” pour les séries de trois figures : observer d’abord les figures du milieu, car la permutation n’a pas d’effet sur cette figure. On voit ici en observant les figures du milieu que le bouton 2, sélectionné sur les lignes 2 et 3 mais pas sur la ligne 1, change la couleur. On voit aussi que le bouton 3 ajoute/supprime un trait horizontal. C’est ensuite facile de compléter le tableau, on obtient :</p>
+<table style="width:33%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">|</td>
+<td align="center">C</td>
+<td align="center">-</td>
+<td align="center">&lt;-&gt;</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>La bonne réponse est la A.</p>
+<p>Question suivante :</p>
+<p><img src="assets/img/q6.png" alt="" /></p>
+<p>On voit que la couleur a changé sur la ligne 2, et c’est donc l’action du bouton 2 ou du bouton 3. La ligne 3 permet d’éliminer la possibilité que ce soit le bouton 2, c’est donc le bouton 3. L’autre action pour parvenir aux figures finales de la ligne 2, produite par le bouton 2, est l’ajout/suppresion d’une ligne horizontale. La ligne 3 permet alors de déterminer l’action du bouton 1 : c’est la permutation. On obtient :</p>
+<table style="width:33%;">
+<colgroup>
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">5</th>
+<th align="center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">&lt;-&gt;</td>
+<td align="center">-</td>
+<td align="center">C</td>
+<td align="center">|</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p>La bonne réponse est la D.</p>
+<p>J’ai trouvé la question suivante sur le site <a href="http://www.lalibre.be/actu/belgique/l-hecatombe-lors-des-tests-abstraits-du-selor-52bd03cc35701baedaaa1ea8">lalibre.be</a> :</p>
+<p><img src="assets/img/qLalibre2.png" alt="" /></p>
+<p>Il me semble qu’elle est erronée. Pour obtenir la ligne 1 en deux actions, il faut permuter puis ajouter/supprimer un trait vertical. Pour la ligne 2, on change la taille et on ajoute/supprime un trait vertical. Donc le bouton 1 ajoute/supprime un trait vertical, le bouton 2 permute, et le bouton 3 change la taille. Il manque alors l’action qui change la couleur dans la ligne 3.</p>
+<p>Voici un autre type de question (trouvée <a href="http://www.orseu-concours.com/blog/preparation-au-test-de-raisonnement-abstrait-du-selor-ce-quil-faut-savoir/">ici</a>), avec des dominos :</p>
+<p><img src="assets/img/qOrseu.png" alt="" /></p>
+<p>Pour résoudre ces questions, il faut savoir que :</p>
+<ul>
+<li><p>la figure est composée d’une grande figure avec un “trou” à l’intérieur, et une petite figure complète ce trou ;</p></li>
+<li><p>chaque score sur un domino agit sur l’une des deux figures, par exemple le score du haut agit sur la grande figure et le score du bas agit sur la petite figure, et ceci est commun à toutes les lignes.</p></li>
+</ul>
+<p>On peut alors deviner que le 4 du domino change la forme : à la ligne 2 il agit sur la petite figure et à la ligne 3 il agit sur la grande figure. Donc le 1 à la ligne 3 agit sur la petite figure, et son action est d’ajouter/supprimer un trait vertical. Le 2 à la ligne 2 agit sur la grande figure et son action est d’ajouter/supprimer un trait horizontal. La bonne réponse est la A.</p>
+<p>Voici une autre question avec des dominos, venant du site <a href="http://www.lalibre.be/actu/belgique/l-hecatombe-lors-des-tests-abstraits-du-selor-52bd03cc35701baedaaa1ea8">lalibre.be</a> :</p>
+<p><img src="assets/img/qLalibre1.png" alt="" /></p>
+<p>Il y a ici encore une chose à savoir : quand une moitié du domino est vide, elle n’a pas d’action. En observant la ligne 1 ou la ligne 2, on en déduit que la partie basse du domino agit sur la grande figure, et la partie haute sur la petite figure. Sur la ligne 1 on observe alors que le 1 a pour action de modifier la forme. La bonne réponse est donc la C.</p>
+<p>Vous trouverez <a href="https://aurian2012.wordpress.com/2013/12/28/conseils-pour-le-passage-de-la-phase-1-de-laccession-au-niveau-a-dans-ladministration-federale-belge/comment-page-1/">un autre exemple ici</a>, avec des traits obliques.</p>
+<p>Il existe aussi des questions avec deux dominos. Les deux agissent de la même façon : si la partie haute du premier domino agit sur la grande figure, il en est de même pour le deuxième domino. C’est du moins ainsi que ça s’est passé jusqu’à maintenant, mais, comme nous l’avons dit précédemment, les tests Selor peuvent varier.</p>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
