@@ -18,7 +18,7 @@ Voici un exemple de question du test de "capacité de raisonnement abstrait" du 
 
 C'est assez facile de deviner le principe : chacun des cinq "boutons", lorsqu'il est sélectionné, produit une transformation sur la figure de base. 
 
-Cette question fait parties des questions faciles du test. On observe que les deux premières figures changent de forme : le cercle devient un carré, le carré devient un cercle. Puisque le bouton 2 est sélectionné pour ces figures, mais pas pour la troisième, on devine donc que l'action de ce bouton est le changement de la forme.
+Cette question fait partie des questions faciles du test. On observe que les deux premières figures changent de forme : le cercle devient un carré, le carré devient un cercle. Puisque le bouton 2 est sélectionné pour ces figures, mais pas pour la troisième, on devine donc que l'action de ce bouton est le changement de la forme.
 
 Le bouton 1 est sélectionné pour les trois figures. On peut aussi deviner son action : il change la taille de la figure. Quand la figure de base est petite, la figure finale est grande, et vice-versa.
 
@@ -34,7 +34,7 @@ Cela semble plus compliqué, il va être difficile de résoudre la devinette en 
 
 En fait, cela devient assez simple lorsqu'on connaît la liste de transformations possibles :
 
-- "**T**" : change la taille de la figure
+- "**T**" : *change la taille de la figure*
 
 - "**C**" : *change la couleur de la figure*
 
