@@ -78,7 +78,7 @@ Question suivante :
 
 ![](./assets/img/q3.png)
 
-On peut deviner que le bouton 2, qui agit sur la ligne 1 et la ligne 3 mais pas sur la ligne 2, produit l'une des deux actions suivantes : il permute les figures, ou bien il change leur forme. S'il changeait leur forme, on voit sur la ligne 1 qu'il faudrait encore appliquer deux actions : changer la couleur et changer la taille. Mais il reste un seul bouton sélectionné, le bouton 1. Donc l'action du bouton 2 est l'autre prossibilité : il permute les figures, et on voit alors que l'action de l'autre bouton sélectionné à la ligne 1, le bouton 1, est d'ajouter/supprimer un trait vertical. Il est alors facile de trouver l'action du bouton 3 en observant la ligne 2 ou la ligne 3 : celui-ci change la taille. On obtient finalement :
+On peut deviner que le bouton 2, qui agit sur la ligne 1 et la ligne 3 mais pas sur la ligne 2, produit l'une des deux actions suivantes : il permute les figures, ou bien il change leur forme. S'il changeait leur forme, on voit sur la ligne 1 qu'il faudrait encore appliquer deux actions : changer la couleur et changer la taille. Mais il reste un seul bouton sélectionné, le bouton 1. Donc l'action du bouton 2 est l'autre possibilité : il permute les figures, et on voit alors que l'action de l'autre bouton sélectionné à la ligne 1, le bouton 1, est d'ajouter/supprimer un trait vertical. Il est alors facile de trouver l'action du bouton 3 en observant la ligne 2 ou la ligne 3 : celui-ci change la taille. On obtient finalement :
 
 ```{r, echo=FALSE}
 tab <- tab0
@@ -107,7 +107,7 @@ Question suivante :
 
 ![](./assets/img/q5.png)
 
-Il y a une "astuce" pour les séries de trois figures : observer d'abord les figures du milieu, car la permutation n'a pas d'effet sur cette figure. On voit ici en observant les figures du milieu que le bouton 2, sélectionné sur les lignes 2 et 3 mais pas sur la ligne 1, change la couleur. On voit aussi que le bouton 3 ajoute/supprime un trait horizontal. C'est ensuite facile de compléter le tableau, on obtient :
+Il y a une "astuce" pour les séries de trois figures : observer d'abord les figures du milieu, car la permutation n'a pas d'effet sur cette figure. On voit ici en observant les figures du milieu que le bouton 2, sélectionné aux lignes 2 et 3 mais pas à la ligne 1, change la couleur. On voit aussi que le bouton 3 ajoute/supprime un trait horizontal. C'est ensuite facile de compléter le tableau, on obtient :
 
 ```{r, echo=FALSE}
 tab <- tab0
@@ -115,7 +115,7 @@ tab[1, 1:4] <- c("|", "C", "-", "<->")
 pander(tab)
 ```
 
-La bonne réponse est la A.
+La bonne réponse est alors la A.
 
 Question suivante :
 
@@ -144,9 +144,9 @@ Voici un autre type de question (trouvée [ici](http://www.orseu-concours.com/bl
 
 Pour résoudre ces questions, il faut savoir que : 
 
-- la figure est en deux parties : elle est composée d'une "grande figure", extérieure,  avec un "trou" à l'intérieur, et une "petite figure", intérieure, complète ce trou
+- la figure est en deux parties : elle est composée d'une "grande figure", extérieure,  avec un "trou" à l'intérieur, et une "petite figure", intérieure, complète ce trou ;
 
-- chaque score sur un domino agit sur l'une des deux figures, par exemple le score du haut (2 à la ligne 1) agit sur la grande figure et le score du bas (3 à la ligne 1) agit sur la petite figure, et ceci est commun à toutes les lignes
+- chaque score sur un domino agit sur l'une des deux figures, par exemple le score du haut (2 à la ligne 1) agit sur la grande figure et le score du bas (3 à la ligne 1) agit sur la petite figure, et ceci est commun à toutes les lignes.
 
 On peut alors deviner que le 4 du domino change la forme : à la ligne 2, il est en haut et il agit sur la petite figure ;  à la ligne 3 il est en bas et il agit sur la grande figure. Donc le 1 à la ligne 3 agit sur la petite figure, et son action est d'ajouter/supprimer un trait vertical. Le 2 à la ligne 2 agit sur la grande figure et son action est d'ajouter/supprimer un trait horizontal. En appliquant ces transformations, on obtient que la bonne réponse est la A.
 
@@ -154,7 +154,7 @@ Voici une autre question avec des dominos, venant du site [lalibre.be](http://ww
 
 ![](./assets/img/qLalibre1.png)
 
-Il y a ici encore une chose à savoir : quand une moitié du domino est vide, elle n'a pas d'action. En observant la ligne 1 ou la ligne 2, on en déduit que la partie basse du domino agit (ou plutôt n'agit pas, parce qu'elle est vide) sur la grande figure, et la partie haute sur la petite figure. Sur la ligne 1 on observe alors que le 1 a pour action de modifier la forme. La bonne réponse est donc la C.
+Il y a ici encore une chose à savoir : quand une moitié du domino est vide, elle n'a pas d'action. En observant la ligne 1 ou la ligne 2, on en déduit que la partie basse du domino agit (ou plutôt n'agit pas, parce qu'elle est vide) sur la grande figure, et la partie haute agit sur la petite figure. Sur la ligne 1 on observe alors que le 1 a pour action de modifier la forme. La bonne réponse est donc la C.
 
 Vous trouverez [un autre exemple ici](https://aurian2012.wordpress.com/2013/12/28/conseils-pour-le-passage-de-la-phase-1-de-laccession-au-niveau-a-dans-ladministration-federale-belge/comment-page-1/), avec des traits obliques.
 
