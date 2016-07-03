@@ -61,7 +61,7 @@ $$
 $$
 ne change pas lorsqu'on multiplie $\ket{\psi}$ par un facteur de phase. En ce sens, on ne commet pas vraiment de restriction en ne considérant que des qubits purs. 
 
-L'espace des qubits purs est de dimension $2$, et il peut être représenté par une sphère, appelée [*sphère de Bloch*](https://en.wikipedia.org/wiki/Bloch_sphere), mais qui n'est rien d'autre que la [*sphère de Riemann*](https://fr.wikipedia.org/wiki/Sph%C3%A8re_de_Riemann). Les angles $\theta$ et $\varphi$ correspondent aux coordonnées sphériques polaires de $\ket{\psi}$ sur cette représentation (respectivement la latitude et la longitude) :
+L'espace des qubits purs est de dimension $2$, et il peut être représenté par une sphère, appelée [*sphère de Bloch*](https://en.wikipedia.org/wiki/Bloch_sphere), mais qui n'est rien d'autre que la [*sphère de Riemann*](https://fr.wikipedia.org/wiki/Sph%C3%A8re_de_Riemann). Les angles $\theta$ et $\varphi$ correspondent aux coordonnées sphériques polaires de $\ket{\psi}$ sur cette représentation (respectivement la colatitude et la longitude) :
 
 <img src="./assets/img/BlochSphere_01.gif" alt="BlochSphere01" width="55%" class="center">
 
