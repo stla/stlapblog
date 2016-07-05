@@ -33,9 +33,9 @@ L'objectif du présent article est d'exposer le B-A-BA de ces systèmes de deux 
 
 Les définitions et propriétés relatives au produit tensoriel peuvent se trouver dans le [livre d'Isham][isham].
 
-Notons ici que les vecteurs de $\C^n\otimes\C^s$ ne s'écrivent pas tous comme le produit tensoriel d'un vecteut de $\C^n$ avec un vecteur de $\C^s$. Nous dirons qu'un état tel que $\bv\otimes\bw$ est un *état produit pur*.
+Notons ici que les vecteurs de $\C^m\otimes\C^n$ ne s'écrivent pas tous comme le produit tensoriel d'un vecteur de $\C^m$ avec un vecteur de $\C^n$ (par exemple l'état de Bell, mentionné à la fin de cet article) . Nous dirons qu'un état tel que $\bv\otimes\bw$ est un *état produit pur*.
 
-Notons aussi que si un vecteur de $\C^n\otimes\C^s$ peut s'écrire comme un produit tensoriel $\bv\otimes\bw$, alors il ne s'écrit pas de façon unique sous cette forme : on a 
+Notons aussi que si un vecteur de $\C^m\otimes\C^n$ peut s'écrire comme un produit tensoriel $\bv\otimes\bw$, alors il ne s'écrit pas de façon unique sous cette forme : on a 
 $$
 (\ee^{\ii\alpha}\bv) \otimes (\ee^{-\ii\alpha}\bw) = \bv\otimes\bw.
 $$
@@ -43,7 +43,7 @@ La paire $(\bv, \bw)$ est unique modulo une telle transformation par un facteur 
 $$
 \bv \mapsto \ee^{\ii\alpha}\bv, \bw \mapsto \ee^{-\ii\alpha}\bw.
 $$
-Toutefois, comme nous l'avions déjà remarqué dans l'article sur [la sphère de Bloch](http://stla.github.io/stlapblog/posts/BlochSphere.html), deux vecteur différant d'un facteur de phase, comme $\bv$ et $\ee^{\ii\alpha}\bv$, définissent la même loi de probabilité quantique. 
+Toutefois, comme nous l'avions déjà remarqué dans l'article sur [la sphère de Bloch](http://stla.github.io/stlapblog/posts/BlochSphere.html), deux vecteurs différant d'un facteur de phase, comme $\bv$ et $\ee^{\ii\alpha}\bv$, définissent la même loi de probabilité quantique. 
 
 
 ## Passage d'un observable pour un système au système joint
@@ -57,7 +57,7 @@ $$
 A \otimes I = \alpha_1 (P_1\otimes I) + \cdots + \alpha_r (P_r\otimes I).
 $$
 
-Si une mesure est effectuée lorsque l'état du système produit est $\bv\otimes\bw$, alors 
+Si une mesure est effectuée lorsque l'état du système joint est $\bv\otimes\bw$, alors 
 le résultat est $\alpha_i$ avec probabilité ${\Vert P_i \bv \Vert}^2$, et le nouvel état du système est 
 $$
 {(\Vert P_i \bv \Vert)}^{-1} (P_i \bv) \otimes \bw.
