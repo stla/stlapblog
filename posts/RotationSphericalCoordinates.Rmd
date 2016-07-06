@@ -1,0 +1,75 @@
+---
+title: "Rotation in spherical coordinates"
+date: "2016-07-06"
+output: html_document
+---
+
+Consider the following problem: a point $a$ in the three-dimensional Euclidean space is given by its spherical coordinates, and you want the spherical coordinates of its image $a'$ by a rotation of a given angle $\alpha$ around a given axis passing through the origin.
+
+I assume the system of spherical coordinates is the one shown on this figure:
+
+![](http://i.stack.imgur.com/eff2d.png)
+
+The angle $\theta \in [0, \pi]$ is the colatitude and the angle $\varphi$ is the longitude. 
+
+The action of the rotation does not change the radial distance $r$, and one can restrict the aforementioned problem to the case when $a$ is on the unit sphere. We say that $a$ is a vector rather than a point. 
+
+The solution we propose, to be detailed below, has three steps:
+
+1. *transform the unit vector $a$ into its corresponding qubit $\psi$;*
+
+2. *get the qubit $\psi'$ obtained by applying a rotation operator to the qubit $\psi$;*
+
+3. *transform the new qubit $\psi'$ into its corresponding vector $a'$*.
+
+A *qubit* is nothing but a normalized vector in $\mathbb{C}^2$, but it is not important to know this terminology in order to follow this method. 
+This method is based on the correspondence between unit vectors in $\mathbb{R}^3$ and qubits, exposed in [this article about the Bloch sphere](http://stla.github.io/stlapblog/posts/BlochSphere.html), and the correspondence between the rotation operators in $\mathbb{C}^2$ and the rotations on the unit sphere, exposed in [this article](http://stla.github.io/stlapblog/posts/EvolutionQubit.html). 
+It is easy to implement if you can perform multiplication of matrices with complex entries with your programming language. 
+
+We detail the three steps below. We denote by $(\theta, \phi)$ the spherical coordinates angles of the unit vector $a$ and by $(\theta', \phi')$ the desired spherical coordinates angles of the unit vector $a'$ obtained by applying the rotation to $a$.
+
+#### *1. transform the unit vector $a$ into its corresponding qubit $\psi$*
+
+The qubit corresponding to the unit vector $a$ with spherical coordinates angles  $(\theta,\varphi)$ is the complex vector 
+$$
+\psi = \begin{pmatrix} \cos \frac{\theta}{2} \\ e^{i\varphi}\sin\frac{\theta}{2}\end{pmatrix}.
+$$
+
+#### *2. get the qubit $\psi'$ obtained by applying a rotation operator to the qubit $\psi$*
+
+Compute $\boxed{\psi' = R \psi}$, where the matrix $R$ is given below, according to the situation about the rotation axis.
+
+* *If the rotation axis is one of the three Cartesian axes*, then take $R$ as the following matrix, according to whether the axis is the $x$-axis, the $y$-axis or the $z$-axis:
+
+\begin{gather}
+R_x(\alpha) = \begin{pmatrix} \cos\frac{\alpha}{2} & -i\sin\frac{\alpha}{2} \\ -i\sin\frac{\alpha}{2} & \cos\frac{\alpha}{2} \end{pmatrix}, \\
+R_y(\alpha) = \begin{pmatrix} \cos\frac{\alpha}{2} & -\sin\frac{\alpha}{2} \\ \sin\frac{\alpha}{2} & \cos\frac{\alpha}{2} \end{pmatrix}, \\
+R_z(\alpha) = \begin{pmatrix} e^{-i\frac{\alpha}{2}} & 0 \\ 0 & e^{i\frac{\alpha}{2}}. \end{pmatrix}
+\end{gather}
+
+
+- *If the rotation axis in an arbitrary axis*, directed by a unit vector $\vec{n}$, then take $R$ as the following matrix, according to whether $\vec{n}$ is given by its  spherical coordinates or its Cartesian coordinates.  
+
+    + If the direction vector $\vec{n}$ is given by its spherical coordinates $(\Theta, \Phi)$, then take $R$ as  
+$$
+R_{\vec{n}}(\alpha) = R_z(\Phi)R_y(\Theta)R_z(\alpha){R_y(\Theta)}^\dagger{R_z(\Phi)}^\dagger
+$$
+where "${}^\dagger$" is the notation for the conjugate transpose.
+
+    + If the direction vector $\vec{n}$ is given by its Cartesian coordinates $(n_x, n_y, n_z)$, then take $R$ as  
+$$
+R_{\vec{n}}(\alpha) = \cos\frac{\alpha}{2} I  - i \sin\frac{\alpha}{2}(n_x X + n_y Y + n_z Z)
+$$
+where $X$, $Y$, $Z$ are the Pauli matrices 
+$$
+X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad 
+Y = \begin{pmatrix} 0 & i \\ -i & 0 \end{pmatrix}, \quad 
+Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}.
+$$
+
+#### *3. transform the new qubit $\psi'$ into its corresponding unit vector $a'$*
+
+The new qubit $\psi'$ obtained at the previous step has form $\psi' = \begin{pmatrix} z_0 \\ z_1 \end{pmatrix}$ where $z_0$ and $z_1$ are two complex numbers, and the desired spherical coordinates $(\theta', \phi')$ of the vector $a'$ are given by 
+$$
+(\theta', \phi') = \left( 2\, \textrm{atan} \frac{\textrm{Mod}(z_1)}{\textrm{Mod}(z_0)}, \textrm{Arg}(z_1)-\textrm{Arg}(z_0)\right).
+$$

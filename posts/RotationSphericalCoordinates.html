@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rotation in spherical coordinates</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Rotation in spherical coordinates</a>
+              </h3>
+              <span>2016-07-06</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/RotationSphericalCoordinates.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Consider the following problem: a point <span class="math inline">\(a\)</span> in the three-dimensional Euclidean space is given by its spherical coordinates, and you want the spherical coordinates of its image <span class="math inline">\(a&#39;\)</span> by a rotation of a given angle <span class="math inline">\(\alpha\)</span> around a given axis passing through the origin.</p>
+<p>I assume the system of spherical coordinates is the one shown on this figure:</p>
+<p><img src="http://i.stack.imgur.com/eff2d.png" alt="" /></p>
+<p>The angle <span class="math inline">\(\theta \in [0, \pi]\)</span> is the colatitude and the angle <span class="math inline">\(\varphi\)</span> is the longitude.</p>
+<p>The action of the rotation does not change the radial distance <span class="math inline">\(r\)</span>, and one can restrict the aforementioned problem to the case when <span class="math inline">\(a\)</span> is on the unit sphere. We say that <span class="math inline">\(a\)</span> is a vector rather than a point.</p>
+<p>The solution we propose, to be detailed below, has three steps:</p>
+<ol style="list-style-type: decimal">
+<li><p><em>transform the unit vector <span class="math inline">\(a\)</span> into its corresponding qubit <span class="math inline">\(\psi\)</span>;</em></p></li>
+<li><p><em>get the qubit <span class="math inline">\(\psi&#39;\)</span> obtained by applying a rotation operator to the qubit <span class="math inline">\(\psi\)</span>;</em></p></li>
+<li><p><em>transform the new qubit <span class="math inline">\(\psi&#39;\)</span> into its corresponding vector <span class="math inline">\(a&#39;\)</span></em>.</p></li>
+</ol>
+<p>A <em>qubit</em> is nothing but a normalized vector in <span class="math inline">\(\mathbb{C}^2\)</span>, but it is not important to know this terminology in order to follow this method. This method is based on the correspondence between unit vectors in <span class="math inline">\(\mathbb{R}^3\)</span> and qubits, exposed in <a href="http://stla.github.io/stlapblog/posts/BlochSphere.html">this article about the Bloch sphere</a>, and the correspondence between the rotation operators in <span class="math inline">\(\mathbb{C}^2\)</span> and the rotations on the unit sphere, exposed in <a href="http://stla.github.io/stlapblog/posts/EvolutionQubit.html">this article</a>. It is easy to implement if you can perform multiplication of matrices with complex entries with your programming language.</p>
+<p>We detail the three steps below. We denote by <span class="math inline">\((\theta, \phi)\)</span> the spherical coordinates angles of the unit vector <span class="math inline">\(a\)</span> and by <span class="math inline">\((\theta&#39;, \phi&#39;)\)</span> the desired spherical coordinates angles of the unit vector <span class="math inline">\(a&#39;\)</span> obtained by applying the rotation to <span class="math inline">\(a\)</span>.</p>
+<div id="transform-the-unit-vector-a-into-its-corresponding-qubit-psi" class="section level4">
+<h4><em>1. transform the unit vector <span class="math inline">\(a\)</span> into its corresponding qubit <span class="math inline">\(\psi\)</span></em></h4>
+<p>The qubit corresponding to the unit vector <span class="math inline">\(a\)</span> with spherical coordinates angles <span class="math inline">\((\theta,\varphi)\)</span> is the complex vector <span class="math display">\[
+\psi = \begin{pmatrix} \cos \frac{\theta}{2} \\ e^{i\varphi}\sin\frac{\theta}{2}\end{pmatrix}.
+\]</span></p>
+</div>
+<div id="get-the-qubit-psi-obtained-by-applying-a-rotation-operator-to-the-qubit-psi" class="section level4">
+<h4><em>2. get the qubit <span class="math inline">\(\psi&#39;\)</span> obtained by applying a rotation operator to the qubit <span class="math inline">\(\psi\)</span></em></h4>
+<p>Compute <span class="math inline">\(\boxed{\psi&#39; = R \psi}\)</span>, where the matrix <span class="math inline">\(R\)</span> is given below, according to the situation about the rotation axis.</p>
+<ul>
+<li><em>If the rotation axis is one of the three Cartesian axes</em>, then take <span class="math inline">\(R\)</span> as the following matrix, according to whether the axis is the <span class="math inline">\(x\)</span>-axis, the <span class="math inline">\(y\)</span>-axis or the <span class="math inline">\(z\)</span>-axis:</li>
+</ul>
+\begin{gather}
+R_x(\alpha) = \begin{pmatrix} \cos\frac{\alpha}{2} &amp; -i\sin\frac{\alpha}{2} \\ -i\sin\frac{\alpha}{2} &amp; \cos\frac{\alpha}{2} \end{pmatrix}, \\
+R_y(\alpha) = \begin{pmatrix} \cos\frac{\alpha}{2} &amp; -\sin\frac{\alpha}{2} \\ \sin\frac{\alpha}{2} &amp; \cos\frac{\alpha}{2} \end{pmatrix}, \\
+R_z(\alpha) = \begin{pmatrix} e^{-i\frac{\alpha}{2}} &amp; 0 \\ 0 &amp; e^{i\frac{\alpha}{2}}. \end{pmatrix}
+\end{gather}
+<ul>
+<li><p><em>If the rotation axis in an arbitrary axis</em>, directed by a unit vector <span class="math inline">\(\vec{n}\)</span>, then take <span class="math inline">\(R\)</span> as the following matrix, according to whether <span class="math inline">\(\vec{n}\)</span> is given by its spherical coordinates or its Cartesian coordinates.</p>
+<ul>
+<li><p>If the direction vector <span class="math inline">\(\vec{n}\)</span> is given by its spherical coordinates <span class="math inline">\((\Theta, \Phi)\)</span>, then take <span class="math inline">\(R\)</span> as<br />
+<span class="math display">\[
+R_{\vec{n}}(\alpha) = R_z(\Phi)R_y(\Theta)R_z(\alpha){R_y(\Theta)}^\dagger{R_z(\Phi)}^\dagger
+\]</span> where “<span class="math inline">\({}^\dagger\)</span>” is the notation for the conjugate transpose.</p></li>
+<li><p>If the direction vector <span class="math inline">\(\vec{n}\)</span> is given by its Cartesian coordinates <span class="math inline">\((n_x, n_y, n_z)\)</span>, then take <span class="math inline">\(R\)</span> as<br />
+<span class="math display">\[
+R_{\vec{n}}(\alpha) = \cos\frac{\alpha}{2} I  - i \sin\frac{\alpha}{2}(n_x X + n_y Y + n_z Z)
+\]</span> where <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, <span class="math inline">\(Z\)</span> are the Pauli matrices <span class="math display">\[
+X = \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}, \quad 
+Y = \begin{pmatrix} 0 &amp; i \\ -i &amp; 0 \end{pmatrix}, \quad 
+Z = \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; -1 \end{pmatrix}.
+\]</span></p></li>
+</ul></li>
+</ul>
+</div>
+<div id="transform-the-new-qubit-psi-into-its-corresponding-unit-vector-a" class="section level4">
+<h4><em>3. transform the new qubit <span class="math inline">\(\psi&#39;\)</span> into its corresponding unit vector <span class="math inline">\(a&#39;\)</span></em></h4>
+<p>The new qubit <span class="math inline">\(\psi&#39;\)</span> obtained at the previous step has form <span class="math inline">\(\psi&#39; = \begin{pmatrix} z_0 \\ z_1 \end{pmatrix}\)</span> where <span class="math inline">\(z_0\)</span> and <span class="math inline">\(z_1\)</span> are two complex numbers, and the desired spherical coordinates <span class="math inline">\((\theta&#39;, \phi&#39;)\)</span> of the vector <span class="math inline">\(a&#39;\)</span> are given by <span class="math display">\[
+(\theta&#39;, \phi&#39;) = \left( 2\, \textrm{atan} \frac{\textrm{Mod}(z_1)}{\textrm{Mod}(z_0)}, \textrm{Arg}(z_1)-\textrm{Arg}(z_0)\right).
+\]</span></p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
