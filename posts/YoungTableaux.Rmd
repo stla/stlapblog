@@ -1,0 +1,298 @@
+---
+title: "Some R functions for Young tableaux"
+date: "2016-07-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse=TRUE)
+```
+
+This blog post provides some R functions dealing with Young tableaux. They allow to get:
+
+- the incidence matrices of the Young graphs; 
+
+- the standard Young tableaux of a given shape; 
+
+- the Plancherel measure and the transition probabilities of the Plancherel growth process;
+
+- the pair of standard Young tableaux corresponding to a permutation by the Robinson-Schensted correspondence.
+
+## Integer partitions and Young graph
+
+The [integer partitions](https://en.wikipedia.org/wiki/Partition_(number_theory)) are computed by the `parts` function of the R package `partitions`. 
+For example the partitions of $4$ are obtained as follows:
+
+```{r}
+library(partitions)
+parts(4)
+```
+
+
+The [Young graph](https://en.wikipedia.org/wiki/Young%27s_lattice) is the Bratteli graph whose set of vertices at each level $n$ is the set of partitions of $n$ and whose edges connect each partition of weight $n$ at level $n$ to its superpartitions of weight $n+1$ at level $n+1$. 
+
+![](./assets/img/young_yng.png)
+
+
+The R function `ymatrices` below returns the incidence matrices $M_n$ of the Young graph.
+
+```{r}
+removezeros <- function(x){ # e.g c(3,1,0,0) -> c(3,1)
+  i <- match(0L, x)
+  if(!is.na(i)) return(head(x,i-1L)) else return(x)
+}
+ymatrices <- function(N){
+  M <- vector(N, mode="list") 
+  M[[1]] <- matrix(1L)
+  M[[2]] <- matrix(c(1L,1L), ncol=2)
+  M[[3]] <- rbind(c(1L,1L,0L), c(0L,1L,1L))
+  colnames(M[[2]]) <- rownames(M[[3]]) <- apply(parts(2), 2, function(x) paste0(removezeros(x), collapse="-"))
+  rownames(M[[2]]) <- "1"
+  M1 <- parts(3)
+  colnames(M[[3]]) <- apply(M1, 2, function(x) paste0(removezeros(x), collapse="-"))
+  if(N>3){
+    for(k in 4:N){   
+      M0 <- M1; M1 <- parts(k)  
+      m <- ncol(M0); n <- ncol(M1)
+      C <- array(0L, dim=c(m,n))
+      rownames(C) <- apply(M0, 2, function(x) paste0(removezeros(x), collapse="-"))
+      colnames(C) <- apply(M1, 2, function(x) paste0(removezeros(x), collapse="-"))
+      C[1,1:2] <- C[m,c(n-1,n)] <- TRUE
+      for(j in 2:(m-1)){
+        l <- match(0, M0[,j]) - 1L 
+        x <- M0[1L:l,j]
+        ss <- c(1L, which(diff(x)<=0)+1L)
+        nss <- length(ss)
+        connected <- character(nss+1L)
+        for(i in seq_len(nss)){
+          y <- x
+          y[ss[i]] <- y[ss[i]]+1L
+          connected[i] <- paste0(y, collapse="-")
+        }
+        connected[nss+1L] <- paste0(c(x,1L), collapse="-")
+        ind <- which(colnames(C) %in% connected)
+        C[j,ind] <- 1L
+      }
+      M[[k]] <- C
+    }
+  }
+  return(M)
+}
+
+( Mn <-  ymatrices(4) )
+```
+
+
+## Standard Young tableaux
+
+A path connecting to the root vertex to a partition $\lambda$ at level $n$ corresponds to a [standard Young tableau](https://en.wikipedia.org/wiki/Young_tableau#Tableaux) of shape $\lambda$.
+
+![](./assets/img/young_yng_path.png)
+
+- *Number of standard Young tableaux of a given shape.* Once we have the incidence matrices of a Bratteli graph, it is easy to compute the number of paths connecting the root vertex to any vertex at a given level. 
+Thus, we get the number of standard Young tableaux of each shape from the incidences matrices $M_n$. These numbers are returned by the function `Flambda` below.
+
+```{r}
+Dims <- function(Mn, N){
+  Dims <- vector("list", N) 
+  Dims[[1]] <- dims0 <- Mn[[1]][1,]
+  for(k in 2:N){
+    Dims[[k]] <- dims0 <- (dims0 %*% Mn[[k]])[1,] 
+  }
+  return(Dims)
+}
+Flambda <- function(N){
+  return(Dims(ymatrices(N),N))
+}
+Flambda(4)
+```
+
+- *Paths to a given level.* The `PathsAtLevel` function below returns all the paths of the Young graph going from the partition `"1"` to the vertices at a given level.
+
+```{r pathsatlevel}
+PathsAtLevel <- function(N){
+  Mn <- ymatrices(N)[-1]
+  f <- function(column, n) sapply(names(which(Mn[[n+1]][column[n],]==1L)), function(x) c(column,x))
+  ff <-  function(x, n) lapply(seq_len(ncol(x)), function(i) f(x[, i], n))
+  x <- colnames(Mn[[1]])
+  if(N > 2) x <- do.call(cbind, sapply(x, f, n=1, simplify=FALSE))
+  if(N > 3){
+    for(i in 2:(N-2L)){
+      x <- do.call(cbind, ff(x,i))
+    }
+  }
+  out <- rbind("1", x)
+  rownames(out) <- 1:N
+  out <- do.call(cbind, lapply(colnames(Mn[[N-1L]]), function(part) out[, which(colnames(out)==part), drop=FALSE]))
+  names(dimnames(out)) <- c("level", "partition")
+  return(out)
+}
+PathsAtLevel(4)
+```
+
+- *Paths to a given vertex*. The `PathsToVertex` function below returns all the paths of the Young graph going from the partition `"1"` to a given vertex.
+
+```{r pathstovertex}
+string2letters <- function(string){ # e.g. "abc" -> c("a","b","c")
+  rawToChar(charToRaw(string), multiple = TRUE)
+}
+PathsToVertex <- function(vertex){
+  N <- sum(as.integer(string2letters(vertex)[(1:nchar(vertex))%%2L==1L]))
+  Mn <- ymatrices(N+1)[-1]
+  f <- function(row, n) sapply(names(which(Mn[[n-1]][,row[1]]==1L)), function(x) c(x,row))
+  ff <-  function(x, n) lapply(seq_len(ncol(x)), function(i) f(x[, i], n))
+  x <- vertex
+  x <- f(x, n=N)
+  for(i in 1:(N-3L)){
+    x <- do.call(cbind, ff(x, N-i))
+  }
+  x <- rbind("1", x)
+  colnames(x) <- NULL
+  rownames(x) <- 1:N
+  return(x)
+}
+PathsToVertex("3-2")
+```
+
+- *Convert path to tableau.* A path from the partition `"1"` to a vertex $\lambda$ corresponds to a standard Young tableau. The `path2sy` function below returns the standard Young tableau corresponding to a given path.
+
+```{r path2sy}
+charpart2vec <- function(x){ # e.g. "3-1-1" -> c(3,1,1,0,0)
+  p <- as.integer(string2letters(x)[(1:nchar(x))%%2L==1L])
+  out <- rep(0L, sum(p))
+  out[seq_along(p)] <- p
+  return(out)
+}
+path2sy <- function(path){
+  v <- tail(path,1)
+  SY <- rep(list(NULL), (nchar(v)+1)/2) 
+  SY[[1]] <- 1L
+  for(k in 2:length(path)){
+    x <- path[k-1L]; y <- path[k]
+    i <- which(charpart2vec(y)-c(charpart2vec(x),0L) == 1L)
+    SY[[i]] <- c(SY[[i]], k)
+  }
+  attr(SY, "path") <- path 
+  return(SY)
+}
+path2sy(c("1", "2", "2-1", "3-1", "3-1-1"))
+```
+
+
+## Plancherel measure and Plancherel growth process 
+
+- The [Plancherel probability measure](https://en.wikipedia.org/wiki/Plancherel_measure#Definition_on_the_symmetric_group_.7F.27.22.60UNIQ--postMath-0000000B-QINU.60.22.27.7F) $\mu_n$ on the set of integer partitions of $n$ is given by 
+$$
+\mu_n(\lambda) = \frac{{(f^\lambda)^2}}{n!},
+$$
+where $f^\lambda$ is the number of standard Young tableaux of shape $\lambda$. 
+It is returned by the `Mu` function below. I use the `gmp` package to get the result in rational numbers.
+
+```{r plancherelmeasure, message=FALSE}
+library(gmp)
+Mu <- function(N, mode=c("bigq", "numeric", "character")){
+  flambda <- Flambda(N)
+  mu <- lapply(1:N, function(i) as.bigq(flambda[[i]]^2, factorialZ(i)))
+  if(match.arg(mode)=="numeric"){
+    mu <- lapply(mu, as.numeric)
+    for(n in 1:N) names(mu[[n]]) <- names(flambda[[n]])
+  }
+  if(match.arg(mode)=="character"){
+    mu <- lapply(mu, as.character)
+    for(n in 1:N) names(mu[[n]]) <- names(flambda[[n]])
+  }
+  return(mu)
+}
+Mu(4)
+```
+
+It is not possible to name the elements a `bigq` vector. The option `mode="numeric"` or `mode="character"` returns the vectors in numeric mode or character mode, with names:
+
+```{r}
+Mu(3, "numeric")
+Mu(3, "character")
+```
+
+
+- The incidence matrices $M_n$ easily allow to get the transition probabilities of the [Plancherel growth process](https://en.wikipedia.org/wiki/Plancherel_measure#Plancherel_growth_process), using the Vershik-Kerov formula. 
+They are returned by the following function. I use the `gmp` package to get exact results.
+
+```{r plancherel, message=FALSE}
+library(gmp)
+Plancherel <- function(N, mode=c("bigq", "numeric", "character")){
+  Mn <- ymatrices(N+1L)
+  Y <- Dims(Mn, N+1L)[-1]
+  Mn <- Mn[-1]
+  Q <- vector(N, mode="list") 
+  Q[[1]] <- t(as.matrix(as.bigq(c(1,1),c(2,2)))) 
+  Q[[2]] <- matrix(c(as.bigq(c(1,2,0),3), as.bigq(c(0,2,1),3)), nrow=2, byrow=TRUE) 
+  for(k in 3:N){   
+    C <- Mn[[k]] 
+    m <- nrow(C); n <- ncol(C)
+    y <- rep(NA, n); y[n] <- 1L
+    Y0 <- Y[[k-1L]]
+    Y1 <- Y[[k]]
+    q <- as.bigq(matrix(NA, nrow=m, ncol=n))
+    for(i in 1:m){
+      q[i,] <- C[i,]*as.bigz(Y1)/as.bigz(Y0[i])/(k+1L)
+    }
+    Q[[k]] <- q
+  }
+  return(Q)
+  if((mode <- match.arg(mode)) != "bigq"){
+    convert <- if(mode=="numeric") as.numeric else as.character
+    v <- ifelse(mode=="numeric", 0, "")
+    for(k in 1:N){
+      Qbigq <- Q[[k]]
+      Qnum <-  matrix(v, nrow=dim(Qbigq)[1], ncol=dim(Qbigq)[2])
+      for(i in 1:nrow(Qnum)){
+        Qnum[i,] <- convert(Qbigq[i,])
+      }
+      dimnames(Qnum) <- dimnames(Mn[[k]])
+      Q[[k]] <- Qnum
+    }
+  }
+  return(Q)
+}
+Plancherel(3)
+```
+
+It is not possible to name the rows and the columns of a `bigq` matrix. The option `mode="numeric"` or `mode="character"`returns the matrices in numeric mode or character mode, with names:
+
+```{r}
+Plancherel(3, mode="numeric")
+Plancherel(3, mode="character")
+```
+
+
+![](./assets/img/young_plancherel.png)
+
+## Robinson-Schensted correspondence
+
+The `RS` function below returns the pair of standard Young tableaux corresponding to a given permutation by the  [Robinson-Schensted](https://en.wikipedia.org/wiki/Robinson%E2%80%93Schensted_correspondence) correspondence (it does not use the incidence matrices).
+
+```{r RS}
+bump <- function(P, Q, e, i){
+  if(length(P)==0) return(list(P=list(e), Q=list(i)))
+  p <- P[[1]]
+  if(e > p[length(p)]){
+    P[[1]] <- c(p, e); Q[[1]] <- c(Q[[1]], i)
+    return(list(P=P, Q=Q))
+  }else{
+    j <- which.min(p<e)
+    w <- p[j]; P[[1]][j] <- e
+    b <- bump(P[-1], Q[-1], w, i)
+    return(list(P=c(P[1], b$P), Q=c(Q[1], b$Q)))
+  }
+}
+RS <- function(sigma){
+  out <- bump(list(), list(), sigma[1], 1)
+  for(i in 2:length(sigma)){
+    out <- bump(out$P, out$Q, sigma[i], i)
+  }
+  return(out)
+}
+sigma <- c(1, 3, 6, 4, 7, 5, 2)
+RS(sigma)
+```
+

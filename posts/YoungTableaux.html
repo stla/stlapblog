@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Some R functions for Young tableaux</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Some R functions for Young tableaux</a>
+              </h3>
+              <span>2016-07-29</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/YoungTableaux.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>This blog post provides some R functions dealing with Young tableaux. They allow to get:</p>
+<ul>
+<li><p>the incidence matrices of the Young graphs;</p></li>
+<li><p>the standard Young tableaux of a given shape;</p></li>
+<li><p>the Plancherel measure and the transition probabilities of the Plancherel growth process;</p></li>
+<li><p>the pair of standard Young tableaux corresponding to a permutation by the Robinson-Schensted correspondence.</p></li>
+</ul>
+<div id="integer-partitions-and-young-graph" class="section level2">
+<h2>Integer partitions and Young graph</h2>
+<p>The <a href="https://en.wikipedia.org/wiki/Partition_(number_theory)">integer partitions</a> are computed by the <code>parts</code> function of the R package <code>partitions</code>. For example the partitions of <span class="math inline">\(4\)</span> are obtained as follows:</p>
+<pre class="r"><code>library(partitions)
+parts(4)
+##               
+## [1,] 4 3 2 2 1
+## [2,] 0 1 2 1 1
+## [3,] 0 0 0 1 1
+## [4,] 0 0 0 0 1</code></pre>
+<p>The <a href="https://en.wikipedia.org/wiki/Young%27s_lattice">Young graph</a> is the Bratteli graph whose set of vertices at each level <span class="math inline">\(n\)</span> is the set of partitions of <span class="math inline">\(n\)</span> and whose edges connect each partition of weight <span class="math inline">\(n\)</span> at level <span class="math inline">\(n\)</span> to its superpartitions of weight <span class="math inline">\(n+1\)</span> at level <span class="math inline">\(n+1\)</span>.</p>
+<p><img src="assets/img/young_yng.png" alt="" /></p>
+<p>The R function <code>ymatrices</code> below returns the incidence matrices <span class="math inline">\(M_n\)</span> of the Young graph.</p>
+<pre class="r"><code>removezeros &lt;- function(x){ # e.g c(3,1,0,0) -&gt; c(3,1)
+  i &lt;- match(0L, x)
+  if(!is.na(i)) return(head(x,i-1L)) else return(x)
+}
+ymatrices &lt;- function(N){
+  M &lt;- vector(N, mode=&quot;list&quot;) 
+  M[[1]] &lt;- matrix(1L)
+  M[[2]] &lt;- matrix(c(1L,1L), ncol=2)
+  M[[3]] &lt;- rbind(c(1L,1L,0L), c(0L,1L,1L))
+  colnames(M[[2]]) &lt;- rownames(M[[3]]) &lt;- apply(parts(2), 2, function(x) paste0(removezeros(x), collapse=&quot;-&quot;))
+  rownames(M[[2]]) &lt;- &quot;1&quot;
+  M1 &lt;- parts(3)
+  colnames(M[[3]]) &lt;- apply(M1, 2, function(x) paste0(removezeros(x), collapse=&quot;-&quot;))
+  if(N&gt;3){
+    for(k in 4:N){   
+      M0 &lt;- M1; M1 &lt;- parts(k)  
+      m &lt;- ncol(M0); n &lt;- ncol(M1)
+      C &lt;- array(0L, dim=c(m,n))
+      rownames(C) &lt;- apply(M0, 2, function(x) paste0(removezeros(x), collapse=&quot;-&quot;))
+      colnames(C) &lt;- apply(M1, 2, function(x) paste0(removezeros(x), collapse=&quot;-&quot;))
+      C[1,1:2] &lt;- C[m,c(n-1,n)] &lt;- TRUE
+      for(j in 2:(m-1)){
+        l &lt;- match(0, M0[,j]) - 1L 
+        x &lt;- M0[1L:l,j]
+        ss &lt;- c(1L, which(diff(x)&lt;=0)+1L)
+        nss &lt;- length(ss)
+        connected &lt;- character(nss+1L)
+        for(i in seq_len(nss)){
+          y &lt;- x
+          y[ss[i]] &lt;- y[ss[i]]+1L
+          connected[i] &lt;- paste0(y, collapse=&quot;-&quot;)
+        }
+        connected[nss+1L] &lt;- paste0(c(x,1L), collapse=&quot;-&quot;)
+        ind &lt;- which(colnames(C) %in% connected)
+        C[j,ind] &lt;- 1L
+      }
+      M[[k]] &lt;- C
+    }
+  }
+  return(M)
+}
+
+( Mn &lt;-  ymatrices(4) )
+## [[1]]
+##      [,1]
+## [1,]    1
+## 
+## [[2]]
+##   2 1-1
+## 1 1   1
+## 
+## [[3]]
+##     3 2-1 1-1-1
+## 2   1   1     0
+## 1-1 0   1     1
+## 
+## [[4]]
+##       4 3-1 2-2 2-1-1 1-1-1-1
+## 3     1   1   0     0       0
+## 2-1   0   1   1     1       0
+## 1-1-1 0   0   0     1       1</code></pre>
+</div>
+<div id="standard-young-tableaux" class="section level2">
+<h2>Standard Young tableaux</h2>
+<p>A path connecting to the root vertex to a partition <span class="math inline">\(\lambda\)</span> at level <span class="math inline">\(n\)</span> corresponds to a <a href="https://en.wikipedia.org/wiki/Young_tableau#Tableaux">standard Young tableau</a> of shape <span class="math inline">\(\lambda\)</span>.</p>
+<p><img src="assets/img/young_yng_path.png" alt="" /></p>
+<ul>
+<li><em>Number of standard Young tableaux of a given shape.</em> Once we have the incidence matrices of a Bratteli graph, it is easy to compute the number of paths connecting the root vertex to any vertex at a given level. Thus, we get the number of standard Young tableaux of each shape from the incidences matrices <span class="math inline">\(M_n\)</span>. These numbers are returned by the function <code>Flambda</code> below.</li>
+</ul>
+<pre class="r"><code>Dims &lt;- function(Mn, N){
+  Dims &lt;- vector(&quot;list&quot;, N) 
+  Dims[[1]] &lt;- dims0 &lt;- Mn[[1]][1,]
+  for(k in 2:N){
+    Dims[[k]] &lt;- dims0 &lt;- (dims0 %*% Mn[[k]])[1,] 
+  }
+  return(Dims)
+}
+Flambda &lt;- function(N){
+  return(Dims(ymatrices(N),N))
+}
+Flambda(4)
+## [[1]]
+## [1] 1
+## 
+## [[2]]
+##   2 1-1 
+##   1   1 
+## 
+## [[3]]
+##     3   2-1 1-1-1 
+##     1     2     1 
+## 
+## [[4]]
+##       4     3-1     2-2   2-1-1 1-1-1-1 
+##       1       3       2       3       1</code></pre>
+<ul>
+<li><em>Paths to a given level.</em> The <code>PathsAtLevel</code> function below returns all the paths of the Young graph going from the partition <code>&quot;1&quot;</code> to the vertices at a given level.</li>
+</ul>
+<pre class="r"><code>PathsAtLevel &lt;- function(N){
+  Mn &lt;- ymatrices(N)[-1]
+  f &lt;- function(column, n) sapply(names(which(Mn[[n+1]][column[n],]==1L)), function(x) c(column,x))
+  ff &lt;-  function(x, n) lapply(seq_len(ncol(x)), function(i) f(x[, i], n))
+  x &lt;- colnames(Mn[[1]])
+  if(N &gt; 2) x &lt;- do.call(cbind, sapply(x, f, n=1, simplify=FALSE))
+  if(N &gt; 3){
+    for(i in 2:(N-2L)){
+      x &lt;- do.call(cbind, ff(x,i))
+    }
+  }
+  out &lt;- rbind(&quot;1&quot;, x)
+  rownames(out) &lt;- 1:N
+  out &lt;- do.call(cbind, lapply(colnames(Mn[[N-1L]]), function(part) out[, which(colnames(out)==part), drop=FALSE]))
+  names(dimnames(out)) &lt;- c(&quot;level&quot;, &quot;partition&quot;)
+  return(out)
+}
+PathsAtLevel(4)
+##      partition
+## level 4   3-1   3-1   3-1   2-2   2-2   2-1-1   2-1-1   2-1-1   1-1-1-1  
+##     1 &quot;1&quot; &quot;1&quot;   &quot;1&quot;   &quot;1&quot;   &quot;1&quot;   &quot;1&quot;   &quot;1&quot;     &quot;1&quot;     &quot;1&quot;     &quot;1&quot;      
+##     2 &quot;2&quot; &quot;2&quot;   &quot;2&quot;   &quot;1-1&quot; &quot;2&quot;   &quot;1-1&quot; &quot;2&quot;     &quot;1-1&quot;   &quot;1-1&quot;   &quot;1-1&quot;    
+##     3 &quot;3&quot; &quot;3&quot;   &quot;2-1&quot; &quot;2-1&quot; &quot;2-1&quot; &quot;2-1&quot; &quot;2-1&quot;   &quot;2-1&quot;   &quot;1-1-1&quot; &quot;1-1-1&quot;  
+##     4 &quot;4&quot; &quot;3-1&quot; &quot;3-1&quot; &quot;3-1&quot; &quot;2-2&quot; &quot;2-2&quot; &quot;2-1-1&quot; &quot;2-1-1&quot; &quot;2-1-1&quot; &quot;1-1-1-1&quot;</code></pre>
+<ul>
+<li><em>Paths to a given vertex</em>. The <code>PathsToVertex</code> function below returns all the paths of the Young graph going from the partition <code>&quot;1&quot;</code> to a given vertex.</li>
+</ul>
+<pre class="r"><code>string2letters &lt;- function(string){ # e.g. &quot;abc&quot; -&gt; c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;)
+  rawToChar(charToRaw(string), multiple = TRUE)
+}
+PathsToVertex &lt;- function(vertex){
+  N &lt;- sum(as.integer(string2letters(vertex)[(1:nchar(vertex))%%2L==1L]))
+  Mn &lt;- ymatrices(N+1)[-1]
+  f &lt;- function(row, n) sapply(names(which(Mn[[n-1]][,row[1]]==1L)), function(x) c(x,row))
+  ff &lt;-  function(x, n) lapply(seq_len(ncol(x)), function(i) f(x[, i], n))
+  x &lt;- vertex
+  x &lt;- f(x, n=N)
+  for(i in 1:(N-3L)){
+    x &lt;- do.call(cbind, ff(x, N-i))
+  }
+  x &lt;- rbind(&quot;1&quot;, x)
+  colnames(x) &lt;- NULL
+  rownames(x) &lt;- 1:N
+  return(x)
+}
+PathsToVertex(&quot;3-2&quot;)
+##   [,1]  [,2]  [,3]  [,4]  [,5] 
+## 1 &quot;1&quot;   &quot;1&quot;   &quot;1&quot;   &quot;1&quot;   &quot;1&quot;  
+## 2 &quot;2&quot;   &quot;2&quot;   &quot;1-1&quot; &quot;2&quot;   &quot;1-1&quot;
+## 3 &quot;3&quot;   &quot;2-1&quot; &quot;2-1&quot; &quot;2-1&quot; &quot;2-1&quot;
+## 4 &quot;3-1&quot; &quot;3-1&quot; &quot;3-1&quot; &quot;2-2&quot; &quot;2-2&quot;
+## 5 &quot;3-2&quot; &quot;3-2&quot; &quot;3-2&quot; &quot;3-2&quot; &quot;3-2&quot;</code></pre>
+<ul>
+<li><em>Convert path to tableau.</em> A path from the partition <code>&quot;1&quot;</code> to a vertex <span class="math inline">\(\lambda\)</span> corresponds to a standard Young tableau. The <code>path2sy</code> function below returns the standard Young tableau corresponding to a given path.</li>
+</ul>
+<pre class="r"><code>charpart2vec &lt;- function(x){ # e.g. &quot;3-1-1&quot; -&gt; c(3,1,1,0,0)
+  p &lt;- as.integer(string2letters(x)[(1:nchar(x))%%2L==1L])
+  out &lt;- rep(0L, sum(p))
+  out[seq_along(p)] &lt;- p
+  return(out)
+}
+path2sy &lt;- function(path){
+  v &lt;- tail(path,1)
+  SY &lt;- rep(list(NULL), (nchar(v)+1)/2) 
+  SY[[1]] &lt;- 1L
+  for(k in 2:length(path)){
+    x &lt;- path[k-1L]; y &lt;- path[k]
+    i &lt;- which(charpart2vec(y)-c(charpart2vec(x),0L) == 1L)
+    SY[[i]] &lt;- c(SY[[i]], k)
+  }
+  attr(SY, &quot;path&quot;) &lt;- path 
+  return(SY)
+}
+path2sy(c(&quot;1&quot;, &quot;2&quot;, &quot;2-1&quot;, &quot;3-1&quot;, &quot;3-1-1&quot;))
+## [[1]]
+## [1] 1 2 4
+## 
+## [[2]]
+## [1] 3
+## 
+## [[3]]
+## [1] 5
+## 
+## attr(,&quot;path&quot;)
+## [1] &quot;1&quot;     &quot;2&quot;     &quot;2-1&quot;   &quot;3-1&quot;   &quot;3-1-1&quot;</code></pre>
+</div>
+<div id="plancherel-measure-and-plancherel-growth-process" class="section level2">
+<h2>Plancherel measure and Plancherel growth process</h2>
+<ul>
+<li>The <a href="https://en.wikipedia.org/wiki/Plancherel_measure#Definition_on_the_symmetric_group_.7F.27.22.60UNIQ--postMath-0000000B-QINU.60.22.27.7F">Plancherel probability measure</a> <span class="math inline">\(\mu_n\)</span> on the set of integer partitions of <span class="math inline">\(n\)</span> is given by <span class="math display">\[
+\mu_n(\lambda) = \frac{{(f^\lambda)^2}}{n!},
+\]</span> where <span class="math inline">\(f^\lambda\)</span> is the number of standard Young tableaux of shape <span class="math inline">\(\lambda\)</span>. It is returned by the <code>Mu</code> function below. I use the <code>gmp</code> package to get the result in rational numbers.</li>
+</ul>
+<pre class="r"><code>library(gmp)
+Mu &lt;- function(N, mode=c(&quot;bigq&quot;, &quot;numeric&quot;, &quot;character&quot;)){
+  flambda &lt;- Flambda(N)
+  mu &lt;- lapply(1:N, function(i) as.bigq(flambda[[i]]^2, factorialZ(i)))
+  if(match.arg(mode)==&quot;numeric&quot;){
+    mu &lt;- lapply(mu, as.numeric)
+    for(n in 1:N) names(mu[[n]]) &lt;- names(flambda[[n]])
+  }
+  if(match.arg(mode)==&quot;character&quot;){
+    mu &lt;- lapply(mu, as.character)
+    for(n in 1:N) names(mu[[n]]) &lt;- names(flambda[[n]])
+  }
+  return(mu)
+}
+Mu(4)
+## [[1]]
+## Big Rational (&#39;bigq&#39;) :
+## [1] 1
+## 
+## [[2]]
+## Big Rational (&#39;bigq&#39;) object of length 2:
+## [1] 1/2 1/2
+## 
+## [[3]]
+## Big Rational (&#39;bigq&#39;) object of length 3:
+## [1] 1/6 2/3 1/6
+## 
+## [[4]]
+## Big Rational (&#39;bigq&#39;) object of length 5:
+## [1] 1/24 3/8  1/6  3/8  1/24</code></pre>
+<p>It is not possible to name the elements a <code>bigq</code> vector. The option <code>mode=&quot;numeric&quot;</code> or <code>mode=&quot;character&quot;</code> returns the vectors in numeric mode or character mode, with names:</p>
+<pre class="r"><code>Mu(3, &quot;numeric&quot;)
+## [[1]]
+## [1] 1
+## 
+## [[2]]
+##   2 1-1 
+## 0.5 0.5 
+## 
+## [[3]]
+##         3       2-1     1-1-1 
+## 0.1666667 0.6666667 0.1666667
+Mu(3, &quot;character&quot;)
+## [[1]]
+## [1] &quot;1&quot;
+## 
+## [[2]]
+##     2   1-1 
+## &quot;1/2&quot; &quot;1/2&quot; 
+## 
+## [[3]]
+##     3   2-1 1-1-1 
+## &quot;1/6&quot; &quot;2/3&quot; &quot;1/6&quot;</code></pre>
+<ul>
+<li>The incidence matrices <span class="math inline">\(M_n\)</span> easily allow to get the transition probabilities of the <a href="https://en.wikipedia.org/wiki/Plancherel_measure#Plancherel_growth_process">Plancherel growth process</a>, using the Vershik-Kerov formula. They are returned by the following function. I use the <code>gmp</code> package to get exact results.</li>
+</ul>
+<pre class="r"><code>library(gmp)
+Plancherel &lt;- function(N, mode=c(&quot;bigq&quot;, &quot;numeric&quot;, &quot;character&quot;)){
+  Mn &lt;- ymatrices(N+1L)
+  Y &lt;- Dims(Mn, N+1L)[-1]
+  Mn &lt;- Mn[-1]
+  Q &lt;- vector(N, mode=&quot;list&quot;) 
+  Q[[1]] &lt;- t(as.matrix(as.bigq(c(1,1),c(2,2)))) 
+  Q[[2]] &lt;- matrix(c(as.bigq(c(1,2,0),3), as.bigq(c(0,2,1),3)), nrow=2, byrow=TRUE) 
+  for(k in 3:N){   
+    C &lt;- Mn[[k]] 
+    m &lt;- nrow(C); n &lt;- ncol(C)
+    y &lt;- rep(NA, n); y[n] &lt;- 1L
+    Y0 &lt;- Y[[k-1L]]
+    Y1 &lt;- Y[[k]]
+    q &lt;- as.bigq(matrix(NA, nrow=m, ncol=n))
+    for(i in 1:m){
+      q[i,] &lt;- C[i,]*as.bigz(Y1)/as.bigz(Y0[i])/(k+1L)
+    }
+    Q[[k]] &lt;- q
+  }
+  return(Q)
+  if((mode &lt;- match.arg(mode)) != &quot;bigq&quot;){
+    convert &lt;- if(mode==&quot;numeric&quot;) as.numeric else as.character
+    v &lt;- ifelse(mode==&quot;numeric&quot;, 0, &quot;&quot;)
+    for(k in 1:N){
+      Qbigq &lt;- Q[[k]]
+      Qnum &lt;-  matrix(v, nrow=dim(Qbigq)[1], ncol=dim(Qbigq)[2])
+      for(i in 1:nrow(Qnum)){
+        Qnum[i,] &lt;- convert(Qbigq[i,])
+      }
+      dimnames(Qnum) &lt;- dimnames(Mn[[k]])
+      Q[[k]] &lt;- Qnum
+    }
+  }
+  return(Q)
+}
+Plancherel(3)
+## [[1]]
+## Big Rational (&#39;bigq&#39;) 1 x 2 matrix:
+##      [,1] [,2]
+## [1,] 1/2  1/2 
+## 
+## [[2]]
+## Big Rational (&#39;bigq&#39;) 2 x 3 matrix:
+##      [,1] [,2] [,3]
+## [1,] 1/3  2/3  0   
+## [2,] 0    2/3  1/3 
+## 
+## [[3]]
+## Big Rational (&#39;bigq&#39;) 3 x 5 matrix:
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,] 1/4  3/4  0    0    0   
+## [2,] 0    3/8  1/4  3/8  0   
+## [3,] 0    0    0    3/4  1/4</code></pre>
+<p>It is not possible to name the rows and the columns of a <code>bigq</code> matrix. The option <code>mode=&quot;numeric&quot;</code> or <code>mode=&quot;character&quot;</code>returns the matrices in numeric mode or character mode, with names:</p>
+<pre class="r"><code>Plancherel(3, mode=&quot;numeric&quot;)
+## [[1]]
+## Big Rational (&#39;bigq&#39;) 1 x 2 matrix:
+##      [,1] [,2]
+## [1,] 1/2  1/2 
+## 
+## [[2]]
+## Big Rational (&#39;bigq&#39;) 2 x 3 matrix:
+##      [,1] [,2] [,3]
+## [1,] 1/3  2/3  0   
+## [2,] 0    2/3  1/3 
+## 
+## [[3]]
+## Big Rational (&#39;bigq&#39;) 3 x 5 matrix:
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,] 1/4  3/4  0    0    0   
+## [2,] 0    3/8  1/4  3/8  0   
+## [3,] 0    0    0    3/4  1/4
+Plancherel(3, mode=&quot;character&quot;)
+## [[1]]
+## Big Rational (&#39;bigq&#39;) 1 x 2 matrix:
+##      [,1] [,2]
+## [1,] 1/2  1/2 
+## 
+## [[2]]
+## Big Rational (&#39;bigq&#39;) 2 x 3 matrix:
+##      [,1] [,2] [,3]
+## [1,] 1/3  2/3  0   
+## [2,] 0    2/3  1/3 
+## 
+## [[3]]
+## Big Rational (&#39;bigq&#39;) 3 x 5 matrix:
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,] 1/4  3/4  0    0    0   
+## [2,] 0    3/8  1/4  3/8  0   
+## [3,] 0    0    0    3/4  1/4</code></pre>
+<p><img src="assets/img/young_plancherel.png" alt="" /></p>
+</div>
+<div id="robinson-schensted-correspondence" class="section level2">
+<h2>Robinson-Schensted correspondence</h2>
+<p>The <code>RS</code> function below returns the pair of standard Young tableaux corresponding to a given permutation by the <a href="https://en.wikipedia.org/wiki/Robinson%E2%80%93Schensted_correspondence">Robinson-Schensted</a> correspondence (it does not use the incidence matrices).</p>
+<pre class="r"><code>bump &lt;- function(P, Q, e, i){
+  if(length(P)==0) return(list(P=list(e), Q=list(i)))
+  p &lt;- P[[1]]
+  if(e &gt; p[length(p)]){
+    P[[1]] &lt;- c(p, e); Q[[1]] &lt;- c(Q[[1]], i)
+    return(list(P=P, Q=Q))
+  }else{
+    j &lt;- which.min(p&lt;e)
+    w &lt;- p[j]; P[[1]][j] &lt;- e
+    b &lt;- bump(P[-1], Q[-1], w, i)
+    return(list(P=c(P[1], b$P), Q=c(Q[1], b$Q)))
+  }
+}
+RS &lt;- function(sigma){
+  out &lt;- bump(list(), list(), sigma[1], 1)
+  for(i in 2:length(sigma)){
+    out &lt;- bump(out$P, out$Q, sigma[i], i)
+  }
+  return(out)
+}
+sigma &lt;- c(1, 3, 6, 4, 7, 5, 2)
+RS(sigma)
+## $P
+## $P[[1]]
+## [1] 1 2 4 5
+## 
+## $P[[2]]
+## [1] 3 7
+## 
+## $P[[3]]
+## [1] 6
+## 
+## 
+## $Q
+## $Q[[1]]
+## [1] 1 2 3 5
+## 
+## $Q[[2]]
+## [1] 4 6
+## 
+## $Q[[3]]
+## [1] 7</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
