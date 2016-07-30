@@ -1,0 +1,208 @@
+---
+title: "Interface R pour SQL avec dplyr"
+date: "2016-07-30"
+output: html_document
+---
+
+***(latest update : `r Sys.time()`)***
+<br/>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, collapse = TRUE)
+```
+
+```{r, include=FALSE}
+library(RMySQL)
+DB <- dbConnect(MySQL(), user="root", host="localhost",
+                password="xxx", dbname="mysql_dplyr")
+dbRemoveTable(DB, "dat1") 
+dbRemoveTable(DB, "dat2") 
+dbDisconnect(DB)
+```
+
+
+J'ai montré dans [un autre article](http://stla.github.io/stlapblog/posts/RMySQL.html) comment on utilise la librairie `RMySQL` pour se connecter à une base de données MySQL dans R, effectuer des requêtes SQL sur cette base de données à partir de R, et échanger des tableaux de données entre R et MySQL.
+
+Ceci est aussi possible avec la librairie `dplyr`, et le propos du présent article est de montrer comment. 
+Le principe n'est pas le même qu'avec `RMySQL` : avec `dplyr`, on manipule un tableau de données SQL de la même façon qu'on manipule un tableau de données R ; c'est-à-dire avec les fonctions `select`, `filter`, `mutate`, etc., dont j'ai donné des [exemples ici](http://stla.github.io/stlapblog/posts/dplyr_and_mysql_examples.html).
+
+On peut se connecter à d'autres bases de données avec `dplyr` : SQL, SQLite, et d'autres. La [vignette Databases](https://cran.r-project.org/web/packages/dplyr/vignettes/databases.html) contient les informations à ce propos. 
+Un exemple d'utilisation avec SQLite est montré dans l'article [Working with databases in R](http://datascienceplus.com/working-with-databases-in-r/) du site [datascienceplus.com](http://datascienceplus.com/). 
+
+
+## Connexion
+
+Comme avec `RMySQL`, on commence par se connecter à une base de données. Celle à laquelle je me connecte avec la commande ci-dessous est nommée `mysql_dplyr`.
+
+```{r, message=FALSE}
+library(dplyr)
+my_db <- src_mysql("mysql_dplyr", password="xxx") 
+```
+
+Nous copions un tableau de données R dans la base de données MySQL :
+
+```{r}
+df1 <- data.frame(
+  Name = c("Joe", "Joe", "Bill", "Jim", "Kate"),
+  Value = c(10.1, 13, 9, 7.7, -3),
+  Indic = c(0L, 1L, 1L, 2L, 2L),
+  Status = c("A", "A", "A", "B", "B"), 
+  stringsAsFactors = FALSE
+)
+copy_to(my_db, df1, name="dat1", temporary = FALSE)
+```
+
+La commande suivante transmet le tableau de données de MySQL dans l'objet R `dat1` :
+
+
+```{r}
+dat1 <- tbl(my_db, "dat1") 
+```
+
+L'objet `dat1` est un tableau de données mais qui n'a pas la classe `data.frame` :
+
+```{r}
+dat1
+class(dat1)
+```
+
+Pour obtenir un tableau `data.frame`, il suffit d'appliquer la fonction `collect` à `dat1`. 
+
+Une requête SQL est attachée à `dat1`, qu'on peut obtenir avec `show_query` :
+
+```{r}
+show_query(dat1)
+```
+
+Le tableau de la base de données SQL ne sera jamais affecté par les transformations que nous allons effectuer sur `dat1` dans la section suivante. 
+
+
+## Manipulation du tableau de données
+
+On peut appliquer les fonctions de `dplyr` sur `dat1`. 
+La commande est alors traduite en une requête SQL, retournée par la fonction `show_query` :
+
+```{r}
+dd <- select(dat1, Name, Status)
+show_query(dd) 
+dd <- filter(dat1, Indic==2 && Value>0)
+show_query(dd)
+```
+
+Les requêtes sont exécutées de la façon la plus paresseuse possible : lorsqu'on tape `dd <- select(dat1, Name, Status)`, la requête associée n'est pas exécutée. Elle est exécutée lorsqu'il y a besoin de l'exécuter, par exemple dès qu'on demande d'afficher le contenu de `dd`. 
+On peut s'en apercevoir avec l'exemple suivant :
+
+
+```{r}
+dd1 <- select(dat1, Name, Value)
+dd2 <- filter(dd1, Value>5)
+show_query(dd2) 
+```
+
+On voit que la requête associée à `dd2` est le cumul des deux requêtes successives. De même :
+
+```{r}
+dd <- select(dat1, Name, Value)
+dd <- filter(dd, Value>5)
+show_query(dd)
+```
+
+
+
+Le sucre syntaxique de la librairie `dplyr` fonctionne sur `dat1` :
+
+```{r}
+# select columns starting with "Sta"
+dd <- select(dat1, starts_with("Sta"))
+show_query(dd) 
+# reorder columns - "Status" column at first position
+dd <- select(dat1, Status, everything())
+show_query(dd) # pas de requête SQL spéciale !
+```
+
+Mais on ne peut pas appliquer n'importe quelle commande R qui fonctionnerait si `dat1` avait la classe `data.frame` :
+
+```{r}
+# select rows for which Name contains "J"
+library(stringr)
+filter(dat1, str_detect(Name, "J")) 
+# create a new column with given values 
+mutate(dat1, y=1:5) 
+```
+
+On peut envoyer une requête écrite en code SQL ainsi :
+
+```{r}
+tbl(my_db, sql("SELECT * FROM dat1 WHERE Name LIKE '%J%'"))
+```
+
+L'enchaînement d'instructions avec l'opérateur `%>%` fonctionne :
+
+```{r}
+dd <- dat1 %>% select(-Status) %>% filter(Value>0)
+show_query(dd)
+```
+
+Ainsi que l'aggrégation : 
+
+```{r}
+dat1 %>% group_by(Name) %>% summarise(MeanValue=mean(Value), Count=n()) %>% filter(Count == 1)
+```
+
+
+
+## Jonction de deux tableaux
+
+Nous copions un deuxième tableau dans la base de données pour illustrer la jonction.
+
+```{r}
+df2 <- data.frame(
+  Name = c("Bill", "Brian"),
+  Country = c("USA", "Scotland"),
+  stringsAsFactors = FALSE
+)
+copy_to(my_db, df2, name="dat2", temporary = FALSE)
+dat2 <- tbl(my_db, "dat2")
+```
+
+Jonction interne, jonction à gauche et jonction à droite donnent les mêmes résultats que lorsqu'on les effectue sur des tableaux R classiques : 
+
+```{r}
+inner_join(dat1, dat2, by="Name")
+left_join(dat1, dat2, by="Name")
+right_join(dat1, dat2, by="Name")
+```
+
+Par contre, la jonction complète donne un résultat différent :
+
+```{r}
+full_join(dat1, dat2, by="Name")
+full_join(df1, df2, by="Name")
+```
+
+Mais c'est bien la requête `FULL JOIN` qui est envoyée à la base de données :
+
+```{r}
+full_join(dat1, dat2, by="Name") %>% show_query
+```
+
+
+## Exécuter des actions sur la base de données 
+
+La librairie `dplyr` fournit aussi des fonctions permettant d'agir sur la base de données. On obtient la liste de ces fonctions avec `?backend_db`. 
+
+Par exemple, la fonction `db_insert_into` permet d'ajouter des lignes :
+
+```{r}
+newrows <- data.frame(
+  Name = c("Mike", "Steven"),
+  Value = c(7, 19),
+  Indic = c(3L, 2L),
+  Status = c("A", "B"), 
+  stringsAsFactors = FALSE
+)
+db_insert_into(con = my_db$con, table = "dat1", values = newrows)
+tbl(my_db, "dat1")
+```
+
+

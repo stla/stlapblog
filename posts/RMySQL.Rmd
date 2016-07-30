@@ -1,0 +1,234 @@
+---
+title: "RMySQL : interface R pour MySQL"
+date: "2016-07-30"
+output: html_document
+---
+
+***(latest update : `r Sys.time()`)***
+<br/>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE)
+```
+
+```{r remove_dat1, include=FALSE}
+library(RMySQL)
+DB <- dbConnect(MySQL(), user="root", host="localhost",
+                password="xxx", dbname="rmysql0")
+dbRemoveTable(DB, "dat1") 
+dbDisconnect(DB)
+```
+
+
+La librairie `RMySQL` (qui repose sur la librairie `DBI`) permet de se connecter à une base de données MySQL dans R, d'importer un tableau de la base de données dans R ou vice-versa, et d'exécuter des requêtes SQL dans la base de données à partir de R. 
+
+
+## Connexion à une base de données
+
+Nous créons d'abord une nouvelle base de données dans MySQL. Pour cela, on lance MySQL dans un terminal avec la commande `mysql -u root -p`, puis, après avoir saisi le mot de passe, on crée la base de données `rmysql0` avec l'instruction  
+
+```
+CREATE DATABASE rmysql0;
+``` 
+
+La première chose à faire pour utiliser `RMySQL` est la connexion à la base de données, qu'on réalise ainsi :
+
+```{r, message=FALSE}
+library(RMySQL)
+# connect to database (don't forget to disconnect)
+DB <- dbConnect(MySQL(), user="root", host="localhost",
+                password="xxx", dbname="rmysql0")
+```
+
+Il faudra penser à déconnecter en fin d'utilisation. 
+Nous avons assigné la connexion à la variable `DB`, qu'il faudra alors utiliser à chaque opération.
+
+
+## Import/Export d'un tableau 
+
+La base de données que nous venons de créer est vide : 
+
+```{r}
+dbListTables(DB) # list tables
+```
+
+Nous allons y ajouter le tableau de données R suivant :
+
+```{r}
+df1 <- data.frame(
+  Name = c("Joe", "Joe", "Bill", "Jim", "Kate"),
+  Value = c(10.1, 13, 9, 7.7, -3),
+  Indic = c(0L, 1L, 1L, 2L, 2L),
+  Status = c("A", "A", "A", "B", "B")
+)
+df1
+```
+
+Cela se réalise avec la fonction `dbWriteTable` : 
+
+```{r}
+dbWriteTable(DB, "dat1", df1) # write dataframe to the database
+```
+
+Nous avons nommé le tableau `dat1` dans MySQL. Il apparaît maintenant dans la liste des tableaux de la base de données :
+
+```{r}
+dbListTables(DB)
+```
+
+La fonction `dbListFields` retourne les noms de ses colonnes :
+
+```{r}
+dbListFields(DB, "dat1")
+```
+
+Une colonne `row_names` a automatiquement été ajoutée par la fonction `dbWriteTable`. Voilà le tableau `dat1` visualisé dans MySQL :
+
+```
+mysql> SELECT * FROM dat1;
++-----------+------+-------+-------+--------+
+| row_names | Name | Value | Indic | Status |
++-----------+------+-------+-------+--------+
+| 1         | Joe  |  10.1 |     0 |      0 |
+| 2         | Joe  |    13 |     1 |      0 |
+| 3         | Bill |     9 |     1 |      0 |
+| 4         | Jim  |   7.7 |     2 |      0 |
+| 5         | Kate |    -3 |     2 |      0 |
++-----------+------+-------+-------+--------+
+```
+Si on ne veut pas la colonne `row_names`, il faut utiliser l'option `row.names=FALSE` lorsqu'on écrit le tableau : `dbWriteTable(DB, "dat1", df1, row.names=FALSE)`.  
+
+
+Pour importer un tableau de MySQL dans R, on utilise `dbReadTable` :
+
+```{r}
+dbReadTable(DB, "dat1") # get database table as dataframe
+```
+
+Notez que la colonne `row_names` ne se retrouve pas dans le tableau importé dans R.
+
+## Exécuter une requête SQL  
+
+La librairie `RMySQL` fournit deux fonctions pour exécuter une requête SQL sur un tableau : `dbSendQuery` et `dbGetQuery`. 
+
+### Fonction `dbGetQuery`
+
+La fonction `dbGetQuery` envoie une requête et retourne le résultat dans R. 
+On peut l'utiliser par exemple pour la requête `DESCRIBE` :
+
+```{r}
+dbGetQuery(DB, "DESCRIBE dat1")
+```
+
+Ou pour une reqûete `SELECT` :
+
+```{r}
+dbGetQuery(DB, "SELECT * FROM dat1 WHERE Name='Joe';")
+```
+
+Cela n'a pas altéré le tableau :
+
+```{r}
+dbReadTable(DB, "dat1") 
+```
+
+La fonction `dbGetQuery` ne retourne rien lorsqu'on l'utilise pour exécuter une  requête qui altère le tableau, telle que `ALTER` ou `UPDATE` :
+
+```{r}
+dbGetQuery(DB, "ALTER TABLE `dat1` DROP COLUMN `Name`")
+dbGetQuery(DB, "UPDATE `dat1` SET `Value` = `Value`*2")
+```
+
+Ces requêtes ont bien été exécutées :
+
+```{r}
+dbReadTable(DB, "dat1") 
+```
+
+Il vaut mieux utiliser la fonction `dbSendQuery` pour exécuter ces requêtes. 
+
+### Fonction `dbSendQuery`
+
+Avant d'illustrer la fonction `dbSendQuery`, nous restaurons le tableau initial. Il faut d'abord l'effacer avec `dbRemoveTable` :
+
+```{r}
+dbRemoveTable(DB, "dat1")
+dbWriteTable(DB, "dat1", df1) 
+```
+
+Exécutons la requête `ALTER` comme précédemment :
+
+```{r}
+dbSendQuery(DB, "ALTER TABLE `dat1` DROP COLUMN `Name`")
+```
+
+La requête a été exécutée. La fonction `dbSendQuery` retourne aussi un objet dans R : un "résultat". Si on le stocke dans une variable, on peut obtenir des informations sur ce résultat :
+
+```{r}
+res <- dbSendQuery(DB, "UPDATE `dat1` SET `Value` = `Value`*2")
+dbGetStatement(res)
+dbGetRowsAffected(res)
+```
+
+La fonction `dbGetInfo` retourne toute une liste d'informations. 
+
+La fonction `dbGetQuery` vue précédemment est en fait équivalente à `dbSendQuery` suivie de `dbFetch` :
+
+```{r}
+res <- dbSendQuery(DB, "SELECT * FROM dat1 WHERE Value > 20") 
+dbColumnInfo(res)
+dbFetch(res)
+```
+
+L'instruction `SELECT` n'effectue pas de transformation sur le tableau de données. C'est pourquoi il faut assigner le résultat de `dbSendQuery` dans une variable lorsqu'on effectue une requête `SELECT`. Par exemple le code suivant retourne une erreur, car une opération sur le tableau est en suspens :
+
+```{r, eval=TRUE, error=TRUE}
+dbSendQuery(DB, "SELECT * FROM dat1 WHERE Value > 20") 
+dbReadTable(DB, "dat1")
+```
+
+```{r, include=FALSE}
+dbClearResult(dbListResults(DB)[[1]])
+```
+
+Assigner le résultat dans une variable permet d'effacer le résultat avec la fonction `dbClearResult`, ce qui annule l'opération en suspens : 
+
+```{r}
+res <- dbSendQuery(DB, "SELECT * FROM dat1 WHERE Value > 20") 
+dbClearResult(res)
+dbReadTable(DB, "dat1")
+```
+
+La fonction `dbHasCompleted` indique si un résultat est achevé ou non :
+
+```{r, error=TRUE}
+res <- dbSendQuery(DB, "UPDATE `dat1` SET `Value` = `Value`*2")
+dbHasCompleted(res)
+res <- dbSendQuery(DB, "SELECT * FROM dat1 WHERE Value > 20") 
+dbHasCompleted(res)
+dbClearResult(res)
+dbHasCompleted(res)
+```
+
+
+
+## Annuler une requête 
+
+Si on utilise la fonction `dbBegin` avant d'exécuter une requête, on peut annuler cette requête avec la fonction `dbRollback`. Par exemple :
+
+```{r}
+# SendQuery and Rollback
+dbBegin(DB)
+res <- dbSendQuery(DB, "DELETE FROM dat1 WHERE Indic = 0") 
+dbReadTable(DB, "dat1") # query is executed
+dbRollback(DB)
+dbReadTable(DB, "dat1") # query is cancelled
+dbClearResult(res)
+```
+
+
+## Déconnexion 
+
+```{r}
+dbDisconnect(DB)
+```

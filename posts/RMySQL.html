@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RMySQL : interface R pour MySQL</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">RMySQL : interface R pour MySQL</a>
+              </h3>
+              <span>2016-07-30</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/RMySQL.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(latest update : 2016-07-30 15:53:45)</em></strong> <br/></p>
+<p>La librairie <code>RMySQL</code> (qui repose sur la librairie <code>DBI</code>) permet de se connecter à une base de données MySQL dans R, d’importer un tableau de la base de données dans R ou vice-versa, et d’exécuter des requêtes SQL dans la base de données à partir de R.</p>
+<div id="connexion-a-une-base-de-donnees" class="section level2">
+<h2>Connexion à une base de données</h2>
+<p>Nous créons d’abord une nouvelle base de données dans MySQL. Pour cela, on lance MySQL dans un terminal avec la commande <code>mysql -u root -p</code>, puis, après avoir saisi le mot de passe, on crée la base de données <code>rmysql0</code> avec l’instruction</p>
+<pre><code>CREATE DATABASE rmysql0;</code></pre>
+<p>La première chose à faire pour utiliser <code>RMySQL</code> est la connexion à la base de données, qu’on réalise ainsi :</p>
+<pre class="r"><code>library(RMySQL)
+# connect to database (don&#39;t forget to disconnect)
+DB &lt;- dbConnect(MySQL(), user=&quot;root&quot;, host=&quot;localhost&quot;,
+                password=&quot;xxx&quot;, dbname=&quot;rmysql0&quot;)</code></pre>
+<p>Il faudra penser à déconnecter en fin d’utilisation. Nous avons assigné la connexion à la variable <code>DB</code>, qu’il faudra alors utiliser à chaque opération.</p>
+</div>
+<div id="importexport-dun-tableau" class="section level2">
+<h2>Import/Export d’un tableau</h2>
+<p>La base de données que nous venons de créer est vide :</p>
+<pre class="r"><code>dbListTables(DB) # list tables
+## character(0)</code></pre>
+<p>Nous allons y ajouter le tableau de données R suivant :</p>
+<pre class="r"><code>df1 &lt;- data.frame(
+  Name = c(&quot;Joe&quot;, &quot;Joe&quot;, &quot;Bill&quot;, &quot;Jim&quot;, &quot;Kate&quot;),
+  Value = c(10.1, 13, 9, 7.7, -3),
+  Indic = c(0L, 1L, 1L, 2L, 2L),
+  Status = c(&quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;)
+)
+df1
+##   Name Value Indic Status
+## 1  Joe  10.1     0      A
+## 2  Joe  13.0     1      A
+## 3 Bill   9.0     1      A
+## 4  Jim   7.7     2      B
+## 5 Kate  -3.0     2      B</code></pre>
+<p>Cela se réalise avec la fonction <code>dbWriteTable</code> :</p>
+<pre class="r"><code>dbWriteTable(DB, &quot;dat1&quot;, df1) # write dataframe to the database
+## [1] TRUE</code></pre>
+<p>Nous avons nommé le tableau <code>dat1</code> dans MySQL. Il apparaît maintenant dans la liste des tableaux de la base de données :</p>
+<pre class="r"><code>dbListTables(DB)
+## [1] &quot;dat1&quot;</code></pre>
+<p>La fonction <code>dbListFields</code> retourne les noms de ses colonnes :</p>
+<pre class="r"><code>dbListFields(DB, &quot;dat1&quot;)
+## [1] &quot;row_names&quot; &quot;Name&quot;      &quot;Value&quot;     &quot;Indic&quot;     &quot;Status&quot;</code></pre>
+<p>Une colonne <code>row_names</code> a automatiquement été ajoutée par la fonction <code>dbWriteTable</code>. Voilà le tableau <code>dat1</code> visualisé dans MySQL :</p>
+<pre><code>mysql&gt; SELECT * FROM dat1;
++-----------+------+-------+-------+--------+
+| row_names | Name | Value | Indic | Status |
++-----------+------+-------+-------+--------+
+| 1         | Joe  |  10.1 |     0 |      0 |
+| 2         | Joe  |    13 |     1 |      0 |
+| 3         | Bill |     9 |     1 |      0 |
+| 4         | Jim  |   7.7 |     2 |      0 |
+| 5         | Kate |    -3 |     2 |      0 |
++-----------+------+-------+-------+--------+</code></pre>
+<p>Si on ne veut pas la colonne <code>row_names</code>, il faut utiliser l’option <code>row.names=FALSE</code> lorsqu’on écrit le tableau : <code>dbWriteTable(DB, &quot;dat1&quot;, df1, row.names=FALSE)</code>.</p>
+<p>Pour importer un tableau de MySQL dans R, on utilise <code>dbReadTable</code> :</p>
+<pre class="r"><code>dbReadTable(DB, &quot;dat1&quot;) # get database table as dataframe
+##   Name Value Indic Status
+## 1  Joe  10.1     0      A
+## 2  Joe  13.0     1      A
+## 3 Bill   9.0     1      A
+## 4  Jim   7.7     2      B
+## 5 Kate  -3.0     2      B</code></pre>
+<p>Notez que la colonne <code>row_names</code> ne se retrouve pas dans le tableau importé dans R.</p>
+</div>
+<div id="executer-une-requete-sql" class="section level2">
+<h2>Exécuter une requête SQL</h2>
+<p>La librairie <code>RMySQL</code> fournit deux fonctions pour exécuter une requête SQL sur un tableau : <code>dbSendQuery</code> et <code>dbGetQuery</code>.</p>
+<div id="fonction-dbgetquery" class="section level3">
+<h3>Fonction <code>dbGetQuery</code></h3>
+<p>La fonction <code>dbGetQuery</code> envoie une requête et retourne le résultat dans R. On peut l’utiliser par exemple pour la requête <code>DESCRIBE</code> :</p>
+<pre class="r"><code>dbGetQuery(DB, &quot;DESCRIBE dat1&quot;)
+##       Field       Type Null Key Default Extra
+## 1 row_names       text  YES        &lt;NA&gt;      
+## 2      Name       text  YES        &lt;NA&gt;      
+## 3     Value     double  YES        &lt;NA&gt;      
+## 4     Indic bigint(20)  YES        &lt;NA&gt;      
+## 5    Status       text  YES        &lt;NA&gt;</code></pre>
+<p>Ou pour une reqûete <code>SELECT</code> :</p>
+<pre class="r"><code>dbGetQuery(DB, &quot;SELECT * FROM dat1 WHERE Name=&#39;Joe&#39;;&quot;)
+##   row_names Name Value Indic Status
+## 1         1  Joe  10.1     0      A
+## 2         2  Joe  13.0     1      A</code></pre>
+<p>Cela n’a pas altéré le tableau :</p>
+<pre class="r"><code>dbReadTable(DB, &quot;dat1&quot;) 
+##   Name Value Indic Status
+## 1  Joe  10.1     0      A
+## 2  Joe  13.0     1      A
+## 3 Bill   9.0     1      A
+## 4  Jim   7.7     2      B
+## 5 Kate  -3.0     2      B</code></pre>
+<p>La fonction <code>dbGetQuery</code> ne retourne rien lorsqu’on l’utilise pour exécuter une requête qui altère le tableau, telle que <code>ALTER</code> ou <code>UPDATE</code> :</p>
+<pre class="r"><code>dbGetQuery(DB, &quot;ALTER TABLE `dat1` DROP COLUMN `Name`&quot;)
+## data frame with 0 columns and 0 rows
+dbGetQuery(DB, &quot;UPDATE `dat1` SET `Value` = `Value`*2&quot;)
+## data frame with 0 columns and 0 rows</code></pre>
+<p>Ces requêtes ont bien été exécutées :</p>
+<pre class="r"><code>dbReadTable(DB, &quot;dat1&quot;) 
+##   Value Indic Status
+## 1  20.2     0      A
+## 2  26.0     1      A
+## 3  18.0     1      A
+## 4  15.4     2      B
+## 5  -6.0     2      B</code></pre>
+<p>Il vaut mieux utiliser la fonction <code>dbSendQuery</code> pour exécuter ces requêtes.</p>
+</div>
+<div id="fonction-dbsendquery" class="section level3">
+<h3>Fonction <code>dbSendQuery</code></h3>
+<p>Avant d’illustrer la fonction <code>dbSendQuery</code>, nous restaurons le tableau initial. Il faut d’abord l’effacer avec <code>dbRemoveTable</code> :</p>
+<pre class="r"><code>dbRemoveTable(DB, &quot;dat1&quot;)
+## [1] TRUE
+dbWriteTable(DB, &quot;dat1&quot;, df1) 
+## [1] TRUE</code></pre>
+<p>Exécutons la requête <code>ALTER</code> comme précédemment :</p>
+<pre class="r"><code>dbSendQuery(DB, &quot;ALTER TABLE `dat1` DROP COLUMN `Name`&quot;)
+## &lt;MySQLResult:31102696,3,18&gt;</code></pre>
+<p>La requête a été exécutée. La fonction <code>dbSendQuery</code> retourne aussi un objet dans R : un “résultat”. Si on le stocke dans une variable, on peut obtenir des informations sur ce résultat :</p>
+<pre class="r"><code>res &lt;- dbSendQuery(DB, &quot;UPDATE `dat1` SET `Value` = `Value`*2&quot;)
+dbGetStatement(res)
+## [1] &quot;UPDATE `dat1` SET `Value` = `Value`*2&quot;
+dbGetRowsAffected(res)
+## [1] 5</code></pre>
+<p>La fonction <code>dbGetInfo</code> retourne toute une liste d’informations.</p>
+<p>La fonction <code>dbGetQuery</code> vue précédemment est en fait équivalente à <code>dbSendQuery</code> suivie de <code>dbFetch</code> :</p>
+<pre class="r"><code>res &lt;- dbSendQuery(DB, &quot;SELECT * FROM dat1 WHERE Value &gt; 20&quot;) 
+dbColumnInfo(res)
+##        name    Sclass      type length
+## 1 row_names character BLOB/TEXT  65535
+## 2     Value    double    DOUBLE     22
+## 3     Indic    double    BIGINT     20
+## 4    Status character BLOB/TEXT  65535
+dbFetch(res)
+##   row_names Value Indic Status
+## 1         1  20.2     0      A
+## 2         2  26.0     1      A</code></pre>
+<p>L’instruction <code>SELECT</code> n’effectue pas de transformation sur le tableau de données. C’est pourquoi il faut assigner le résultat de <code>dbSendQuery</code> dans une variable lorsqu’on effectue une requête <code>SELECT</code>. Par exemple le code suivant retourne une erreur, car une opération sur le tableau est en suspens :</p>
+<pre class="r"><code>dbSendQuery(DB, &quot;SELECT * FROM dat1 WHERE Value &gt; 20&quot;) 
+## &lt;MySQLResult:85042008,3,21&gt;
+dbReadTable(DB, &quot;dat1&quot;)
+## Error in .local(conn, statement, ...): connection with pending rows, close resultSet before continuing</code></pre>
+<p>Assigner le résultat dans une variable permet d’effacer le résultat avec la fonction <code>dbClearResult</code>, ce qui annule l’opération en suspens :</p>
+<pre class="r"><code>res &lt;- dbSendQuery(DB, &quot;SELECT * FROM dat1 WHERE Value &gt; 20&quot;) 
+dbClearResult(res)
+## [1] TRUE
+dbReadTable(DB, &quot;dat1&quot;)
+##   Value Indic Status
+## 1  20.2     0      A
+## 2  26.0     1      A
+## 3  18.0     1      A
+## 4  15.4     2      B
+## 5  -6.0     2      B</code></pre>
+<p>La fonction <code>dbHasCompleted</code> indique si un résultat est achevé ou non :</p>
+<pre class="r"><code>res &lt;- dbSendQuery(DB, &quot;UPDATE `dat1` SET `Value` = `Value`*2&quot;)
+dbHasCompleted(res)
+## [1] TRUE
+res &lt;- dbSendQuery(DB, &quot;SELECT * FROM dat1 WHERE Value &gt; 20&quot;) 
+dbHasCompleted(res)
+## [1] FALSE
+dbClearResult(res)
+## [1] TRUE
+dbHasCompleted(res)
+## Error: Expired MySQLResult</code></pre>
+</div>
+</div>
+<div id="annuler-une-requete" class="section level2">
+<h2>Annuler une requête</h2>
+<p>Si on utilise la fonction <code>dbBegin</code> avant d’exécuter une requête, on peut annuler cette requête avec la fonction <code>dbRollback</code>. Par exemple :</p>
+<pre class="r"><code># SendQuery and Rollback
+dbBegin(DB)
+## [1] TRUE
+res &lt;- dbSendQuery(DB, &quot;DELETE FROM dat1 WHERE Indic = 0&quot;) 
+dbReadTable(DB, &quot;dat1&quot;) # query is executed
+##   Value Indic Status
+## 2  52.0     1      A
+## 3  36.0     1      A
+## 4  30.8     2      B
+## 5 -12.0     2      B
+dbRollback(DB)
+## [1] TRUE
+dbReadTable(DB, &quot;dat1&quot;) # query is cancelled
+##   Value Indic Status
+## 1  40.4     0      A
+## 2  52.0     1      A
+## 3  36.0     1      A
+## 4  30.8     2      B
+## 5 -12.0     2      B
+dbClearResult(res)
+## [1] TRUE</code></pre>
+</div>
+<div id="deconnexion" class="section level2">
+<h2>Déconnexion</h2>
+<pre class="r"><code>dbDisconnect(DB)
+## [1] TRUE</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

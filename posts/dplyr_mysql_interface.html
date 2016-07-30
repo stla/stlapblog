@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interface R pour SQL avec dplyr</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Interface R pour SQL avec dplyr</a>
+              </h3>
+              <span>2016-07-30</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/dplyr_mysql_interface.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><strong><em>(latest update : 2016-07-30 16:05:55)</em></strong> <br/></p>
+<p>J’ai montré dans <a href="http://stla.github.io/stlapblog/posts/RMySQL.html">un autre article</a> comment on utilise la librairie <code>RMySQL</code> pour se connecter à une base de données MySQL dans R, effectuer des requêtes SQL sur cette base de données à partir de R, et échanger des tableaux de données entre R et MySQL.</p>
+<p>Ceci est aussi possible avec la librairie <code>dplyr</code>, et le propos du présent article est de montrer comment. Le principe n’est pas le même qu’avec <code>RMySQL</code> : avec <code>dplyr</code>, on manipule un tableau de données SQL de la même façon qu’on manipule un tableau de données R ; c’est-à-dire avec les fonctions <code>select</code>, <code>filter</code>, <code>mutate</code>, etc., dont j’ai donné des <a href="http://stla.github.io/stlapblog/posts/dplyr_and_mysql_examples.html">exemples ici</a>.</p>
+<p>On peut se connecter à d’autres bases de données avec <code>dplyr</code> : SQL, SQLite, et d’autres. La <a href="https://cran.r-project.org/web/packages/dplyr/vignettes/databases.html">vignette Databases</a> contient les informations à ce propos. Un exemple d’utilisation avec SQLite est montré dans l’article <a href="http://datascienceplus.com/working-with-databases-in-r/">Working with databases in R</a> du site <a href="http://datascienceplus.com/">datascienceplus.com</a>.</p>
+<div id="connexion" class="section level2">
+<h2>Connexion</h2>
+<p>Comme avec <code>RMySQL</code>, on commence par se connecter à une base de données. Celle à laquelle je me connecte avec la commande ci-dessous est nommée <code>mysql_dplyr</code>.</p>
+<pre class="r"><code>library(dplyr)
+my_db &lt;- src_mysql(&quot;mysql_dplyr&quot;, password=&quot;xxx&quot;) </code></pre>
+<p>Nous copions un tableau de données R dans la base de données MySQL :</p>
+<pre class="r"><code>df1 &lt;- data.frame(
+  Name = c(&quot;Joe&quot;, &quot;Joe&quot;, &quot;Bill&quot;, &quot;Jim&quot;, &quot;Kate&quot;),
+  Value = c(10.1, 13, 9, 7.7, -3),
+  Indic = c(0L, 1L, 1L, 2L, 2L),
+  Status = c(&quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;), 
+  stringsAsFactors = FALSE
+)
+copy_to(my_db, df1, name=&quot;dat1&quot;, temporary = FALSE)
+## Source:   query [?? x 4]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name Value Indic Status
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;
+## 1   Joe  10.1     0      A
+## 2   Joe  13.0     1      A
+## 3  Bill   9.0     1      A
+## 4   Jim   7.7     2      B
+## 5  Kate  -3.0     2      B</code></pre>
+<p>La commande suivante transmet le tableau de données de MySQL dans l’objet R <code>dat1</code> :</p>
+<pre class="r"><code>dat1 &lt;- tbl(my_db, &quot;dat1&quot;) </code></pre>
+<p>L’objet <code>dat1</code> est un tableau de données mais qui n’a pas la classe <code>data.frame</code> :</p>
+<pre class="r"><code>dat1
+## Source:   query [?? x 4]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name Value Indic Status
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;
+## 1   Joe  10.1     0      A
+## 2   Joe  13.0     1      A
+## 3  Bill   9.0     1      A
+## 4   Jim   7.7     2      B
+## 5  Kate  -3.0     2      B
+class(dat1)
+## [1] &quot;tbl_mysql&quot; &quot;tbl_sql&quot;   &quot;tbl_lazy&quot;  &quot;tbl&quot;</code></pre>
+<p>Pour obtenir un tableau <code>data.frame</code>, il suffit d’appliquer la fonction <code>collect</code> à <code>dat1</code>.</p>
+<p>Une requête SQL est attachée à <code>dat1</code>, qu’on peut obtenir avec <code>show_query</code> :</p>
+<pre class="r"><code>show_query(dat1)
+## &lt;SQL&gt;
+## SELECT *
+## FROM `dat1`</code></pre>
+<p>Le tableau de la base de données SQL ne sera jamais affecté par les transformations que nous allons effectuer sur <code>dat1</code> dans la section suivante.</p>
+</div>
+<div id="manipulation-du-tableau-de-donnees" class="section level2">
+<h2>Manipulation du tableau de données</h2>
+<p>On peut appliquer les fonctions de <code>dplyr</code> sur <code>dat1</code>. La commande est alors traduite en une requête SQL, retournée par la fonction <code>show_query</code> :</p>
+<pre class="r"><code>dd &lt;- select(dat1, Name, Status)
+show_query(dd) 
+## &lt;SQL&gt;
+## SELECT `Name` AS `Name`, `Status` AS `Status`
+## FROM `dat1`
+dd &lt;- filter(dat1, Indic==2 &amp;&amp; Value&gt;0)
+show_query(dd)
+## &lt;SQL&gt;
+## SELECT *
+## FROM `dat1`
+## WHERE (`Indic` = 2.0 AND `Value` &gt; 0.0)</code></pre>
+<p>Les requêtes sont exécutées de la façon la plus paresseuse possible : lorsqu’on tape <code>dd &lt;- select(dat1, Name, Status)</code>, la requête associée n’est pas exécutée. Elle est exécutée lorsqu’il y a besoin de l’exécuter, par exemple dès qu’on demande d’afficher le contenu de <code>dd</code>. On peut s’en apercevoir avec l’exemple suivant :</p>
+<pre class="r"><code>dd1 &lt;- select(dat1, Name, Value)
+dd2 &lt;- filter(dd1, Value&gt;5)
+show_query(dd2) 
+## &lt;SQL&gt;
+## SELECT *
+## FROM (SELECT `Name` AS `Name`, `Value` AS `Value`
+## FROM `dat1`) `nvszhdovah`
+## WHERE (`Value` &gt; 5.0)</code></pre>
+<p>On voit que la requête associée à <code>dd2</code> est le cumul des deux requêtes successives. De même :</p>
+<pre class="r"><code>dd &lt;- select(dat1, Name, Value)
+dd &lt;- filter(dd, Value&gt;5)
+show_query(dd)
+## &lt;SQL&gt;
+## SELECT *
+## FROM (SELECT `Name` AS `Name`, `Value` AS `Value`
+## FROM `dat1`) `oshpgchcbg`
+## WHERE (`Value` &gt; 5.0)</code></pre>
+<p>Le sucre syntaxique de la librairie <code>dplyr</code> fonctionne sur <code>dat1</code> :</p>
+<pre class="r"><code># select columns starting with &quot;Sta&quot;
+dd &lt;- select(dat1, starts_with(&quot;Sta&quot;))
+show_query(dd) 
+## &lt;SQL&gt;
+## SELECT `Status` AS `Status`
+## FROM `dat1`
+# reorder columns - &quot;Status&quot; column at first position
+dd &lt;- select(dat1, Status, everything())
+show_query(dd) # pas de requête SQL spéciale !
+## &lt;SQL&gt;
+## SELECT `Status` AS `Status`, `Name` AS `Name`, `Value` AS `Value`, `Indic` AS `Indic`
+## FROM `dat1`</code></pre>
+<p>Mais on ne peut pas appliquer n’importe quelle commande R qui fonctionnerait si <code>dat1</code> avait la classe <code>data.frame</code> :</p>
+<pre class="r"><code># select rows for which Name contains &quot;J&quot;
+library(stringr)
+filter(dat1, str_detect(Name, &quot;J&quot;)) 
+## Source:   query [?? x 4]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## Error in .local(conn, statement, ...): could not run statement: FUNCTION mysql_dplyr.STR_DETECT does not exist
+# create a new column with given values 
+mutate(dat1, y=1:5) 
+## Source:   query [?? x 5]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## Error in .local(conn, statement, ...): could not run statement: Operand should contain 1 column(s)</code></pre>
+<p>On peut envoyer une requête écrite en code SQL ainsi :</p>
+<pre class="r"><code>tbl(my_db, sql(&quot;SELECT * FROM dat1 WHERE Name LIKE &#39;%J%&#39;&quot;))
+## Source:   query [?? x 4]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name Value Indic Status
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;
+## 1   Joe  10.1     0      A
+## 2   Joe  13.0     1      A
+## 3   Jim   7.7     2      B</code></pre>
+<p>L’enchaînement d’instructions avec l’opérateur <code>%&gt;%</code> fonctionne :</p>
+<pre class="r"><code>dd &lt;- dat1 %&gt;% select(-Status) %&gt;% filter(Value&gt;0)
+show_query(dd)
+## &lt;SQL&gt;
+## SELECT *
+## FROM (SELECT `Name` AS `Name`, `Value` AS `Value`, `Indic` AS `Indic`
+## FROM `dat1`) `cpdluwzsyu`
+## WHERE (`Value` &gt; 0.0)</code></pre>
+<p>Ainsi que l’aggrégation :</p>
+<pre class="r"><code>dat1 %&gt;% group_by(Name) %&gt;% summarise(MeanValue=mean(Value), Count=n()) %&gt;% filter(Count == 1)
+## Source:   query [?? x 3]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name MeanValue Count
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1  Bill       9.0     1
+## 2   Jim       7.7     1
+## 3  Kate      -3.0     1</code></pre>
+</div>
+<div id="jonction-de-deux-tableaux" class="section level2">
+<h2>Jonction de deux tableaux</h2>
+<p>Nous copions un deuxième tableau dans la base de données pour illustrer la jonction.</p>
+<pre class="r"><code>df2 &lt;- data.frame(
+  Name = c(&quot;Bill&quot;, &quot;Brian&quot;),
+  Country = c(&quot;USA&quot;, &quot;Scotland&quot;),
+  stringsAsFactors = FALSE
+)
+copy_to(my_db, df2, name=&quot;dat2&quot;, temporary = FALSE)
+## Source:   query [?? x 2]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name  Country
+##   &lt;chr&gt;    &lt;chr&gt;
+## 1  Bill      USA
+## 2 Brian Scotland
+dat2 &lt;- tbl(my_db, &quot;dat2&quot;)</code></pre>
+<p>Jonction interne, jonction à gauche et jonction à droite donnent les mêmes résultats que lorsqu’on les effectue sur des tableaux R classiques :</p>
+<pre class="r"><code>inner_join(dat1, dat2, by=&quot;Name&quot;)
+## Source:   query [?? x 5]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## Auto-disconnecting mysql connection (0, 7)
+##    Name Value Indic Status Country
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;   &lt;chr&gt;
+## 1  Bill     9     1      A     USA
+left_join(dat1, dat2, by=&quot;Name&quot;)
+## Source:   query [?? x 5]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name Value Indic Status Country
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;   &lt;chr&gt;
+## 1   Joe  10.1     0      A    &lt;NA&gt;
+## 2   Joe  13.0     1      A    &lt;NA&gt;
+## 3  Bill   9.0     1      A     USA
+## 4   Jim   7.7     2      B    &lt;NA&gt;
+## 5  Kate  -3.0     2      B    &lt;NA&gt;
+right_join(dat1, dat2, by=&quot;Name&quot;)
+## Source:   query [?? x 5]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name  Country Value Indic Status
+##   &lt;chr&gt;    &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;
+## 1  Bill      USA     9     1      A
+## 2 Brian Scotland    NA    NA   &lt;NA&gt;</code></pre>
+<p>Par contre, la jonction complète donne un résultat différent :</p>
+<pre class="r"><code>full_join(dat1, dat2, by=&quot;Name&quot;)
+## Source:   query [?? x 5]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name Value Indic Status Country
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;   &lt;chr&gt;
+## 1  Bill     9     1      A     USA
+full_join(df1, df2, by=&quot;Name&quot;)
+##    Name Value Indic Status  Country
+## 1   Joe  10.1     0      A     &lt;NA&gt;
+## 2   Joe  13.0     1      A     &lt;NA&gt;
+## 3  Bill   9.0     1      A      USA
+## 4   Jim   7.7     2      B     &lt;NA&gt;
+## 5  Kate  -3.0     2      B     &lt;NA&gt;
+## 6 Brian    NA    NA   &lt;NA&gt; Scotland</code></pre>
+<p>Mais c’est bien la requête <code>FULL JOIN</code> qui est envoyée à la base de données :</p>
+<pre class="r"><code>full_join(dat1, dat2, by=&quot;Name&quot;) %&gt;% show_query
+## &lt;SQL&gt;
+## SELECT * FROM `dat1`
+## 
+## FULL JOIN
+## 
+## `dat2`
+## 
+## USING (`Name`)</code></pre>
+</div>
+<div id="executer-des-actions-sur-la-base-de-donnees" class="section level2">
+<h2>Exécuter des actions sur la base de données</h2>
+<p>La librairie <code>dplyr</code> fournit aussi des fonctions permettant d’agir sur la base de données. On obtient la liste de ces fonctions avec <code>?backend_db</code>.</p>
+<p>Par exemple, la fonction <code>db_insert_into</code> permet d’ajouter des lignes :</p>
+<pre class="r"><code>newrows &lt;- data.frame(
+  Name = c(&quot;Mike&quot;, &quot;Steven&quot;),
+  Value = c(7, 19),
+  Indic = c(3L, 2L),
+  Status = c(&quot;A&quot;, &quot;B&quot;), 
+  stringsAsFactors = FALSE
+)
+db_insert_into(con = my_db$con, table = &quot;dat1&quot;, values = newrows)
+tbl(my_db, &quot;dat1&quot;)
+## Source:   query [?? x 4]
+## Database: mysql 5.5.50-0ubuntu0.14.04.1 [root@localhost:/mysql_dplyr]
+## 
+##    Name Value Indic Status
+##   &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;  &lt;chr&gt;
+## 1   Joe  10.1     0      A
+## 2   Joe  13.0     1      A
+## 3  Bill   9.0     1      A
+## 4   Jim   7.7     2      B
+## 5  Kate  -3.0     2      B
+## 6  Mike   7.0     3      A
+## 7  Stev  19.0     2      B</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
