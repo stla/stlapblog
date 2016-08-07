@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Haskell implementation of the Robinson-Schensted algorithm</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Haskell implementation of the Robinson-Schensted algorithm</a>
+              </h3>
+              <span>2016-08-07</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/RobinsonSchensted_Haskell.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Given a permutation <span class="math inline">\(\sigma\)</span> of <span class="math inline">\(\{1, \ldots, n\}\)</span>, the Robinson-Schensted correspondence associates to <span class="math inline">\(\sigma\)</span> a pair <span class="math inline">\((P,Q)\)</span> of two standard Young tableaux of weight <span class="math inline">\(n\)</span> having the same shape.</p>
+<p>This map <span class="math inline">\(RS\colon \sigma \mapsto (P,Q)\)</span> is obtained by the Schensted algorithm, and we give an Haskell implementation of this algorithm below (I gave a R implementation of this map in <a href="http://stla.github.io/stlapblog/posts/YoungTableaux.html#robinson-schensted-correspondence">a previous article</a>). A nice explanation of this algorithm is given in <a href="https://www.google.be/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=0ahUKEwiOx5X-hK_OAhXkDsAKHX9wA8kQFggbMAA&amp;url=http%3A%2F%2Fwww.maths.qmul.ac.uk%2F~rtb%2Fmathpage%2FRichard%2520Bayley%27s%2520Homepage_files%2Frichardmmath.pdf&amp;usg=AFQjCNE7yebCMY2jwykMkBqF1BKhaYiEXg&amp;sig2=gOJekMgyDQx5af2HUcyltQ&amp;bvm=bv.129391328,d.d24">R. T. Bayley’s master thesis</a>, to which we refer for more details, if needed.</p>
+<p>In Haskell, we represent a permutation as a list of integers and a Young tableau as a list of lists of integers. For example, the Haskell list <code>[[1,2,4,7,8], [3,5,6,9], [10]]</code> represents this (standard) Young tableau:</p>
+<p><img src="assets/img/rs_StandardYoungTableau.png" alt="a Young tableau" width="18%" class="center"></p>
+<p>The main part of the algorithm giving the pair <span class="math inline">\((P,Q)=RS(\sigma)\)</span> is the construction of the first Young tableau <span class="math inline">\(P\)</span>. Given the permutation <span class="math inline">\(\sigma=(\sigma_1, \ldots, \sigma_n)\)</span>, the standard Young tableau <span class="math inline">\(P\)</span> is the final Young tableau <span class="math inline">\(P_n\)</span> of the sequence <span class="math inline">\((P_0, \ldots, P_n)\)</span> of Young tableaux which is recursively obtained as follows. One starts with the empty Young tableau <span class="math inline">\(P_0=[\,]\)</span> and one recursively defines <span class="math inline">\(P_{k+1}\)</span> as the Young tableau obtained by <em>bumping</em> <span class="math inline">\(\sigma_{k+1}\)</span> to <span class="math inline">\(P_k\)</span>, an action to be explained below. This is denoted by <span class="math inline">\(P_{k+1} = P_k \leftarrow \sigma_{k+1}\)</span>, so that the final Young tableau is<br />
+<span class="math display">\[
+P_n = \Bigl(\cdots\bigl(([\,] \leftarrow \sigma_1) \leftarrow \sigma_2\bigr) \cdots \leftarrow \sigma_n\Bigr).
+\]</span> Now we explain the <em>bumping</em> action. The <em>bumping</em> action of an integer <span class="math inline">\(e\)</span> to a Young tableau <span class="math inline">\(P\)</span> is a Young tableau denoted by <span class="math inline">\(P \leftarrow e\)</span> which is obtained by this algorithm:</p>
+<ul>
+<li><p>if <span class="math inline">\(P\)</span> is empty then <span class="math inline">\(P \leftarrow e = [[e]]\)</span>;</p></li>
+<li><p>if <span class="math inline">\(e\)</span> is strictly greater than all the numbers in the first row of <span class="math inline">\(P\)</span>, then the Young tableau <span class="math inline">\(P \leftarrow e\)</span> is obtained from <span class="math inline">\(P\)</span> by placing <span class="math inline">\(e\)</span> at the end of its first row;</p></li>
+<li><p>otherwise, <span class="math inline">\(P \leftarrow e\)</span> is the Young tableau whose first row is obtained by replacing the first element <span class="math inline">\(w\)</span> of the first row of <span class="math inline">\(P\)</span> that is larger than <span class="math inline">\(e\)</span> with <span class="math inline">\(e\)</span>, and by stacking this new row on the top of <span class="math inline">\(P_{-1} \leftarrow w\)</span>, where <span class="math inline">\(P_{-1}\)</span> is the Young tableau obtained from <span class="math inline">\(P\)</span> by removing its first row.</p></li>
+</ul>
+<p>Thus, the shape of <span class="math inline">\(P \leftarrow e\)</span> is the shape of <span class="math inline">\(P\)</span> plus an additional square. Consider for example the permutation <span class="math inline">\(\sigma = (2,3,1)\)</span>. The action of <span class="math inline">\(\sigma_1=2\)</span> to the empty tableau <span class="math inline">\(P_0=[\,]\)</span> generates the tableau <span class="math inline">\(P_1 := P_0 \leftarrow \sigma_1 = [[2]]\)</span>. The action of <span class="math inline">\(\sigma_2=3\)</span> to the tableau <span class="math inline">\(P_1\)</span> generates the tableau <span class="math inline">\(P_2 := P_1 \leftarrow \sigma_2 = [[2,3]]\)</span>. The action of <span class="math inline">\(\sigma_3=1\)</span> to the tableau <span class="math inline">\(P_2\)</span> generates the tableau <span class="math inline">\(P_3 := P_2 \leftarrow \sigma_3 = [[1,3], [2]]\)</span>.</p>
+<p>The <code>replace</code> function below performs the replacement. It takes as arguments a list of integers <code>xs</code> and an integer <code>e</code>. It finds the index of the first element of <code>xs</code> greater than <code>e</code>, replaces this element with <code>e</code>, and returns the new list and the replaced element in a pair.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">Control.Lens</span> 
+<span class="kw">import </span><span class="dt">Data.List</span>
+<span class="kw">let</span><span class="ot"> replace ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> ([<span class="dt">Int</span>], <span class="dt">Int</span>);
+    replace xs e <span class="fu">=</span> ((element i <span class="fu">.~</span> e) xs, xs <span class="fu">!!</span> i)
+          <span class="kw">where</span> i <span class="fu">=</span> (\(<span class="dt">Just</span> x) <span class="ot">-&gt;</span> x) (findIndex (<span class="fu">&gt;=</span> e) xs)</code></pre></div>
+<p>For example:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="fu">&gt;</span> replace [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>] <span class="dv">4</span>
+([<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>],<span class="dv">5</span>)</code></pre></div>
+<p>This function does not work if there is no element greater <code>e</code> in the list.</p>
+<p>Now, the Young tableau <span class="math inline">\(Q\)</span> is the final Young tableau <span class="math inline">\(Q_n\)</span> of the sequence <span class="math inline">\((Q_0, \ldots, Q_n)\)</span> constructed in parallel as follows. This sequence starts with the empty Young tableau <span class="math inline">\(Q_0 = [\,]\)</span>. Each Young tableau <span class="math inline">\(Q_k\)</span> has the same shape as <span class="math inline">\(P_k\)</span>. The Young tableau <span class="math inline">\(Q_k\)</span> is obtained by adding a square to <span class="math inline">\(Q_{k-1}\)</span> at the same location of the square which is added to <span class="math inline">\(P_{k-1}\)</span> to get <span class="math inline">\(P_k\)</span>, and by putting the integer <span class="math inline">\(k\)</span> in this square. For the above example where <span class="math inline">\(\sigma=(2,3,1)\)</span>, this gives <span class="math inline">\(Q_1=[[1]]\)</span>, <span class="math inline">\(Q_2=[[1,2]]\)</span> and <span class="math inline">\(Q_3=[[1,2], [3]]\)</span>.</p>
+<p>Finally, the Schensted algorithm has the following form:</p>
+<div style="margin-left:30px">
+<p><em>given a permutation <span class="math inline">\(\sigma=(\sigma_1, \ldots, \sigma_n)\)</span>, do:</em></p>
+</div>
+<div style="margin-left:45px; margin-top:-20px">
+<ul>
+<li><span class="math inline">\((P_0, Q_0) \leftarrow ([\,],[\,])\)</span></li>
+<li>for <span class="math inline">\(i\)</span> in <span class="math inline">\(1:n\)</span>
+<ul>
+<li><span class="math inline">\((P_i, Q_i) \leftarrow \text{bump}(P_{i-1}, Q_{i-1}, \sigma_i, i)\)</span></li>
+</ul></li>
+</ul>
+</div>
+<p>Therefore, once we get an implementation of the <code>bump</code> function, the <span class="math inline">\(RS\)</span> map is implemented as follows in Haskell:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">let</span><span class="ot"> rs ::</span> [<span class="dt">Int</span>] <span class="ot">-&gt;</span> ([[<span class="dt">Int</span>]],[[<span class="dt">Int</span>]]);
+    rs sigma <span class="fu">|</span> (n <span class="fu">==</span> <span class="dv">1</span>) <span class="fu">=</span> bump [] [] (sigma <span class="fu">!!</span> <span class="dv">0</span>) <span class="dv">1</span>
+             <span class="fu">|</span> otherwise <span class="fu">=</span> bump p q (last sigma) n
+                    <span class="kw">where</span> (p,q) <span class="fu">=</span> rs (fst (splitAt (n<span class="fu">-</span><span class="dv">1</span>) sigma))
+                          n <span class="fu">=</span> length sigma</code></pre></div>
+<p>It remains to write the <code>bump</code> function.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">let</span><span class="ot"> bump ::</span> [[<span class="dt">Int</span>]] <span class="ot">-&gt;</span> [[<span class="dt">Int</span>]] <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> ([[<span class="dt">Int</span>]],[[<span class="dt">Int</span>]]);
+    bump p q e i <span class="fu">=</span> <span class="kw">if</span> p<span class="fu">==</span>[] 
+    <span class="kw">then</span> ([[e]], [[i]]) 
+    <span class="kw">else</span> <span class="kw">if</span> e <span class="fu">&gt;</span> (last (p <span class="fu">!!</span> <span class="dv">0</span>))
+        <span class="kw">then</span> (((p1 <span class="fu">!!</span> <span class="dv">0</span>) <span class="fu">++</span> [e]) <span class="fu">:</span> pend, ((q1 <span class="fu">!!</span> <span class="dv">0</span>) <span class="fu">++</span> [i]) <span class="fu">:</span> qend)
+        <span class="kw">else</span> (newp1 <span class="fu">:</span> p2, (q <span class="fu">!!</span> <span class="dv">0</span>) <span class="fu">:</span> q2)
+          <span class="kw">where</span> (p1, pend) <span class="fu">=</span> splitAt <span class="dv">1</span> p
+                (q1, qend) <span class="fu">=</span> splitAt <span class="dv">1</span> q
+                (newp1, w) <span class="fu">=</span> replace (p <span class="fu">!!</span> <span class="dv">0</span>) e
+                (p2, q2) <span class="fu">=</span> bump (drop <span class="dv">1</span> p) (drop <span class="dv">1</span> q) w i</code></pre></div>
+<p>As an example:</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="fu">&gt;</span> rs [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">5</span>, <span class="dv">2</span>]
+([[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>],[<span class="dv">3</span>,<span class="dv">7</span>],[<span class="dv">6</span>]],[[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">5</span>],[<span class="dv">4</span>,<span class="dv">6</span>],[<span class="dv">7</span>]])</code></pre></div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
