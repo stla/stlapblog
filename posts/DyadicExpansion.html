@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dyadic expansion with R</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Dyadic expansion with R</a>
+              </h3>
+              <span>2016-08-08</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/DyadicExpansion.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>We provide a function that computes the dyadic representation of a real number in the interval <span class="math inline">\([0,1]\)</span>. Then we give an implementation of two transformations of the set <span class="math inline">\({\{0,1\}}^\mathbb{N}\)</span> which are well-known in ergodic theory: the dyadic odometer and the Pascal transformation. For each of these transformations, we plot the graph of the conjugate transformation of <span class="math inline">\([0,1]\)</span> obtained by the dyadic representation.</p>
+<div id="dyadic-expansion" class="section level2">
+<h2>Dyadic expansion</h2>
+<p>Every real number <span class="math inline">\(u \in [0,1]\)</span> has a <em>dyadic expansion</em> (or <em>binary expansion</em>): <span class="math display">\[
+u = \frac{\epsilon_1}{2} + \frac{\epsilon_2}{2^2} + \frac{\epsilon_3}{2^3} + \ldots
+\]</span> where <span class="math inline">\(\epsilon_i=0\)</span> or <span class="math inline">\(1\)</span>. We say that the sequence <span class="math inline">\((\epsilon_1, \epsilon_2, \ldots)\)</span> is the <em>dyadic representation</em> of <span class="math inline">\(u\)</span>.</p>
+<p>The <code>num2dyadic</code> function below returns the dyadic representation of <span class="math inline">\(u \in [0,1]\)</span>.</p>
+<pre class="r"><code>num2dyadic &lt;- function(u, nmax=1024L){ 
+  out &lt;- integer(nmax)
+  i &lt;- j &lt;- 0L
+  while(u&gt;0 &amp;&amp; i&lt;nmax){
+    j &lt;- 1L + max(0L,floor(-log2(u*(1+.Machine$double.eps^.5)))) 
+    if(i+j &lt;= nmax){
+      i &lt;- i + j
+      out[i] &lt;- 1L
+      u &lt;- 2L^j*u - 1L
+    }else{
+      i &lt;- nmax
+    }
+  }
+  return(out[1:i])
+}</code></pre>
+<p>The <code>dyadic2num</code> function below does the reverse action:</p>
+<pre class="r"><code>dyadic2num &lt;- function(d) sum(d/2L^(seq_along(d))) </code></pre>
+<p>Let us check that the dyadic representation of <span class="math inline">\(0.75 = \frac{1}{2}+\frac{1}{4}\)</span> is <span class="math inline">\((1,1)\)</span>:</p>
+<pre class="r"><code>num2dyadic(1/2+1/4)
+## [1] 1 1</code></pre>
+<p>The real number <span class="math inline">\(u=0.2\)</span> has the infinite periodic dyadic representation <span class="math inline">\((0, 0, 1, 1, 0, 0, 1, 1, \ldots)\)</span>. The <code>num2dyadic</code> function applied to <span class="math inline">\(0.2\)</span> returns only the first <span class="math inline">\(54\)</span> digits of its dyadic representation:</p>
+<pre class="r"><code>( d &lt;- num2dyadic(0.2) )
+##  [1] 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1
+## [36] 1 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 0 1
+length(d)
+## [1] 54</code></pre>
+<p>But it makes no difference for R:</p>
+<pre class="r"><code>dyadic2num(d) == 0.2
+## [1] TRUE</code></pre>
+</div>
+<div id="the-dyadic-odometer" class="section level2">
+<h2>The dyadic odometer</h2>
+<p>The dyadic odometer is the transformation <span class="math inline">\(O\)</span> of the set <span class="math inline">\({\{0,1\}}^{\mathbb{N}}\)</span> defined by <span class="math inline">\(O(d) = d + (1, 0, 0, \ldots)\)</span>, where “<span class="math inline">\(+\)</span>” is the addition <span class="math inline">\(\bmod\, 2\)</span> with carry to the right.</p>
+<p>The <code>odometer</code> function below is an implementation of the dyadic odometer and its inverse (option <code>image=&quot;backward&quot;</code>).</p>
+<pre class="r"><code>odometer &lt;- function(d, image=c(&quot;forward&quot;, &quot;backward&quot;)){
+  image &lt;- match.arg(image)
+  if(image==&quot;forward&quot;){
+    if(all(d==1L)){
+      d &lt;- c(rep(0L, length(d)), 1L)
+    }else{
+      k &lt;- which.min(d)
+      d[1:k] &lt;- 1L-d[1:k]
+    }
+  }
+  if(image==&quot;backward&quot;){
+    if(all(d==0L)){
+      d &lt;- c(rep(1L, length(d)), 0L)
+    }else{
+      k &lt;- which.max(d)
+      d[1:k] &lt;- 1L-d[1:k]
+    }
+  }
+  return(d)
+}</code></pre>
+<p>Using the dyadic representation, the odometer also defines a map from the interval <span class="math inline">\([0,1]\)</span> to itself. We plot its graph below:</p>
+<pre class="r"><code>par(mar=c(4,4,2,2))
+u &lt;- seq(0, 0.995, by=0.005)
+Ou &lt;- sapply(u, function(u) dyadic2num(odometer(num2dyadic(u))))
+plot(u, Ou, xlab=&quot;u&quot;, ylab=&quot;O(u)&quot;, 
+     xlim=c(0,1), ylim=c(0,1),
+     pch=19, cex=.25, 
+     pty=&quot;s&quot;, xaxs=&quot;i&quot;, yaxs=&quot;i&quot;)
+grid(nx=10)</code></pre>
+<p><img src="assets/fig/dyadic-plot_odometer-1.png" width="384" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-pascal-transformation" class="section level2">
+<h2>The Pascal transformation</h2>
+<p>The Pascal transformation <span class="math inline">\(P\)</span> is defined for every <span class="math inline">\(d \in {\{0,1\}}^{\mathbb{N}}\)</span> except when <span class="math inline">\(d=000\ldots\)</span> or when <span class="math inline">\(d\)</span> has the form <span class="math inline">\(d=0^i111\ldots\)</span> (<span class="math inline">\(i\geq 0\)</span>). Such a <span class="math inline">\(d\)</span> has the form <span class="math inline">\(d= 0^m1^k10x\)</span> where <span class="math inline">\(m,k \geq 0\)</span> and <span class="math inline">\(x \in {\{0,1\}}^{\mathbb{N}}\)</span>, and then the image of <span class="math inline">\(d\)</span> by the Pascal transformation is <span class="math display">\[
+P(0^m1^k10x) = 1^k0^m01x.
+\]</span> The case when <span class="math inline">\(d=0^i111\ldots\)</span> does not occur for us since we deal with finite sequences only. One naturally extends the Pascal transformation to include the case <span class="math inline">\(d=000\ldots\)</span> by setting <span class="math inline">\(P(000\ldots) = 000\ldots\)</span>.</p>
+<pre class="r"><code>pascal &lt;- function(d){
+  if(all(d==0L)) return(0L)
+  i &lt;- which.max(d)
+  m1 &lt;- i-1L
+  d0 &lt;- c(d, 0L)
+  k1 &lt;- which.min(d0[-(1:i)])-1L
+  begin &lt;- c(rep(1L, k1), rep(0L, m1+1L), 1L)
+  if(length(d)==m1+k1+1L) d &lt;- begin else d[1L:(m1+k1+2L)] &lt;- begin
+  return(d)
+}</code></pre>
+<p>By the dyadic representation, the Pascal transformation also defines a map from the interval <span class="math inline">\([0,1)\)</span> to itself, whose graph is plotted below:</p>
+<pre class="r"><code>par(mar=c(4,4,2,2))
+u &lt;- seq(0, 1-1/2^10, by=1/2^10)
+Pu &lt;- sapply(u, function(u) dyadic2num(pascal(num2dyadic(u))))
+plot(u, Pu, xlab=&quot;u&quot;, ylab=&quot;P(u)&quot;, 
+     xlim=c(0,1), ylim=c(0,1),
+     pch=19, cex=.25, 
+     pty=&quot;s&quot;, xaxs=&quot;i&quot;, yaxs=&quot;i&quot;)
+grid(nx=10)</code></pre>
+<p><img src="assets/fig/dyadic-plot_pascal-1.png" width="384" style="display: block; margin: auto;" /></p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
