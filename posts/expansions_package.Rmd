@@ -1,0 +1,96 @@
+---
+title: "The expansions package: integer and float expansions, and odometers"
+date: "2016-08-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(expansions)
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE, fig.path="./assets/fig/expansions-")
+```
+
+
+I released the `expansions` package for R [on github](https://github.com/stla/expansions). 
+It works on Linux only. 
+
+## Expansions of integer and real numbers
+
+### Conversion of decimal integers to integer base
+
+This is the role of the `intAtBase` function:
+
+```{r}
+intAtBase(14, base=3)
+2*1 + 1*3 + 1*3^2
+```
+
+### Cantor expansions, or "ary" expansions 
+
+The `intToAry` function performs the Cantor expansion of an integer. I explained the Cantor expansion in [a previous article](http://stla.github.io/stlapblog/posts/Greedy.html). 
+
+```{r}
+# (3,4,7)-expansion of 77:
+intToAry(77, c(3,4,7))
+2*1 + 1*3 + 6*(3*4)
+```
+
+```{r}
+# Cartesian product {0,1}x{0,1}:
+sapply(0:3, function(x) intToAry(x, sizes=c(2,2)))
+```
+
+It is implemented with `Rcpp`, and it is fast. 
+
+### Float expansions
+
+The `floatExpand01` function returns the expansion of a real number between $0$ and $1$ to its expansion in a given integer base. For example:
+
+```{r}
+floatExpand01(0.625, base=2)
+```
+
+It means that $0.625 = 1\times \frac{1}{2} + 0 \times \frac{1}{2^2} + 1 \times \frac{1}{2^2}$.
+
+The `floatExpand` function returns a list representing the expansion of a positive number in scientific notation:
+$$
+x = 0.d_1d_2\ldots d_n \times \text{base}^e.
+$$
+the digits $d_1$, $\ldots$, $d_n$ are given in the first component of the list and the exponent $e$ is given in the second one.
+For example:
+
+
+```{r}
+floatExpand(1.125, base=2)
+(1*1/2 + 0*1/2^2 + 1*1/2^3) * 2^1
+```
+
+
+## Odometers and addition of adic integers
+
+The odometer is the action $x \mapsto x+1$ on the group of $b$-adic integers. 
+In other words, $x$ is the expansion in an integer base $b$ of a real number between $0$ and $1$, and the odometer maps $x$ to $x + (1, 0, 0, \ldots)$ where "$+$" is the addition modulo $b$ with carry to the right. 
+
+```{r}
+odometer(c(1,0,1), base=2)
+```
+
+By transporting the $3$-adic integers to $[0,1)$ with the expansion in base $3$, let's have a look at the graph of the $3$-adic odometer:
+
+```{r, fig.width=5, fig.height=5, fig.align='center'}
+ternary2num <- function(t) sum(t/3^seq_along(t))
+num2ternary <- function(u) floatExpand01(u, base=3)
+par(mar=c(4,4,2,2))
+u <- seq(0, 0.995, by=0.0025)
+Ou <- sapply(u, function(u) ternary2num(odometer(num2ternary(u), base=3)))
+plot(u, Ou, xlab="u", ylab="O(u)", xlim=c(0,1), ylim=c(0,1),
+     pch=19, cex=.25, pty="s", xaxs="i", yaxs="i")
+grid(nx=9)
+```
+
+The `expansions` package also provides the function `sumadic` to perform the sum of two adic integers:
+
+```{r}
+sumadic(c(0,1), c(1,1,1), base=2)
+identical(sumadic(c(0,1), 1, base=2), odometer(c(0,1), base=2))
+```
+

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The expansions package: integer and float expansions, and odometers</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">The expansions package: integer and float expansions, and odometers</a>
+              </h3>
+              <span>2016-08-13</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/expansions_package.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>I released the <code>expansions</code> package for R <a href="https://github.com/stla/expansions">on github</a>. It works on Linux only.</p>
+<div id="expansions-of-integer-and-real-numbers" class="section level2">
+<h2>Expansions of integer and real numbers</h2>
+<div id="conversion-of-decimal-integers-to-integer-base" class="section level3">
+<h3>Conversion of decimal integers to integer base</h3>
+<p>This is the role of the <code>intAtBase</code> function:</p>
+<pre class="r"><code>intAtBase(14, base=3)
+## [1] 2 1 1
+2*1 + 1*3 + 1*3^2
+## [1] 14</code></pre>
+</div>
+<div id="cantor-expansions-or-ary-expansions" class="section level3">
+<h3>Cantor expansions, or “ary” expansions</h3>
+<p>The <code>intToAry</code> function performs the Cantor expansion of an integer. I explained the Cantor expansion in <a href="http://stla.github.io/stlapblog/posts/Greedy.html">a previous article</a>.</p>
+<pre class="r"><code># (3,4,7)-expansion of 77:
+intToAry(77, c(3,4,7))
+## [1] 2 1 6
+2*1 + 1*3 + 6*(3*4)
+## [1] 77</code></pre>
+<pre class="r"><code># Cartesian product {0,1}x{0,1}:
+sapply(0:3, function(x) intToAry(x, sizes=c(2,2)))
+##      [,1] [,2] [,3] [,4]
+## [1,]    0    1    0    1
+## [2,]    0    0    1    1</code></pre>
+<p>It is implemented with <code>Rcpp</code>, and it is fast.</p>
+</div>
+<div id="float-expansions" class="section level3">
+<h3>Float expansions</h3>
+<p>The <code>floatExpand01</code> function returns the expansion of a real number between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span> to its expansion in a given integer base. For example:</p>
+<pre class="r"><code>floatExpand01(0.625, base=2)
+## [1] 1 0 1</code></pre>
+<p>It means that <span class="math inline">\(0.625 = 1\times \frac{1}{2} + 0 \times \frac{1}{2^2} + 1 \times \frac{1}{2^2}\)</span>.</p>
+<p>The <code>floatExpand</code> function returns a list representing the expansion of a positive number in scientific notation: <span class="math display">\[
+x = 0.d_1d_2\ldots d_n \times \text{base}^e.
+\]</span> the digits <span class="math inline">\(d_1\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(d_n\)</span> are given in the first component of the list and the exponent <span class="math inline">\(e\)</span> is given in the second one. For example:</p>
+<pre class="r"><code>floatExpand(1.125, base=2)
+## $digits
+## [1] 1 0 0 1
+## 
+## $exponent
+## [1] 1
+(1*1/2 + 0*1/2^2 + 1*1/2^3) * 2^1
+## [1] 1.25</code></pre>
+</div>
+</div>
+<div id="odometers-and-addition-of-adic-integers" class="section level2">
+<h2>Odometers and addition of adic integers</h2>
+<p>The odometer is the action <span class="math inline">\(x \mapsto x+1\)</span> on the group of <span class="math inline">\(b\)</span>-adic integers. In other words, <span class="math inline">\(x\)</span> is the expansion in an integer base <span class="math inline">\(b\)</span> of a real number between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, and the odometer maps <span class="math inline">\(x\)</span> to <span class="math inline">\(x + (1, 0, 0, \ldots)\)</span> where “<span class="math inline">\(+\)</span>” is the addition modulo <span class="math inline">\(b\)</span> with carry to the right.</p>
+<pre class="r"><code>odometer(c(1,0,1), base=2)
+## [1] 0 1 1</code></pre>
+<p>By transporting the <span class="math inline">\(3\)</span>-adic integers to <span class="math inline">\([0,1)\)</span> with the expansion in base <span class="math inline">\(3\)</span>, let’s have a look at the graph of the <span class="math inline">\(3\)</span>-adic odometer:</p>
+<pre class="r"><code>ternary2num &lt;- function(t) sum(t/3^seq_along(t))
+num2ternary &lt;- function(u) floatExpand01(u, base=3)
+par(mar=c(4,4,2,2))
+u &lt;- seq(0, 0.995, by=0.0025)
+Ou &lt;- sapply(u, function(u) ternary2num(odometer(num2ternary(u), base=3)))
+plot(u, Ou, xlab=&quot;u&quot;, ylab=&quot;O(u)&quot;, xlim=c(0,1), ylim=c(0,1),
+     pch=19, cex=.25, pty=&quot;s&quot;, xaxs=&quot;i&quot;, yaxs=&quot;i&quot;)
+grid(nx=9)</code></pre>
+<p><img src="assets/fig/expansions-unnamed-chunk-7-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>The <code>expansions</code> package also provides the function <code>sumadic</code> to perform the sum of two adic integers:</p>
+<pre class="r"><code>sumadic(c(0,1), c(1,1,1), base=2)
+## [1] 1 0 0 1
+identical(sumadic(c(0,1), 1, base=2), odometer(c(0,1), base=2))
+## [1] TRUE</code></pre>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
