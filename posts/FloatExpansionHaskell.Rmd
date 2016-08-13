@@ -6,6 +6,21 @@ output:
     highlight: pygments
 ---
 
+<style type="text/css">
+a:link {
+  text-decoration: underline;
+  -webkit-text-decoration-color: yellow;
+  -moz-text-decoration-color: yellow;
+  text-decoration-color: yellow;
+  border-bottom: yellow 0px solid
+}
+u {
+  border-bottom: yellow;
+}
+</style>
+
+
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
 div.sourceCode { overflow-x: auto; }
@@ -64,14 +79,14 @@ Sys.setenv(PATH = paste0(Sys.getenv()["PATH"], ":", ghc.path))
 
 In [the previous article](http://stla.github.io/stlapblog/posts/DyadicExpansion.html), I wrote a R function returning the binary expansion of a real number $u \in [0,1]$. In the present article, I will: 
 
-- write the same function in Haskell; 
+- write a similar function in Haskell; 
 - write this function in a way compatible with R, inside a module; 
 - compile this module in a dynamic linker suitable for R (`dll` with Windows, `so` with Linux);
 - call the function from R through the dynamic linker.
 
 The creation of a Haskell function compatible with R is allowed by the [Foreign Function Interface (FFI)](https://wiki.haskell.org/Foreign_Function_Interface), in other words the `Foreign` module.
 
-I learnt how to do such things with the help of [this blog post by Neil Mitchell](http://neilmitchell.blogspot.be/2011/10/calling-haskell-from-r.html).
+I learnt how to do such things with the help of [this blog post by Neil Mitchell](http://neilmitchell.blogspot.be/2011/10/calling-haskell-from-r.html). 
 
 
 ## Binary (and more) expansion in Haskell
@@ -186,7 +201,7 @@ It works. But it would be better to have a vector as output.
 
 ## Second dynamic linker: vector output
 
-To get the output as a vector, the main additional modules we need are: `Foreign.R`, `Foreign.R.Types` and `Data.Vector.SEXP`. They are provided by the [`inline-r` package](https://hackage.haskell.org/package/inline-r). 
+To get the output as a vector, the additional modules we need are: `Foreign.R`, `Foreign.R.Types` and `Data.Vector.SEXP`. They are provided by the [`inline-r` package](https://hackage.haskell.org/package/inline-r). 
 The `[Int]` type of the output list of the `floatExpansion` function must be converted to `[Int32]`. We write a simple function `intToInt32` to help us to do the conversion. It works with the help of the `Data.Int` module which is imported via the `Foreign` module.
 
 We end up with this module:
@@ -273,7 +288,7 @@ system.time(lapply(u, num2dyadic))
 
 It is faster. And I have checked that the two functions always return the same results.
 
-Moreover the RHaskell function allows more than the binary expansion, for example the ternary expansion:
+Moreover the "RHaskell" function allows more than the binary expansion, for example the ternary expansion:
 
 ```{r}
 floatExpand(1/3+1/27, base=3)
