@@ -118,7 +118,7 @@ sapply(0:3, function(x) intToAry(x, sizes=c(2,2)))
 <p>It means that <span class="math inline">\(0.625 = 1\times \frac{1}{2} + 0 \times \frac{1}{2^2} + 1 \times \frac{1}{2^2}\)</span>.</p>
 <p>The <code>floatExpand</code> function returns a list representing the expansion of a positive number in scientific notation: <span class="math display">\[
 x = 0.d_1d_2\ldots d_n \times \text{base}^e.
-\]</span> the digits <span class="math inline">\(d_1\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(d_n\)</span> are given in the first component of the list and the exponent <span class="math inline">\(e\)</span> is given in the second one. For example:</p>
+\]</span> The digits <span class="math inline">\(d_1\)</span>, <span class="math inline">\(\ldots\)</span>, <span class="math inline">\(d_n\)</span> are given in the first component of the list and the exponent <span class="math inline">\(e\)</span> is given in the second one. For example:</p>
 <pre class="r"><code>floatExpand(1.125, base=2)
 ## $digits
 ## [1] 1 0 0 1
@@ -134,7 +134,7 @@ x = 0.d_1d_2\ldots d_n \times \text{base}^e.
 <p>The odometer is the action <span class="math inline">\(x \mapsto x+1\)</span> on the group of <span class="math inline">\(b\)</span>-adic integers. In other words, <span class="math inline">\(x\)</span> is the expansion in an integer base <span class="math inline">\(b\)</span> of a real number between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, and the odometer maps <span class="math inline">\(x\)</span> to <span class="math inline">\(x + (1, 0, 0, \ldots)\)</span> where “<span class="math inline">\(+\)</span>” is the addition modulo <span class="math inline">\(b\)</span> with carry to the right.</p>
 <pre class="r"><code>odometer(c(1,0,1), base=2)
 ## [1] 0 1 1</code></pre>
-<p>By transporting the <span class="math inline">\(3\)</span>-adic integers to <span class="math inline">\([0,1)\)</span> with the expansion in base <span class="math inline">\(3\)</span>, let’s have a look at the graph of the <span class="math inline">\(3\)</span>-adic odometer:</p>
+<p>By transporting the <span class="math inline">\(3\)</span>-adic integers to <span class="math inline">\([0,1)\)</span> with the float expansion in base <span class="math inline">\(3\)</span>, let’s have a look at the graph of the <span class="math inline">\(3\)</span>-adic odometer:</p>
 <pre class="r"><code>ternary2num &lt;- function(t) sum(t/3^seq_along(t))
 num2ternary &lt;- function(u) floatExpand01(u, base=3)
 par(mar=c(4,4,2,2))

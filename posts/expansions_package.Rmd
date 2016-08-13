@@ -55,7 +55,7 @@ The `floatExpand` function returns a list representing the expansion of a positi
 $$
 x = 0.d_1d_2\ldots d_n \times \text{base}^e.
 $$
-the digits $d_1$, $\ldots$, $d_n$ are given in the first component of the list and the exponent $e$ is given in the second one.
+The digits $d_1$, $\ldots$, $d_n$ are given in the first component of the list and the exponent $e$ is given in the second one.
 For example:
 
 
@@ -74,7 +74,7 @@ In other words, $x$ is the expansion in an integer base $b$ of a real number bet
 odometer(c(1,0,1), base=2)
 ```
 
-By transporting the $3$-adic integers to $[0,1)$ with the expansion in base $3$, let's have a look at the graph of the $3$-adic odometer:
+By transporting the $3$-adic integers to $[0,1)$ with the float expansion in base $3$, let's have a look at the graph of the $3$-adic odometer:
 
 ```{r, fig.width=5, fig.height=5, fig.align='center'}
 ternary2num <- function(t) sum(t/3^seq_along(t))
