@@ -19,6 +19,7 @@ Chacon <- function(x){
   while(3L^(n+1L)*x >= 3L^(n+1L) - 1L) n <- n+1L 
   while(3L^(n+1L)*x >= 2L*3L^n - 2L && 3L*x < 2L) n <- n+1L
   i <- 1L; A <- c(0L, 2L, 6L, 4L)/9L
+  if((3^(n+1)-1)/2 > 2^31-1) stop("there's a too long vector")
   while(i < n){
     A <- c(A, A + 2L/3L^(i+2L), 1L - 1L/3L^(i+1L), A + 4L/3L^(i+2L))
     i <- i+1L

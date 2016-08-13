@@ -90,6 +90,7 @@
   while(3L^(n+1L)*x &gt;= 3L^(n+1L) - 1L) n &lt;- n+1L 
   while(3L^(n+1L)*x &gt;= 2L*3L^n - 2L &amp;&amp; 3L*x &lt; 2L) n &lt;- n+1L
   i &lt;- 1L; A &lt;- c(0L, 2L, 6L, 4L)/9L
+  if((3^(n+1)-1)/2 &gt; 2^31-1) stop(&quot;there&#39;s a too long vector&quot;)
   while(i &lt; n){
     A &lt;- c(A, A + 2L/3L^(i+2L), 1L - 1L/3L^(i+1L), A + 4L/3L^(i+2L))
     i &lt;- i+1L
