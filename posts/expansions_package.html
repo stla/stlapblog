@@ -94,6 +94,21 @@
 ## [1] 2 1 1
 2*1 + 1*3 + 1*3^2
 ## [1] 14</code></pre>
+<p>The <code>intAtBasePower</code> function returns the expansion of the integer <span class="math inline">\(m^p\)</span> where <span class="math inline">\(m\)</span> and <span class="math inline">\(p\)</span> are supplied by the user:</p>
+<pre class="r"><code>intAtBasePower(2, 5, base=3) == intAtBase(2^5, base=3)
+## [1] TRUE TRUE TRUE TRUE</code></pre>
+<p>The advantage is the possibility to convert huge numbers <span class="math inline">\(m^p\)</span>:</p>
+<pre class="r"><code>intAtBase(2^100, base=3)
+## Error in intAtBase(2^100, base = 3): n is too big
+intAtBasePower(2, 100, base=3)
+##  [1] 1 2 2 0 1 1 1 1 2 2 0 2 2 0 1 1 0 0 2 1 0 2 0 2 1 0 0 2 2 1 0 1 1 0 0
+## [36] 0 0 1 1 1 2 2 1 0 0 0 0 2 2 2 1 2 0 2 1 0 1 0 2 2 2 0 0 1</code></pre>
+<p>The <code>intAtBaseFib</code> function returns the expansion of a Fibonacci number given by its index:</p>
+<pre class="r"><code>intAtBaseFib(6, base=3) == intAtBase(8, base=3)
+## [1] TRUE TRUE
+intAtBaseFib(100, base=3)
+##  [1] 0 1 2 0 1 2 2 0 0 2 2 0 0 1 0 2 0 2 0 0 1 1 1 1 2 1 2 2 2 0 1 2 0 0 0
+## [36] 0 2 0 1 0 2 0 0 1</code></pre>
 </div>
 <div id="cantor-expansions-or-ary-expansions" class="section level3">
 <h3>Cantor expansions, or “ary” expansions</h3>
@@ -108,7 +123,7 @@ sapply(0:3, function(x) intToAry(x, sizes=c(2,2)))
 ##      [,1] [,2] [,3] [,4]
 ## [1,]    0    1    0    1
 ## [2,]    0    0    1    1</code></pre>
-<p>It is implemented with <code>Rcpp</code>, and it is fast.</p>
+<p>It is implemented with <code>Rcpp</code> (<a href="https://github.com/stla/expansions/blob/master/src/rcpp_intToAry.cpp">source code</a>), and it is fast.</p>
 </div>
 <div id="float-expansions" class="section level3">
 <h3>Float expansions</h3>
@@ -143,7 +158,7 @@ Ou &lt;- sapply(u, function(u) ternary2num(odometer(num2ternary(u), base=3)))
 plot(u, Ou, xlab=&quot;u&quot;, ylab=&quot;O(u)&quot;, xlim=c(0,1), ylim=c(0,1),
      pch=19, cex=.25, pty=&quot;s&quot;, xaxs=&quot;i&quot;, yaxs=&quot;i&quot;)
 grid(nx=9)</code></pre>
-<p><img src="assets/fig/expansions-unnamed-chunk-7-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p><img src="assets/fig/expansions-unnamed-chunk-10-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>The <code>expansions</code> package also provides the function <code>sumadic</code> to perform the sum of two adic integers:</p>
 <pre class="r"><code>sumadic(c(0,1), c(1,1,1), base=2)
 ## [1] 1 0 0 1
