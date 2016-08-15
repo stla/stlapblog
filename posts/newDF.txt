@@ -1,0 +1,7 @@
+structure(list(Value = c(1000L, 2000L, 3000L, 4L, 5L, 6L, 7L, 
+8L, 9L, 10L), Status = c(FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, 
+TRUE, TRUE, TRUE, TRUE), Name = c("Alice", "Bob", "Chris", "D", 
+"E", "F", "G", "H", "I", "J"), Date = structure(c(13149, 13150, 
+13151, 17031, 17032, 17033, 17034, 17035, 17036, 17037), class = "Date")), .Names = c("Value", 
+"Status", "Name", "Date"), row.names = c("1", "2", "3", "4", 
+"5", "6", "7", "8", "9", "10"), class = "data.frame")

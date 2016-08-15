@@ -1,0 +1,178 @@
+---
+title: "Edit a table with Shiny and rhandsontable"
+date: "2016-08-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+With the help of the awesome `rhandsontable` package, I've done a Shiny app allowing to edit a data frame and to save the result in a file than can be loaded in R. I was greatly helped by an example given in the [github repo of this package](https://github.com/jrowen/rhandsontable).
+
+For example, take the following data frame:
+
+```{r}
+( DF <- data.frame(Value = 1:10, Status = TRUE, Name = LETTERS[1:10],
+                 Date = seq(from = Sys.Date(), by = "days", length.out = 10),
+                 stringsAsFactors = FALSE) )
+```
+
+The app is launched by running the function `editTable` I will give below. Just take a look before:
+
+```{r, eval=FALSE}
+editTable(DF, outdir="~/Documents/", outfilename="newDF")
+```
+
+<div style="text-align:center">
+<img src="./assets/img/shiny_editTable_screenshot1.png" style="width: 99%; margin-bottom: 0.5em; border:3px solid pink">
+</div>
+
+
+Now I edit the table:
+
+<div style="text-align:center">
+<img src="./assets/img/shiny_editTable_screenshot2.png" style="width: 95%; margin-bottom: 0.5em">
+</div>
+
+
+I click on the *Save* button and I get the ASCII file `newDF.txt` containing the new data frame:
+
+```{r}
+dget("newDF.txt")
+```
+
+Here is my code:
+
+```{r, eval=FALSE}
+library(rhandsontable)
+library(shiny)
+
+editTable <- function(DF, outdir=getwd(), outfilename="table"){
+  ui <- shinyUI(fluidPage(
+    
+    titlePanel("Edit and save a table"),
+    sidebarLayout(
+      sidebarPanel(
+        helpText("Shiny app based on an example given in the rhandsontable package.", 
+                 "Right-click on the table to delete/insert rows.", 
+                 "Double-click on a cell to edit"),
+        
+        wellPanel(
+          h3("Table options"),
+          radioButtons("useType", "Use Data Types", c("TRUE", "FALSE"))
+        ),
+        br(), 
+        
+        wellPanel(
+          h3("Save table"), 
+          div(class='row', 
+              div(class="col-sm-6", 
+                  actionButton("save", "Save")),
+              div(class="col-sm-6",
+                  radioButtons("fileType", "File type", c("ASCII", "RDS")))
+          )
+        )
+        
+      ),
+      
+      mainPanel(
+        wellPanel(
+          uiOutput("message", inline=TRUE)
+        ),
+        
+        actionButton("cancel", "Cancel last action"),
+        br(), br(), 
+        
+        rHandsontableOutput("hot"),
+        br(),
+        
+        wellPanel(
+          h3("Add a column"),
+          div(class='row', 
+              div(class="col-sm-5", 
+                  uiOutput("ui_newcolname"),
+                  actionButton("addcolumn", "Add")),
+              div(class="col-sm-4", 
+                  radioButtons("newcolumntype", "Type", c("integer", "double", "character"))),
+              div(class="col-sm-3")
+          )
+        )
+        
+      )
+    )
+  ))
+  
+  server <- shinyServer(function(input, output) {
+    
+    values <- reactiveValues()
+    
+    ## Handsontable
+    observe({
+      if (!is.null(input$hot)) {
+        values[["previous"]] <- isolate(values[["DF"]])
+        DF = hot_to_r(input$hot)
+      } else {
+        if (is.null(values[["DF"]]))
+          DF <- DF
+        else
+          DF <- values[["DF"]]
+      }
+      values[["DF"]] <- DF
+    })
+    
+    output$hot <- renderRHandsontable({
+      DF <- values[["DF"]]
+      if (!is.null(DF))
+        rhandsontable(DF, useTypes = as.logical(input$useType), stretchH = "all")
+    })
+    
+    ## Save 
+    observeEvent(input$save, {
+      fileType <- isolate(input$fileType)
+      finalDF <- isolate(values[["DF"]])
+      if(fileType == "ASCII"){
+        dput(finalDF, file=file.path(outdir, sprintf("%s.txt", outfilename)))
+      }
+      else{
+        saveRDS(finalDF, file=file.path(outdir, sprintf("%s.rds", outfilename)))
+      }
+    }
+    )
+    
+    ## Cancel last action    
+    observeEvent(input$cancel, {
+      if(!is.null(isolate(values[["previous"]]))) values[["DF"]] <- isolate(values[["previous"]])
+    })
+    
+    ## Add column
+    output$ui_newcolname <- renderUI({
+      textInput("newcolumnname", "Name", sprintf("newcol%s", 1+ncol(values[["DF"]])))
+    })
+    observeEvent(input$addcolumn, {
+      DF <- isolate(values[["DF"]])
+      values[["previous"]] <- DF
+      newcolumn <- eval(parse(text=sprintf('%s(nrow(DF))', isolate(input$newcolumntype))))
+      values[["DF"]] <- setNames(cbind(DF, newcolumn, stringsAsFactors=FALSE), c(names(DF), isolate(input$newcolumnname)))
+    })
+    
+    ## Message
+    output$message <- renderUI({
+      if(input$save==0){
+        helpText(sprintf("This table will be saved in folder \"%s\" once you press the Save button.", outdir))
+      }else{
+        outfile <- ifelse(isolate(input$fileType)=="ASCII", "table.txt", "table.rds")
+        fun <- ifelse(isolate(input$fileType)=="ASCII", "dget", "readRDS")
+        list(helpText(sprintf("File saved: \"%s\".", file.path(outdir, outfile))),
+             helpText(sprintf("Type %s(\"%s\") to get it.", fun, outfile)))
+      }
+    })
+    
+  })
+  
+  ## run app 
+  runApp(list(ui=ui, server=server))
+  return(invisible())
+}
+```
+

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit a table with Shiny and rhandsontable</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Edit a table with Shiny and rhandsontable</a>
+              </h3>
+              <span>2016-08-15</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/shiny_editTable.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>With the help of the awesome <code>rhandsontable</code> package, I’ve done a Shiny app allowing to edit a data frame and to save the result in a file than can be loaded in R. I was greatly helped by an example given in the <a href="https://github.com/jrowen/rhandsontable">github repo of this package</a>.</p>
+<p>For example, take the following data frame:</p>
+<pre class="r"><code>( DF &lt;- data.frame(Value = 1:10, Status = TRUE, Name = LETTERS[1:10],
+                 Date = seq(from = Sys.Date(), by = &quot;days&quot;, length.out = 10),
+                 stringsAsFactors = FALSE) )</code></pre>
+<pre><code>##    Value Status Name       Date
+## 1      1   TRUE    A 2016-08-15
+## 2      2   TRUE    B 2016-08-16
+## 3      3   TRUE    C 2016-08-17
+## 4      4   TRUE    D 2016-08-18
+## 5      5   TRUE    E 2016-08-19
+## 6      6   TRUE    F 2016-08-20
+## 7      7   TRUE    G 2016-08-21
+## 8      8   TRUE    H 2016-08-22
+## 9      9   TRUE    I 2016-08-23
+## 10    10   TRUE    J 2016-08-24</code></pre>
+<p>The app is launched by running the function <code>editTable</code> I will give below. Just take a look before:</p>
+<pre class="r"><code>editTable(DF, outdir=&quot;~/Documents/&quot;, outfilename=&quot;newDF&quot;)</code></pre>
+<div style="text-align:center">
+<p><img src="assets/img/shiny_editTable_screenshot1.png" style="width: 99%; margin-bottom: 0.5em; border:3px solid pink"></p>
+</div>
+<p>Now I edit the table:</p>
+<div style="text-align:center">
+<p><img src="assets/img/shiny_editTable_screenshot2.png" style="width: 95%; margin-bottom: 0.5em"></p>
+</div>
+<p>I click on the <em>Save</em> button and I get the ASCII file <code>newDF.txt</code> containing the new data frame:</p>
+<pre class="r"><code>dget(&quot;newDF.txt&quot;)</code></pre>
+<pre><code>##    Value Status  Name       Date
+## 1   1000  FALSE Alice 2006-01-01
+## 2   2000  FALSE   Bob 2006-01-02
+## 3   3000  FALSE Chris 2006-01-03
+## 4      4   TRUE     D 2016-08-18
+## 5      5   TRUE     E 2016-08-19
+## 6      6   TRUE     F 2016-08-20
+## 7      7   TRUE     G 2016-08-21
+## 8      8   TRUE     H 2016-08-22
+## 9      9   TRUE     I 2016-08-23
+## 10    10   TRUE     J 2016-08-24</code></pre>
+<p>Here is my code:</p>
+<pre class="r"><code>library(rhandsontable)
+library(shiny)
+
+editTable &lt;- function(DF, outdir=getwd(), outfilename=&quot;table&quot;){
+  ui &lt;- shinyUI(fluidPage(
+    
+    titlePanel(&quot;Edit and save a table&quot;),
+    sidebarLayout(
+      sidebarPanel(
+        helpText(&quot;Shiny app based on an example given in the rhandsontable package.&quot;, 
+                 &quot;Right-click on the table to delete/insert rows.&quot;, 
+                 &quot;Double-click on a cell to edit&quot;),
+        
+        wellPanel(
+          h3(&quot;Table options&quot;),
+          radioButtons(&quot;useType&quot;, &quot;Use Data Types&quot;, c(&quot;TRUE&quot;, &quot;FALSE&quot;))
+        ),
+        br(), 
+        
+        wellPanel(
+          h3(&quot;Save table&quot;), 
+          div(class=&#39;row&#39;, 
+              div(class=&quot;col-sm-6&quot;, 
+                  actionButton(&quot;save&quot;, &quot;Save&quot;)),
+              div(class=&quot;col-sm-6&quot;,
+                  radioButtons(&quot;fileType&quot;, &quot;File type&quot;, c(&quot;ASCII&quot;, &quot;RDS&quot;)))
+          )
+        )
+        
+      ),
+      
+      mainPanel(
+        wellPanel(
+          uiOutput(&quot;message&quot;, inline=TRUE)
+        ),
+        
+        actionButton(&quot;cancel&quot;, &quot;Cancel last action&quot;),
+        br(), br(), 
+        
+        rHandsontableOutput(&quot;hot&quot;),
+        br(),
+        
+        wellPanel(
+          h3(&quot;Add a column&quot;),
+          div(class=&#39;row&#39;, 
+              div(class=&quot;col-sm-5&quot;, 
+                  uiOutput(&quot;ui_newcolname&quot;),
+                  actionButton(&quot;addcolumn&quot;, &quot;Add&quot;)),
+              div(class=&quot;col-sm-4&quot;, 
+                  radioButtons(&quot;newcolumntype&quot;, &quot;Type&quot;, c(&quot;integer&quot;, &quot;double&quot;, &quot;character&quot;))),
+              div(class=&quot;col-sm-3&quot;)
+          )
+        )
+        
+      )
+    )
+  ))
+  
+  server &lt;- shinyServer(function(input, output) {
+    
+    values &lt;- reactiveValues()
+    
+    ## Handsontable
+    observe({
+      if (!is.null(input$hot)) {
+        values[[&quot;previous&quot;]] &lt;- isolate(values[[&quot;DF&quot;]])
+        DF = hot_to_r(input$hot)
+      } else {
+        if (is.null(values[[&quot;DF&quot;]]))
+          DF &lt;- DF
+        else
+          DF &lt;- values[[&quot;DF&quot;]]
+      }
+      values[[&quot;DF&quot;]] &lt;- DF
+    })
+    
+    output$hot &lt;- renderRHandsontable({
+      DF &lt;- values[[&quot;DF&quot;]]
+      if (!is.null(DF))
+        rhandsontable(DF, useTypes = as.logical(input$useType), stretchH = &quot;all&quot;)
+    })
+    
+    ## Save 
+    observeEvent(input$save, {
+      fileType &lt;- isolate(input$fileType)
+      finalDF &lt;- isolate(values[[&quot;DF&quot;]])
+      if(fileType == &quot;ASCII&quot;){
+        dput(finalDF, file=file.path(outdir, sprintf(&quot;%s.txt&quot;, outfilename)))
+      }
+      else{
+        saveRDS(finalDF, file=file.path(outdir, sprintf(&quot;%s.rds&quot;, outfilename)))
+      }
+    }
+    )
+    
+    ## Cancel last action    
+    observeEvent(input$cancel, {
+      if(!is.null(isolate(values[[&quot;previous&quot;]]))) values[[&quot;DF&quot;]] &lt;- isolate(values[[&quot;previous&quot;]])
+    })
+    
+    ## Add column
+    output$ui_newcolname &lt;- renderUI({
+      textInput(&quot;newcolumnname&quot;, &quot;Name&quot;, sprintf(&quot;newcol%s&quot;, 1+ncol(values[[&quot;DF&quot;]])))
+    })
+    observeEvent(input$addcolumn, {
+      DF &lt;- isolate(values[[&quot;DF&quot;]])
+      values[[&quot;previous&quot;]] &lt;- DF
+      newcolumn &lt;- eval(parse(text=sprintf(&#39;%s(nrow(DF))&#39;, isolate(input$newcolumntype))))
+      values[[&quot;DF&quot;]] &lt;- setNames(cbind(DF, newcolumn, stringsAsFactors=FALSE), c(names(DF), isolate(input$newcolumnname)))
+    })
+    
+    ## Message
+    output$message &lt;- renderUI({
+      if(input$save==0){
+        helpText(sprintf(&quot;This table will be saved in folder \&quot;%s\&quot; once you press the Save button.&quot;, outdir))
+      }else{
+        outfile &lt;- ifelse(isolate(input$fileType)==&quot;ASCII&quot;, &quot;table.txt&quot;, &quot;table.rds&quot;)
+        fun &lt;- ifelse(isolate(input$fileType)==&quot;ASCII&quot;, &quot;dget&quot;, &quot;readRDS&quot;)
+        list(helpText(sprintf(&quot;File saved: \&quot;%s\&quot;.&quot;, file.path(outdir, outfile))),
+             helpText(sprintf(&quot;Type %s(\&quot;%s\&quot;) to get it.&quot;, fun, outfile)))
+      }
+    })
+    
+  })
+  
+  ## run app 
+  runApp(list(ui=ui, server=server))
+  return(invisible())
+}</code></pre>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
