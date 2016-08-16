@@ -96,7 +96,6 @@ u {
   border-bottom: yellow;
 }
 </style>
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
 div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
@@ -139,7 +138,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     background-color: white;
   }
 </style>
-<p><strong><em>(latest update : 2016-08-13 23:56:29)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-08-16 19:10:36)</em></strong> <br/></p>
 <p>In <a href="http://stla.github.io/stlapblog/posts/DyadicExpansion.html">the previous article</a>, I wrote a R function returning the binary expansion of a real number <span class="math inline">\(u \in [0,1]\)</span>. In the present article, I will:</p>
 <ul>
 <li>write a similar function in Haskell;</li>
@@ -282,10 +281,10 @@ floatExpansion base u = replicate (- snd expansion) 0 ++ fst expansion
 <pre class="r"><code>u &lt;- runif(5000)
 system.time(lapply(u, floatExpand))
 ##    user  system elapsed 
-##   0.149   0.020   0.168
+##   0.154   0.000   0.154
 system.time(lapply(u, num2dyadic))
 ##    user  system elapsed 
-##   0.681   0.000   0.676</code></pre>
+##   0.749   0.000   0.745</code></pre>
 <p>It is faster. And I have checked that the two functions always return the same results.</p>
 <p>Moreover the “RHaskell” function allows more than the binary expansion, for example the ternary expansion:</p>
 <pre class="r"><code>floatExpand(1/3+1/27, base=3)

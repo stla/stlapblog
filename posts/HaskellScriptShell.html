@@ -81,10 +81,9 @@
                 <a href="#">Script shell en Haskell</a>
               </h3>
               <span>2016-08-16</span><br/>
-               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/HaskellSciptShell.Rmd'>Source</a>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/HaskellScriptShell.Rmd'>Source</a>
               <div class='lead'>
 
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
 div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
@@ -148,59 +147,59 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 &gt; Match whole word? (y/n) y
 &gt; Search recursively? (y/n) </code></pre>
 <p>Voilà ce script :</p>
-<pre class="bash"><code>#!/bin/bash
-echo -n &quot;&gt; Type of the files you&#39;re looking for: &quot;
-fileType=&quot;&quot;
-while [ &quot;$type&quot; = &quot;&quot; ]
-do
-    read type
-    if [ &quot;$type&quot; = &quot;&quot; ]; then
-        echo &quot;Please enter a file type&quot;
-    fi
-done
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="co">#!/bin/bash</span>
+<span class="kw">echo</span> -n <span class="st">&quot;&gt; Type of the files you&#39;re looking for: &quot;</span>
+<span class="ot">fileType=</span><span class="st">&quot;&quot;</span>
+<span class="kw">while [</span> <span class="st">&quot;</span><span class="ot">$type</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;&quot;</span><span class="kw"> ]</span>
+<span class="kw">do</span>
+    <span class="kw">read</span> <span class="ot">type</span>
+    <span class="kw">if [</span> <span class="st">&quot;</span><span class="ot">$type</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;&quot;</span><span class="kw"> ]</span>; <span class="kw">then</span>
+        <span class="kw">echo</span> <span class="st">&quot;Please enter a file type&quot;</span>
+    <span class="kw">fi</span>
+<span class="kw">done</span>
 
-echo -n &quot;&gt; Pattern you&#39;re looking for: &quot;
-pattern=&quot;&quot;
-while [ &quot;$pattern&quot; = &quot;&quot; ]
-do
-    read pattern
-    if [ &quot;$pattern&quot; = &quot;&quot; ]; then
-        echo &quot;Please enter a pattern&quot;
-    fi
-done
+<span class="kw">echo</span> -n <span class="st">&quot;&gt; Pattern you&#39;re looking for: &quot;</span>
+<span class="ot">pattern=</span><span class="st">&quot;&quot;</span>
+<span class="kw">while [</span> <span class="st">&quot;</span><span class="ot">$pattern</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;&quot;</span><span class="kw"> ]</span>
+<span class="kw">do</span>
+    <span class="kw">read</span> <span class="ot">pattern</span>
+    <span class="kw">if [</span> <span class="st">&quot;</span><span class="ot">$pattern</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;&quot;</span><span class="kw"> ]</span>; <span class="kw">then</span>
+        <span class="kw">echo</span> <span class="st">&quot;Please enter a pattern&quot;</span>
+    <span class="kw">fi</span>
+<span class="kw">done</span>
 
-option=&quot;-n&quot;
-echo -n &quot;&gt; Match whole word? (y/n) &quot;
-yesno=&quot;&quot;
-while ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]
-do
-    read yesno
-    if ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]; then
-        echo -n &quot;Please type y or n&quot;
-    fi
-done
-if [ &quot;$yesno&quot; = &quot;y&quot; ] || [ &quot;$yesno&quot; = &quot;Y&quot; ]; then
-    option+=&quot;w&quot;
-fi
+<span class="ot">option=</span><span class="st">&quot;-n&quot;</span>
+<span class="kw">echo</span> -n <span class="st">&quot;&gt; Match whole word? (y/n) &quot;</span>
+<span class="ot">yesno=</span><span class="st">&quot;&quot;</span>
+<span class="kw">while</span> !<span class="kw"> [[</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> =~ ^(y|Y|n|N)$<span class="kw"> ]]</span>
+<span class="kw">do</span>
+    <span class="kw">read</span> <span class="ot">yesno</span>
+    <span class="kw">if</span> !<span class="kw"> [[</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> =~ ^(y|Y|n|N)$<span class="kw"> ]]</span>; <span class="kw">then</span>
+        <span class="kw">echo</span> -n <span class="st">&quot;Please type y or n&quot;</span>
+    <span class="kw">fi</span>
+<span class="kw">done</span>
+<span class="kw">if [</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;y&quot;</span><span class="kw"> ]</span> <span class="kw">|| [</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;Y&quot;</span><span class="kw"> ]</span>; <span class="kw">then</span>
+    <span class="ot">option+=</span><span class="st">&quot;w&quot;</span>
+<span class="kw">fi</span>
 
-echo -n &quot;&gt; Search recursively? (y/n) &quot;
-yesno=&quot;&quot;
-while ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]
-do
-    read yesno
-    if ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]; then
-        echo -n &quot;Please type y or n&quot;
-    fi
-done
-if [ &quot;$yesno&quot; = &quot;y&quot; ] || [ &quot;$yesno&quot; = &quot;Y&quot; ]; then
-    option+=&quot;r&quot;
-else
-    option+=&quot;s&quot;
-fi
+<span class="kw">echo</span> -n <span class="st">&quot;&gt; Search recursively? (y/n) &quot;</span>
+<span class="ot">yesno=</span><span class="st">&quot;&quot;</span>
+<span class="kw">while</span> !<span class="kw"> [[</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> =~ ^(y|Y|n|N)$<span class="kw"> ]]</span>
+<span class="kw">do</span>
+    <span class="kw">read</span> <span class="ot">yesno</span>
+    <span class="kw">if</span> !<span class="kw"> [[</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> =~ ^(y|Y|n|N)$<span class="kw"> ]]</span>; <span class="kw">then</span>
+        <span class="kw">echo</span> -n <span class="st">&quot;Please type y or n&quot;</span>
+    <span class="kw">fi</span>
+<span class="kw">done</span>
+<span class="kw">if [</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;y&quot;</span><span class="kw"> ]</span> <span class="kw">|| [</span> <span class="st">&quot;</span><span class="ot">$yesno</span><span class="st">&quot;</span> <span class="ot">=</span> <span class="st">&quot;Y&quot;</span><span class="kw"> ]</span>; <span class="kw">then</span>
+    <span class="ot">option+=</span><span class="st">&quot;r&quot;</span>
+<span class="kw">else</span>
+    <span class="ot">option+=</span><span class="st">&quot;s&quot;</span>
+<span class="kw">fi</span>
 
-echo &quot;--- Results: ---&quot;
-grep --include=\*.$type $option -e &quot;$pattern&quot; .
-exit 0</code></pre>
+<span class="kw">echo</span> <span class="st">&quot;--- Results: ---&quot;</span>
+<span class="kw">grep</span> --include=<span class="dt">\*</span>.<span class="ot">$type</span> <span class="ot">$option</span> -e <span class="st">&quot;</span><span class="ot">$pattern</span><span class="st">&quot;</span> .
+<span class="kw">exit</span> 0</code></pre></div>
 <p>Le langage n’est pas compliqué mais est toutefois un peu délicat. Par exemple, il suffit d’oublier un espace pour que le script ne fonctionne pas.</p>
 </div>
 <div id="script-shell-en-haskell" class="section level2">
@@ -209,64 +208,64 @@ exit 0</code></pre>
 <div id="executer-une-commande-systeme-dans-haskell" class="section level3">
 <h3>Exécuter une commande système dans Haskell</h3>
 <p>Dans Haskell, on peut éxecuter la commande précédente ainsi :</p>
-<pre class="haskell"><code>import System.Process
-r &lt;- readCreateProcess (shell &quot;grep --include=\\*.hs -n -w -r -e &#39;hello&#39; .&quot;) &quot;&quot;
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+r <span class="ot">&lt;-</span> readCreateProcess (shell <span class="st">&quot;grep --include=\\*.hs -n -w -r -e &#39;hello&#39; .&quot;</span>) <span class="st">&quot;&quot;</span>
 putStrLn r
-## *** Exception: readCreateProcess: grep --include=\*.hs -n -w -r -e &#39;hello&#39; . (exit 1): failed</code></pre>
+<span class="st">## *** Exception: readCreateProcess: grep --</span><span class="kw">include</span><span class="st">=\*.hs -n -w -r -e &#39;hello&#39; . (exit 1): failed</span></code></pre></div>
 <p>La fonction <code>readProcess</code> permet de passer les options à <code>grep</code> de façon plus commode, dans une liste :</p>
-<pre class="haskell"><code>import System.Process
-r &lt;- readProcess &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;hello&quot;, &quot;.&quot;] &quot;&quot;
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+r <span class="ot">&lt;-</span> readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;hello&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 putStrLn r
-## *** Exception: readCreateProcess: grep &quot;--include&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;hello&quot; &quot;.&quot; (exit 1): failed</code></pre>
+<span class="st">## *** Exception: readCreateProcess: grep &quot;--</span><span class="kw">include</span><span class="st">&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;hello&quot; &quot;.&quot; (exit 1): failed</span></code></pre></div>
 <p>Toutefois ces deux fonctions ont un inconvénient. Dans le cas où <code>grep</code> ne trouve aucun fichier correspondant, il retourne un code de sortie d’échec, et ces deux fonctions ne gèrent pas bien cette situation :</p>
-<pre class="haskell"><code>import System.Process
-r &lt;- readProcess &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;xxxxx&quot;, &quot;.&quot;] &quot;&quot;
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+r <span class="ot">&lt;-</span> readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;xxxxx&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 r
-## *** Exception: readCreateProcess: grep &quot;--include&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;xxxxx&quot; &quot;.&quot; (exit 1): failed</code></pre>
+<span class="st">## *** Exception: readCreateProcess: grep &quot;--</span><span class="kw">include</span><span class="st">&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;xxxxx&quot; &quot;.&quot; (exit 1): failed</span></code></pre></div>
 <p>Il vaut mieux utiliser les fonctions <code>readCreateProcessWithExitCode</code> ou <code>readProcessWithExitCode</code> pour gérer cette situation. Avec ces fonctions on obtient un triplet contenant : le code de sortie, la sortie standard et la sortie d’erreur.</p>
-<pre class="haskell"><code>import System.Process
-(exitcode, stdout, stderr) &lt;- readProcessWithExitCode &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;hello&quot;, &quot;.&quot;] &quot;&quot;
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+(exitcode, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;hello&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 (exitcode, stdout, stderr)
-## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</code></pre>
-<pre class="haskell"><code>import System.Process
-(exitcode, stdout, stderr) &lt;- readProcessWithExitCode &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;xxxxx&quot;, &quot;.&quot;] &quot;&quot;
+<span class="st">## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+(exitcode, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;xxxxx&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 (exitcode, stdout, stderr)
-## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</code></pre>
+<span class="st">## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</span></code></pre></div>
 <p>Voici le code Haskell réalisant le script shell :</p>
-<pre class="haskell"><code>-- findpattern.hs
-import System.Process (readProcessWithExitCode)
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="co">-- findpattern.hs</span>
+<span class="kw">import </span><span class="dt">System.Process</span> (readProcessWithExitCode)
 
-yesOrNo :: IO(Bool)
-yesOrNo =
-  do answer &lt;- getLine
-     if answer `elem` [&quot;yes&quot;, &quot;no&quot;, &quot;y&quot;, &quot;n&quot;]
-        then return (if answer `elem` [&quot;yes&quot;,&quot;y&quot;] then True else False)
-        else do putStrLn &quot;please type yes or no&quot;
+<span class="ot">yesOrNo ::</span> <span class="dt">IO</span>(<span class="dt">Bool</span>)
+yesOrNo <span class="fu">=</span>
+  <span class="kw">do</span> answer <span class="ot">&lt;-</span> getLine
+     <span class="kw">if</span> answer <span class="ot">`elem`</span> [<span class="st">&quot;yes&quot;</span>, <span class="st">&quot;no&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;n&quot;</span>]
+        <span class="kw">then</span> return (<span class="kw">if</span> answer <span class="ot">`elem`</span> [<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;y&quot;</span>] <span class="kw">then</span> <span class="dt">True</span> <span class="kw">else</span> <span class="dt">False</span>)
+        <span class="kw">else</span> <span class="kw">do</span> putStrLn <span class="st">&quot;please type yes or no&quot;</span>
                 yesOrNo
 
-main :: IO ()
-main = do
-  -- ask file type
-  putStrLn &quot;&gt; Type of the files you are looking for?&quot;
-  inpStr &lt;- getLine
-  let fileType = inpStr
-  -- ask pattern to search
-  putStrLn &quot;&gt; Pattern you are looking for?&quot;
-  inpStr &lt;- getLine
-  let pattern = inpStr
-  -- ask whether to match whole word
-  putStrLn &quot;&gt; Match whole word?&quot;
-  inpStr &lt;- yesOrNo
-  let wholeword = inpStr
-  -- ask whether to search recursively
-  putStrLn &quot;&gt; Search in subdirectories?&quot;
-  inpStr &lt;- yesOrNo
-  let recursive = inpStr
-  -- run the system command
-  (_, stdout, stderr) &lt;- readProcessWithExitCode &quot;grep&quot; ([&quot;--include&quot;, &quot;*.&quot; ++ fileType, &quot;-n&quot;, if recursive then &quot;-r&quot; else &quot;-s&quot;, &quot;-e&quot;, pattern, &quot;.&quot;] ++ (if wholeword then [&quot;w&quot;] else [])) &quot;&quot;
-  -- print the results
-  putStrLn &quot;\n--- Results: ---\n&quot;
-  if stdout == &quot;&quot; then putStrLn &quot;No result&quot; else putStrLn stdout</code></pre>
+<span class="ot">main ::</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> <span class="kw">do</span>
+  <span class="co">-- ask file type</span>
+  putStrLn <span class="st">&quot;&gt; Type of the files you are looking for?&quot;</span>
+  inpStr <span class="ot">&lt;-</span> getLine
+  <span class="kw">let</span> fileType <span class="fu">=</span> inpStr
+  <span class="co">-- ask pattern to search</span>
+  putStrLn <span class="st">&quot;&gt; Pattern you are looking for?&quot;</span>
+  inpStr <span class="ot">&lt;-</span> getLine
+  <span class="kw">let</span> pattern <span class="fu">=</span> inpStr
+  <span class="co">-- ask whether to match whole word</span>
+  putStrLn <span class="st">&quot;&gt; Match whole word?&quot;</span>
+  inpStr <span class="ot">&lt;-</span> yesOrNo
+  <span class="kw">let</span> wholeword <span class="fu">=</span> inpStr
+  <span class="co">-- ask whether to search recursively</span>
+  putStrLn <span class="st">&quot;&gt; Search in subdirectories?&quot;</span>
+  inpStr <span class="ot">&lt;-</span> yesOrNo
+  <span class="kw">let</span> recursive <span class="fu">=</span> inpStr
+  <span class="co">-- run the system command</span>
+  (_, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> ([<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.&quot;</span> <span class="fu">++</span> fileType, <span class="st">&quot;-n&quot;</span>, <span class="kw">if</span> recursive <span class="kw">then</span> <span class="st">&quot;-r&quot;</span> <span class="kw">else</span> <span class="st">&quot;-s&quot;</span>, <span class="st">&quot;-e&quot;</span>, pattern, <span class="st">&quot;.&quot;</span>] <span class="fu">++</span> (<span class="kw">if</span> wholeword <span class="kw">then</span> [<span class="st">&quot;w&quot;</span>] <span class="kw">else</span> [])) <span class="st">&quot;&quot;</span>
+  <span class="co">-- print the results</span>
+  putStrLn <span class="st">&quot;\n--- Results: ---\n&quot;</span>
+  <span class="kw">if</span> stdout <span class="fu">==</span> <span class="st">&quot;&quot;</span> <span class="kw">then</span> putStrLn <span class="st">&quot;No result&quot;</span> <span class="kw">else</span> putStrLn stdout</code></pre></div>
 <p>Ce code étant dans le fichier <code>findpattern.hs</code>, on crée un fichier exécutable <code>findpattern</code> en compilant avec la commande <code>ghc findpattern.hs</code>.</p>
 </div>
 </div>
