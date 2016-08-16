@@ -1,0 +1,238 @@
+---
+title: "Script shell en Haskell"
+date: "2016-08-16"
+---
+
+```{r setup, include=FALSE}
+# use highlight
+option_packages <- "-package-db /home/stla/.cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d"
+knitr::opts_chunk$set(echo = TRUE, engine='haskell', engine.path='ghc', engine.opts=option_packages, collapse=TRUE)
+PATH <- Sys.getenv()["PATH"] 
+ghc.path <- "/opt/ghc/7.10.3/bin"
+Sys.setenv(PATH = paste0(PATH,":", ghc.path))
+```
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+## Recherche de fichiers contenant un motif
+
+Supposons que l'on recherche tous les fichiers de type `hs` contenant la chaîne de caractères "`hello`", à partir du répertoire courant.
+On peut utiliser la commande suivante:
+
+```
+grep --include=\*.hs -n -w -r -e hello .
+```
+
+Les options utilisées sont:
+
+- `-n` pour afficher les numéros des lignes dans lesquelles apparaissent la chaîne de caractères recherchée ;
+
+- `-w` (*match whole word*) pour rechercher "`hello`" en tant que mot entier (par exemple `hellooo` n'est pas pris en compte si on n'utilise pas cette option) ;
+
+- `-r` (*recursive*) pour rechercher aussi dans les sous-dossiers ; on remplacera cette option  par `-s` pour rechercher uniquement dans le dossier courant.
+
+On peut aussi concaténer les options : `grep --include=\*.hs -nwr -e hello .`.
+
+
+## Script shell en Bash
+
+Il n'est pas aisé de se souvenir de la commande avec ses options. 
+C'est pourquoi j'ai écrit le script shell `findpattern.sh` qui exécute un dialogue avec l'utilisateur puis la commande :
+
+```no-highlight
+$ bash findpattern.sh
+> Type of the files you're looking for: hs
+> Pattern you're looking for: hello
+> Match whole word? (y/n) y
+> Search recursively? (y/n) 
+```
+
+Voilà ce script :
+
+```bash
+#!/bin/bash
+echo -n "> Type of the files you're looking for: "
+fileType=""
+while [ "$type" = "" ]
+do
+	read type
+	if [ "$type" = "" ]; then
+		echo "Please enter a file type"
+	fi
+done
+
+echo -n "> Pattern you're looking for: "
+pattern=""
+while [ "$pattern" = "" ]
+do
+	read pattern
+	if [ "$pattern" = "" ]; then
+		echo "Please enter a pattern"
+	fi
+done
+
+option="-n"
+echo -n "> Match whole word? (y/n) "
+yesno=""
+while ! [[ "$yesno" =~ ^(y|Y|n|N)$ ]]
+do
+	read yesno
+    if ! [[ "$yesno" =~ ^(y|Y|n|N)$ ]]; then
+        echo -n "Please type y or n"
+    fi
+done
+if [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
+    option+="w"
+fi
+
+echo -n "> Search recursively? (y/n) "
+yesno=""
+while ! [[ "$yesno" =~ ^(y|Y|n|N)$ ]]
+do
+	read yesno
+    if ! [[ "$yesno" =~ ^(y|Y|n|N)$ ]]; then
+        echo -n "Please type y or n"
+    fi
+done
+if [ "$yesno" = "y" ] || [ "$yesno" = "Y" ]; then
+    option+="r"
+else
+    option+="s"
+fi
+
+echo "--- Results: ---"
+grep --include=\*.$type $option -e "$pattern" .
+exit 0
+```
+
+Le langage n'est pas compliqué mais est toutefois un peu délicat. Par exemple, il suffit d'oublier un espace pour que le script ne fonctionne pas.
+
+
+## Script shell en Haskell
+
+On peut écrire un script shell en Haskell. Sans discuter des avantages et des inconvénients concernant le script, un avantage certain est qu'il est plus rentable de s'investir dans l'apprentissage de Haskell, qui ne sert pas qu'à faire des scripts. 
+
+### Exécuter une commande système dans Haskell
+
+Dans Haskell, on peut éxecuter la commande précédente ainsi :
+
+```{r}
+import System.Process
+r <- readCreateProcess (shell "grep --include=\\*.hs -n -w -r -e 'hello' .") ""
+putStrLn r
+```
+
+La fonction `readProcess` permet de passer les options à `grep` de façon plus commode, dans une liste :
+
+```{r}
+import System.Process
+r <- readProcess "grep" ["--include", "*.hs", "-n", "-w", "-r", "-e", "hello", "."] ""
+putStrLn r
+```
+
+Toutefois ces deux fonctions ont un inconvénient. Dans le cas où `grep` ne trouve aucun fichier correspondant, il retourne un code de sortie d'échec, et ces deux fonctions ne gèrent pas bien cette situation :
+
+```{r}
+import System.Process
+r <- readProcess "grep" ["--include", "*.hs", "-n", "-w", "-r", "-e", "xxxxx", "."] ""
+r
+```
+
+Il vaut mieux utiliser les fonctions `readCreateProcessWithExitCode` ou `readProcessWithExitCode` pour gérer cette situation. 
+Avec ces fonctions on obtient un triplet contenant : le code de sortie, la sortie standard et la sortie d'erreur.
+
+```{r}
+import System.Process
+(exitcode, stdout, stderr) <- readProcessWithExitCode "grep" ["--include", "*.hs", "-n", "-w", "-r", "-e", "hello", "."] ""
+(exitcode, stdout, stderr)
+```
+
+```{r}
+import System.Process
+(exitcode, stdout, stderr) <- readProcessWithExitCode "grep" ["--include", "*.hs", "-n", "-w", "-r", "-e", "xxxxx", "."] ""
+(exitcode, stdout, stderr)
+```
+
+Voici le code Haskell réalisant le script shell :
+
+```haskell
+-- findpattern.hs
+import System.Process (readProcessWithExitCode)
+
+yesOrNo :: IO(Bool)
+yesOrNo =
+  do answer <- getLine
+     if answer `elem` ["yes", "no", "y", "n"]
+        then return (if answer `elem` ["yes","y"] then True else False)
+        else do putStrLn "please type yes or no"
+                yesOrNo
+
+main :: IO ()
+main = do
+  -- ask file type
+  putStrLn "> Type of the files you are looking for?"
+  inpStr <- getLine
+  let fileType = inpStr
+  -- ask pattern to search
+  putStrLn "> Pattern you are looking for?"
+  inpStr <- getLine
+  let pattern = inpStr
+  -- ask whether to match whole word
+  putStrLn "> Match whole word?"
+  inpStr <- yesOrNo
+  let wholeword = inpStr
+  -- ask whether to search recursively
+  putStrLn "> Search in subdirectories?"
+  inpStr <- yesOrNo
+  let recursive = inpStr
+  -- run the system command
+  (_, stdout, stderr) <- readProcessWithExitCode "grep" (["--include", "*." ++ fileType, "-n", if recursive then "-r" else "-s", "-e", pattern, "."] ++ (if wholeword then ["w"] else [])) ""
+  -- print the results
+  putStrLn "\n--- Results: ---\n"
+  if stdout == "" then putStrLn "No result" else putStrLn stdout
+```
+
+Ce code étant dans le fichier `findpattern.hs`, on crée un fichier exécutable `findpattern` en compilant avec la commande `ghc findpattern.hs`. 

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Script shell en Haskell</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Script shell en Haskell</a>
+              </h3>
+              <span>2016-08-16</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/HaskellSciptShell.Rmd'>Source</a>
+              <div class='lead'>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<div id="recherche-de-fichiers-contenant-un-motif" class="section level2">
+<h2>Recherche de fichiers contenant un motif</h2>
+<p>Supposons que l’on recherche tous les fichiers de type <code>hs</code> contenant la chaîne de caractères “<code>hello</code>”, à partir du répertoire courant. On peut utiliser la commande suivante:</p>
+<pre><code>grep --include=\*.hs -n -w -r -e hello .</code></pre>
+<p>Les options utilisées sont:</p>
+<ul>
+<li><p><code>-n</code> pour afficher les numéros des lignes dans lesquelles apparaissent la chaîne de caractères recherchée ;</p></li>
+<li><p><code>-w</code> (<em>match whole word</em>) pour rechercher “<code>hello</code>” en tant que mot entier (par exemple <code>hellooo</code> n’est pas pris en compte si on n’utilise pas cette option) ;</p></li>
+<li><p><code>-r</code> (<em>recursive</em>) pour rechercher aussi dans les sous-dossiers ; on remplacera cette option par <code>-s</code> pour rechercher uniquement dans le dossier courant.</p></li>
+</ul>
+<p>On peut aussi concaténer les options : <code>grep --include=\*.hs -nwr -e hello .</code>.</p>
+</div>
+<div id="script-shell-en-bash" class="section level2">
+<h2>Script shell en Bash</h2>
+<p>Il n’est pas aisé de se souvenir de la commande avec ses options. C’est pourquoi j’ai écrit le script shell <code>findpattern.sh</code> qui exécute un dialogue avec l’utilisateur puis la commande :</p>
+<pre class="no-highlight"><code>$ bash findpattern.sh
+&gt; Type of the files you&#39;re looking for: hs
+&gt; Pattern you&#39;re looking for: hello
+&gt; Match whole word? (y/n) y
+&gt; Search recursively? (y/n) </code></pre>
+<p>Voilà ce script :</p>
+<pre class="bash"><code>#!/bin/bash
+echo -n &quot;&gt; Type of the files you&#39;re looking for: &quot;
+fileType=&quot;&quot;
+while [ &quot;$type&quot; = &quot;&quot; ]
+do
+    read type
+    if [ &quot;$type&quot; = &quot;&quot; ]; then
+        echo &quot;Please enter a file type&quot;
+    fi
+done
+
+echo -n &quot;&gt; Pattern you&#39;re looking for: &quot;
+pattern=&quot;&quot;
+while [ &quot;$pattern&quot; = &quot;&quot; ]
+do
+    read pattern
+    if [ &quot;$pattern&quot; = &quot;&quot; ]; then
+        echo &quot;Please enter a pattern&quot;
+    fi
+done
+
+option=&quot;-n&quot;
+echo -n &quot;&gt; Match whole word? (y/n) &quot;
+yesno=&quot;&quot;
+while ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]
+do
+    read yesno
+    if ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]; then
+        echo -n &quot;Please type y or n&quot;
+    fi
+done
+if [ &quot;$yesno&quot; = &quot;y&quot; ] || [ &quot;$yesno&quot; = &quot;Y&quot; ]; then
+    option+=&quot;w&quot;
+fi
+
+echo -n &quot;&gt; Search recursively? (y/n) &quot;
+yesno=&quot;&quot;
+while ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]
+do
+    read yesno
+    if ! [[ &quot;$yesno&quot; =~ ^(y|Y|n|N)$ ]]; then
+        echo -n &quot;Please type y or n&quot;
+    fi
+done
+if [ &quot;$yesno&quot; = &quot;y&quot; ] || [ &quot;$yesno&quot; = &quot;Y&quot; ]; then
+    option+=&quot;r&quot;
+else
+    option+=&quot;s&quot;
+fi
+
+echo &quot;--- Results: ---&quot;
+grep --include=\*.$type $option -e &quot;$pattern&quot; .
+exit 0</code></pre>
+<p>Le langage n’est pas compliqué mais est toutefois un peu délicat. Par exemple, il suffit d’oublier un espace pour que le script ne fonctionne pas.</p>
+</div>
+<div id="script-shell-en-haskell" class="section level2">
+<h2>Script shell en Haskell</h2>
+<p>On peut écrire un script shell en Haskell. Sans discuter des avantages et des inconvénients concernant le script, un avantage certain est qu’il est plus rentable de s’investir dans l’apprentissage de Haskell, qui ne sert pas qu’à faire des scripts.</p>
+<div id="executer-une-commande-systeme-dans-haskell" class="section level3">
+<h3>Exécuter une commande système dans Haskell</h3>
+<p>Dans Haskell, on peut éxecuter la commande précédente ainsi :</p>
+<pre class="haskell"><code>import System.Process
+r &lt;- readCreateProcess (shell &quot;grep --include=\\*.hs -n -w -r -e &#39;hello&#39; .&quot;) &quot;&quot;
+putStrLn r
+## *** Exception: readCreateProcess: grep --include=\*.hs -n -w -r -e &#39;hello&#39; . (exit 1): failed</code></pre>
+<p>La fonction <code>readProcess</code> permet de passer les options à <code>grep</code> de façon plus commode, dans une liste :</p>
+<pre class="haskell"><code>import System.Process
+r &lt;- readProcess &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;hello&quot;, &quot;.&quot;] &quot;&quot;
+putStrLn r
+## *** Exception: readCreateProcess: grep &quot;--include&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;hello&quot; &quot;.&quot; (exit 1): failed</code></pre>
+<p>Toutefois ces deux fonctions ont un inconvénient. Dans le cas où <code>grep</code> ne trouve aucun fichier correspondant, il retourne un code de sortie d’échec, et ces deux fonctions ne gèrent pas bien cette situation :</p>
+<pre class="haskell"><code>import System.Process
+r &lt;- readProcess &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;xxxxx&quot;, &quot;.&quot;] &quot;&quot;
+r
+## *** Exception: readCreateProcess: grep &quot;--include&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;xxxxx&quot; &quot;.&quot; (exit 1): failed</code></pre>
+<p>Il vaut mieux utiliser les fonctions <code>readCreateProcessWithExitCode</code> ou <code>readProcessWithExitCode</code> pour gérer cette situation. Avec ces fonctions on obtient un triplet contenant : le code de sortie, la sortie standard et la sortie d’erreur.</p>
+<pre class="haskell"><code>import System.Process
+(exitcode, stdout, stderr) &lt;- readProcessWithExitCode &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;hello&quot;, &quot;.&quot;] &quot;&quot;
+(exitcode, stdout, stderr)
+## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</code></pre>
+<pre class="haskell"><code>import System.Process
+(exitcode, stdout, stderr) &lt;- readProcessWithExitCode &quot;grep&quot; [&quot;--include&quot;, &quot;*.hs&quot;, &quot;-n&quot;, &quot;-w&quot;, &quot;-r&quot;, &quot;-e&quot;, &quot;xxxxx&quot;, &quot;.&quot;] &quot;&quot;
+(exitcode, stdout, stderr)
+## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</code></pre>
+<p>Voici le code Haskell réalisant le script shell :</p>
+<pre class="haskell"><code>-- findpattern.hs
+import System.Process (readProcessWithExitCode)
+
+yesOrNo :: IO(Bool)
+yesOrNo =
+  do answer &lt;- getLine
+     if answer `elem` [&quot;yes&quot;, &quot;no&quot;, &quot;y&quot;, &quot;n&quot;]
+        then return (if answer `elem` [&quot;yes&quot;,&quot;y&quot;] then True else False)
+        else do putStrLn &quot;please type yes or no&quot;
+                yesOrNo
+
+main :: IO ()
+main = do
+  -- ask file type
+  putStrLn &quot;&gt; Type of the files you are looking for?&quot;
+  inpStr &lt;- getLine
+  let fileType = inpStr
+  -- ask pattern to search
+  putStrLn &quot;&gt; Pattern you are looking for?&quot;
+  inpStr &lt;- getLine
+  let pattern = inpStr
+  -- ask whether to match whole word
+  putStrLn &quot;&gt; Match whole word?&quot;
+  inpStr &lt;- yesOrNo
+  let wholeword = inpStr
+  -- ask whether to search recursively
+  putStrLn &quot;&gt; Search in subdirectories?&quot;
+  inpStr &lt;- yesOrNo
+  let recursive = inpStr
+  -- run the system command
+  (_, stdout, stderr) &lt;- readProcessWithExitCode &quot;grep&quot; ([&quot;--include&quot;, &quot;*.&quot; ++ fileType, &quot;-n&quot;, if recursive then &quot;-r&quot; else &quot;-s&quot;, &quot;-e&quot;, pattern, &quot;.&quot;] ++ (if wholeword then [&quot;w&quot;] else [])) &quot;&quot;
+  -- print the results
+  putStrLn &quot;\n--- Results: ---\n&quot;
+  if stdout == &quot;&quot; then putStrLn &quot;No result&quot; else putStrLn stdout</code></pre>
+<p>Ce code étant dans le fichier <code>findpattern.hs</code>, on crée un fichier exécutable <code>findpattern</code> en compilant avec la commande <code>ghc findpattern.hs</code>.</p>
+</div>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
