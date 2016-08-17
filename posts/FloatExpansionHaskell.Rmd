@@ -7,6 +7,23 @@ output:
 ---
 
 <style type="text/css">
+/* background code blocks */ 
+ol.linenums li {
+  background-color: #f5f5f5; 
+}
+
+/* font size code blocks */
+pre code {
+  background-color: #f5f5f5;
+}
+
+/* inline code */
+code {
+	background-color: #f5f5f5;
+}
+</style>
+
+<style type="text/css">
 a:link {
   text-decoration: underline;
   -webkit-text-decoration-color: yellow;

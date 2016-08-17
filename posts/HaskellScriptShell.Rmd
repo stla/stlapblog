@@ -12,6 +12,23 @@ ghc.path <- "/opt/ghc/7.10.3/bin"
 Sys.setenv(PATH = paste0(PATH,":", ghc.path))
 ```
 
+<style type="text/css">
+/* background code blocks */ 
+ol.linenums li {
+  background-color: #f5f5f5; 
+}
+
+/* font size code blocks */
+pre code {
+  background-color: #f5f5f5;
+}
+
+/* inline code */
+code {
+	background-color: #f5f5f5;
+}
+</style>
+
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
 div.sourceCode { overflow-x: auto; }
