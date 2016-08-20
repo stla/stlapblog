@@ -1,0 +1,221 @@
+---
+title: "Nouveau type et lentilles dans Haskell"
+date: "2016-08-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<style type="text/css">
+.hs-keyglyph, .hs-layout {
+	color: #ff9358; 
+	font-weight:bold
+}
+.hs-keyword {
+	color: #00FF00; 
+	font-weight: bold
+} 
+.hs-comment, .hs-comment a {
+	color: #0066ff; 
+	font-weight: bold; 
+	font-style: italic
+}
+.hs-str, .hs-chr {
+	color: #ff2200;
+}
+.hs-num {
+	color: #f0dfaf}
+.output {
+	font-style: italic; 
+	color: gray
+}
+.prompt {
+	color: orange; 
+	font-weight:bold
+}
+.hs-conid {
+	color: yellow
+}
+.hs-conop {
+	color: seaShell; 
+	font-weight:bold
+}
+.hs-varid, .hs-varop, .hs-cpp, .hs-sel, .hs-definition {
+  color: #efef8f;
+}
+pre.scriptHaskell, code.scriptHaskell, ol.linenums li {
+	background-color: #303030;
+}
+pre.scriptHaskell, code.scriptHaskell {
+	color: #efef8f;
+	display: block;
+	padding: 5px;
+	word-break: break all;
+	word-wrap: break-word;
+}
+pre.scriptHaskell {
+	word-break: break all;
+	word-wrap: break-word;
+}
+code.scriptHaskell {
+  white-space: pre;
+	font-family: monospace;
+	border-radius: 0px;
+}
+div.sourceCode { 
+	overflow-x: auto; 
+}
+pre.prettyprint.linenums {
+  background-color: #303029; 
+  border: 1px solid #303030;
+	border-radius: 13px;
+}
+ol.linenums {
+  color: #ffdb58
+}
+</style>
+
+
+## Définir un nouveau type dans Haskell
+
+On utilise `data` pour définir un nouveau type dans Haskell. Quelques exemples élémentaires sont donnés ci-dessous.
+
+<div class='sourceCode'><pre class="scriptHaskell"><code class="scriptHaskell"><span class='prompt'>></span> <span class='hs-comment'>-- ##~~ define a new type ~~## --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- #~ a new type with unnamed fields ~# -- </span>
+<span class='prompt'>></span> <span class='hs-keyword'>data</span> <span class='hs-conid'>Point</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Point</span> <span class='hs-conid'>Float</span> <span class='hs-conid'>Float</span> <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- variable of type Point:</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>point</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-conid'>Point</span> <span class='hs-num'>3</span> <span class='hs-num'>4</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='hs-definition'>point</span>
+<span class='output'>Point 3.0 4.0</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-varid'>t</span> <span class='hs-varid'>point</span>
+<span class='output'>point :: Point</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- 'Point' is like a function:</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-varid'>t</span> <span class='hs-conid'>Point</span>
+<span class='output'>Point :: Float -> Float -> Point</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- function acting on 'Point' variables:</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-layout'>{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>squareNorm</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Point</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Float</span>
+<span class='prompt'>></span>     <span class='hs-varid'>squareNorm</span> <span class='hs-layout'>(</span><span class='hs-conid'>Point</span> <span class='hs-varid'>x</span> <span class='hs-varid'>y</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>x</span><span class='hs-varop'>^</span><span class='hs-num'>2</span><span class='hs-varop'>+</span><span class='hs-varid'>y</span><span class='hs-varop'>^</span><span class='hs-num'>2</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-layout'>}</span>
+<span class='prompt'>></span> <span class='hs-definition'>squareNorm</span> <span class='hs-varid'>point</span>
+<span class='output'>25.0</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- #~ a new type with named fields ~# -- </span>
+<span class='prompt'>></span> <span class='hs-keyword'>data</span> <span class='hs-conid'>NamedPoint</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>NamedPoint</span><span class='hs-layout'>{</span> <span class='hs-sel'>_x</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Float</span><span class='hs-layout'>,</span> <span class='hs-sel'>_y</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Float</span> <span class='hs-layout'>}</span> <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>point</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-conid'>NamedPoint</span> <span class='hs-num'>3</span> <span class='hs-num'>4</span><span class='hs-layout'>)</span> 
+<span class='prompt'>></span> <span class='hs-definition'>point</span>
+<span class='output'>NamedPoint {_x = 3.0, _y = 4.0}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- we can set the field values by their name:</span>
+<span class='prompt'>></span> <span class='hs-conid'>NamedPoint</span> <span class='hs-layout'>{</span> <span class='hs-sel'>_y</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>0</span><span class='hs-layout'>,</span> <span class='hs-sel'>_x</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>1</span> <span class='hs-layout'>}</span>
+<span class='output'>NamedPoint {_x = 1.0, _y = 0.0}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- get the value of a field:</span>
+<span class='prompt'>></span> <span class='hs-sel'>_x</span> <span class='hs-varid'>point</span> 
+<span class='output'>3.0</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- update a field (this creates a new 'NamedPoint'):</span>
+<span class='prompt'>></span> <span class='hs-definition'>point</span> <span class='hs-layout'>{</span> <span class='hs-sel'>_y</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>5</span> <span class='hs-layout'>}</span>
+<span class='output'>NamedPoint {_x = 3.0, _y = 5.0}</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- #~ field with unpredefined type ~# --</span>
+<span class='prompt'>></span> <span class='hs-keyword'>data</span> <span class='hs-conid'>Foo</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Foo</span><span class='hs-layout'>{</span> <span class='hs-sel'>_bar</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span><span class='hs-layout'>,</span> <span class='hs-sel'>_baz</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>a</span> <span class='hs-layout'>}</span> <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>w</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Foo</span> <span class='hs-layout'>{</span> <span class='hs-sel'>_bar</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>1</span><span class='hs-layout'>,</span> <span class='hs-sel'>_baz</span> <span class='hs-keyglyph'>=</span> <span class='hs-str'>"hello"</span> <span class='hs-layout'>}</span>
+<span class='prompt'>></span> <span class='hs-definition'>w</span>
+<span class='output'>Foo {_bar = 1, _baz = "hello"}</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-varid'>t</span> <span class='hs-varid'>w</span>
+<span class='output'>w :: Foo [Char]</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- function acting on 'Foo String':</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-layout'>{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>reverseBaz</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Foo</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Foo</span> <span class='hs-conid'>String</span>
+<span class='prompt'>></span>     <span class='hs-varid'>reverseBaz</span> <span class='hs-layout'>(</span><span class='hs-conid'>Foo</span> <span class='hs-varid'>bar</span> <span class='hs-varid'>baz</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Foo</span> <span class='hs-layout'>{</span> <span class='hs-sel'>_bar</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>bar</span><span class='hs-layout'>,</span> <span class='hs-sel'>_baz</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>reverse</span> <span class='hs-varid'>baz</span> <span class='hs-layout'>}</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-layout'>}</span>
+<span class='prompt'>></span> <span class='hs-definition'>reverseBaz</span> <span class='hs-varid'>w</span>
+<span class='output'>Foo {_bar = 1, _baz = "olleh"}</span>
+</code></pre></div>
+
+La fonction `reverseBaz` définie dans le code ci-dessus a pour action de renverser la chaîne de caractères contenue dans le deuxième champ d'un objet de type `Foo String` (`= Foo [Char]`). Elle n'agit pas sur le premier champ, et cependant avons dû recopier ce champ :
+
+<code class="scriptHaskell">
+<span class='hs-conid'>Foo</span> <span class='hs-layout'>{</span> <span class='hs-sel'>_bar</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>bar</span><span class='hs-layout'>,</span> <span class='hs-sel'>_baz</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>reverse</span> <span class='hs-varid'>baz</span> <span class='hs-layout'>}</span>
+</code>
+
+Dans ce cas où la classe `Foo` ne contient que deux champs, ce n'est pas très dérangeant. Mais ce serait plus problématique s'il y avait plus de champs. Une méthode permettant d'agir sur un champ sans avoir besoin de recopier les autres est souhaitable.
+
+
+## Lentilles 
+
+Pour cela, on utilise des *lentilles*, de la librairie `lens`. Ci-dessous, des exemples de la lentille `_2`, la lentille qui se concentre sur la 2ème composante d'une paire : 
+
+<div class='sourceCode'><pre class='scriptHaskell'><code class='scriptHaskell'><span class='prompt'>></span> <span class='hs-comment'>-- #~ lens example: _2 ~# --</span>
+<span class='prompt'>></span> <span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Lens</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-str'>"hello"</span><span class='hs-layout'>,</span> <span class='hs-num'>0</span><span class='hs-keyglyph'>::</span><span class='hs-conid'>Int</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- to get the 2nd element:</span>
+<span class='prompt'>></span> <span class='hs-definition'>view</span> <span class='hs-sel'>_2</span> <span class='hs-varid'>a</span> 
+<span class='output'>0</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- more concisely:</span>
+<span class='prompt'>></span> <span class='hs-definition'>a</span> <span class='hs-varop'>^.</span> <span class='hs-sel'>_2</span>
+<span class='output'>0</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- to set a value to the 2nd element:</span>
+<span class='prompt'>></span> <span class='hs-definition'>set</span> <span class='hs-sel'>_2</span> <span class='hs-str'>"world"</span> <span class='hs-varid'>a</span>
+<span class='output'>("hello","world")</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- more concisely:</span>
+<span class='prompt'>></span> <span class='hs-sel'>_2</span> <span class='hs-varop'>.~</span> <span class='hs-str'>"world"</span> <span class='hs-varop'>$</span> <span class='hs-varid'>a</span>
+<span class='output'>("hello","world")</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- to apply a function </span>
+<span class='prompt'>></span> <span class='hs-definition'>over</span> <span class='hs-sel'>_2</span> <span class='hs-layout'>(</span><span class='hs-varop'>+</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-varop'>$</span> <span class='hs-varid'>a</span>
+<span class='output'>("hello",1)</span>
+</code></pre></div>
+
+
+## Créer ses lentilles
+
+On crée des lentilles de la façon suivante :
+
+<div class='sourceCode'><pre class="scriptHaskell"><code class="scriptHaskell"><span class='hs-comment'>-- NewType_makeLenses.hs</span>
+<span class='hs-comment'>{-# LANGUAGE TemplateHaskell #-}</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Lens</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-varid'>element</span><span class='hs-layout'>)</span>
+<span class='hs-keyword'>data</span> <span class='hs-conid'>Foo</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Foo</span><span class='hs-layout'>{</span> <span class='hs-sel'>_bar</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Int</span><span class='hs-layout'>,</span> <span class='hs-sel'>_baz</span> <span class='hs-keyglyph'>::</span> <span class='hs-varid'>a</span> <span class='hs-layout'>}</span> <span class='hs-keyword'>deriving</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span><span class='hs-layout'>)</span>
+<span class='hs-definition'>makeLenses</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Foo</span>
+</code></pre></div>
+
+
+Cela crée deux nouvelles lentilles, `bar` et `baz` qui, respectivement, se concentrent sur le champ `bar` et le champ `baz`. On les utilise alors comme la lentille `_2`. 
+
+<div class='sourceCode'><pre class='scriptHaskell'><code class='scriptHaskell'><span class='prompt'>></span> <span class='hs-comment'>-- load the file creating the lenses</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-varid'>l</span> <span class='hs-conid'>NewType_makeLenses</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- the makeLenses function has defined new lenses:</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-varid'>i</span> <span class='hs-varid'>bar</span>
+<span class='output'>bar :: Lens' (Foo a0) Int 	-- Defined at NewType_makeLenses.hs:8:1</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-varid'>i</span> <span class='hs-varid'>baz</span>
+<span class='output'>baz :: Lens (Foo a0) (Foo a1) a0 a1 	-- Defined at NewType_makeLenses.hs:8:1</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- they can be used as any other lens:</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-conid'>Foo</span> <span class='hs-layout'>{</span> <span class='hs-sel'>_bar</span> <span class='hs-keyglyph'>=</span> <span class='hs-num'>1</span><span class='hs-layout'>,</span> <span class='hs-sel'>_baz</span> <span class='hs-keyglyph'>=</span> <span class='hs-str'>"hello"</span> <span class='hs-layout'>}</span>
+<span class='prompt'>></span> <span class='hs-definition'>x</span> <span class='hs-varop'>^.</span> <span class='hs-varid'>bar</span>
+<span class='output'>1</span>
+<span class='prompt'>></span> <span class='hs-definition'>baz</span> <span class='hs-varop'>.~</span> <span class='hs-str'>"hi"</span> <span class='hs-varop'>$</span> <span class='hs-varid'>x</span> 
+<span class='output'>Foo {_bar = 1, _baz = "hi"}</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- the 'reverseBaz' function again: </span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-layout'>{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>reverseBaz</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Foo</span> <span class='hs-conid'>String</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Foo</span> <span class='hs-conid'>String</span>
+<span class='prompt'>></span>     <span class='hs-varid'>reverseBaz</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>over</span> <span class='hs-varid'>baz</span> <span class='hs-varid'>reverse</span>
+<span class='prompt'>></span> <span class='hs-conop'>:</span><span class='hs-layout'>}</span>
+<span class='prompt'>></span> <span class='hs-definition'>reverseBaz</span> <span class='hs-varid'>x</span>
+<span class='output'>Foo {_bar = 1, _baz = "olleh"}</span>
+</code></pre></div>
+
+Ainsi, la fonction `reverseBaz` a pu être définie de façon bien plus commode.
+
+
+## De la lecture sur les lentilles
+
+- https://hackage.haskell.org/package/lens-tutorial-1.0.1/docs/Control-Lens-Tutorial.html
+
+- https://hackage.haskell.org/package/lens
+
+- https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial
+
+- http://lens.github.io/
