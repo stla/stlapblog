@@ -66,6 +66,7 @@ code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
 code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+<style type="text/css">code{white-space: pre;}</style>
 </style>
 
 
@@ -156,10 +157,11 @@ else
 fi
 
 echo "--- Results: ---"
-grep --include=\*.$type $option -e "$pattern" .
+grep --colour=always --include=\*.$type $option -e "$pattern" .
 exit 0
 ```
 
+J'ai ajouté l'option `--colour=always` pour obtenir les sorties colorées de `grep`. 
 Le langage n'est pas compliqué mais est toutefois un peu délicat. Par exemple, il suffit d'oublier un espace pour que le script ne fonctionne pas.
 
 
@@ -241,7 +243,7 @@ main = do
   inpStr <- yesOrNo
   let recursive = inpStr
   -- run the system command
-  (_, stdout, stderr) <- readProcessWithExitCode "grep" (["--include", "*." ++ fileType, "-n", if recursive then "-r" else "-s", "-e", pattern, "."] ++ (if wholeword then ["w"] else [])) ""
+  (_, stdout, stderr) <- readProcessWithExitCode "grep" (["--colour=always", "--include", "*." ++ fileType, "-n", if recursive then "-r" else "-s", "-e", pattern, "."] ++ (if wholeword then ["w"] else [])) ""
   -- print the results
   putStrLn "\n--- Results: ---\n"
   if stdout == "" then putStrLn "No result" else putStrLn stdout

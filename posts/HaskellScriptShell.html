@@ -137,6 +137,7 @@ code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
 code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+<style type="text/css">code{white-space: pre;}</style>
 </style>
 <div id="recherche-de-fichiers-contenant-un-motif" class="section level2">
 <h2>Recherche de fichiers contenant un motif</h2>
@@ -210,9 +211,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">fi</span>
 
 <span class="kw">echo</span> <span class="st">&quot;--- Results: ---&quot;</span>
-<span class="kw">grep</span> --include=<span class="dt">\*</span>.<span class="ot">$type</span> <span class="ot">$option</span> -e <span class="st">&quot;</span><span class="ot">$pattern</span><span class="st">&quot;</span> .
+<span class="kw">grep</span> --colour=always --include=<span class="dt">\*</span>.<span class="ot">$type</span> <span class="ot">$option</span> -e <span class="st">&quot;</span><span class="ot">$pattern</span><span class="st">&quot;</span> .
 <span class="kw">exit</span> 0</code></pre></div>
-<p>Le langage n’est pas compliqué mais est toutefois un peu délicat. Par exemple, il suffit d’oublier un espace pour que le script ne fonctionne pas.</p>
+<p>J’ai ajouté l’option <code>--colour=always</code> pour obtenir les sorties colorées de <code>grep</code>. Le langage n’est pas compliqué mais est toutefois un peu délicat. Par exemple, il suffit d’oublier un espace pour que le script ne fonctionne pas.</p>
 </div>
 <div id="script-shell-en-haskell" class="section level2">
 <h2>Script shell en Haskell</h2>
@@ -274,7 +275,7 @@ main <span class="fu">=</span> <span class="kw">do</span>
   inpStr <span class="ot">&lt;-</span> yesOrNo
   <span class="kw">let</span> recursive <span class="fu">=</span> inpStr
   <span class="co">-- run the system command</span>
-  (_, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> ([<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.&quot;</span> <span class="fu">++</span> fileType, <span class="st">&quot;-n&quot;</span>, <span class="kw">if</span> recursive <span class="kw">then</span> <span class="st">&quot;-r&quot;</span> <span class="kw">else</span> <span class="st">&quot;-s&quot;</span>, <span class="st">&quot;-e&quot;</span>, pattern, <span class="st">&quot;.&quot;</span>] <span class="fu">++</span> (<span class="kw">if</span> wholeword <span class="kw">then</span> [<span class="st">&quot;w&quot;</span>] <span class="kw">else</span> [])) <span class="st">&quot;&quot;</span>
+  (_, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> ([<span class="st">&quot;--colour=always&quot;</span>, <span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.&quot;</span> <span class="fu">++</span> fileType, <span class="st">&quot;-n&quot;</span>, <span class="kw">if</span> recursive <span class="kw">then</span> <span class="st">&quot;-r&quot;</span> <span class="kw">else</span> <span class="st">&quot;-s&quot;</span>, <span class="st">&quot;-e&quot;</span>, pattern, <span class="st">&quot;.&quot;</span>] <span class="fu">++</span> (<span class="kw">if</span> wholeword <span class="kw">then</span> [<span class="st">&quot;w&quot;</span>] <span class="kw">else</span> [])) <span class="st">&quot;&quot;</span>
   <span class="co">-- print the results</span>
   putStrLn <span class="st">&quot;\n--- Results: ---\n&quot;</span>
   <span class="kw">if</span> stdout <span class="fu">==</span> <span class="st">&quot;&quot;</span> <span class="kw">then</span> putStrLn <span class="st">&quot;No result&quot;</span> <span class="kw">else</span> putStrLn stdout</code></pre></div>
