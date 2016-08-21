@@ -11,7 +11,7 @@
   <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
   <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
   <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
-
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
   <!-- IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -152,7 +152,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="script-shell-en-bash" class="section level2">
 <h2>Script shell en Bash</h2>
-<p>Il n’est pas aisé de se souvenir de la commande avec ses options. C’est pourquoi j’ai écrit le script shell <code>findpattern.sh</code> qui exécute un dialogue avec l’utilisateur puis la commande :</p>
+<p>Il n’est pas aisé de se souvenir de la commande avec ses options, et l’aide de <code>grep</code> est volumineuse et déroutante. C’est pourquoi j’ai écrit le script shell <code>findpattern.sh</code> qui dialogue avec l’utilisateur pour exécuter la commande requise :</p>
 <pre class="no-highlight"><code>$ bash findpattern.sh
 &gt; Type of the files you&#39;re looking for: hs
 &gt; Pattern you&#39;re looking for: hello
@@ -223,12 +223,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
 r <span class="ot">&lt;-</span> readCreateProcess (shell <span class="st">&quot;grep --include=\\*.hs -n -w -r -e &#39;hello&#39; .&quot;</span>) <span class="st">&quot;&quot;</span>
 putStrLn r
-<span class="st">## *** Exception: readCreateProcess: grep --</span><span class="kw">include</span><span class="st">=\*.hs -n -w -r -e &#39;hello&#39; . (exit 1): failed</span></code></pre></div>
+<span class="st">## ./testfile.hs:2:let x = &quot;hello&quot; ++ name</span></code></pre></div>
 <p>La fonction <code>readProcess</code> permet de passer les options à <code>grep</code> de façon plus commode, dans une liste :</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
 r <span class="ot">&lt;-</span> readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;hello&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 putStrLn r
-<span class="st">## *** Exception: readCreateProcess: grep &quot;--</span><span class="kw">include</span><span class="st">&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;hello&quot; &quot;.&quot; (exit 1): failed</span></code></pre></div>
+<span class="st">## ./testfile.hs:2:let x = &quot;hello&quot; ++ name</span></code></pre></div>
 <p>Toutefois ces deux fonctions ont un inconvénient. Dans le cas où <code>grep</code> ne trouve aucun fichier correspondant, il retourne un code de sortie d’échec, et ces deux fonctions ne gèrent pas bien cette situation :</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
 r <span class="ot">&lt;-</span> readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;xxxxx&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
@@ -238,7 +238,7 @@ r
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
 (exitcode, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;hello&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 (exitcode, stdout, stderr)
-<span class="st">## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</span></code></pre></div>
+<span class="st">## (ExitSuccess,&quot;./testfile.hs:2:let x = \&quot;hello\&quot; ++ name\n&quot;,&quot;&quot;)</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
 (exitcode, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;xxxxx&quot;</span>, <span class="st">&quot;.&quot;</span>] <span class="st">&quot;&quot;</span>
 (exitcode, stdout, stderr)
