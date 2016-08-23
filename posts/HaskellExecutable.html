@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Script shell en Haskell</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Script shell en Haskell</a>
+              </h3>
+              <span>2016-08-16</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/HaskellExecutable.Rmd'>Source</a>
+              <div class='lead'>
+
+<style type="text/css">
+/* background code blocks */ 
+ol.linenums li {
+  background-color: #f5f5f5; 
+}
+
+/* font size code blocks */
+pre code {
+  background-color: #f5f5f5;
+}
+
+/* inline code */
+code {
+    background-color: #f5f5f5;
+}
+</style>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode, pre  { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<p>La finalité de cet article est de créer, avec Haskell, un exécutable avec des arguments et des options. Nous verrons en outre:</p>
+<ul>
+<li><p>comment exécuter une commande système depuis Haskell ;</p></li>
+<li><p>comment rechercher des fichiers dans Haskell avec des jokers (“glob”) ;</p></li>
+<li><p>comment transformer des chemins absolus en chemins relatifs dans Haskell.</p></li>
+</ul>
+<div id="recherche-de-fichiers-contenant-un-motif-avec-grep" class="section level2">
+<h2>Recherche de fichiers contenant un motif avec <code>grep</code></h2>
+<p>Cette section ne concerne pas Haskell. Nous allons présenter une commande système et plus tard nous implémenterons cette commande dans Haskell.</p>
+<p>Supposons que l’on recherche tous les fichiers de type <code>hs</code> contenant la chaîne de caractères “<code>hello</code>”, à partir du répertoire courant. On peut utiliser la commande</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">grep</span> hello *.hs -n -w</code></pre></div>
+<p>pour chercher uniquement dans le répertoire courant, et la commande</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">grep</span> --include=<span class="dt">\*</span>.hs -n -w -r -e hello</code></pre></div>
+<p>pour chercher récursivement à partir dans le répertoire courant, c’est-à-dire dans le répertoire courant, ses sous-répertoires, ses sous-sous répertoires, etc.</p>
+<p>Les options utilisées sont:</p>
+<ul>
+<li><p><code>-n</code> pour afficher les numéros des lignes dans lesquelles apparaissent la chaîne de caractères recherchée ;</p></li>
+<li><p><code>-w</code> (<em>match whole word</em>) pour rechercher “<code>hello</code>” en tant que mot entier (par exemple <code>hellooo</code> n’est pas pris en compte si on n’utilise pas cette option).</p></li>
+</ul>
+<p>On peut aussi concaténer les options : <code>grep --include=\*.hs -nwr -e hello</code>.</p>
+<p>Pour les illustrations, nous nous plaçons dans un répertoire avec ce contenu:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tree</span>
+<span class="kw">.</span>
+├── <span class="kw">testfile1.hs</span>
+├── <span class="kw">testfile1.txt</span>
+├── <span class="kw">testfile2.hs</span>
+├── <span class="kw">testfile2.txt</span>
+└── <span class="kw">testsubfolder</span>
+    ├── <span class="kw">testfile01.hs</span>
+    ├── <span class="kw">testfile01.txt</span>
+    ├── <span class="kw">testfile02.hs</span>
+    ├── <span class="kw">testfile02.txt</span>
+    └── <span class="kw">testsubsubfolder</span>
+        ├── <span class="kw">testfile001.hs</span>
+        ├── <span class="kw">testfile001.txt</span>
+        ├── <span class="kw">testfile002.hs</span>
+        └── <span class="kw">testfile002.txt</span>
+
+<span class="kw">2</span> directories, 12 files</code></pre></div>
+</div>
+<div id="executer-une-commande-systeme-dans-haskell" class="section level2">
+<h2>Exécuter une commande système dans Haskell</h2>
+<p>Dans Haskell, on peut éxecuter la commande précédente ainsi :</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+r <span class="ot">&lt;-</span> readCreateProcess (shell <span class="st">&quot;grep --include=\\*.hs -n -w -r -e &#39;hello&#39;&quot;</span>) <span class="st">&quot;&quot;</span>
+putStrLn r
+<span class="st">## testsubfolder/testsubsubfolder/testfile001.hs:1:let x = &quot;hello&quot;</span>
+<span class="st">## testsubfolder/testfile01.hs:1:let x = &quot;hello&quot;</span>
+<span class="st">## testfile1.hs:1:let x = &quot;hello&quot;</span></code></pre></div>
+<p>La fonction <code>readProcess</code> permet de passer les options à <code>grep</code> de façon plus commode, dans une liste :</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+r <span class="ot">&lt;-</span> readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;hello&quot;</span>] <span class="st">&quot;&quot;</span>
+putStrLn r
+<span class="st">## testsubfolder/testsubsubfolder/testfile001.hs:1:let x = &quot;hello&quot;</span>
+<span class="st">## testsubfolder/testfile01.hs:1:let x = &quot;hello&quot;</span>
+<span class="st">## testfile1.hs:1:let x = &quot;hello&quot;</span></code></pre></div>
+<p>Toutefois ces deux fonctions ont un inconvénient. Dans le cas où <code>grep</code> ne trouve aucun fichier correspondant, il retourne un code de sortie d’échec, et ces deux fonctions ne gèrent pas bien cette situation :</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+r <span class="ot">&lt;-</span> readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;xxxxx&quot;</span>] <span class="st">&quot;&quot;</span>
+r
+<span class="st">## *** Exception: readCreateProcess: grep &quot;--</span><span class="kw">include</span><span class="st">&quot; &quot;*.hs&quot; &quot;-n&quot; &quot;-w&quot; &quot;-r&quot; &quot;-e&quot; &quot;xxxxx&quot; (exit 1): failed</span></code></pre></div>
+<p>Il vaut mieux utiliser les fonctions <code>readCreateProcessWithExitCode</code> ou <code>readProcessWithExitCode</code> pour gérer cette situation. Avec ces fonctions on obtient un triplet contenant : le code de sortie, la sortie standard et la sortie d’erreur.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+(exitcode, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;hello&quot;</span>] <span class="st">&quot;&quot;</span>
+(exitcode, stdout, stderr)
+<span class="st">## (ExitSuccess,&quot;testsubfolder/testsubsubfolder/testfile001.hs:1:let x = \&quot;hello\&quot;\ntestsubfolder/testfile01.hs:1:let x = \&quot;hello\&quot;\ntestfile1.hs:1:let x = \&quot;hello\&quot;\n&quot;,&quot;&quot;)</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.Process</span>
+(exitcode, stdout, stderr) <span class="ot">&lt;-</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.hs&quot;</span>, <span class="st">&quot;-n&quot;</span>, <span class="st">&quot;-w&quot;</span>, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, <span class="st">&quot;xxxxx&quot;</span>] <span class="st">&quot;&quot;</span>
+(exitcode, stdout, stderr)
+<span class="st">## (ExitFailure 1,&quot;&quot;,&quot;&quot;)</span></code></pre></div>
+</div>
+<div id="jokers-glob" class="section level2">
+<h2>Jokers (glob)</h2>
+<p>Quand on exécute la commande</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">grep</span> hello *.hs</code></pre></div>
+<p>l’interpréteur développe <code>*.hs</code> en tous les fichiers <code>hs</code> du répertoire courant. La commande qui est finalement exécutée est</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">grep</span> hello testfile1.hs testfile2.hs</code></pre></div>
+<p>Ce n’est pas <code>grep</code> qui exécute cette tâche, et de ce fait, la commande Haskell</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell">readProcess <span class="st">&quot;grep&quot;</span> [<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;*.hs&quot;</span>] <span class="st">&quot;&quot;</span></code></pre></div>
+<p>ne donnera pas le résultat escompté.</p>
+<p>C’est ce qu’on appelle un joker (wildcard), ou “glob” en anglais.</p>
+<p>Les jokers sont aussi utilisés par la commande <code>ls</code>. Rappelons la structure du répertoire courant:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tree</span>
+<span class="kw">.</span>
+├── <span class="kw">testfile1.hs</span>
+├── <span class="kw">testfile1.txt</span>
+├── <span class="kw">testfile2.hs</span>
+├── <span class="kw">testfile2.txt</span>
+└── <span class="kw">testsubfolder</span>
+    ├── <span class="kw">testfile01.hs</span>
+    ├── <span class="kw">testfile01.txt</span>
+    ├── <span class="kw">testfile02.hs</span>
+    ├── <span class="kw">testfile02.txt</span>
+    └── <span class="kw">testsubsubfolder</span>
+        ├── <span class="kw">testfile001.hs</span>
+        ├── <span class="kw">testfile001.txt</span>
+        ├── <span class="kw">testfile002.hs</span>
+        └── <span class="kw">testfile002.txt</span>
+
+<span class="kw">2</span> directories, 12 files</code></pre></div>
+<p>Le joker <code>*.hs</code> correspond à tous les fichiers <code>hs</code> dans le répertoire courant :</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> *.hs
+<span class="kw">testfile1.hs</span>
+<span class="kw">testfile2.hs</span></code></pre></div>
+<p>Le joker <code>*/*.hs</code> correspond à tous les fichiers <code>hs</code> dans les sous-répertoires du répertoire courant :</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> */*.hs
+<span class="kw">testsubfolder/testfile01.hs</span>
+<span class="kw">testsubfolder/testfile02.hs</span></code></pre></div>
+<p>Et ainsi de suite :</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> */*/*.hs
+<span class="kw">testsubfolder/testsubsubfolder/testfile001.hs</span>
+<span class="kw">testsubfolder/testsubsubfolder/testfile002.hs</span></code></pre></div>
+<p>On peut ainsi contrôler la profondeur de la recherche quand on exécute <code>grep</code>. Plus tard, quand nous implémenterons <code>grep</code> dans notre exécutable Haskell, nous ajouterons une option pour contrôler la profondeur de la recherche.</p>
+<p>Avant de revenir à Haskell, montrons quelques autres jokers :</p>
+<ul>
+<li>fichiers <code>hs</code> et <code>txt</code> dans les sous-dossiers :</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> */*.<span class="dt">{hs,txt}</span>
+<span class="kw">testsubfolder/testfile01.hs</span>
+<span class="kw">testsubfolder/testfile01.txt</span>
+<span class="kw">testsubfolder/testfile02.hs</span>
+<span class="kw">testsubfolder/testfile02.txt</span></code></pre></div>
+<ul>
+<li>fichiers qui ne se terminent pas par <code>t</code> :</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> *.*[!t]
+<span class="kw">testfile1.hs</span>
+<span class="kw">testfile2.hs</span></code></pre></div>
+<ul>
+<li>en mettant en marche une option au préalable, on peut aussi appliquer la négation à une chaîne de caractères:</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">shopt</span> -s extglob 
+$ <span class="kw">ls</span> *.!(txt)
+<span class="kw">testfile1.hs</span>
+<span class="kw">testfile2.hs</span></code></pre></div>
+<p>Cette option permet <a href="http://stackoverflow.com/a/217208/1100107">d’autres possibilités</a>.</p>
+<p>Revenons à Haskell. Les jokers sont implémentés dans le module <code>System.FilePath.Glob</code> de la librairie <code>glob</code>.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.FilePath.Glob</span> (glob)
+glob <span class="st">&quot;*.hs&quot;</span>
+<span class="st">## [&quot;/home/stla/Github/stlapblog/posts/tests/testfolder/testfile2.hs&quot;,&quot;/home/stla/Github/stlapblog/posts/tests/testfolder/testfile1.hs&quot;]</span></code></pre></div>
+<p>La fonction <code>glob</code> retourne des chemins absolus. Si nous les utilisons avec <code>grep</code>, on obtiendra des chemins absolus aussi pour les fichiers trouvés, ce qui encombre la visibilité. On peut les transformer en chemins relatifs à l’aide module <code>Path</code> de la librairie <code>path</code> :</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.FilePath.Glob</span> (glob)
+<span class="kw">import </span><span class="dt">System.Directory</span> (getCurrentDirectory)
+<span class="kw">import </span><span class="dt">Path</span> (parseAbsFile, parseAbsDir, stripDir, fromRelFile)
+<span class="fu">:</span>{
+<span class="kw">let</span><span class="ot"> absoluteFilePathToRelativeFilePath ::</span> FilePath <span class="ot">-&gt;</span> <span class="dt">IO</span>( FilePath )
+    absoluteFilePathToRelativeFilePath file <span class="fu">=</span> 
+      <span class="kw">do</span>
+        currentDir <span class="ot">&lt;-</span> getCurrentDirectory
+        currentAbsDir <span class="ot">&lt;-</span> parseAbsDir currentDir
+        absFile <span class="ot">&lt;-</span> parseAbsFile file
+        relFile <span class="ot">&lt;-</span> stripDir currentAbsDir absFile
+        return <span class="fu">$</span> fromRelFile relFile
+<span class="fu">:</span>}
+absFiles <span class="ot">&lt;-</span> glob <span class="st">&quot;*/*.hs&quot;</span>
+mapM absoluteFilePathToRelativeFilePath absFiles
+<span class="st">## [&quot;testsubfolder/testfile01.hs&quot;,&quot;testsubfolder/testfile02.hs&quot;]</span></code></pre></div>
+</div>
+<div id="implementation-dans-haskell" class="section level2">
+<h2>Implémentation dans Haskell</h2>
+<p>Mettons d’abord ensemble les choses vues précédemment. Nous créons d’abord un module qui transforme des chemins absolus en chemins relatifs au répertoire courant.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">AbsoluteFilePathToRelativeFilePath</span> <span class="kw">where</span>
+
+<span class="kw">import </span><span class="dt">Path</span> (parseAbsFile, fromRelFile, parseAbsDir, stripDir)
+<span class="kw">import </span><span class="dt">System.Directory</span> (getCurrentDirectory)
+
+<span class="ot">absoluteFilePathToRelativeFilePath ::</span> FilePath <span class="ot">-&gt;</span> <span class="dt">IO</span>( FilePath )
+absoluteFilePathToRelativeFilePath file <span class="fu">=</span> 
+  <span class="kw">do</span>
+    currentDir <span class="ot">&lt;-</span> getCurrentDirectory
+    currentAbsDir <span class="ot">&lt;-</span> parseAbsDir currentDir
+    absFile <span class="ot">&lt;-</span> parseAbsFile file
+    relFile <span class="ot">&lt;-</span> stripDir currentAbsDir absFile
+    return <span class="fu">$</span> fromRelFile relFile</code></pre></div>
+<p>Nous créons maintenant un module qui exécute la commande <code>grep</code>. Nous mettons un argument <code>depth</code> qui contrôle la profondeur de la recherche. Le type de cet argument est <code>Maybe Int</code>. La recherche récursive sera exécutée si on attribue la valeur <code>Nothing</code> à <code>depth</code>. Le type <code>Maybe Int</code> sera très commode pour la suite, lorsque nous créerons l’exécutable avec des options.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">GetGrepResults</span> <span class="kw">where</span>
+
+<span class="kw">import </span><span class="dt">System.Process</span> (readProcessWithExitCode)
+<span class="kw">import </span><span class="dt">System.Exit</span> (<span class="dt">ExitCode</span>)
+<span class="kw">import </span><span class="dt">System.FilePath.Glob</span> (glob)
+<span class="kw">import </span><span class="dt">AbsoluteFilePathToRelativeFilePath</span>
+
+<span class="ot">runGrep ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">IO</span>(<span class="dt">ExitCode</span>, <span class="dt">String</span>, <span class="dt">String</span>)
+runGrep fileType pattern wholeword depth <span class="fu">=</span> 
+  <span class="kw">do</span>
+    <span class="kw">let</span> option <span class="fu">=</span> <span class="kw">if</span> wholeword <span class="kw">then</span> <span class="st">&quot;-nw&quot;</span> <span class="kw">else</span> <span class="st">&quot;-n&quot;</span>
+    <span class="kw">case</span> depth <span class="kw">of</span> 
+       <span class="dt">Nothing</span> <span class="ot">-&gt;</span> readProcessWithExitCode <span class="st">&quot;grep&quot;</span> ([option] <span class="fu">++</span> [<span class="st">&quot;--colour=always&quot;</span>, <span class="st">&quot;--include&quot;</span>, <span class="st">&quot;*.&quot;</span> <span class="fu">++</span> fileType, <span class="st">&quot;-r&quot;</span>, <span class="st">&quot;-e&quot;</span>, pattern]) <span class="st">&quot;&quot;</span>
+       <span class="dt">Just</span> n <span class="ot">-&gt;</span> <span class="kw">do</span> absFiles <span class="ot">&lt;-</span> glob <span class="fu">$</span> (foldr (<span class="fu">++</span>) <span class="st">&quot;*.&quot;</span> (replicate n <span class="st">&quot;*/&quot;</span>)) <span class="fu">++</span> fileType
+                    relFiles <span class="ot">&lt;-</span> mapM absoluteFilePathToRelativeFilePath absFiles
+                    readProcessWithExitCode <span class="st">&quot;grep&quot;</span> ([pattern] <span class="fu">++</span> relFiles <span class="fu">++</span> [<span class="st">&quot;--colour=always&quot;</span>, option]) <span class="st">&quot;&quot;</span>
+       
+<span class="ot">getGrepResults ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">IO</span>()
+getGrepResults fileType pattern wholeword depth <span class="fu">=</span> 
+  <span class="kw">do</span>
+    (_, stdout, stderr) <span class="ot">&lt;-</span> runGrep fileType pattern wholeword depth
+    putStrLn <span class="st">&quot;\n--- Results: ---\n&quot;</span>
+    <span class="kw">case</span> stdout <span class="kw">of</span>
+      <span class="st">&quot;&quot;</span> <span class="ot">-&gt;</span> putStrLn <span class="st">&quot;No result&quot;</span> 
+      _ <span class="ot">-&gt;</span>  putStrLn stdout</code></pre></div>
+</div>
+<div id="creation-de-lexecutable" class="section level2">
+<h2>Création de l’exécutable</h2>
+<p>Une librairie excellente et moderne pour créer des exécutables avec arguments et options: [optparse-applicative][<a href="http://hackage.haskell.org/package/optparse-applicative" class="uri">http://hackage.haskell.org/package/optparse-applicative</a>].</p>
+<p>On crée d’abord un nouveau type de données <code>Arguments</code> pour les arguments et les options. Puis on modifie notre fonction principale <code>getGrepResults</code> de sorte qu’elle prenne en entrée une variable <code>Arguments</code>.</p>
+<p>Enfin, le code se passe de trop de commentaires tant il est lisible. On trouvera d’autres examples sur la page de la librairie <code>optparse-applicative</code> et <a href="http://stackoverflow.com/a/39049486/1100107">ici</a>.</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">module</span> <span class="dt">Main</span> <span class="kw">where</span>
+
+<span class="kw">import </span><span class="dt">GetGrepResults</span>
+<span class="kw">import </span><span class="dt">Options.Applicative</span>
+<span class="kw">import </span><span class="dt">Data.Monoid</span>
+
+<span class="kw">data</span> <span class="dt">Arguments</span> <span class="fu">=</span> <span class="dt">Arguments</span>
+  {<span class="ot"> filetype ::</span> <span class="dt">String</span>
+  ,<span class="ot"> pattern ::</span> <span class="dt">String</span>
+  ,<span class="ot"> wholeword ::</span> <span class="dt">Bool</span>
+  ,<span class="ot"> depth ::</span> <span class="dt">Maybe</span> <span class="dt">Int</span> }
+
+<span class="ot">findFiles ::</span> <span class="dt">Arguments</span> <span class="ot">-&gt;</span> <span class="dt">IO</span>()
+findFiles (<span class="dt">Arguments</span> filetype pattern w d) <span class="fu">=</span> getGrepResults filetype pattern w d  
+
+<span class="ot">run ::</span> <span class="dt">Parser</span> <span class="dt">Arguments</span>
+run <span class="fu">=</span> <span class="dt">Arguments</span>
+     <span class="fu">&lt;$&gt;</span> argument str 
+          ( metavar <span class="st">&quot;FILETYPE&quot;</span>
+         <span class="fu">&lt;&gt;</span> help <span class="st">&quot;Type of the files to search in&quot;</span> )
+     <span class="fu">&lt;*&gt;</span> argument str 
+          ( metavar <span class="st">&quot;PATTERN&quot;</span>
+         <span class="fu">&lt;&gt;</span> help <span class="st">&quot;The pattern to search&quot;</span> )
+     <span class="fu">&lt;*&gt;</span>  switch
+          ( long <span class="st">&quot;wholeword&quot;</span>
+         <span class="fu">&lt;&gt;</span> short <span class="ch">&#39;w&#39;</span>
+         <span class="fu">&lt;&gt;</span> help <span class="st">&quot;Match whole word&quot;</span> ) 
+     <span class="fu">&lt;*&gt;</span> ( optional <span class="fu">$</span> option auto 
+          ( metavar <span class="st">&quot;DEPTH&quot;</span>
+         <span class="fu">&lt;&gt;</span> long <span class="st">&quot;depth&quot;</span>
+         <span class="fu">&lt;&gt;</span> short <span class="ch">&#39;d&#39;</span>
+         <span class="fu">&lt;&gt;</span> help <span class="st">&quot;Depth of the search (0: current directory)&quot;</span> ))
+
+<span class="ot">main ::</span> <span class="dt">IO</span> ()
+main <span class="fu">=</span> execParser opts <span class="fu">&gt;&gt;=</span> findFiles
+  <span class="kw">where</span>
+    opts <span class="fu">=</span> info (helper <span class="fu">&lt;*&gt;</span> run)
+      ( fullDesc
+     <span class="fu">&lt;&gt;</span> progDesc <span class="st">&quot;Find files containing a pattern&quot;</span>
+     <span class="fu">&lt;&gt;</span> header <span class="st">&quot;findpatterninfiles -- based on grep&quot;</span> )</code></pre></div>
+<p>Ce code étant dans le fichier <code>findpattern.hs</code>, on crée un fichier exécutable <code>findpattern</code> en compilant avec la commande <code>ghc findpattern.hs</code>.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">findpattern</span> txt <span class="st">&quot;hello&quot;</span> 
+
+<span class="kw">---</span> Results: ---
+
+<span class="kw">testsubfolder/testsubsubfolder</span>/testfile001.txt:<span class="kw">1</span>:hello world
+<span class="kw">testsubfolder</span>/testfile01.txt:<span class="kw">1</span>:hello world
+<span class="kw">testfile1.txt</span>:1:hello world</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">findpattern</span> txt <span class="st">&quot;hello&quot;</span> -d 1
+
+<span class="kw">---</span> Results: ---
+
+<span class="kw">testsubfolder</span>/testfile01.txt:<span class="kw">1</span>:hello world</code></pre></div>
+<p>La sortie est en réalité en couleur :</p>
+<p><img src="assets/img/findPatternInFiles.png" alt="" /></p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

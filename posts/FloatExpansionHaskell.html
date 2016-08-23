@@ -11,7 +11,7 @@
   <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
   <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
   <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
-
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
   <!-- IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -114,7 +114,7 @@ u {
 </style>
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
+div.sourceCode, pre { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
 table.sourceCode { width: 100%; line-height: 100%; }
@@ -150,7 +150,7 @@ code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Ann
 code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
-<p><strong><em>(latest update : 2016-08-17 09:18:00)</em></strong> <br/></p>
+<p><strong><em>(latest update : 2016-08-23 13:32:08)</em></strong> <br/></p>
 <p>In <a href="http://stla.github.io/stlapblog/posts/DyadicExpansion.html">the previous article</a>, I wrote a R function returning the binary expansion of a real number <span class="math inline">\(u \in [0,1]\)</span>. In the present article, I will:</p>
 <ul>
 <li>write a similar function in Haskell;</li>
@@ -293,10 +293,10 @@ floatExpansion base u <span class="fu">=</span> replicate (<span class="fu">-</s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">u &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">5000</span>)
 <span class="kw">system.time</span>(<span class="kw">lapply</span>(u, floatExpand))
 ##    user  system elapsed 
-##   0.164   0.017   0.178
+##   0.146   0.003   0.148
 <span class="kw">system.time</span>(<span class="kw">lapply</span>(u, num2dyadic))
 ##    user  system elapsed 
-##   0.691   0.000   0.689</code></pre></div>
+##   0.743   0.000   0.743</code></pre></div>
 <p>It is faster. And I have checked that the two functions always return the same results.</p>
 <p>Moreover the “RHaskell” function allows more than the binary expansion, for example the ternary expansion:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">floatExpand</span>(<span class="dv">1</span>/<span class="dv">3+1</span>/<span class="dv">27</span>, <span class="dt">base=</span><span class="dv">3</span>)
