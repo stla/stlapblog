@@ -1,0 +1,299 @@
+---
+title: "Dataframes in Haskell: the Frames library"
+date: "2016-08-24"
+---
+
+<link rel="stylesheet" href="hscolour.css">
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "./assets/haskell/")
+## a small modification of the haskell engine provided by knitr:
+##   (to get rid of the option ':set +m')
+knitr::knit_engines$set(ghc = function (options) 
+                  {
+                    engine = options$engine
+                    f = basename(tempfile(engine, ".", ".txt"))
+                    writeLines(options$code, f)
+                    on.exit(unlink(f))
+                    code = paste(f, options$engine.opts)
+                    cmd = options$engine.path 
+                    out = if (options$eval) {
+                      message("running: ", cmd, " ", code)
+                      tryCatch(system2(cmd, code, stdout = TRUE, stderr = FALSE,
+                                       env = options$engine.env), error = function(e) {
+                                         if (!options$error)
+                                           stop(e)
+                                         paste("Error in running command", cmd)
+                                       })
+                    }
+                    else ""
+                    if (!options$error && !is.null(attr(out, "status"))) 
+                      stop(paste(out, collapse = "\n"))
+                    knitr::engine_output(options, options$code, out)
+                  }
+)
+## chunk options
+knitr::opts_chunk$set(engine = 'ghc', 
+                      engine.path = 'ghcscriptrender', 
+                      engine.opts = '--fragment -p .cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d',
+                      echo = FALSE,
+                      results = 'asis')
+```
+
+
+This article demonstrates the use of the `Frames` library. 
+It has three parts, each one containing a `ghc` script. We'll load the following module at the beginning of each script.
+
+<div class='sourceCode'><pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-comment'>-- Frames_init.hs</span>
+<span class='hs-comment'>{-# LANGUAGE TemplateHaskell #-}</span>
+<span class='hs-comment'>{-# LANGUAGE DataKinds #-}</span>
+<span class='hs-comment'>{-# LANGUAGE FlexibleContexts #-}</span>
+<span class='hs-comment'>{-# LANGUAGE TypeOperators #-}</span>
+<span class='hs-comment'>{-# LANGUAGE OverloadedStrings #-}</span>
+<span class='output'> </span>
+<span class='hs-keyword'>module</span> <span class='hs-conid'>Init</span> <span class='hs-keyword'>where</span> 
+<span class='output'> </span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldl</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>L</span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldable</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>F</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Proxy</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Lens</span><span class='hs-varop'>.</span><span class='hs-conid'>Family</span> <span class='hs-layout'>(</span><span class='hs-varid'>view</span><span class='hs-layout'>,</span> <span class='hs-varid'>set</span><span class='hs-layout'>,</span> <span class='hs-varid'>over</span><span class='hs-layout'>)</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span><span class='hs-varop'>.</span><span class='hs-conid'>CSV</span> <span class='hs-layout'>(</span><span class='hs-varid'>defaultParser</span><span class='hs-layout'>,</span> <span class='hs-varid'>readTableOpt</span><span class='hs-layout'>)</span> 
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Pipes</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>)</span> <span class='hs-comment'>-- Producer</span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Pipes</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
+<span class='output'> </span>
+<span class='hs-comment'>-- define a Show instance for frames</span>
+<span class='hs-keyword'>instance</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+  <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>l</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> 
+                       <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n"</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span>
+                         <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>2</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n..."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span> 
+                           <span class='hs-varop'>++</span> <span class='hs-str'>"\nFrame with "</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varid'>l</span><span class='hs-layout'>)</span> <span class='hs-varop'>++</span> <span class='hs-keyword'>if</span><span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>then</span> <span class='hs-str'>" rows."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>" row."</span> 
+<span class='output'> </span>
+<span class='output'> </span>
+<span class='hs-comment'>-- - #~ Will be used in part 1 ~# - --</span>
+<span class='output'> </span>
+<span class='hs-comment'>-- define new types for the records</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Name"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>String</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Value"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Float</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Indic"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Int</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Status"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Bool</span>
+<span class='output'> </span>
+<span class='output'> </span>
+<span class='hs-comment'>-- - #~ Will be used in part 2 ~# - --</span>
+<span class='output'> </span>
+<span class='hs-definition'>tableTypes</span> <span class='hs-str'>"Iris"</span> <span class='hs-str'>"iris_small.csv"</span>
+<span class='output'> </span>
+<span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Producer</span> <span class='hs-conid'>Iris</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>readTableOpt</span> <span class='hs-varid'>defaultParser</span> <span class='hs-str'>"iris_small.csv"</span>
+<span class='output'> </span>
+<span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-conid'>Iris</span><span class='hs-layout'>)</span>
+<span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inCoreAoS</span> <span class='hs-varid'>irisStream</span>
+<span class='output'> </span>
+<span class='output'> </span>
+<span class='hs-comment'>-- - #~ Will be used in part 3 ~# - --</span>
+<span class='output'> </span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Ratio"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"MeanWidth"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
+</code></pre></div>
+
+Note that we have defined a `Show` instance for the dataframes, because there is none. 
+
+
+## Records
+
+The first script below demonstrates how to define records and a dataframe by hand. 
+In order to define these records, we used `declareColumn` in the `Init` module. It creates new types and lenses.
+
+```{r script1, cache=TRUE}
+:load Frames_init.hs
+
+-- - #~ Records ~# - --
+
+-- define records
+:set -XDataKinds
+:{
+let row1 :: Record '[Name, Value, Indic, Status]
+    row1 =  "Joe" &: 10.1 &: 0 &: True &: Nil
+:}
+:{
+let row2 :: Record '[Name, Value, Indic, Status]
+    row2 =  "Bill" &: 9.0 &: 1 &: True &: Nil
+:}
+:{
+let row3 :: Record '[Name, Value, Indic, Status]
+    row3 =  "Kate" &: -3.0 &: 2 &: False &: Nil
+:}
+
+-- take a look
+row1
+
+-- declareColumn has defined new lenses name, value, indic and status
+:info name
+
+-- let's use them
+view status row1 
+-- it's the same as
+rget status row1
+-- setter: 
+set name "Jim" row1
+rput name "Jim" row1
+-- apply a function:
+over value (+1) row1 
+
+
+-- - #~ Now let's make a frame ~# - --
+let fr = toFrame [row1, row2, row3]
+:t fr 
+
+-- have a look thanks to our Show instance
+fr
+
+-- how many rows?
+frameLength fr
+
+-- take row 0
+frameRow fr 0 == row1
+
+-- we can convert the frame to a list
+:t F.toList fr 
+
+-- look at the Name column
+view name <$> fr
+-- this is a frame 
+:t view name <$> fr 
+-- the same as
+fmap (rget name) fr
+-- as well as 
+rget name <$> fr
+
+-- set every Status to False 
+rput status False <$> fr
+
+-- double every Value
+over value (*2) <$> fr
+
+-- get the minimal Value
+L.fold L.minimum (rget value <$> fr)
+-- or 
+minimum $ F.toList (rget value <$> fr)
+```
+
+Note that our imports of the functions `view` and `set` of the `Lens.Family` module were not necessary because we can use `rget` and `rput` instead (imported from the `Frames.RecLens` module).
+
+
+## CSV import 
+
+The `Frames` library allows to get a dataframe from a CSV file. The import (in the `Init` module) generates new types of records for the rows, and lenses as before.
+
+The CSV file we use contains the following small subset of the well-know iris dataset. 
+
+```{r iris, engine='R', results='markup'}
+iris <- read.csv("iris_small.csv")
+knitr::kable(iris, row.names=FALSE, align="c")
+```
+
+```{r script2, cache=TRUE}
+:load Frames_init.hs 
+
+-- - #~  tableTypes results ~# - --
+
+-- new types: Id, PetalLength, PetalWidth, and Species
+:info PetalLength
+
+-- lenses: id, petalLength, petalWidth, and species
+:t species 
+
+-- Iris: an alias for the Record type of the rows
+:info Iris  
+
+
+-- - #~ the iris frame ~# - --
+
+iris <- loadIris 
+iris
+:t iris 
+```
+
+
+## Subset, mutate, filter, aggregate
+
+Here we give some examples of common operations on dataframes. Note that the types `Ratio` and `MeanWidth` were defined in the `Init` module.
+
+```{r script3, cache=TRUE}
+:load Frames_init.hs 
+iris <- loadIris 
+
+
+-- - #~ subset of rows ~# - --
+
+toFrame $ map (frameRow iris) [3, 4, 5] 
+
+-- - #~ subset of columns ~# - --
+-- select Id and Species of row 3
+:set -XQuasiQuotes
+:set -XDataKinds
+select [pr|Id,Species|] $ frameRow iris 3
+-- select Id and Species of the frame
+select [pr|Id,Species|] <$> iris
+
+
+-- - #~ add a new column ~# - --
+
+-- say we want the ratio PetalLength/PetalWidth in a new column
+-- first define a function for one record
+:set -XDataKinds
+:{
+let ratio :: Iris -> Record '[Id, PetalLength, PetalWidth, Species, Ratio]
+    ratio x = rappend x ( (rget petalLength x)/(rget petalWidth x) &: Nil )
+:}
+-- test the ratio function on a row
+ratio $ frameRow iris 0
+-- map it to the frame 
+fmap ratio iris
+
+
+-- - #~ filtering ~# - --
+
+-- Species is Text so we set OverloadedStrings
+:set -XOverloadedStrings 
+-- function returning True if 'kind' matches the species of 'record'
+:{
+let isThisSpecies :: Text -> Iris -> Bool
+    isThisSpecies kind record = (rget species record) == kind
+:}
+-- test our function on a row
+isThisSpecies "virginica" $ frameRow iris 0 
+-- filter
+filterFrame (isThisSpecies "virginica") iris
+
+
+-- - #~ aggregation ~# - --
+
+-- say we want the mean of PetalWidth for each species
+-- first write a function aggregating for a given species
+import Numeric.Statistics (mean)
+:{
+let recordMeanWidthBySpecies :: Frame Iris -> Text -> Record '[Species, MeanWidth]
+    recordMeanWidthBySpecies frame kind = kind &: average &: Nil
+      where average = mean . F.toList 
+                        $ (rget petalWidth <$> filterFrame (isThisSpecies kind) frame) 
+:}
+-- test on one species
+recordMeanWidthBySpecies iris "versicolor" 
+-- now map this function to all species, and frame
+import Data.List (nub)
+let allspecies = nub . F.toList $ rget species <$> iris
+toFrame $ map (recordMeanWidthBySpecies iris) allspecies 
+
+-- put things together 
+:{
+let meanWidthAggregationBySpecies :: Frame Iris -> Frame (Record '[Species, MeanWidth])
+    meanWidthAggregationBySpecies frame = toFrame $ map (recordMeanWidthBySpecies frame) allspecies
+      where allspecies = nub . F.toList $ rget species <$> frame
+            recordMeanWidthBySpecies fr kind = kind &: average &: Nil
+              where average = mean . F.toList 
+                                $ (rget petalWidth <$> filterFrame (isThisSpecies kind) fr)
+:}
+meanWidthAggregationBySpecies iris
+```
+

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dataframes in Haskell: the Frames library</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Dataframes in Haskell: the Frames library</a>
+              </h3>
+              <span>2016-08-24</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/HaskellFrames.Rmd'>Source</a>
+              <div class='lead'>
+
+<p><link rel="stylesheet" href="hscolour.css"></p>
+<p>This article demonstrates the use of the <code>Frames</code> library. It has three parts, each one containing a <code>ghc</code> script. We’ll load the following module at the beginning of each script.</p>
+<div class="sourceCode">
+<pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-comment'>-- Frames_init.hs</span>
+<span class='hs-comment'>{-# LANGUAGE TemplateHaskell #-}</span>
+<span class='hs-comment'>{-# LANGUAGE DataKinds #-}</span>
+<span class='hs-comment'>{-# LANGUAGE FlexibleContexts #-}</span>
+<span class='hs-comment'>{-# LANGUAGE TypeOperators #-}</span>
+<span class='hs-comment'>{-# LANGUAGE OverloadedStrings #-}</span>
+<span class='output'> </span>
+<span class='hs-keyword'>module</span> <span class='hs-conid'>Init</span> <span class='hs-keyword'>where</span> 
+<span class='output'> </span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldl</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>L</span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldable</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>F</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Proxy</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Lens</span><span class='hs-varop'>.</span><span class='hs-conid'>Family</span> <span class='hs-layout'>(</span><span class='hs-varid'>view</span><span class='hs-layout'>,</span> <span class='hs-varid'>set</span><span class='hs-layout'>,</span> <span class='hs-varid'>over</span><span class='hs-layout'>)</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span><span class='hs-varop'>.</span><span class='hs-conid'>CSV</span> <span class='hs-layout'>(</span><span class='hs-varid'>defaultParser</span><span class='hs-layout'>,</span> <span class='hs-varid'>readTableOpt</span><span class='hs-layout'>)</span> 
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Pipes</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>)</span> <span class='hs-comment'>-- Producer</span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Pipes</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
+<span class='output'> </span>
+<span class='hs-comment'>-- define a Show instance for frames</span>
+<span class='hs-keyword'>instance</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+  <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>l</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> 
+                       <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n"</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span>
+                         <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>2</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n..."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span> 
+                           <span class='hs-varop'>++</span> <span class='hs-str'>"\nFrame with "</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varid'>l</span><span class='hs-layout'>)</span> <span class='hs-varop'>++</span> <span class='hs-keyword'>if</span><span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>then</span> <span class='hs-str'>" rows."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>" row."</span> 
+<span class='output'> </span>
+<span class='output'> </span>
+<span class='hs-comment'>-- - #~ Will be used in part 1 ~# - --</span>
+<span class='output'> </span>
+<span class='hs-comment'>-- define new types for the records</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Name"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>String</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Value"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Float</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Indic"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Int</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Status"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Bool</span>
+<span class='output'> </span>
+<span class='output'> </span>
+<span class='hs-comment'>-- - #~ Will be used in part 2 ~# - --</span>
+<span class='output'> </span>
+<span class='hs-definition'>tableTypes</span> <span class='hs-str'>"Iris"</span> <span class='hs-str'>"iris_small.csv"</span>
+<span class='output'> </span>
+<span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Producer</span> <span class='hs-conid'>Iris</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
+<span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>readTableOpt</span> <span class='hs-varid'>defaultParser</span> <span class='hs-str'>"iris_small.csv"</span>
+<span class='output'> </span>
+<span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-conid'>Iris</span><span class='hs-layout'>)</span>
+<span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inCoreAoS</span> <span class='hs-varid'>irisStream</span>
+<span class='output'> </span>
+<span class='output'> </span>
+<span class='hs-comment'>-- - #~ Will be used in part 3 ~# - --</span>
+<span class='output'> </span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Ratio"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
+<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"MeanWidth"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
+</code></pre>
+</div>
+<p>Note that we have defined a <code>Show</code> instance for the dataframes, because there is none.</p>
+<div id="records" class="section level2">
+<h2>Records</h2>
+<p>The first script below demonstrates how to define records and a dataframe by hand. In order to define these records, we used <code>declareColumn</code> in the <code>Init</code> module. It creates new types and lenses.</p>
+<div class="sourceCode">
+<pre class='scriptHaskell'><code class='scriptHaskell'><span class='prompt'>></span> <span class='command'>:load</span> <span class='hs-conid'>Frames_init</span><span class='hs-varop'>.</span><span class='hs-varid'>hs</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ Records ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- define records</span>
+<span class='prompt'>></span> <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XDataKinds</span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>row1</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Record</span> <span class='hs-chr'>'</span><span class='hs-keyglyph'>[</span><span class='hs-conid'>Name</span><span class='hs-layout'>,</span> <span class='hs-conid'>Value</span><span class='hs-layout'>,</span> <span class='hs-conid'>Indic</span><span class='hs-layout'>,</span> <span class='hs-conid'>Status</span><span class='hs-keyglyph'>]</span>
+<span class='prompt'>></span>     <span class='hs-varid'>row1</span> <span class='hs-keyglyph'>=</span>  <span class='hs-str'>"Joe"</span> <span class='hs-varop'>&amp;:</span> <span class='hs-num'>10.1</span> <span class='hs-varop'>&amp;:</span> <span class='hs-num'>0</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>True</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>Nil</span>
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>row2</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Record</span> <span class='hs-chr'>'</span><span class='hs-keyglyph'>[</span><span class='hs-conid'>Name</span><span class='hs-layout'>,</span> <span class='hs-conid'>Value</span><span class='hs-layout'>,</span> <span class='hs-conid'>Indic</span><span class='hs-layout'>,</span> <span class='hs-conid'>Status</span><span class='hs-keyglyph'>]</span>
+<span class='prompt'>></span>     <span class='hs-varid'>row2</span> <span class='hs-keyglyph'>=</span>  <span class='hs-str'>"Bill"</span> <span class='hs-varop'>&amp;:</span> <span class='hs-num'>9.0</span> <span class='hs-varop'>&amp;:</span> <span class='hs-num'>1</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>True</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>Nil</span>
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>row3</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Record</span> <span class='hs-chr'>'</span><span class='hs-keyglyph'>[</span><span class='hs-conid'>Name</span><span class='hs-layout'>,</span> <span class='hs-conid'>Value</span><span class='hs-layout'>,</span> <span class='hs-conid'>Indic</span><span class='hs-layout'>,</span> <span class='hs-conid'>Status</span><span class='hs-keyglyph'>]</span>
+<span class='prompt'>></span>     <span class='hs-varid'>row3</span> <span class='hs-keyglyph'>=</span>  <span class='hs-str'>"Kate"</span> <span class='hs-varop'>&amp;:</span> <span class='hs-comment'>-</span><span class='hs-num'>3.0</span> <span class='hs-varop'>&amp;:</span> <span class='hs-num'>2</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>False</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>Nil</span>
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- take a look</span>
+<span class='prompt'>></span> <span class='hs-definition'>row1</span>
+<span class='output'>{Name :-> "Joe", Value :-> 10.1, Indic :-> 0, Status :-> True}</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- declareColumn has defined new lenses name, value, indic and status</span>
+<span class='prompt'>></span> <span class='command'>:info</span> <span class='hs-varid'>name</span>
+<span class='output'>name ::</span>
+<span class='output'>  (Functor f0, RElem Name rs0 (Data.Vinyl.TypeLevel.RIndex Name rs0)) =></span>
+<span class='output'>  (String -> f0 String) -> Record rs0 -> f0 (Record rs0)</span>
+<span class='output'>   -- Defined at Frames_init.hs:30:1</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- let's use them</span>
+<span class='prompt'>></span> <span class='hs-definition'>view</span> <span class='hs-varid'>status</span> <span class='hs-varid'>row1</span> 
+<span class='output'>True</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- it's the same as</span>
+<span class='prompt'>></span> <span class='hs-definition'>rget</span> <span class='hs-varid'>status</span> <span class='hs-varid'>row1</span>
+<span class='output'>True</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- setter: </span>
+<span class='prompt'>></span> <span class='hs-definition'>set</span> <span class='hs-varid'>name</span> <span class='hs-str'>"Jim"</span> <span class='hs-varid'>row1</span>
+<span class='output'>{Name :-> "Jim", Value :-> 10.1, Indic :-> 0, Status :-> True}</span>
+<span class='prompt'>></span> <span class='hs-definition'>rput</span> <span class='hs-varid'>name</span> <span class='hs-str'>"Jim"</span> <span class='hs-varid'>row1</span>
+<span class='output'>{Name :-> "Jim", Value :-> 10.1, Indic :-> 0, Status :-> True}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- apply a function:</span>
+<span class='prompt'>></span> <span class='hs-definition'>over</span> <span class='hs-varid'>value</span> <span class='hs-layout'>(</span><span class='hs-varop'>+</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-varid'>row1</span> 
+<span class='output'>{Name :-> "Joe", Value :-> 11.1, Indic :-> 0, Status :-> True}</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ Now let's make a frame ~# - --</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>fr</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>toFrame</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>row1</span><span class='hs-layout'>,</span> <span class='hs-varid'>row2</span><span class='hs-layout'>,</span> <span class='hs-varid'>row3</span><span class='hs-keyglyph'>]</span>
+<span class='prompt'>></span> <span class='command'>:t</span> <span class='hs-varid'>fr</span> 
+<span class='output'>fr :: Frame (Record '[Name, Value, Indic, Status])</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- have a look thanks to our Show instance</span>
+<span class='prompt'>></span> <span class='hs-definition'>fr</span>
+<span class='output'>{Name :-> "Joe", Value :-> 10.1, Indic :-> 0, Status :-> True}</span>
+<span class='output'>{Name :-> "Bill", Value :-> 9.0, Indic :-> 1, Status :-> True}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- how many rows?</span>
+<span class='prompt'>></span> <span class='hs-definition'>frameLength</span> <span class='hs-varid'>fr</span>
+<span class='output'>3</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- take row 0</span>
+<span class='prompt'>></span> <span class='hs-definition'>frameRow</span> <span class='hs-varid'>fr</span> <span class='hs-num'>0</span> <span class='hs-varop'>==</span> <span class='hs-varid'>row1</span>
+<span class='output'>True</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- we can convert the frame to a list</span>
+<span class='prompt'>></span> <span class='command'>:t</span> <span class='hs-conid'>F</span><span class='hs-varop'>.</span><span class='hs-varid'>toList</span> <span class='hs-varid'>fr</span> 
+<span class='output'>F.toList fr :: [Record '[Name, Value, Indic, Status]]</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- look at the Name column</span>
+<span class='prompt'>></span> <span class='hs-definition'>view</span> <span class='hs-varid'>name</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span>
+<span class='output'>"Joe"</span>
+<span class='output'>"Bill"</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- this is a frame </span>
+<span class='prompt'>></span> <span class='command'>:t</span> <span class='hs-varid'>view</span> <span class='hs-varid'>name</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span> 
+<span class='output'>view name <$> fr :: Frame String</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- the same as</span>
+<span class='prompt'>></span> <span class='hs-definition'>fmap</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>name</span><span class='hs-layout'>)</span> <span class='hs-varid'>fr</span>
+<span class='output'>"Joe"</span>
+<span class='output'>"Bill"</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- as well as </span>
+<span class='prompt'>></span> <span class='hs-definition'>rget</span> <span class='hs-varid'>name</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span>
+<span class='output'>"Joe"</span>
+<span class='output'>"Bill"</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- set every Status to False </span>
+<span class='prompt'>></span> <span class='hs-definition'>rput</span> <span class='hs-varid'>status</span> <span class='hs-conid'>False</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span>
+<span class='output'>{Name :-> "Joe", Value :-> 10.1, Indic :-> 0, Status :-> False}</span>
+<span class='output'>{Name :-> "Bill", Value :-> 9.0, Indic :-> 1, Status :-> False}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- double every Value</span>
+<span class='prompt'>></span> <span class='hs-definition'>over</span> <span class='hs-varid'>value</span> <span class='hs-layout'>(</span><span class='hs-varop'>*</span><span class='hs-num'>2</span><span class='hs-layout'>)</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span>
+<span class='output'>{Name :-> "Joe", Value :-> 20.2, Indic :-> 0, Status :-> True}</span>
+<span class='output'>{Name :-> "Bill", Value :-> 18.0, Indic :-> 1, Status :-> True}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- get the minimal Value</span>
+<span class='prompt'>></span> <span class='hs-conid'>L</span><span class='hs-varop'>.</span><span class='hs-varid'>fold</span> <span class='hs-conid'>L</span><span class='hs-varop'>.</span><span class='hs-varid'>minimum</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>value</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span><span class='hs-layout'>)</span>
+<span class='output'>Just (-3.0)</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- or </span>
+<span class='prompt'>></span> <span class='hs-definition'>minimum</span> <span class='hs-varop'>$</span> <span class='hs-conid'>F</span><span class='hs-varop'>.</span><span class='hs-varid'>toList</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>value</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>fr</span><span class='hs-layout'>)</span>
+<span class='output'>-3.0</span>
+</code></pre>
+</div>
+<p>Note that our imports of the functions <code>view</code> and <code>set</code> of the <code>Lens.Family</code> module were not necessary because we can use <code>rget</code> and <code>rput</code> instead (imported from the <code>Frames.RecLens</code> module).</p>
+</div>
+<div id="csv-import" class="section level2">
+<h2>CSV import</h2>
+<p>The <code>Frames</code> library allows to get a dataframe from a CSV file. The import (in the <code>Init</code> module) generates new types of records for the rows, and lenses as before.</p>
+<p>The CSV file we use contains the following small subset of the well-know iris dataset.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Id</th>
+<th align="center">Petal.Length</th>
+<th align="center">Petal.Width</th>
+<th align="center">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">1</td>
+<td align="center">1.4</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">1.4</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">1.3</td>
+<td align="center">0.2</td>
+<td align="center">setosa</td>
+</tr>
+<tr class="even">
+<td align="center">4</td>
+<td align="center">3.9</td>
+<td align="center">1.4</td>
+<td align="center">versicolor</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">3.5</td>
+<td align="center">1.0</td>
+<td align="center">versicolor</td>
+</tr>
+<tr class="even">
+<td align="center">6</td>
+<td align="center">4.2</td>
+<td align="center">1.5</td>
+<td align="center">versicolor</td>
+</tr>
+<tr class="odd">
+<td align="center">7</td>
+<td align="center">5.4</td>
+<td align="center">2.3</td>
+<td align="center">virginica</td>
+</tr>
+<tr class="even">
+<td align="center">8</td>
+<td align="center">5.1</td>
+<td align="center">1.8</td>
+<td align="center">virginica</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode">
+<pre class='scriptHaskell'><code class='scriptHaskell'><span class='prompt'>></span> <span class='command'>:load</span> <span class='hs-conid'>Frames_init</span><span class='hs-varop'>.</span><span class='hs-varid'>hs</span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~  tableTypes results ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- new types: Id, PetalLength, PetalWidth, and Species</span>
+<span class='prompt'>></span> <span class='command'>:info</span> <span class='hs-conid'>PetalLength</span>
+<span class='output'>type PetalLength = "Petal.Length" :-> Double   -- Defined at Frames_init.hs:38:1</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- lenses: id, petalLength, petalWidth, and species</span>
+<span class='prompt'>></span> <span class='command'>:t</span> <span class='hs-varid'>species</span> 
+<span class='output'>species</span>
+<span class='output'>  :: (Functor f0, RElem Species rs0 (Data.Vinyl.TypeLevel.RIndex Species rs0)) =></span>
+<span class='output'>     (Text -> f0 Text) -> Record rs0 -> f0 (Record rs0)</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- Iris: an alias for the Record type of the rows</span>
+<span class='prompt'>></span> <span class='command'>:info</span> <span class='hs-conid'>Iris</span>  
+<span class='output'>type Iris =</span>
+<span class='output'>  Record</span>
+<span class='output'>    '["Id" :-> Int, "Petal.Length" :-> Double, "Petal.Width" :-> Double, "Species" :-> Text]</span>
+<span class='output'>   -- Defined at Frames_init.hs:38:1</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ the iris frame ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-definition'>iris</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>loadIris</span> 
+<span class='prompt'>></span> <span class='hs-definition'>iris</span>
+<span class='output'>{Id :-> 1, Petal.Length :-> 1.4, Petal.Width :-> 0.2, Species :-> "setosa"}</span>
+<span class='output'>{Id :-> 2, Petal.Length :-> 1.4, Petal.Width :-> 0.2, Species :-> "setosa"}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 8 rows.</span>
+<span class='prompt'>></span> <span class='command'>:t</span> <span class='hs-varid'>iris</span>
+<span class='output'>iris :: Frame Iris</span>
+</code></pre>
+</div>
+</div>
+<div id="subset-mutate-filter-aggregate" class="section level2">
+<h2>Subset, mutate, filter, aggregate</h2>
+<p>Here we give some examples of common operations on dataframes. Note that the types <code>Ratio</code> and <code>MeanWidth</code> were defined in the <code>Init</code> module.</p>
+<div class="sourceCode">
+<pre class='scriptHaskell'><code class='scriptHaskell'><span class='prompt'>></span> <span class='command'>:load</span> <span class='hs-conid'>Frames_init</span><span class='hs-varop'>.</span><span class='hs-varid'>hs</span> 
+<span class='prompt'>></span> <span class='hs-definition'>iris</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>loadIris</span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ subset of rows ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-definition'>toFrame</span> <span class='hs-varop'>$</span> <span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>frameRow</span> <span class='hs-varid'>iris</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>3</span><span class='hs-layout'>,</span> <span class='hs-num'>4</span><span class='hs-layout'>,</span> <span class='hs-num'>5</span><span class='hs-keyglyph'>]</span> 
+<span class='output'>{Id :-> 4, Petal.Length :-> 3.9, Petal.Width :-> 1.4, Species :-> "versicolor"}</span>
+<span class='output'>{Id :-> 5, Petal.Length :-> 3.5, Petal.Width :-> 1.0, Species :-> "versicolor"}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ subset of columns ~# - --</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- select Id and Species of row 3</span>
+<span class='prompt'>></span> <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XQuasiQuotes</span>
+<span class='prompt'>></span> <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XDataKinds</span>
+<span class='prompt'>></span> <span class='hs-definition'>select</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>pr</span><span class='hs-keyglyph'>|</span><span class='hs-conid'>Id</span><span class='hs-layout'>,</span><span class='hs-conid'>Species</span><span class='hs-keyglyph'>|</span><span class='hs-keyglyph'>]</span> <span class='hs-varop'>$</span> <span class='hs-varid'>frameRow</span> <span class='hs-varid'>iris</span> <span class='hs-num'>3</span>
+<span class='output'>{Id :-> 4, Species :-> "versicolor"}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- select Id and Species of the frame</span>
+<span class='prompt'>></span> <span class='hs-definition'>select</span> <span class='hs-keyglyph'>[</span><span class='hs-varid'>pr</span><span class='hs-keyglyph'>|</span><span class='hs-conid'>Id</span><span class='hs-layout'>,</span><span class='hs-conid'>Species</span><span class='hs-keyglyph'>|</span><span class='hs-keyglyph'>]</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>iris</span>
+<span class='output'>{Id :-> 1, Species :-> "setosa"}</span>
+<span class='output'>{Id :-> 2, Species :-> "setosa"}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 8 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ add a new column ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- say we want the ratio PetalLength/PetalWidth in a new column</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- first define a function for one record</span>
+<span class='prompt'>></span> <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XDataKinds</span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>ratio</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Iris</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Record</span> <span class='hs-chr'>'</span><span class='hs-keyglyph'>[</span><span class='hs-conid'>Id</span><span class='hs-layout'>,</span> <span class='hs-conid'>PetalLength</span><span class='hs-layout'>,</span> <span class='hs-conid'>PetalWidth</span><span class='hs-layout'>,</span> <span class='hs-conid'>Species</span><span class='hs-layout'>,</span> <span class='hs-conid'>Ratio</span><span class='hs-keyglyph'>]</span>
+<span class='prompt'>></span>     <span class='hs-varid'>ratio</span> <span class='hs-varid'>x</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>rappend</span> <span class='hs-varid'>x</span> <span class='hs-layout'>(</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>petalLength</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span><span class='hs-varop'>/</span><span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>petalWidth</span> <span class='hs-varid'>x</span><span class='hs-layout'>)</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>Nil</span> <span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- test the ratio function on a row</span>
+<span class='prompt'>></span> <span class='hs-definition'>ratio</span> <span class='hs-varop'>$</span> <span class='hs-varid'>frameRow</span> <span class='hs-varid'>iris</span> <span class='hs-num'>0</span>
+<span class='output'>{Id :-> 1, Petal.Length :-> 1.4, Petal.Width :-> 0.2, Species :-> "setosa", Ratio :-> 6.999999999999999}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- map it to the frame </span>
+<span class='prompt'>></span> <span class='hs-definition'>fmap</span> <span class='hs-varid'>ratio</span> <span class='hs-varid'>iris</span>
+<span class='output'>{Id :-> 1, Petal.Length :-> 1.4, Petal.Width :-> 0.2, Species :-> "setosa", Ratio :-> 6.999999999999999}</span>
+<span class='output'>{Id :-> 2, Petal.Length :-> 1.4, Petal.Width :-> 0.2, Species :-> "setosa", Ratio :-> 6.999999999999999}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 8 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ filtering ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- Species is Text so we set OverloadedStrings</span>
+<span class='prompt'>></span> <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XOverloadedStrings</span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- function returning True if 'kind' matches the species of 'record'</span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>isThisSpecies</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Text</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Iris</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Bool</span>
+<span class='prompt'>></span>     <span class='hs-varid'>isThisSpecies</span> <span class='hs-varid'>kind</span> <span class='hs-varid'>record</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>species</span> <span class='hs-varid'>record</span><span class='hs-layout'>)</span> <span class='hs-varop'>==</span> <span class='hs-varid'>kind</span>
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- test our function on a row</span>
+<span class='prompt'>></span> <span class='hs-definition'>isThisSpecies</span> <span class='hs-str'>"virginica"</span> <span class='hs-varop'>$</span> <span class='hs-varid'>frameRow</span> <span class='hs-varid'>iris</span> <span class='hs-num'>0</span> 
+<span class='output'>False</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- filter</span>
+<span class='prompt'>></span> <span class='hs-definition'>filterFrame</span> <span class='hs-layout'>(</span><span class='hs-varid'>isThisSpecies</span> <span class='hs-str'>"virginica"</span><span class='hs-layout'>)</span> <span class='hs-varid'>iris</span>
+<span class='output'>{Id :-> 7, Petal.Length :-> 5.4, Petal.Width :-> 2.3, Species :-> "virginica"}</span>
+<span class='output'>{Id :-> 8, Petal.Length :-> 5.1, Petal.Width :-> 1.8, Species :-> "virginica"}</span>
+<span class='output'>Frame with 2 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- - #~ aggregation ~# - --</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- say we want the mean of PetalWidth for each species</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- first write a function aggregating for a given species</span>
+<span class='prompt'>></span> <span class='hs-keyword'>import</span> <span class='hs-conid'>Numeric</span><span class='hs-varop'>.</span><span class='hs-conid'>Statistics</span> <span class='hs-layout'>(</span><span class='hs-varid'>mean</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>recordMeanWidthBySpecies</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Frame</span> <span class='hs-conid'>Iris</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Text</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Record</span> <span class='hs-chr'>'</span><span class='hs-keyglyph'>[</span><span class='hs-conid'>Species</span><span class='hs-layout'>,</span> <span class='hs-conid'>MeanWidth</span><span class='hs-keyglyph'>]</span>
+<span class='prompt'>></span>     <span class='hs-varid'>recordMeanWidthBySpecies</span> <span class='hs-varid'>frame</span> <span class='hs-varid'>kind</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>kind</span> <span class='hs-varop'>&amp;:</span> <span class='hs-varid'>average</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>Nil</span>
+<span class='prompt'>></span>       <span class='hs-keyword'>where</span> <span class='hs-varid'>average</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mean</span> <span class='hs-varop'>.</span> <span class='hs-conid'>F</span><span class='hs-varop'>.</span><span class='hs-varid'>toList</span> 
+<span class='prompt'>></span>                         <span class='hs-varop'>$</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>petalWidth</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>filterFrame</span> <span class='hs-layout'>(</span><span class='hs-varid'>isThisSpecies</span> <span class='hs-varid'>kind</span><span class='hs-layout'>)</span> <span class='hs-varid'>frame</span><span class='hs-layout'>)</span> 
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- test on one species</span>
+<span class='prompt'>></span> <span class='hs-definition'>recordMeanWidthBySpecies</span> <span class='hs-varid'>iris</span> <span class='hs-str'>"versicolor"</span> 
+<span class='output'>{Species :-> "versicolor", MeanWidth :-> 1.3}</span>
+<span class='prompt'>></span> <span class='hs-comment'>-- now map this function to all species, and frame</span>
+<span class='prompt'>></span> <span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>List</span> <span class='hs-layout'>(</span><span class='hs-varid'>nub</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>allspecies</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>nub</span> <span class='hs-varop'>.</span> <span class='hs-conid'>F</span><span class='hs-varop'>.</span><span class='hs-varid'>toList</span> <span class='hs-varop'>$</span> <span class='hs-varid'>rget</span> <span class='hs-varid'>species</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>iris</span>
+<span class='prompt'>></span> <span class='hs-definition'>toFrame</span> <span class='hs-varop'>$</span> <span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>recordMeanWidthBySpecies</span> <span class='hs-varid'>iris</span><span class='hs-layout'>)</span> <span class='hs-varid'>allspecies</span> 
+<span class='output'>{Species :-> "setosa", MeanWidth :-> 0.2}</span>
+<span class='output'>{Species :-> "versicolor", MeanWidth :-> 1.3}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+<span class='prompt'>></span> 
+<span class='prompt'>></span> <span class='hs-comment'>-- put things together </span>
+<span class='prompt'>></span> <span class='m'>:{</span>
+<span class='prompt'>></span> <span class='hs-keyword'>let</span> <span class='hs-varid'>meanWidthAggregationBySpecies</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Frame</span> <span class='hs-conid'>Iris</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Frame</span> <span class='hs-layout'>(</span><span class='hs-conid'>Record</span> <span class='hs-chr'>'</span><span class='hs-keyglyph'>[</span><span class='hs-conid'>Species</span><span class='hs-layout'>,</span> <span class='hs-conid'>MeanWidth</span><span class='hs-keyglyph'>]</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span>     <span class='hs-varid'>meanWidthAggregationBySpecies</span> <span class='hs-varid'>frame</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>toFrame</span> <span class='hs-varop'>$</span> <span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>recordMeanWidthBySpecies</span> <span class='hs-varid'>frame</span><span class='hs-layout'>)</span> <span class='hs-varid'>allspecies</span>
+<span class='prompt'>></span>       <span class='hs-keyword'>where</span> <span class='hs-varid'>allspecies</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>nub</span> <span class='hs-varop'>.</span> <span class='hs-conid'>F</span><span class='hs-varop'>.</span><span class='hs-varid'>toList</span> <span class='hs-varop'>$</span> <span class='hs-varid'>rget</span> <span class='hs-varid'>species</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>frame</span>
+<span class='prompt'>></span>             <span class='hs-varid'>recordMeanWidthBySpecies</span> <span class='hs-varid'>fr</span> <span class='hs-varid'>kind</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>kind</span> <span class='hs-varop'>&amp;:</span> <span class='hs-varid'>average</span> <span class='hs-varop'>&amp;:</span> <span class='hs-conid'>Nil</span>
+<span class='prompt'>></span>               <span class='hs-keyword'>where</span> <span class='hs-varid'>average</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>mean</span> <span class='hs-varop'>.</span> <span class='hs-conid'>F</span><span class='hs-varop'>.</span><span class='hs-varid'>toList</span> 
+<span class='prompt'>></span>                                 <span class='hs-varop'>$</span> <span class='hs-layout'>(</span><span class='hs-varid'>rget</span> <span class='hs-varid'>petalWidth</span> <span class='hs-varop'>&lt;$&gt;</span> <span class='hs-varid'>filterFrame</span> <span class='hs-layout'>(</span><span class='hs-varid'>isThisSpecies</span> <span class='hs-varid'>kind</span><span class='hs-layout'>)</span> <span class='hs-varid'>fr</span><span class='hs-layout'>)</span>
+<span class='prompt'>></span> <span class='m'>:}</span>
+<span class='prompt'>></span> <span class='hs-definition'>meanWidthAggregationBySpecies</span> <span class='hs-varid'>iris</span>
+<span class='output'>{Species :-> "setosa", MeanWidth :-> 0.2}</span>
+<span class='output'>{Species :-> "versicolor", MeanWidth :-> 1.3}</span>
+<span class='output'>...</span>
+<span class='output'>Frame with 3 rows.</span>
+</code></pre>
+</div>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
