@@ -35,7 +35,7 @@ knitr::knit_engines$set(ghc = function (options)
 ## chunk options
 knitr::opts_chunk$set(engine = 'ghc', 
                       engine.path = 'ghcscriptrender', 
-                      engine.opts = '--fragment -p .cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d',
+                      engine.opts = '--fragment -p /home/stla/.cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d',
                       echo = FALSE,
                       results = 'asis')
 ```
@@ -55,12 +55,10 @@ It has three parts, each one containing a `ghc` script. We'll load the following
 <span class='output'> </span>
 <span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldl</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>L</span>
 <span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldable</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>F</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Proxy</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>(</span><span class='hs-keyglyph'>..</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Lens</span><span class='hs-varop'>.</span><span class='hs-conid'>Family</span> <span class='hs-layout'>(</span><span class='hs-varid'>view</span><span class='hs-layout'>,</span> <span class='hs-varid'>set</span><span class='hs-layout'>,</span> <span class='hs-varid'>over</span><span class='hs-layout'>)</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span><span class='hs-varop'>.</span><span class='hs-conid'>CSV</span> <span class='hs-layout'>(</span><span class='hs-varid'>defaultParser</span><span class='hs-layout'>,</span> <span class='hs-varid'>readTableOpt</span><span class='hs-layout'>)</span> 
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Pipes</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>)</span> <span class='hs-comment'>-- Producer</span>
-<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Pipes</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>P</span>
 <span class='output'> </span>
 <span class='hs-comment'>-- define a Show instance for frames</span>
 <span class='hs-keyword'>instance</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
