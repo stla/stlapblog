@@ -93,46 +93,46 @@
 <span class='hs-comment'>{-# LANGUAGE FlexibleContexts #-}</span>
 <span class='hs-comment'>{-# LANGUAGE TypeOperators #-}</span>
 <span class='hs-comment'>{-# LANGUAGE OverloadedStrings #-}</span>
-<span class='output'> </span>
+ 
 <span class='hs-keyword'>module</span> <span class='hs-conid'>Init</span> <span class='hs-keyword'>where</span> 
-<span class='output'> </span>
+ 
 <span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldl</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>L</span>
 <span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldable</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>F</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Lens</span><span class='hs-varop'>.</span><span class='hs-conid'>Family</span> <span class='hs-layout'>(</span><span class='hs-varid'>view</span><span class='hs-layout'>,</span> <span class='hs-varid'>set</span><span class='hs-layout'>,</span> <span class='hs-varid'>over</span><span class='hs-layout'>)</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span><span class='hs-varop'>.</span><span class='hs-conid'>CSV</span> <span class='hs-layout'>(</span><span class='hs-varid'>defaultParser</span><span class='hs-layout'>,</span> <span class='hs-varid'>readTableOpt</span><span class='hs-layout'>)</span> 
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Pipes</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>)</span> <span class='hs-comment'>-- Producer</span>
-<span class='output'> </span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Pipes</span> 
+ 
 <span class='hs-comment'>-- define a Show instance for frames</span>
 <span class='hs-keyword'>instance</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
   <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>l</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> 
                        <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n"</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span>
                          <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>2</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n..."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span> 
                            <span class='hs-varop'>++</span> <span class='hs-str'>"\nFrame with "</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varid'>l</span><span class='hs-layout'>)</span> <span class='hs-varop'>++</span> <span class='hs-keyword'>if</span><span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>then</span> <span class='hs-str'>" rows."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>" row."</span> 
-<span class='output'> </span>
-<span class='output'> </span>
+ 
+ 
 <span class='hs-comment'>-- - #~ Will be used in part 1 ~# - --</span>
-<span class='output'> </span>
+ 
 <span class='hs-comment'>-- define new types for the records</span>
 <span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Name"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>String</span>
 <span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Value"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Float</span>
 <span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Indic"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Int</span>
 <span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Status"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Bool</span>
-<span class='output'> </span>
-<span class='output'> </span>
+ 
+ 
 <span class='hs-comment'>-- - #~ Will be used in part 2 ~# - --</span>
-<span class='output'> </span>
+ 
 <span class='hs-definition'>tableTypes</span> <span class='hs-str'>"Iris"</span> <span class='hs-str'>"iris_small.csv"</span>
-<span class='output'> </span>
+ 
 <span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Producer</span> <span class='hs-conid'>Iris</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
 <span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>readTableOpt</span> <span class='hs-varid'>defaultParser</span> <span class='hs-str'>"iris_small.csv"</span>
-<span class='output'> </span>
+ 
 <span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-conid'>Iris</span><span class='hs-layout'>)</span>
 <span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inCoreAoS</span> <span class='hs-varid'>irisStream</span>
-<span class='output'> </span>
-<span class='output'> </span>
+ 
+ 
 <span class='hs-comment'>-- - #~ Will be used in part 3 ~# - --</span>
-<span class='output'> </span>
+ 
 <span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Ratio"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
 <span class='hs-definition'>declareColumn</span> <span class='hs-str'>"MeanWidth"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
 </code></pre>
@@ -257,6 +257,14 @@
 </code></pre>
 </div>
 <p>Note that our imports of the functions <code>view</code> and <code>set</code> of the <code>Lens.Family</code> module were not necessary because we can use <code>rget</code> and <code>rput</code> instead (imported from the <code>Frames.RecLens</code> module).</p>
+<p>The type <code>Frame a</code> is a functor of <code>a</code>’s, where <code>a</code> is the type of the rows. This explains why we can use <code>fmap (rget name) fr</code> in the above code, because <code>rget name</code> is a function acting on the rows.</p>
+<p>Let’s go back to the <code>Show</code> instance we defined:</p>
+<div class="sourceCode">
+<pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-keyword'>instance</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
+  <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>l</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-varop'>...</span>
+</code></pre>
+</div>
+<p><code>Frame a</code> is a data type with two constructors: an integer - its length -, and a function <code>Int -&gt; a</code> - the function returning the row at a given index. They are respectively denoted by <code>l</code> and <code>f</code> in our <code>Show</code> instance.</p>
 </div>
 <div id="csv-import" class="section level2">
 <h2>CSV import</h2>
@@ -357,10 +365,12 @@
 <span class='output'>iris :: Frame Iris</span>
 </code></pre>
 </div>
+<p>Thus, <code>iris</code> is a frame of type <code>Frame Iris</code>, where <code>Iris</code> is a synonym of the <code>Record</code> type of the rows. We will manipulate <code>iris</code> in the next section.</p>
 </div>
 <div id="subset-mutate-filter-aggregate" class="section level2">
 <h2>Subset, mutate, filter, aggregate</h2>
-<p>Here we give some examples of common operations on dataframes. Note that the types <code>Ratio</code> and <code>MeanWidth</code> were defined in the <code>Init</code> module.</p>
+<p>Here we give some examples of common operations on dataframes. We already saw how to transform a column in the case when the transformation does not change the type: this is achieved with the help of <code>over</code>. In order to add a new column to a frame, its type must be defined before.</p>
+<p>This is why the types <code>Ratio</code> and <code>MeanWidth</code> used in the script below were defined in the <code>Init</code> module.</p>
 <div class="sourceCode">
 <pre class='scriptHaskell'><code class='scriptHaskell'><span class='prompt'>></span> <span class='command'>:load</span> <span class='hs-conid'>Frames_init</span><span class='hs-varop'>.</span><span class='hs-varid'>hs</span> 
 <span class='prompt'>></span> <span class='hs-definition'>iris</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>loadIris</span> 

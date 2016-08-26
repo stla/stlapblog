@@ -74,3 +74,6 @@ code.scriptHaskell {
 ol.linenums {
   color: #ffdb58
 }
+pre.prettyprint {
+  margin-bottom: 0;
+}

@@ -44,55 +44,57 @@ knitr::opts_chunk$set(engine = 'ghc',
 This article demonstrates the use of the `Frames` library. 
 It has three parts, each one containing a `ghc` script. We'll load the following module at the beginning of each script.
 
-<div class='sourceCode'><pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-comment'>-- Frames_init.hs</span>
-<span class='hs-comment'>{-# LANGUAGE TemplateHaskell #-}</span>
-<span class='hs-comment'>{-# LANGUAGE DataKinds #-}</span>
-<span class='hs-comment'>{-# LANGUAGE FlexibleContexts #-}</span>
-<span class='hs-comment'>{-# LANGUAGE TypeOperators #-}</span>
-<span class='hs-comment'>{-# LANGUAGE OverloadedStrings #-}</span>
-<span class='output'> </span>
-<span class='hs-keyword'>module</span> <span class='hs-conid'>Init</span> <span class='hs-keyword'>where</span> 
-<span class='output'> </span>
-<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Control</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldl</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>L</span>
-<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Foldable</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>F</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Lens</span><span class='hs-varop'>.</span><span class='hs-conid'>Family</span> <span class='hs-layout'>(</span><span class='hs-varid'>view</span><span class='hs-layout'>,</span> <span class='hs-varid'>set</span><span class='hs-layout'>,</span> <span class='hs-varid'>over</span><span class='hs-layout'>)</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Frames</span><span class='hs-varop'>.</span><span class='hs-conid'>CSV</span> <span class='hs-layout'>(</span><span class='hs-varid'>defaultParser</span><span class='hs-layout'>,</span> <span class='hs-varid'>readTableOpt</span><span class='hs-layout'>)</span> 
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Pipes</span> <span class='hs-varid'>hiding</span> <span class='hs-layout'>(</span><span class='hs-conid'>Proxy</span><span class='hs-layout'>)</span> <span class='hs-comment'>-- Producer</span>
-<span class='output'> </span>
-<span class='hs-comment'>-- define a Show instance for frames</span>
-<span class='hs-keyword'>instance</span> <span class='hs-layout'>(</span><span class='hs-conid'>Show</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=&gt;</span> <span class='hs-conid'>Show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>where</span>
-  <span class='hs-varid'>show</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-varid'>l</span> <span class='hs-varid'>f</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>=</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>0</span><span class='hs-layout'>)</span> 
-                       <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n"</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varop'>$</span> <span class='hs-varid'>f</span> <span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span>
-                         <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>2</span> <span class='hs-keyword'>then</span> <span class='hs-str'>"\n..."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>""</span><span class='hs-layout'>)</span> 
-                           <span class='hs-varop'>++</span> <span class='hs-str'>"\nFrame with "</span> <span class='hs-varop'>++</span> <span class='hs-layout'>(</span><span class='hs-varid'>show</span> <span class='hs-varid'>l</span><span class='hs-layout'>)</span> <span class='hs-varop'>++</span> <span class='hs-keyword'>if</span><span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-varop'>&gt;</span><span class='hs-num'>1</span><span class='hs-layout'>)</span> <span class='hs-keyword'>then</span> <span class='hs-str'>" rows."</span> <span class='hs-keyword'>else</span> <span class='hs-str'>" row."</span> 
-<span class='output'> </span>
-<span class='output'> </span>
-<span class='hs-comment'>-- - #~ Will be used in part 1 ~# - --</span>
-<span class='output'> </span>
-<span class='hs-comment'>-- define new types for the records</span>
-<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Name"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>String</span>
-<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Value"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Float</span>
-<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Indic"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Int</span>
-<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Status"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Bool</span>
-<span class='output'> </span>
-<span class='output'> </span>
-<span class='hs-comment'>-- - #~ Will be used in part 2 ~# - --</span>
-<span class='output'> </span>
-<span class='hs-definition'>tableTypes</span> <span class='hs-str'>"Iris"</span> <span class='hs-str'>"iris_small.csv"</span>
-<span class='output'> </span>
-<span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Producer</span> <span class='hs-conid'>Iris</span> <span class='hs-conid'>IO</span> <span class='hs-conid'>()</span>
-<span class='hs-definition'>irisStream</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>readTableOpt</span> <span class='hs-varid'>defaultParser</span> <span class='hs-str'>"iris_small.csv"</span>
-<span class='output'> </span>
-<span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span> <span class='hs-layout'>(</span><span class='hs-conid'>Frame</span> <span class='hs-conid'>Iris</span><span class='hs-layout'>)</span>
-<span class='hs-definition'>loadIris</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>inCoreAoS</span> <span class='hs-varid'>irisStream</span>
-<span class='output'> </span>
-<span class='output'> </span>
-<span class='hs-comment'>-- - #~ Will be used in part 3 ~# - --</span>
-<span class='output'> </span>
-<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"Ratio"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
-<span class='hs-definition'>declareColumn</span> <span class='hs-str'>"MeanWidth"</span> <span class='hs-chr'>'</span><span class='hs-chr'>'</span><span class='hs-conid'>Double</span>
-</code></pre></div>
+```{r init, engine.opts="--fragment --module"}
+-- Frames_init.hs
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE OverloadedStrings #-}
+
+module Init where 
+
+import qualified Control.Foldl as L
+import qualified Data.Foldable as F
+import Lens.Family (view, set, over)
+import Frames
+import Frames.CSV (defaultParser, readTableOpt) 
+import Pipes 
+
+-- define a Show instance for frames
+instance (Show a) => Show (Frame a) where
+  show (Frame l f) = (show $ f 0) 
+                       ++ (if l>1 then "\n" ++ (show $ f 1) else "")
+                         ++ (if l>2 then "\n..." else "") 
+                           ++ "\nFrame with " ++ (show l) ++ if(l>1) then " rows." else " row." 
+
+
+-- - #~ Will be used in part 1 ~# - --
+
+-- define new types for the records
+declareColumn "Name" ''String
+declareColumn "Value" ''Float
+declareColumn "Indic" ''Int
+declareColumn "Status" ''Bool
+
+
+-- - #~ Will be used in part 2 ~# - --
+
+tableTypes "Iris" "iris_small.csv"
+
+irisStream :: Producer Iris IO ()
+irisStream = readTableOpt defaultParser "iris_small.csv"
+
+loadIris :: IO (Frame Iris)
+loadIris = inCoreAoS irisStream
+
+
+-- - #~ Will be used in part 3 ~# - --
+
+declareColumn "Ratio" ''Double
+declareColumn "MeanWidth" ''Double
+```
+
 
 Note that we have defined a `Show` instance for the dataframes, because there is none. 
 
@@ -178,6 +180,18 @@ minimum $ F.toList (rget value <$> fr)
 
 Note that our imports of the functions `view` and `set` of the `Lens.Family` module were not necessary because we can use `rget` and `rput` instead (imported from the `Frames.RecLens` module).
 
+The type `Frame a` is a functor of `a`'s, where `a` is the type of the rows. 
+This explains why we can use `fmap (rget name) fr` in the above code, because `rget name` is a function acting on the rows. 
+
+Let's go back to the `Show` instance we defined:
+
+```{r showinstance, engine.opts="--fragment --module"}
+instance (Show a) => Show (Frame a) where
+  show (Frame l f) = ...
+```
+
+`Frame a` is a data type with two constructors: an integer - its length -, and a function `Int -> a` - the function returning the row at a given index. They are respectively denoted by `l` and `f` in our `Show` instance.
+
 
 ## CSV import 
 
@@ -212,10 +226,14 @@ iris
 :t iris 
 ```
 
+Thus, `iris` is a frame of type `Frame Iris`, where `Iris` is a synonym of the `Record` type of the rows. We will manipulate `iris` in the next section.
+
 
 ## Subset, mutate, filter, aggregate
 
-Here we give some examples of common operations on dataframes. Note that the types `Ratio` and `MeanWidth` were defined in the `Init` module.
+Here we give some examples of common operations on dataframes. We already saw how to transform a column in the case when the transformation does not change the type: this is achieved with the help of `over`. In order to add a new column to a frame, its type must be defined before. 
+
+This is why the types `Ratio` and `MeanWidth` used in the script below were defined in the `Init` module.
 
 ```{r script3, cache=TRUE}
 :load Frames_init.hs 
