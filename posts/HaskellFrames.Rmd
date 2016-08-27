@@ -3,7 +3,7 @@ title: "Dataframes in Haskell: the Frames library"
 date: "2016-08-24"
 ---
 
-<link rel="stylesheet" href="hscolour.css">
+<link rel="stylesheet" type="text/css" href="assets/css/hscolour.css">
 
 ```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = "./assets/haskell/")
