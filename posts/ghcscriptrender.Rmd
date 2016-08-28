@@ -1,0 +1,46 @@
+---
+title: "Writing Haskell in knitr"
+date: "2016-08-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I wrote an executable, [ghcscriptrender](https://github.com/stla/ghcscriptrender), that takes a Haskell script and can render it in html, including the outputs. 
+There are other options than html. This executable is useful to write some Haskell code with `rmarkdown`. 
+
+First you have to define an engine. In the first chunk of your knitr document:
+
+```
+knitr::knit_engines$set(
+    ghc = function (options) 
+      {
+        engine = options$engine
+        f = basename(tempfile(engine, ".", ".txt"))
+        writeLines(options$code, f)
+        on.exit(unlink(f))
+        code = paste(f, options$engine.opts)
+        cmd = options$engine.path 
+        out = if (options$eval) {
+          message("running: ", cmd, " ", code)
+          tryCatch(system2(cmd, code, stdout=TRUE, stderr=FALSE), 
+                   error = function(e) {
+                          if (!options$error)
+                            stop(e)
+                            paste("Error in running command", cmd)
+                          })
+        }
+        else ""
+        if (!options$error && !is.null(attr(out, "status"))) 
+          stop(paste(out, collapse = "\n"))
+        knitr::engine_output(options, options$code, out)
+      }
+)
+```
+
+
+Then follow [this example](https://raw.githubusercontent.com/stla/ghcscriptrender/master/tests/knitr_ghc_demo.Rmd), whose rendering is shown below.
+
+<iframe style="height:1600px; width:100%; overflow:hidden; padding:0; border:1;"  src="http://htmlpreview.github.io/?https://raw.githubusercontent.com/stla/ghcscriptrender/master/tests/knitr_ghc_demo.html"></iframe>
