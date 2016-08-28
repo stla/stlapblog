@@ -37,6 +37,9 @@
 
 			$("#csvfile").on("change", function() {
 				var myfile = $("#csvfile")[0].files[0];
+				$("#csvfile").attr("disabled", "disabled");
+				$("#csvform").find("a").removeClass("btn-primary");
+				$("label[for$='csvfile']").text('File uploaded:');
 				var json = Papa.parse(myfile, {
 					header: true,
 					skipEmptyLines: true,
@@ -45,12 +48,6 @@
 						console.log("Dataframe:", JSON.stringify(results.data));
 						console.log("Column names:", results.meta.fields);
 						console.log("Errors:", results.errors);
-						// remove the table (when a new csv is uploaded)
-						$("#dataTable").children().remove();
-						// remove the options of the dropdown lists (when a new csv is uploaded)
-						$(".form-control").each(function(i, sel) {
-							$(sel).children().remove();
-						})
 						// make the df in columns format
 						var df = results.data;
 						var columns = results.meta.fields;
@@ -171,7 +168,7 @@
 </head>
 
 <body>
-	<form name="foo" method="post" enctype="multipart/form-data">
+	<form id="csvform" method="post" enctype="multipart/form-data">
 		<label for="csvfile" class="control-label">Select a CSV file</label>
 		<input id="csvfile" type="file" data-filename-placement="inside" class="btn-primary">
 	</form>
