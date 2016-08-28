@@ -1,0 +1,208 @@
+<html>
+
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="libraries/PapaParse-4.1.2/papaparse.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="libraries/bootstrap.file-input.js"></script>
+	<script type="text/javascript" src="libraries/jsonTable.js"></script>
+	<script type="text/javascript" charset="utf8" src="libraries/myjsontotable.js"></script>
+	<script type="text/javascript" src="libraries/jqplot/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="libraries/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js"></script>
+	<script type="text/javascript" src="libraries/jqplot/plugins/jqplot.canvasTextRenderer.js"></script>
+
+	<script type="text/javascript" src="libraries/jqplot/plugins/jqplot.cursor.js"></script>
+	<script type="text/javascript" src="libraries/jqplot/plugins/jqplot.highlighter.js"></script>
+
+	<link rel="stylesheet" href="libraries/jqplot/jquery.jqplot.min.css">
+
+	<style type="text/css">
+		.classy {
+			color: gray;
+			font-size: 14px;
+		}
+	</style>
+
+	<script>
+		$(document).ready(function() {
+
+			$('input[type=file]').bootstrapFileInput();
+
+			// Enable plugins like cursor and highlighter by default.
+			$.jqplot.config.enablePlugins = true;
+			// don't show the to image button.
+			$.jqplot._noToImageButton = true;
+
+			$("#csvfile").on("change", function() {
+				var myfile = $("#csvfile")[0].files[0];
+				var json = Papa.parse(myfile, {
+					header: true,
+					skipEmptyLines: true,
+					dynamicTyping: true,
+					complete: function(results) {
+						console.log("Dataframe:", JSON.stringify(results.data));
+						console.log("Column names:", results.meta.fields);
+						console.log("Errors:", results.errors);
+						// remove the table (when a new csv is uploaded)
+						$("#dataTable").children().remove();
+						// remove the options of the dropdown lists (when a new csv is uploaded)
+						$(".form-control").each(function(i, sel) {
+							$(sel).children().remove();
+						})
+						// make the df in columns format
+						var df = results.data;
+						var columns = results.meta.fields;
+						var dfcolumns = {};
+						for (i = 0; i < columns.length; i++) {
+							var column = [];
+							var colname = columns[i];
+							for (j = 0; j < df.length; j++) {
+								column.push(df[j][colname]);
+							}
+							dfcolumns[colname] = column;
+						}
+						var isNumeric = [];
+						for (var key in dfcolumns) {
+							var col = dfcolumns[key];
+							var i = 0;
+							while (col[i] == "") {
+								i++
+							}
+							isNumeric.push(!isNaN(parseFloat(col[i])) && isFinite(col[i]))
+						}
+						// show the dropdown lists
+						$("label[for$='selcolumn1']").text('Select one column');
+						$("label[for$='selcolumn2']").text('Select another column');
+						$('#selcolumn1, #selcolumn2').show();
+						// create the table        
+						jsontotable("#dataTable", df, columns, columns, "classy");
+						// create the selection lists
+						var sels = $('#selcolumn1, #selcolumn2');
+						sels.attr('size', columns.length);
+						var colors = ['blue', 'green'];
+						$(columns).each(function(index, item) {
+							if (isNumeric[index]) {
+								sels.append($("<option>").attr('value', index).text(item));
+							} else {
+								sels.append($("<option>").attr('value', index).text(item).attr('disabled', 'disabled'));
+							}
+						});
+						// onchange action
+						var selids = ['#selcolumn1', '#selcolumn2'];
+						$(".form-control").each(function(selindex, sel) {
+							$(sel).change(function() {
+								var selectedIndices = [$("#selcolumn1").prop('selectedIndex'), $("#selcolumn2").prop('selectedIndex')];
+								if (selectedIndices[0] == selectedIndices[1]) {
+									$(selids[1 - selindex] + ' option:selected').prop('selected', false);
+									selectedIndices[1 - selindex] = -1;
+									//$('#plotbutton').attr('disabled', 'disabled');
+									$('#xyjqplot').hide();
+								}
+								if (selectedIndices[0] != -1 && selectedIndices[1] != -1) {
+									//$('#plotbutton').attr('disabled', false);
+									$('#xyjqplot').show();
+									plot().replot();
+								}
+								// emphasize the selected column
+								$('#dataTable tbody tr').each(function(i, item) {
+									$(item).find('td').each(function(index, td) {
+										if (index == selectedIndices[selindex]) {
+											$(td).css('color', colors[selindex]).css('font-size', '17px');
+										} else {
+											if (index != selectedIndices[1 - selindex]) {
+												$(td).css('color', 'gray').css('font-size', '15px');
+											}
+										}
+									});
+								});
+							});
+						});
+
+						// plot
+						function plot() {
+							var col1 = $("#selcolumn1 option:selected").text();
+							var col2 = $("#selcolumn2 option:selected").text();
+							var x = dfcolumns[col1];
+							var y = dfcolumns[col2];
+							var data = [];
+							for (i = 0; i < x.length; i++) {
+								data.push([x[i], y[i]]);
+							}
+							// jqplot plot
+							var jq = $.jqplot('xyjqplot', [data], {
+								title: 'Plot of ' + col2 + ' vs ' + col1,
+								series: [{
+									color: '#5FAB78',
+									showLine: false
+								}],
+								axes: {
+									xaxis: {
+										label: col1
+									},
+									yaxis: {
+										label: col2,
+										labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+										labelOptions: {
+											fontFamily: 'Helvetica',
+											fontSize: '12pt'
+										}
+									}
+								},
+								highlighter: {
+									show: true,
+									sizeAdjust: 7.5
+								}
+							});
+							return (jq)
+								// disable button
+								//$('#plotbutton').attr('disabled', 'disabled');
+						}
+
+
+					}
+				});
+
+			})
+		})
+	</script>
+
+</head>
+
+<body>
+	<form name="foo" method="post" enctype="multipart/form-data">
+		<label for="csvfile" class="control-label">Select a CSV file</label>
+		<input id="csvfile" type="file" data-filename-placement="inside" class="btn-primary">
+	</form>
+
+
+	<br>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6" style="max-height:400px;overflow:auto">
+				<table id="dataTable" class="table table-bordered"></table>
+			</div>
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="col-sm-6">
+						<label for="selcolumn1" style="color:blue"></label>
+						<select class="form-control" id="selcolumn1" style="display:none"></select>
+					</div>
+					<div class="col-sm-6">
+						<label for="selcolumn2" style="color:green"></label>
+						<select class="form-control" id="selcolumn2" style="display:none"></select>
+					</div>
+				</div>
+				<br>
+				<div class="jqplot-container" style="display:block;margin-left:auto;margin-right:auto">
+					<div id="xyjqplot" class="plot-placeholder" style="height:300px"></div>
+				</div>
+			</div>
+		</div>
+
+
+</body>
+
+</html>
