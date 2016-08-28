@@ -37,6 +37,7 @@
 
 			$("#csvfile").on("change", function() {
 				var myfile = $("#csvfile")[0].files[0];
+				console.log(myfile);
 				$("#csvfile").attr("disabled", "disabled");
 				$("#csvform").find("a").removeClass("btn-primary");
 				$("label[for$='csvfile']").text('File uploaded:');
