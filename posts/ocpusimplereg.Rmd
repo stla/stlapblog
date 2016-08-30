@@ -1,0 +1,39 @@
+---
+title: "Simple regression with opencpu"
+author: "Stéphane Laurent"
+date: "30 août 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I've released an opencpu app in the package [ocpusimplereg](https://github.com/stla/ocpusimplereg). 
+It performs a simple linear regression. 
+In this app, the user:
+
+- uploads the data in a CSV file;
+
+- selects the two columns used for the regression;
+
+- clicks on a button to generate a report.
+
+
+Of course the report deserves to be improved. 
+My purpose is just to demonstrate how one can use `opencpu` to create such an app.
+
+Only one R function is used. It takes as arguments the dataframe, the confidence level and the format of the outplut file, and it knits the template included in the package.
+
+In addition to `jQuery` and `opencpu.js`, the app uses three Javascript libraries:
+
+- [Papa Parse](http://papaparse.com/), to convert the CSV file to a JSON object;
+
+- [jsonTable](https://github.com/omkarkhair/jsonTable), to create a table from a JSON object, [as explained here](http://stla.github.io/stlapblog/posts/opencpu_tables.html);
+
+- [jqPlot](http://www.jqplot.com/), to do an awesome Javascript plot.
+
+
+<iframe src="http://stla.github.io/stlapblog/posts/assets/htmlframes/ocpusimplereg/index.html"
+        onload="this.style.height=this.contentDocument.body.scrollHeight +'px';">
+</iframe>

@@ -1,0 +1,384 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+	<meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+
+	<title> Regression</title>
+
+	<script src="opencpu/jquery-1.10.2.min.js"></script>
+	<script src="opencpu/opencpu-0.5.js"></script>
+	<script src="bootstrap/js/bootstrap-4.0.0.min.js"></script>
+	<link rel="stylesheet" href="bootstrap/css/bootstrap-4.0.0.min.css">
+	<script src="bootstrap/js/bootstrap.file-input.js"></script>
+	<script type="text/javascript" src="jsonTable/jsonTable.js"></script>
+	<script type="text/javascript" charset="utf8" src="js/jsontotable.js"></script>
+	<script type="text/javascript" src="jqplot-1.0.9/jquery.jqplot.min.js"></script>
+	<link rel="stylesheet" href="jqplot-1.0.9/jquery.jqplot.min.css">
+	<script type="text/javascript" src="jqplot-1.0.9/plugins/jqplot.canvasAxisLabelRenderer.js"></script>
+	<script type="text/javascript" src="jqplot-1.0.9/plugins/jqplot.canvasTextRenderer.js"></script>
+	<script type="text/javascript" src="jqplot-1.0.9/plugins/jqplot.cursor.js"></script>
+	<script type="text/javascript" src="jqplot-1.0.9/plugins/jqplot.highlighter.js"></script>
+	<script type="text/javascript" src="jqplot-1.0.9/plugins/jqplot.trendline.js"></script>
+	<script src="PapaParse/papaparse-4.1.2.min.js"></script>
+	<link rel="stylesheet" href="css/regression.css">
+
+	<style type="text/css">
+		.classy {
+			color: gray;
+			font-size: 14px;
+		}
+
+		.btn {
+			border: 1px solid
+		}
+
+		fieldset {
+			border: 0;
+		}
+
+		.fieldset label {
+			display: block;
+			margin: 30px 0 0 0;
+		}
+
+		.overflow {
+			height: 200px;
+		}
+
+		.radio, .radio label{
+			padding-left:5px;
+			margin: 0 0 0 0;
+		}
+
+		.title_box {
+			display: block;
+			border: 1px solid;
+			border-radius: 10px;
+			border-color: rgb(64, 128, 179);
+			background-color: seaShell;
+			left: 6px;
+			position: relative;
+			margin-top: 5px;
+			padding: 0
+		}
+
+		.title_box #h4title {
+			position: relative;
+			padding: 5px 5px 5px 5px;
+			top : -14px;
+			margin-left: 1em;
+			display: inline;
+			background-color: inherit;
+			font-family: Calibri;
+			color: rgb(64, 128, 179);
+			font-style:italic;
+			font-size: 18px;
+		}
+
+	</style>
+
+	<script>
+		$(document).ready(function() {
+
+			$('input[type=file]').bootstrapFileInput();
+
+			// jQplot: Enable plugins like cursor and highlighter by default.
+			$.jqplot.config.enablePlugins = true;
+			// don't show the to image button.
+			$.jqplot._noToImageButton = true;
+
+			$("#csvfile").on("change", function() {
+				var myfile = $("#csvfile")[0].files[0];
+				$("#csvfile").attr("disabled", "disabled");
+				$("#csvform").find("a").removeClass("btn-primary");
+				$("label[for$='csvfile']").text('File uploaded:');
+				var json = Papa.parse(myfile, {
+					header: true,
+					skipEmptyLines: true,
+					dynamicTyping: true,
+					complete: function(results) {
+						console.log("Dataframe:", JSON.stringify(results.data));
+						console.log("Column names:", results.meta.fields);
+						console.log("Errors:", results.errors);
+						// stop if error
+						if (results.errors.length != 0) {
+							alert("Something is wrong with this file");
+							throw new Error("Something is wrong with this file");
+						}
+						// make the df in columns format
+						var df = results.data;
+						var columns = results.meta.fields;
+						var dfcolumns = {};
+						for (i = 0; i < columns.length; i++) {
+							var column = [];
+							var colname = columns[i];
+							for (j = 0; j < df.length; j++) {
+								column.push(df[j][colname]);
+							}
+							dfcolumns[colname] = column;
+						}
+						// find numeric columns
+						var isNumeric = [];
+						for (var key in dfcolumns) {
+							var col = dfcolumns[key];
+							var i = 0;
+							while (col[i] == "") {
+								i++
+							}
+							isNumeric.push(!isNaN(parseFloat(col[i])) && isFinite(col[i]))
+						}
+						// show the column selectors
+						$("#selectcolumns").show()
+						// show the 'report' block
+						$('#divreport').show();
+						// create the table
+						jsontotable("#dataTable", df, columns, columns, "classy");
+						// create the selection lists
+						var sels = $('#selcolumn1, #selcolumn2');
+						// set the size
+						if (columns.length < 5) {
+							var size = columns.length;
+						} else {
+							var size = 5;
+						}
+						sels.attr('size', size);
+						$(columns).each(function(index, item) {
+							if (isNumeric[index] && columns[index] != "") {
+								sels.append($("<option>").attr('value', index).text(item));
+							} else {
+								sels.append($("<option>").attr('value', index).text(item).attr('disabled', 'disabled'));
+							}
+						});
+						// onchange action
+						var selids = ['#selcolumn1', '#selcolumn2'];
+						var colors = ['blue', 'green'];
+						$(selids).each(function(selindex, sel) {
+							$(sel).change(function() {
+								var selectedIndices = [$("#selcolumn1").prop('selectedIndex'), $("#selcolumn2").prop('selectedIndex')];
+								if (selectedIndices[0] == selectedIndices[1]) {
+									$(selids[1 - selindex] + ' option:selected').prop('selected', false);
+									selectedIndices[1 - selindex] = -1;
+									$("#reportbutton").attr("disabled", "disabled").removeClass("btn-primary").addClass("btn-danger");
+									$('#xyjqplot').hide();
+								}
+								if (selectedIndices[0] != -1 && selectedIndices[1] != -1) {
+								  $("#reportbutton").attr("disabled", false).removeClass("btn-danger").addClass("btn-primary");
+									$('#xyjqplot').show();
+									plot().replot();
+								}
+								// emphasize the selected column
+								$('#dataTable tbody tr').each(function(i, item) {
+									$(item).find('td').each(function(index, td) {
+										if (index == selectedIndices[selindex]) {
+											$(td).css('color', colors[selindex]).css('font-size', '17px');
+										} else {
+											if (index != selectedIndices[1 - selindex]) {
+												$(td).css('color', 'gray').css('font-size', '15px');
+											}
+										}
+									});
+								});
+							});
+						});
+
+						// plot
+						function plot() {
+							var col1 = $("#selcolumn1 option:selected").text();
+							var col2 = $("#selcolumn2 option:selected").text();
+							var x = dfcolumns[col1];
+							var y = dfcolumns[col2];
+							var data = [];
+							for (i = 0; i < x.length; i++) {
+								data.push([x[i], y[i]]);
+							}
+							// jqplot plot
+							var jq = $.jqplot('xyjqplot', [data], {
+								title: 'Plot of ' + col2 + ' vs ' + col1,
+								series: [{
+									color: '#5FAB78',
+									showLine: false
+								}],
+								axes: {
+									xaxis: {
+										label: col1
+									},
+									yaxis: {
+										label: col2,
+										labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+										labelOptions: {
+											fontFamily: 'Helvetica',
+											fontSize: '12pt'
+										}
+									}
+								},
+								highlighter: {
+									show: true,
+									sizeAdjust: 7.5
+								},
+								seriesDefaults: {
+									trendline: {
+										show: true,
+										color: 'red',
+										linePattern: 'dashed'
+									}
+								}
+							});
+							return (jq)
+						}
+
+						// generate report
+						$("#reportbutton").on("click", function() {
+							//disable the button to prevent multiple clicks
+							$("#reportbutton").attr("disabled", "disabled");
+							// get the data
+	 						var col1 = $("#selcolumn1 option:selected").text();
+							var col2 = $("#selcolumn2 option:selected").text();
+							var x = dfcolumns[col1];
+							var y = dfcolumns[col2];
+							var dflist = {};
+							dflist[col1] = x;
+							dflist[col2] = y;
+							var req = ocpu.call(
+								"knitRegression",
+				                {
+				                  dat: dflist,
+				                  conflevel: $('#conflevel').val(),
+				                  filetype: $('input[name="optradio"]:checked').val()
+				                },
+				                function(session){
+				                  session.getObject(function(filename){
+				                    var outputlink = session.getLoc() + "files/" + filename;
+				                    $('#download').attr("href", outputlink).text("Download");
+				                  })
+				                }
+				              );
+				
+			              //if R returns an error, alert the error message
+			              req.fail(function() {
+			                  alert("Server error: " + req.responseText);
+			              });
+
+						});
+
+					} // end of Papa Parse callback
+				}); // end of Papa Parse
+
+			}); // end of onchange #csvfile
+
+
+		})
+	</script>
+
+</head>
+
+<body>
+
+	<div id="wrapper">
+
+		<!-- Sidebar -->
+		<div id="sidebar-wrapper">
+
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<form id="csvform" method="post" enctype="multipart/form-data">
+							<label for="csvfile" class="control-label" style="font-weight: bold">Select a CSV file</label>
+							<input id="csvfile" type="file" data-filename-placement="inside" class="btn btn-primary">
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<br>
+
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<fieldset id="selectcolumns" style="display:none;">
+							<label for="selcolumn1" style="color:blue">Select the <em>x</em> column</label>
+							<select class="form-control" id="selcolumn1" style="overflow-y:auto"></select>
+							<br>
+							<label for="selcolumn2" style="color:green">Select the <em>y</em> column</label>
+							<select class="form-control" id="selcolumn2" style="overflow-y:auto"></select>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+
+			<br>
+
+			<div id="divreport" class="report" style="display:none;">
+				<h3><em><u>Report:</u></em></h3>
+
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-7">
+							<p><em>Confidence level:</em></p>
+						</div>
+						<div class="col-sm-5">
+							<input id="conflevel" type="number" class="form-control bfh-number" min=1 max=99 value=95 buttons="true">
+						</div>
+					</div>
+				</div>
+
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12">
+							<form class="title_box">
+								<div id="h4title">File type:</div>
+								<div class="radio">
+									<label><input type="radio" name="optradio" checked="checked" value="word_document"> docx</label>
+								</div>
+								<div class="radio">
+									<label><input type="radio" name="optradio" value="pdf_document"> pdf</label>
+								</div>
+								<div class="radio disabled">
+									<label><input type="radio" name="optradio" value="html_document"> html</label>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<br>
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-12">
+							<button id="reportbutton" type="button" class="btn-danger" disabled>Generate report</button>
+							<a id="download" download></a>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<!-- /#sidebar-wrapper -->
+
+		<!-- Page Content -->
+		<div id="page-content-wrapper">
+
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="jqplot-container" style="display:block;margin-left:auto;margin-right:auto">
+							<div id="xyjqplot" class="plot-placeholder"></div>
+						</div>
+					</div>
+					<div class="col-sm-6" style="max-height:500px;overflow:auto">
+						<table id="dataTable" class="table table-bordered"></table>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- /#page-content-wrapper -->
+
+	</div>
+	<!-- /#wrapper -->
+
+
+</body>
+
+</html>
