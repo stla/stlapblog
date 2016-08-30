@@ -1,7 +1,6 @@
 ---
-title: "Simple regression with opencpu"
-author: "Stéphane Laurent"
-date: "30 août 2016"
+title: "Simple linear regression with opencpu"
+date: "2016-08-30"
 output: html_document
 ---
 
@@ -13,7 +12,7 @@ I've released an opencpu app in the package [ocpusimplereg](https://github.com/s
 It performs a simple linear regression. 
 In this app, the user:
 
-- uploads the data in a CSV file;
+- uploads the data from a CSV file;
 
 - selects the two columns used for the regression;
 
@@ -33,6 +32,8 @@ In addition to `jQuery` and `opencpu.js`, the app uses three Javascript librarie
 
 - [jqPlot](http://www.jqplot.com/), to do an awesome Javascript plot.
 
+
+You can play with the app below, but obviously the report generation is not available.
 
 <iframe src="http://stla.github.io/stlapblog/posts/assets/htmlframes/ocpusimplereg/index.html"
         onload="this.style.height=this.contentDocument.body.scrollHeight +'px';">
