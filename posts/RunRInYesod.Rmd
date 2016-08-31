@@ -1,0 +1,132 @@
+---
+title: "Running R in a Yesod application"
+date: "2016-09-01"
+output: html_document
+---
+
+*(article under construction)*
+
+<link rel="stylesheet" type="text/css" href="assets/css/myhighlight.css">
+
+```{r setup, include=FALSE}
+knitr::knit_engines$set(pygmentize = function (options) 
+{
+  f = basename(tempfile("pygmentize", ".", ".txt"))
+  writeLines(options$code, f)
+  on.exit(unlink(f))
+  code = paste("-f html", options$engine.opts, f)
+  message("running: pygmentize ", code)
+  out = tryCatch(system2("pygmentize", code, stdout = TRUE, stderr = FALSE), 
+                 error = function(e) {
+                   if (!options$error)
+                     stop(e)
+                   "Error in running pygmentize"
+                 })
+  if (!options$error && !is.null(attr(out, "status"))) 
+    stop(paste(out, collapse = "\n"))
+  knitr::engine_output(options, options$code, out)
+}
+)
+knitr::opts_chunk$set(engine="pygmentize", echo=FALSE, results="asis")
+```
+
+![](assets/img/RunRInYesod_ss.png)
+
+```{r, engine.opts="-l haskell"}
+{-# OPTIONS_GHC -fno-ghci-sandbox #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE ViewPatterns      #-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
+{-# LANGUAGE TypeFamilies      #-}
+
+import Yesod
+import Data.Aeson
+import GHC.Generics
+import Language.R.Instance as R
+import H.Prelude.Interactive as H.Prelude
+
+data HelloWorld = HelloWorld
+
+mkYesod "HelloWorld" [parseRoutes|
+/ HomeR GET
+/json JsonpR PUT
+|]
+
+instance Yesod HelloWorld
+
+data Args = Args {
+    _x :: Double,
+    _y :: Double
+} deriving (Show,Generic)
+
+instance FromJSON Args
+
+getHomeR :: Handler ()
+getHomeR = sendFile typeHtml "static/raddition.html"
+
+runR :: Double -> Double -> IO(Double)
+runR x y = 
+  do
+    r <-  [r|x_hs + y_hs|]
+    return $ (fromSomeSEXP r :: Double) 
+
+putJsonpR :: Handler String
+putJsonpR = do
+    arguments <- requireJsonBody :: Handler Args
+    r <- liftIO $ runR (_x arguments) (_y arguments)
+    return $ show r
+
+main :: IO ()
+main = do 
+    R.initialize R.defaultConfig
+    warp 3000 HelloWorld
+```
+
+File *raddition.html*:
+
+```{r, engine.opts="-l html"}
+<html>
+	<head>
+		 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
+		<script type="text/javascript">
+			function save() {
+				$.ajax({
+				url: "/json",
+				type: "PUT",
+				data: JSON.stringify({
+										_x: Number($("#x").val()), 
+										_y: Number($("#y").val())
+									}),
+				success: function (result) {
+					alert (result);
+				},
+				error: function(xhr, status, error) {
+				  alert("Error: " + xhr.responseText);
+				},
+				dataType: "text",
+				contentType: "text"
+				}); 
+			}
+		</script>
+	</head>
+	<body>
+
+		<h3>Enter two numbers:</h3>
+		<input id="x" type="numeric" />
+		<input id="y" type="numeric" />
+
+		<br><br>
+		
+		<input id="submit" type="button" value="Addition" onclick="save()">
+
+	</body>
+</html>
+```
+
