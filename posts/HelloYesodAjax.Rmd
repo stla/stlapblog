@@ -49,6 +49,8 @@ knitr::opts_chunk$set(engine = 'ghc',
 
 ![](assets/img/yesod_post.png)
 
+La requête POST permet d'obtenir un objet défini dans le code Haskell (ici le tableau `[1,2,3]` retourné par la fonction `postJsonR`).
+
 ```{r post}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
@@ -101,10 +103,13 @@ main :: IO ()
 main = warp 3000 HelloWorld
 ```
 
+<br> 
 
 ## PUT 
 
 ![](assets/img/yesod_put.png)
+
+La requête PUT envoie des données qu'on peut traiter dans le code Haskell, et obtient le résultat.
 
 ```{r put}
 {-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
@@ -180,10 +185,15 @@ main :: IO ()
 main = warp 3000 HelloWorld
 ```
 
+<br>
 
 ## GET 
 
 ![](assets/img/yesod_get.png)
+
+Avec cette application, dès qu'on visite la page `json/i`, où `i` est un entier, on obtient dans cette page l'objet retourné par `getJsonR i`. 
+La requête GET permet d'obtenir cet objet quand on lui donne l'url `json/i`. 
+
 
 ```{r get}
 {-# LANGUAGE OverloadedStrings #-}

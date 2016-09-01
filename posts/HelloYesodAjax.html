@@ -89,6 +89,7 @@
 <div id="post" class="section level2">
 <h2>POST</h2>
 <p><img src="assets/img/yesod_post.png" alt="" /></p>
+<p>La requête POST permet d’obtenir un objet défini dans le code Haskell (ici le tableau <code>[1,2,3]</code> retourné par la fonction <code>postJsonR</code>).</p>
 <div class="sourceCode">
 <pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-comment'>{-# LANGUAGE OverloadedStrings #-}</span>
 <span class='hs-comment'>{-# LANGUAGE QuasiQuotes       #-}</span>
@@ -141,10 +142,12 @@
 <span class='hs-definition'>main</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>warp</span> <span class='hs-num'>3000</span> <span class='hs-conid'>HelloWorld</span>
 </code></pre>
 </div>
+<p><br></p>
 </div>
 <div id="put" class="section level2">
 <h2>PUT</h2>
 <p><img src="assets/img/yesod_put.png" alt="" /></p>
+<p>La requête PUT envoie des données qu’on peut traiter dans le code Haskell, et obtient le résultat.</p>
 <div class="sourceCode">
 <pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-comment'>{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}</span>
 <span class='hs-comment'>{-# LANGUAGE QuasiQuotes       #-}</span>
@@ -219,10 +222,12 @@
 <span class='hs-definition'>main</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>warp</span> <span class='hs-num'>3000</span> <span class='hs-conid'>HelloWorld</span>
 </code></pre>
 </div>
+<p><br></p>
 </div>
 <div id="get" class="section level2">
 <h2>GET</h2>
 <p><img src="assets/img/yesod_get.png" alt="" /></p>
+<p>Avec cette application, dès qu’on visite la page <code>json/i</code>, où <code>i</code> est un entier, on obtient dans cette page l’objet retourné par <code>getJsonR i</code>. La requête GET permet d’obtenir cet objet quand on lui donne l’url <code>json/i</code>.</p>
 <div class="sourceCode">
 <pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-comment'>{-# LANGUAGE OverloadedStrings #-}</span>
 <span class='hs-comment'>{-# LANGUAGE QuasiQuotes       #-}</span>
