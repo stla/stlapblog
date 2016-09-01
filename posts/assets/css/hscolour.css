@@ -24,7 +24,11 @@
 	color: seaShell; 
 	font-weight:bold;
 }
-.hs-varid, .hs-varop, .hs-cpp, .hs-sel, .hs-definition {
+.hs-definition {
+  color: #ff0086;
+	font-weight:bold;
+}
+.hs-varid, .hs-varop, .hs-cpp, .hs-sel {
 	color: #efef8f; 
 }
 

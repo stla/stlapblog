@@ -1,0 +1,245 @@
+---
+title: "Hello Yesod + Ajax"
+date: "2016-09-02"
+output: html_document
+---
+
+*(article under construction)*
+
+<link rel="stylesheet" type="text/css" href="assets/css/hscolour.css">
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "./assets/haskell/")
+## a small modification of the haskell engine provided by knitr:
+##   (to get rid of the option ':set +m')
+knitr::knit_engines$set(ghc = function (options) 
+                  {
+                    engine = options$engine
+                    f = basename(tempfile(engine, ".", ".txt"))
+                    writeLines(options$code, f)
+                    on.exit(unlink(f))
+                    code = paste(f, options$engine.opts)
+                    cmd = options$engine.path 
+                    out = if (options$eval) {
+                      message("running: ", cmd, " ", code)
+                      tryCatch(system2(cmd, code, stdout = TRUE, stderr = FALSE,
+                                       env = options$engine.env), error = function(e) {
+                                         if (!options$error)
+                                           stop(e)
+                                         paste("Error in running command", cmd)
+                                       })
+                    }
+                    else ""
+                    if (!options$error && !is.null(attr(out, "status"))) 
+                      stop(paste(out, collapse = "\n"))
+                    knitr::engine_output(options, options$code, out)
+                  }
+)
+## chunk options
+knitr::opts_chunk$set(engine = 'ghc', 
+                      engine.path = 'ghcscriptrender', 
+                      engine.opts = '--fragment --module',
+                      echo = FALSE,
+                      results = 'asis')
+```
+
+
+
+## POST 
+
+![](assets/img/yesod_post.png)
+
+```{r post}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE ViewPatterns      #-}
+
+import Yesod
+import Yesod.Form.Jquery (YesodJquery (urlJqueryJs))
+
+data HelloWorld = HelloWorld
+
+mkYesod "HelloWorld" [parseRoutes|
+/ HomeR GET
+/json JsonR POST
+|]
+
+instance Yesod HelloWorld
+instance YesodJquery HelloWorld
+
+getHomeR :: Handler Html
+getHomeR = defaultLayout $ do
+    setTitle "Hello POST"
+    getYesod >>= addScriptEither . urlJqueryJs
+    [whamlet|
+        <button #post>Post
+    |]
+    toWidget script
+
+script = [julius|
+$(function(){
+    $("#post").click(function(){
+        $.ajax({
+            url: "@{JsonR}",
+            type: "POST",
+            success: function(result) {
+                alert(result);
+            },
+            dataType: "json"
+        });
+    });
+});
+|]
+
+postJsonR :: Handler Value
+postJsonR = do
+    returnJson $ ([1,2,3] :: [Int])
+
+main :: IO ()
+main = warp 3000 HelloWorld
+```
+
+
+## PUT 
+
+![](assets/img/yesod_put.png)
+
+```{r put}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
+{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE ViewPatterns      #-}
+
+import Yesod
+import Yesod.Form.Jquery (YesodJquery (urlJqueryJs))
+import GHC.Generics
+
+data HelloWorld = HelloWorld
+
+mkYesod "HelloWorld" [parseRoutes|
+/ HomeR GET
+/json JsonR PUT
+|]
+
+instance Yesod HelloWorld
+instance YesodJquery HelloWorld
+
+data Person = Person {
+    name :: String,
+    age :: Int
+} deriving (Show,Generic)
+
+instance FromJSON Person
+
+getHomeR :: Handler Html
+getHomeR = defaultLayout $ do
+    setTitle "Hello PUT"
+    getYesod >>= addScriptEither . urlJqueryJs
+    [whamlet|
+        <p>Enter your name and your age
+        <input #name type=text value="Joe">
+        <input #age type=numeric value=40>
+        <br>
+        <button #submit>Put
+    |]
+    toWidget script
+
+script = [julius|
+$(function(){
+    $("#submit").click(function(){
+        $.ajax({
+            contentType: "application/json",
+            processData: false,
+            url: "@{JsonR}",
+            type: "PUT",
+            data: JSON.stringify({
+                                    name: $("#name").val(), 
+                                    age: Number($("#age").val())
+                                }),
+            success: function(result) {
+                alert(result);
+            },
+            dataType: "text"
+        });
+    });
+});
+|]
+
+putJsonR :: Handler String
+putJsonR = do
+    person <- requireJsonBody :: Handler Person
+    return $ processPerson person 
+
+processPerson :: Person -> String
+processPerson person = "Your name is " ++ (name person) ++ " and you are " ++ (show $ age person) ++ " years old."
+
+main :: IO ()
+main = warp 3000 HelloWorld
+```
+
+
+## GET 
+
+![](assets/img/yesod_get.png)
+
+```{r get}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes       #-}
+{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE ViewPatterns      #-}
+
+import Yesod
+import Yesod.Form.Jquery (YesodJquery (urlJqueryJs))
+
+data HelloWorld = HelloWorld
+
+mkYesod "HelloWorld" [parseRoutes|
+/ HomeR GET
+/json/#Int JsonR GET
+|]
+
+instance Yesod HelloWorld
+instance YesodJquery HelloWorld
+
+getHomeR :: Handler Html
+getHomeR = defaultLayout $ do
+    setTitle "Hello GET"
+    getYesod >>= addScriptEither . urlJqueryJs
+    [whamlet|
+        <input #x type=number value=0>
+        <button #get>Get
+    |]
+    toWidget script
+
+script = [julius|
+$(function(){
+    $("#get").click(function(){
+        $.ajax({
+            url: "/json/" + $("#x").val(),
+            type: "GET",
+            success: function(result) {
+                alert(JSON.stringify(result));
+            },
+            dataType: "json"
+        });
+    });
+});
+|]
+
+getJsonR :: Int -> Handler Value
+getJsonR i = do
+    out <- liftIO $ processInt i
+    return $ object ["input" .= fst out, "output" .= snd out]
+
+processInt :: Int -> IO((Int, Int))
+processInt i = do
+    return (i, i^2)
+
+main :: IO ()
+main = warp 3000 HelloWorld
+```
+

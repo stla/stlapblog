@@ -54,7 +54,6 @@ This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_
 {-# LANGUAGE TypeFamilies      #-}
 
 import Yesod
-import Data.Aeson
 import GHC.Generics
 import Language.R.Instance as R
 import H.Prelude.Interactive as H.Prelude
@@ -129,8 +128,8 @@ File *raddition.html*:
 	<body>
 
 		<h3>Enter two numbers:</h3>
-		<input id="x" type="numeric" />
-		<input id="y" type="numeric" />
+		<input id="x" type="number" />
+		<input id="y" type="number" />
 
 		<br><br>
 		
@@ -160,8 +159,8 @@ getHomeR = defaultLayout $ do
     setTitle "Yesod + Ajax"
     getYesod >>= addScriptEither . urlJqueryJs
     [whamlet|
-        <input #x type=numeric>
-        <input #y type=numeric>
+        <input #x type=number>
+        <input #y type=number>
         <button #add>Addition
     |]
     toWidget script
