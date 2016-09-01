@@ -87,6 +87,8 @@
 <p><em>(article under construction)</em></p>
 <p><link rel="stylesheet" type="text/css" href="assets/css/myhighlight.css"></p>
 <p><img src="assets/img/RunRInYesod_ss.png" alt="" /></p>
+<p>This small app takes two numbers and returns their sum after performing the addition in R.</p>
+<p>This is an Haskell app created with <a href="https://en.wikipedia.org/wiki/Yesod_(web_framework)">Yesod</a>, and R is called from Haskell with the help of the <a href="https://tweag.github.io/HaskellR/">inline-R</a> package.</p>
 <div class="highlight">
 <pre><span class="cm">{-# OPTIONS_GHC -fno-ghci-sandbox #-}</span>
 <span class="cm">{-# LANGUAGE DataKinds #-}</span>
@@ -106,14 +108,14 @@
 <span class="kr">import</span> <span class="nn">Language.R.Instance</span> <span class="k">as</span> <span class="n">R</span>
 <span class="kr">import</span> <span class="nn">H.Prelude.Interactive</span> <span class="k">as</span> <span class="n">H.Prelude</span>
 
-<span class="kr">data</span> <span class="kt">HelloWorld</span> <span class="ow">=</span> <span class="kt">HelloWorld</span>
+<span class="kr">data</span> <span class="kt">HelloInlineR</span> <span class="ow">=</span> <span class="kt">HelloInlineR</span>
 
-<span class="nf">mkYesod</span> <span class="s">&quot;HelloWorld&quot;</span> <span class="p">[</span><span class="n">parseRoutes</span><span class="o">|</span>
+<span class="nf">mkYesod</span> <span class="s">&quot;HelloInlineR&quot;</span> <span class="p">[</span><span class="n">parseRoutes</span><span class="o">|</span>
 <span class="o">/</span> <span class="kt">HomeR</span> <span class="kt">GET</span>
-<span class="o">/</span><span class="n">json</span> <span class="kt">JsonpR</span> <span class="kt">PUT</span>
+<span class="o">/</span><span class="kr">data</span> <span class="kt">DataR</span> <span class="kt">PUT</span>
 <span class="o">|</span><span class="p">]</span>
 
-<span class="kr">instance</span> <span class="kt">Yesod</span> <span class="kt">HelloWorld</span>
+<span class="kr">instance</span> <span class="kt">Yesod</span> <span class="kt">HelloInlineR</span>
 
 <span class="kr">data</span> <span class="kt">Args</span> <span class="ow">=</span> <span class="kt">Args</span> <span class="p">{</span>
     <span class="n">_x</span> <span class="ow">::</span> <span class="kt">Double</span><span class="p">,</span>
@@ -131,8 +133,8 @@
     <span class="n">r</span> <span class="ow">&lt;-</span>  <span class="p">[</span><span class="n">r</span><span class="o">|</span><span class="n">x_hs</span> <span class="o">+</span> <span class="n">y_hs</span><span class="o">|</span><span class="p">]</span>
     <span class="n">return</span> <span class="o">$</span> <span class="p">(</span><span class="n">fromSomeSEXP</span> <span class="n">r</span> <span class="ow">::</span> <span class="kt">Double</span><span class="p">)</span> 
 
-<span class="nf">putJsonpR</span> <span class="ow">::</span> <span class="kt">Handler</span> <span class="kt">String</span>
-<span class="nf">putJsonpR</span> <span class="ow">=</span> <span class="kr">do</span>
+<span class="nf">putDataR</span> <span class="ow">::</span> <span class="kt">Handler</span> <span class="kt">String</span>
+<span class="nf">putDataR</span> <span class="ow">=</span> <span class="kr">do</span>
     <span class="n">arguments</span> <span class="ow">&lt;-</span> <span class="n">requireJsonBody</span> <span class="ow">::</span> <span class="kt">Handler</span> <span class="kt">Args</span>
     <span class="n">r</span> <span class="ow">&lt;-</span> <span class="n">liftIO</span> <span class="o">$</span> <span class="n">runR</span> <span class="p">(</span><span class="n">_x</span> <span class="n">arguments</span><span class="p">)</span> <span class="p">(</span><span class="n">_y</span> <span class="n">arguments</span><span class="p">)</span>
     <span class="n">return</span> <span class="o">$</span> <span class="n">show</span> <span class="n">r</span>
@@ -140,7 +142,7 @@
 <span class="nf">main</span> <span class="ow">::</span> <span class="kt">IO</span> <span class="nb">()</span>
 <span class="nf">main</span> <span class="ow">=</span> <span class="kr">do</span> 
     <span class="kt">R</span><span class="o">.</span><span class="n">initialize</span> <span class="kt">R</span><span class="o">.</span><span class="n">defaultConfig</span>
-    <span class="n">warp</span> <span class="mi">3000</span> <span class="kt">HelloWorld</span>
+    <span class="n">warp</span> <span class="mi">3000</span> <span class="kt">HelloInlineR</span>
 </pre>
 </div>
 <p>File <em>raddition.html</em>:</p>
@@ -152,7 +154,7 @@
         <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
             <span class="kd">function</span> <span class="nx">save</span><span class="p">()</span> <span class="p">{</span>
                 <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/json&quot;</span><span class="p">,</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/data&quot;</span><span class="p">,</span>
                 <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
                 <span class="nx">data</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
                                         <span class="nx">_x</span><span class="o">:</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#x&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">()),</span> 

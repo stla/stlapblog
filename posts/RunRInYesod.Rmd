@@ -30,7 +30,13 @@ knitr::knit_engines$set(pygmentize = function (options)
 knitr::opts_chunk$set(engine="pygmentize", echo=FALSE, results="asis")
 ```
 
+
 ![](assets/img/RunRInYesod_ss.png)
+
+
+This small app takes two numbers and returns their sum after performing the addition in R. 
+
+This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_(web_framework)), and R is called from Haskell with the help of the [inline-R](https://tweag.github.io/HaskellR/) package.
 
 ```{r, engine.opts="-l haskell"}
 {-# OPTIONS_GHC -fno-ghci-sandbox #-}
@@ -51,14 +57,14 @@ import GHC.Generics
 import Language.R.Instance as R
 import H.Prelude.Interactive as H.Prelude
 
-data HelloWorld = HelloWorld
+data HelloInlineR = HelloInlineR
 
-mkYesod "HelloWorld" [parseRoutes|
+mkYesod "HelloInlineR" [parseRoutes|
 / HomeR GET
-/json JsonpR PUT
+/data DataR PUT
 |]
 
-instance Yesod HelloWorld
+instance Yesod HelloInlineR
 
 data Args = Args {
     _x :: Double,
@@ -76,8 +82,8 @@ runR x y =
     r <-  [r|x_hs + y_hs|]
     return $ (fromSomeSEXP r :: Double) 
 
-putJsonpR :: Handler String
-putJsonpR = do
+putDataR :: Handler String
+putDataR = do
     arguments <- requireJsonBody :: Handler Args
     r <- liftIO $ runR (_x arguments) (_y arguments)
     return $ show r
@@ -85,7 +91,7 @@ putJsonpR = do
 main :: IO ()
 main = do 
     R.initialize R.defaultConfig
-    warp 3000 HelloWorld
+    warp 3000 HelloInlineR
 ```
 
 File *raddition.html*:
@@ -98,7 +104,7 @@ File *raddition.html*:
 		<script type="text/javascript">
 			function save() {
 				$.ajax({
-				url: "/json",
+				url: "/data",
 				type: "PUT",
 				data: JSON.stringify({
 										_x: Number($("#x").val()), 
