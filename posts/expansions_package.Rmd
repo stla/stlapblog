@@ -98,7 +98,7 @@ odometer(c(1,0,1), base=2)
 
 By transporting the $3$-adic integers to $[0,1)$ with the float expansion in base $3$, let's have a look at the graph of the $3$-adic odometer:
 
-```{r, fig.width=5, fig.height=5, fig.align='center'}
+```{r odometer, fig.width=5, fig.height=5, fig.align='center'}
 ternary2num <- function(t) sum(t/3^seq_along(t))
 num2ternary <- function(u) floatExpand01(u, base=3)
 par(mar=c(4,4,2,2))
