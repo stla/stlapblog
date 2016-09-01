@@ -31,6 +31,8 @@ knitr::opts_chunk$set(engine="pygmentize", echo=FALSE, results="asis")
 ```
 
 
+### Basic demo
+
 ![](assets/img/RunRInYesod_ss.png)
 
 
@@ -94,6 +96,7 @@ main = do
     warp 3000 HelloInlineR
 ```
 
+
 File *raddition.html*:
 
 ```{r, engine.opts="-l html"}
@@ -106,6 +109,7 @@ File *raddition.html*:
 				$.ajax({
 				url: "/data",
 				type: "PUT",
+				processData: false,
 				data: JSON.stringify({
 										_x: Number($("#x").val()), 
 										_y: Number($("#y").val())
@@ -117,7 +121,7 @@ File *raddition.html*:
 				  alert("Error: " + xhr.responseText);
 				},
 				dataType: "text",
-				contentType: "text"
+				contentType: "application/json"
 				}); 
 			}
 		</script>
@@ -134,5 +138,101 @@ File *raddition.html*:
 
 	</body>
 </html>
+```
+
+
+Instead of requesting a html file, we can create its contents in the Haskell code:
+
+```{r, engine.opts="-l haskell"}
+...
+
+import Yesod.Form.Jquery (YesodJquery (urlJqueryJs))
+
+...
+
+instance Yesod HelloInlineR
+instance YesodJquery HelloInlineR
+
+...
+
+getHomeR :: Handler Html
+getHomeR = defaultLayout $ do
+    setTitle "Yesod + Ajax"
+    getYesod >>= addScriptEither . urlJqueryJs
+    [whamlet|
+        <input #x type=numeric>
+        <input #y type=numeric>
+        <button #add>Addition
+    |]
+    toWidget script
+
+script = [julius|
+$(function(){
+    $("#add").click(function(){
+        $.ajax({
+            contentType: "application/json",
+            processData: false,
+            url: "@{DataR}",
+            type: "PUT",
+            data: JSON.stringify({
+									_x: Number($("#x").val()), 
+									_y: Number($("#y").val())
+								}),
+            success: function(result) {
+                alert(result);
+            },
+            dataType: "text"
+        });
+    });
+});
+|]
+
+...
+```
+
+
+
+### Passing a dataframe 
+
+Get the dataframe as a stringified JSON object, and use the `jsonlite` package.
+
+```{r, engine.opts="-l haskell"}
+getHomeR :: Handler Html
+getHomeR = defaultLayout $ do
+    setTitle "Yesod + Ajax"
+    getYesod >>= addScriptEither . urlJqueryJs
+    [whamlet|
+        <button #submit>Submit
+    |]
+    toWidget script
+
+script = [julius|
+$(function(){
+    $("#submit").click(function(){
+        $.ajax({
+            contentType: "text",
+            processData: false,
+            url: "@{DataR}",
+            type: "PUT",
+            data: JSON.stringify(JSON.stringify([{name: "Alice", age: 25}, {name: "Bob", age: 30}])),
+            success: function(result) {
+                alert(result);
+            },
+            dataType: "text"
+        });
+    });
+});
+|]
+
+runR :: String -> IO(Int32) -- requires Data.Int
+runR dat = do
+    r <- [r|ncol(jsonlite::fromJSON(dat_hs))|]
+    return $ (fromSomeSEXP r :: Int32) 
+
+putDataR :: Handler String
+putDataR = do
+    dat <- requireJsonBody :: Handler String
+    r <- liftIO $ runR dat
+    return $ show r
 ```
 
