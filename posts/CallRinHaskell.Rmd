@@ -1,0 +1,181 @@
+---
+title: "Calling R in Haskell"
+date: "2016-09-03"
+output: html_document
+---
+
+<link rel="stylesheet" type="text/css" href="assets/css/hscolour.css">
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = "./assets/haskell/")
+## a small modification of the haskell engine provided by knitr:
+##   (to get rid of the option ':set +m')
+knitr::knit_engines$set(ghc = function (options) 
+                  {
+                    engine = options$engine
+                    f = basename(tempfile(engine, ".", ".txt"))
+                    writeLines(options$code, f)
+                    on.exit(unlink(f))
+                    code = paste(f, options$engine.opts)
+                    cmd = options$engine.path 
+                    out = if (options$eval) {
+                      message("running: ", cmd, " ", code)
+                      tryCatch(system2(cmd, code, stdout = TRUE, stderr = FALSE,
+                                       env = options$engine.env), error = function(e) {
+                                         if (!options$error)
+                                           stop(e)
+                                         paste("Error in running command", cmd)
+                                       })
+                    }
+                    else ""
+                    if (!options$error && !is.null(attr(out, "status"))) 
+                      stop(paste(out, collapse = "\n"))
+                    knitr::engine_output(options, options$code, out)
+                  }
+)
+## chunk options
+knitr::opts_chunk$set(engine = 'ghc', 
+                      engine.path = 'ghcscriptrender', 
+                      engine.opts = '-s --fragment -p /home/stla/.cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d',
+                      echo = FALSE,
+                      results = 'asis', 
+                      cache = TRUE)
+```
+
+
+This is a demo of  the [inline-R](https://tweag.github.io/HaskellR/) Haskell library, allowing to call R from Haskell. 
+
+In order to call R in GHCi, you have to run this preamble before:
+
+```{r engine.opts="--module --fragment"}
+:set -XDataKinds
+:set -XGADTs
+:set -XPartialTypeSignatures
+:set -XOverloadedLists
+:set -XQuasiQuotes
+:set -XScopedTypeVariables
+:set -XTemplateHaskell
+:set -XViewPatterns
+import Data.Int (Int32)
+import H.Prelude.Interactive as H.Prelude
+import Language.R.Instance as R
+R.initialize R.defaultConfig
+```
+
+Therefore, since I use [knitr+ghcscriptrender](http://stla.github.io/stlapblog/posts/ghcscriptrender.html) to write this article, I save the following code in a file `Rpreamble.hs`:
+
+```{r engine.opts="--module --fragment"}
+import Data.Int (Int32)
+import H.Prelude.Interactive as H.Prelude
+import Language.R.Instance as R
+
+main :: IO()
+main = do
+  R.initialize R.defaultConfig
+  return()
+```
+
+And now I can call R like this:
+
+```{r}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- perform 1+1 in R:
+x <- [r| 1 + 1 |]
+fromSomeSEXP x :: Double
+-- integers from 1 to 3:
+x <- [r| 1:3 |]
+fromSomeSEXP x :: [Int32]
+```
+
+One can run several commands in `[r| ...|]`:
+
+```{r}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- separate with a semi-colon:
+x <- [r| a <- 2; 3+a |]  
+fromSomeSEXP x :: Double
+-- or multiline:
+:{
+x <- [r| a <- 2
+3+a |]
+:}
+fromSomeSEXP x :: Double
+```
+
+One can load and use a package:
+
+```{r}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- load and use the jsonlite package
+:{
+x <- [r| library(jsonlite)
+dat <- data.frame(name=c('Joe', 'Bill'), age=c(23,40))
+toJSON(dat) |]
+:}
+fromSomeSEXP x :: String
+-- But I prefer this way sometimes:
+:{
+x <- [r| dat <- data.frame(name=c('Joe', 'Bill'), age=c(23,40))
+jsonlite::toJSON(dat) |]
+:}
+fromSomeSEXP x :: String
+```
+
+The most interesting feature is the ability to pass a Haskell variable in R:
+
+```{r}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- 
+let a = 2::Double
+x <- [r| 3 + a_hs|]
+fromSomeSEXP x :: Double
+```
+
+The `p` function displays the output of R's `print` function:
+
+```{r}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- print
+p [r| 1+1 |]
+```
+
+The `jsonlite` package allows to get arrays and lists from Haskell:
+
+```{r show, engine.opts = '--fragment -p /home/stla/.cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d'}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- an array:
+let a = [[1,2],[3,4]]::[[Int]]
+let b = show a
+p [r| jsonlite::fromJSON(b_hs) |]
+-- a list:
+let a = [[1,2],[3,4,5]]::[[Int]]
+let b = show a
+p [r| jsonlite::fromJSON(b_hs) |]
+```
+
+And dataframes, with the help of the [aeson library](https://artyom.me/aeson).
+
+```{r dataframe, engine.opts = '--fragment -p /home/stla/.cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d'}
+:load Rpreamble.hs
+:set -XTemplateHaskell -XQuasiQuotes -XScopedTypeVariables -XDataKinds -XGADTs -XPartialTypeSignatures -XOverloadedLists -XViewPatterns
+-- get the JSON representation of a dataframe:
+import Data.Aeson
+import GHC.Generics
+:set -XOverloadedStrings -XDeriveGeneric
+data Person = Person { name :: String, age :: Int } deriving (Show, Generic)
+instance ToJSON Person
+let persons = [Person "Joe" 21, Person "Bill" 40]::[Person]
+encode persons
+-- pass it to R:
+import qualified Data.Text.Lazy.Encoding as T
+import qualified Data.Text.Lazy as T
+let b = T.unpack $ T.decodeUtf8 $ encode persons
+p [r| jsonlite::fromJSON(b_hs) |]
+```
+
