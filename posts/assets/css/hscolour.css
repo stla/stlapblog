@@ -48,7 +48,7 @@
 	color: seaShell; 
 	font-style: italic;
 }
-pre.scriptHaskell, code.scriptHaskell, .linenums li {
+pre.scriptHaskell, code.scriptHaskell, ol.linenums li {
 	background-color: #303030;
 }
 pre.scriptHaskell, code.scriptHaskell {
