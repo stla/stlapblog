@@ -15,8 +15,9 @@
 pre.prettyprint {
   margin-bottom: 0;
 }
-.highlight .pln { color: #efef8f }
+/*.highlight .pln { color: #6ab825 }*/
 .highlight .kwd {color: #fb660a;}
+/*.highlight .typ { color: #efef8f }*/
 
 .highlight .hll { background-color: #333333 }
 .highlight .c { color: #00FF00; font-style: italic; background-color: #222222 } /* Comment */
@@ -24,7 +25,7 @@ pre.prettyprint {
 .highlight .g { color: #ffffff } /* Generic */
 .highlight .k { color: #fb660a; font-weight: bold } /* Keyword */
 .highlight .l { color: #ffffff } /* Literal */
-.highlight .n { color: #ffffff } /* Name */
+.highlight .n { color: #efef8f } /* Name */
 .highlight .o { color: #ffffff } /* Operator */
 .highlight .x { color: #ffffff } /* Other */
 .highlight .p { color: #ffffff } /* Punctuation */
@@ -58,7 +59,7 @@ pre.prettyprint {
 .highlight .nd { color: #ffffff } /* Name.Decorator */
 .highlight .ni { color: #ffffff } /* Name.Entity */
 .highlight .ne { color: #ffffff } /* Name.Exception */
-.highlight .nf { color: #ff0086; font-weight: bold } /* Name.Function */
+.highlight .nf { color: #6ab825; font-weight: bold } /* Name.Function */
 .highlight .nl { color: #ffffff } /* Name.Label */
 .highlight .nn { color: #ffffff } /* Name.Namespace */
 .highlight .nx { color: #ffffff } /* Name.Other */

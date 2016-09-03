@@ -4,7 +4,6 @@ date: "2016-09-01"
 output: html_document
 ---
 
-*(article under construction)*
 
 <link rel="stylesheet" type="text/css" href="assets/css/myhighlight.css">
 
@@ -38,10 +37,9 @@ knitr::opts_chunk$set(engine="pygmentize", echo=FALSE, results="asis")
 
 This small app takes two numbers and returns their sum after performing the addition in R. 
 
-This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_(web_framework)), and R is called from Haskell with the help of the [inline-R](https://tweag.github.io/HaskellR/) package.
+This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_(web_framework)), and R is called from Haskell with the help of the [inline-R](https://tweag.github.io/HaskellR/) package. You make take a look at my [inline-R demo](http://stla.github.io/stlapblog/posts/CallRinHaskell.html) before.
 
 ```{r, engine.opts="-l haskell"}
-{-# OPTIONS_GHC -fno-ghci-sandbox #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PartialTypeSignatures #-}
@@ -189,7 +187,7 @@ $(function(){
 ...
 ```
 
-
+<br>
 
 ### Passing a dataframe 
 
