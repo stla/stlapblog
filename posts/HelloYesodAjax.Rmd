@@ -4,8 +4,6 @@ date: "2016-09-02"
 output: html_document
 ---
 
-*(article under construction)*
-
 <link rel="stylesheet" type="text/css" href="assets/css/hscolour.css">
 
 ```{r setup, include=FALSE}
@@ -42,6 +40,9 @@ knitr::opts_chunk$set(engine = 'ghc',
                       echo = FALSE,
                       results = 'asis')
 ```
+
+
+Nous donnons un exemple des requêtes POST, PUT et GET dans une application Yesod.
 
 
 
