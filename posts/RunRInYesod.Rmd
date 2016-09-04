@@ -53,8 +53,8 @@ This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_
 
 import Yesod
 import GHC.Generics
-import Language.R.Instance as R
-import H.Prelude.Interactive as H.Prelude
+import qualified Language.R.Instance as R
+import H.Prelude.Interactive
 
 data HelloInlineR = HelloInlineR
 

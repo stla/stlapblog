@@ -57,8 +57,8 @@ In order to call R in GHCi, you have to run this preamble before:
 :set -XTemplateHaskell
 :set -XViewPatterns
 import Data.Int (Int32)
-import H.Prelude.Interactive as H.Prelude
-import Language.R.Instance as R
+import H.Prelude.Interactive
+import qualified Language.R.Instance as R
 R.initialize R.defaultConfig
 ```
 
@@ -66,8 +66,8 @@ Therefore, since I use [knitr+ghcscriptrender](http://stla.github.io/stlapblog/p
 
 ```{r engine.opts="--module --fragment"}
 import Data.Int (Int32)
-import H.Prelude.Interactive as H.Prelude
-import Language.R.Instance as R
+import H.Prelude.Interactive
+import qualified Language.R.Instance as R
 
 main :: IO()
 main = do

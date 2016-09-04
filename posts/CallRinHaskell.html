@@ -97,16 +97,16 @@
 <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XTemplateHaskell</span>
 <span class='command'>:set</span> <span class='hs-comment'>-</span><span class='hs-conid'>XViewPatterns</span>
 <span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Int</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int32</span><span class='hs-layout'>)</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>H</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span><span class='hs-varop'>.</span><span class='hs-conid'>Interactive</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>H</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Language</span><span class='hs-varop'>.</span><span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-conid'>Instance</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>H</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span><span class='hs-varop'>.</span><span class='hs-conid'>Interactive</span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Language</span><span class='hs-varop'>.</span><span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-conid'>Instance</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
 <span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-varid'>initialize</span> <span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-varid'>defaultConfig</span>
 </code></pre>
 </div>
 <p>Therefore, since I use <a href="http://stla.github.io/stlapblog/posts/ghcscriptrender.html">knitr+ghcscriptrender</a> to write this article, I save the following code in a file <code>Rpreamble.hs</code>:</p>
 <div class="sourceCode">
 <pre class='scriptHaskell'><code class='scriptHaskell'><span class='hs-keyword'>import</span> <span class='hs-conid'>Data</span><span class='hs-varop'>.</span><span class='hs-conid'>Int</span> <span class='hs-layout'>(</span><span class='hs-conid'>Int32</span><span class='hs-layout'>)</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>H</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span><span class='hs-varop'>.</span><span class='hs-conid'>Interactive</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>H</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span>
-<span class='hs-keyword'>import</span> <span class='hs-conid'>Language</span><span class='hs-varop'>.</span><span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-conid'>Instance</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>H</span><span class='hs-varop'>.</span><span class='hs-conid'>Prelude</span><span class='hs-varop'>.</span><span class='hs-conid'>Interactive</span>
+<span class='hs-keyword'>import</span> <span class='hs-keyword'>qualified</span> <span class='hs-conid'>Language</span><span class='hs-varop'>.</span><span class='hs-conid'>R</span><span class='hs-varop'>.</span><span class='hs-conid'>Instance</span> <span class='hs-keyword'>as</span> <span class='hs-conid'>R</span>
  
 <span class='hs-definition'>main</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>IO</span><span class='hs-conid'>()</span>
 <span class='hs-definition'>main</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyword'>do</span>
