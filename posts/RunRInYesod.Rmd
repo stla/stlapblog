@@ -37,7 +37,7 @@ knitr::opts_chunk$set(engine="pygmentize", echo=FALSE, results="asis")
 
 This small app takes two numbers and returns their sum after performing the addition in R. 
 
-This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_(web_framework)), and R is called from Haskell with the help of the [inline-R](https://tweag.github.io/HaskellR/) package. You make take a look at my [inline-R demo](http://stla.github.io/stlapblog/posts/CallRinHaskell.html) and the article [Hello Yesod+Ajax](http://stla.github.io/stlapblog/posts/HelloYesodAjax.html) before.
+This is an Haskell app created with [Yesod](https://en.wikipedia.org/wiki/Yesod_(web_framework)), and R is called from Haskell with the help of the [inline-R](https://tweag.github.io/HaskellR/) package. You may take a look at my [inline-R demo](http://stla.github.io/stlapblog/posts/CallRinHaskell.html) and at my article [Hello Yesod+Ajax](http://stla.github.io/stlapblog/posts/HelloYesodAjax.html) before.
 
 ```{r, engine.opts="-l haskell"}
 {-# LANGUAGE DataKinds #-}
