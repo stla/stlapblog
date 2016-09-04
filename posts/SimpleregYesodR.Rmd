@@ -1,0 +1,189 @@
+---
+title: "Simple regression with Yesod and R"
+date: "2016-09-04"
+---
+
+<link rel="stylesheet" type="text/css" href="assets/css/hscolour.css">
+
+```{r setup, include=FALSE}
+knitr::knit_engines$set(ghc = function (options) 
+                  {
+                    engine = options$engine
+                    f = basename(tempfile(engine, ".", ".txt"))
+                    writeLines(options$code, f)
+                    on.exit(unlink(f))
+                    code = paste(f, options$engine.opts)
+                    cmd = options$engine.path 
+                    out = if (options$eval) {
+                      message("running: ", cmd, " ", code)
+                      tryCatch(system2(cmd, code, stdout = TRUE, stderr = FALSE,
+                                       env = options$engine.env), error = function(e) {
+                                         if (!options$error)
+                                           stop(e)
+                                         paste("Error in running command", cmd)
+                                       })
+                    }
+                    else ""
+                    if (!options$error && !is.null(attr(out, "status"))) 
+                      stop(paste(out, collapse = "\n"))
+                    knitr::engine_output(options, options$code, out)
+                  }
+)
+## chunk options
+knitr::opts_chunk$set(engine = 'ghc', 
+                      engine.path = 'ghcscriptrender', 
+                      engine.opts = '--module --fragment',
+                      echo = FALSE,
+                      results = 'asis', 
+                      cache = TRUE)
+```
+
+
+
+As announced in [a previous article](http://stla.github.io/stlapblog/posts/ocpusimplereg.html), I did an app with `opencpu` that performs a simple linear regression in R and returns a report.
+
+Now I have converted this app to a [Yesod+R app](http://stla.github.io/stlapblog/posts/RunRInYesod.html). Thus it does not use `opencpu` anymore. Only Haskell and standard JavaScript libraries.
+
+The contents of this article are my notes about the way I achieved this goal. 
+
+
+## Structure of the folder
+
+This folder is available in [a Github repo](https://github.com/stla/yesodsimplereg).
+
+```bash
+.
+├── .cabal-sandbox -> /home/stla/.cabal-sandbox/
+├── cabal.sandbox.config -> /home/stla/cabal.sandbox.config
+├── FileToBase64.hs
+├── index.hamlet
+├── R
+│   ├── child_regression.Rmd
+│   ├── knitRegression.R
+│   └── regression.Rmd
+├── simplereg.hs
+└── static
+    ├── bootstrap
+    │   ├── bootstrap-4.0.0.min.css
+    │   ├── bootstrap-4.0.0.min.js
+    │   └── bootstrap.file-input.js
+    ├── css
+    │   └── regression.css
+    ├── jqplot-1.0.9
+    │   ├── jquery.jqplot.min.css
+    │   ├── jquery.jqplot.min.js
+    │   └── plugins
+    │       ├── jqplot.canvasAxisLabelRenderer.js
+    │       ├── jqplot.canvasTextRenderer.js
+    │       ├── jqplot.cursor.js
+    │       ├── jqplot.highlighter.js
+    │       └── jqplot.trendline.js
+    ├── jquery
+    │   └── jquery-1.10.2.min.js
+    ├── js
+    │   ├── jsontotable.js
+    │   └── main.js
+    ├── jsonTable
+    │   └── jsonTable.js
+    └── PapaParse
+        └── papaparse-4.1.2.min.js
+```
+
+- `simplereg.hs` is the main Haskell code;
+
+- `FileToBase64` is an auxiliary module called by `simplereg.hs`;
+
+- `index.hamlet` is the html code in hamlet format;
+
+- the `static` folder contains all `js` and `css` files;
+
+- the `R` folder contains an `R` script and auxiliary files.
+
+
+## The hamlet file, the main `css`, and the main `js`
+
+- Take the file [index.html](https://github.com/stla/ocpusimplereg/blob/master/inst/www/index.html).
+
+- Remove all the `css`, put it in the main `css` file `static/css/regression.css` (or another `css` file).
+
+- Remove all the remote `<script>` and `<link>` tags (they will be included by `simplereg.hs`).
+
+- Remove the main `js` script, and put its contents in the file `static/js/main.js`.
+
+- Once everything above is done, convert `index.html` to `index.hamlet` with [html2hamlet](https://github.com/tanakh/html2hamlet).
+
+
+The main `js` script is modified at one place only: the place where it uses the `opencpu.js` library, obviously. 
+Instead, an [Ajax PUT request](https://github.com/stla/yesodsimplereg/blob/master/static/js/main.js#L159) is used.
+
+
+## Include the remote scripts and links in the main Haskell file
+
+The remote scripts and links are included as follows (see [here](https://github.com/stla/yesodsimplereg/blob/master/simplereg.hs#L40)):
+
+```{r}
+  addScript $ StaticR jquery_jquery_1_10_2_min_js
+  addScript $ StaticR _PapaParse_papaparse_4_1_2_min_js
+  addStylesheet $ StaticR bootstrap_bootstrap_4_0_0_min_css
+  ...
+```
+
+Instead of writing this code by hand, load the following module in GHCi:
+
+```{r}
+import System.FilePath.Find (find, always, extension, (==?), (||?))
+import System.Directory (setCurrentDirectory, getCurrentDirectory)
+import System.FilePath (takeExtension)
+import Data.String.Utils (replace)
+import Data.Char (isUpper)
+
+getFiles :: FilePath -> IO [FilePath]
+getFiles directory = do
+  filePaths <- find always (extension ==? ".js" ||? extension ==? ".css") "./"
+  return $ map (drop 2) filePaths
+
+linecode :: FilePath -> String
+linecode file | extension == ".js" = "  addScript $ StaticR " ++ typeSafeURL
+              | extension == ".css" = "  addStylesheet $ StaticR " ++ typeSafeURL
+              where extension = takeExtension file
+                    typeSafeURL = underscore ++ (replace "/" "_" $ replace "." "_" $ replace "-" "_" file)
+                    underscore = if isUpper (file !! 0) then "_" else ""
+
+code :: FilePath -> IO()
+code directory = do
+  currentDirectory <- getCurrentDirectory
+  setCurrentDirectory directory
+  files <- getFiles directory
+  mapM_ putStrLn $ map linecode files
+  setCurrentDirectory currentDirectory
+```
+
+You get the desired code by running `code "path/to/static"` in GHCi.
+
+
+## Calling R
+
+The method, using an Ajax request, is demonstrated on a simple example in [Running R in a Yesod application](http://stla.github.io/stlapblog/posts/RunRInYesod.html). 
+
+Here we put the main `R` function `knitRegression` in [the R folder](https://github.com/stla/yesodsimplereg/tree/master/R) and we source it in Haskell ([here](https://github.com/stla/yesodsimplereg/blob/master/simplereg.hs#L60)):
+
+
+```{r}
+runR :: Args -> IO FilePath
+runR (Args dat conflevel filetype) = 
+  do
+    tmp <- getTemporaryDirectory
+    r <- [r|source("R/knitRegression.R")
+    knitRegression(jsonlite::fromJSON(dat_hs), conflevel_hs, filetype_hs, tmp_hs)|]
+    return $ (fromSomeSEXP r :: FilePath) 
+```
+
+It returns the absolute path of the output file, saved in a temporary folder.
+
+
+## Base64 encoding
+
+I have not found a sure way to make the output file available to the client. 
+The solution I adopted consists in encoding the file in base64 with the module I wrote, [FileToBase64](https://github.com/stla/yesodsimplereg/blob/master/FileToBase64.hs).
+Thus the file is encoded to a string which can be used in the `href` attribute of a `<a>` tag. 
+It is sent to the client as the result of the Ajax PUT request.
