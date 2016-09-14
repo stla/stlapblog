@@ -85,7 +85,7 @@
               <div class='lead'>
 
 <p><link rel="stylesheet" type="text/css" href="assets/css/myhighlight.css"></p>
-<p>We give two ways to make a table in an opencpu app from a dataframe returned by a call to a R function. The <code>getDF</code> function used for the example has no argument and returns a dataframe only:</p>
+<p>We give three ways to make a table in an opencpu app from a dataframe returned by a call to a R function. The <code>getDF</code> function used for the example has no argument and returns a dataframe only:</p>
 <div class="highlight">
 <pre>getDF <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(){</span>
   df <span class="o">&lt;-</span> iris
@@ -269,6 +269,97 @@
 </div>
 <p>The output:</p>
 <p><img src="assets/img/opencpu_datatables.png" alt="" /></p>
+</div>
+<div id="using-angular.js-with-sorting-feature" class="section level2">
+<h2>Using angular.js (with sorting feature)</h2>
+<div class="highlight">
+<pre><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;opencpu/jquery-1.10.2.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;opencpu/opencpu-0.4.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;br&gt;&lt;br&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">ng-app=</span><span class="s">&quot;myApp&quot;</span> <span class="na">ng-controller=</span><span class="s">&quot;myCtrl&quot;</span><span class="nt">&gt;</span>
+
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-sm-3 well&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;button</span> <span class="na">id=</span><span class="s">&quot;submitbutton&quot;</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;clicked()&quot;</span><span class="nt">&gt;</span>Submit to server!<span class="nt">&lt;/button&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+
+                <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-sm-9&quot;</span> <span class="na">style=</span><span class="s">&quot;height:350px; display:block; overflow-y:auto&quot;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;table</span> <span class="na">id=</span><span class="s">&quot;dataTable&quot;</span> <span class="na">width=</span><span class="s">&quot;100%&quot;</span> <span class="na">class=</span><span class="s">&quot;table table-bordered table-striped&quot;</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;thead&gt;</span>
+                            <span class="nt">&lt;tr&gt;</span>
+                                <span class="nt">&lt;th</span> <span class="na">ng-repeat=</span><span class="s">&quot;header in columns&quot;</span><span class="nt">&gt;</span>
+                                    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">ng-click=</span><span class="s">&quot;sortTable(header)&quot;</span><span class="nt">&gt;</span>
+                                        {{header}}
+                                        <span class="nt">&lt;span</span> <span class="na">ng-show=</span><span class="s">&quot;sortType == header &amp;&amp; !sortReverse&quot;</span> <span class="na">class=</span><span class="s">&quot;fa fa-caret-down&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+                                        <span class="nt">&lt;span</span> <span class="na">ng-show=</span><span class="s">&quot;sortType == header &amp;&amp; sortReverse&quot;</span> <span class="na">class=</span><span class="s">&quot;fa fa-caret-up&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+                                    <span class="nt">&lt;/a&gt;</span>
+                                <span class="nt">&lt;/th&gt;</span>
+                            <span class="nt">&lt;/tr&gt;</span>
+                        <span class="nt">&lt;/thead&gt;</span>
+                        <span class="nt">&lt;tbody&gt;</span>
+                            <span class="nt">&lt;tr</span> <span class="na">ng-repeat=</span><span class="s">&quot;row in jsonTable | orderBy:sortType:sortReverse&quot;</span><span class="nt">&gt;</span>
+                                <span class="nt">&lt;td</span> <span class="na">ng-repeat=</span><span class="s">&quot;cell in row&quot;</span><span class="nt">&gt;</span>{{cell}}<span class="nt">&lt;/td&gt;</span>
+                            <span class="nt">&lt;/tr&gt;</span>
+                        <span class="nt">&lt;/tbody&gt;</span>
+                    <span class="nt">&lt;/table&gt;</span>
+                <span class="nt">&lt;/div&gt;</span>
+
+            <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;/div&gt;</span>
+
+    <span class="nt">&lt;script&gt;</span>
+        <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">,</span> <span class="p">[]);</span>
+
+        <span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;myCtrl&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// on click action</span>
+            <span class="nx">$scope</span><span class="p">.</span><span class="nx">clicked</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="c1">//perform the request</span>
+                <span class="kd">var</span> <span class="nx">req</span> <span class="o">=</span> <span class="nx">ocpu</span><span class="p">.</span><span class="nx">rpc</span><span class="p">(</span>
+                    <span class="s2">&quot;getDF&quot;</span><span class="p">,</span>
+                    <span class="p">{},</span>
+                    <span class="kd">function</span><span class="p">(</span><span class="nx">df</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="c1">// send the table as JSON to the scope</span>
+                        <span class="nx">$scope</span><span class="p">.</span><span class="nx">$apply</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                            <span class="c1">// sort options</span>
+                            <span class="nx">$scope</span><span class="p">.</span><span class="nx">sortReverse</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+                            <span class="nx">$scope</span><span class="p">.</span><span class="nx">sortTable</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">header</span><span class="p">)</span> <span class="p">{</span>
+                                <span class="nx">$scope</span><span class="p">.</span><span class="nx">sortReverse</span> <span class="o">=</span> <span class="o">!</span><span class="nx">$scope</span><span class="p">.</span><span class="nx">sortReverse</span><span class="p">;</span>
+                                <span class="nx">$scope</span><span class="p">.</span><span class="nx">sortType</span> <span class="o">=</span> <span class="nx">header</span><span class="p">;</span>
+                            <span class="p">}</span>
+                            <span class="c1">// table</span>
+                            <span class="nx">$scope</span><span class="p">.</span><span class="nx">columns</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">df</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+                            <span class="nx">$scope</span><span class="p">.</span><span class="nx">jsonTable</span> <span class="o">=</span> <span class="nx">df</span><span class="p">;</span>
+                        <span class="p">});</span>
+                    <span class="p">}</span>
+                <span class="p">);</span>
+                <span class="c1">//if R returns an error, alert the error message</span>
+                <span class="nx">req</span><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Server error: &quot;</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
+                <span class="p">});</span>
+
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="nt">&lt;/script&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre>
+</div>
+<p>The output:</p>
+<p><img src="assets/img/opencpu_angulartable.png" alt="" /></p>
 </div>
 
 

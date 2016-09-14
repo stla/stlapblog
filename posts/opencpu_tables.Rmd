@@ -27,7 +27,7 @@ knitr::knit_engines$set(pygmentize = function (options)
 knitr::opts_chunk$set(engine="pygmentize", engine.opts="-l html", echo=FALSE, results='asis')
 ```
 
-We give two ways to make a table in an opencpu app from a dataframe returned by a call to a R function.
+We give three ways to make a table in an opencpu app from a dataframe returned by a call to a R function.
 The `getDF` function used for the example has no argument and returns a dataframe only:
 
 ```{r, engine.opts="-l r"}
@@ -220,3 +220,99 @@ Here is the way to render a `datatables` table in an `opencpu` application.
 The output:
 
 ![](./assets/img/opencpu_datatables.png)
+
+
+
+## Using angular.js (with sorting feature)
+
+
+```{r}
+<html>
+<head>
+	<script src="opencpu/jquery-1.10.2.min.js"></script>
+	<script src="opencpu/opencpu-0.4.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+</head>
+
+<body>
+  <br><br>
+
+	<div ng-app="myApp" ng-controller="myCtrl">
+
+		<div class="container">
+			<div class="row">
+
+				<div class="col-sm-3 well">
+					<button id="submitbutton" type="button" ng-click="clicked()">Submit to server!</button>
+				</div>
+
+				<div class="col-sm-9" style="height:350px; display:block; overflow-y:auto">
+					<table id="dataTable" width="100%" class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th ng-repeat="header in columns">
+									<a href="#" ng-click="sortTable(header)">
+										{{header}}
+										<span ng-show="sortType == header && !sortReverse" class="fa fa-caret-down"></span>
+										<span ng-show="sortType == header && sortReverse" class="fa fa-caret-up"></span>
+									</a>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="row in jsonTable | orderBy:sortType:sortReverse">
+								<td ng-repeat="cell in row">{{cell}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		var app = angular.module('myApp', []);
+
+		app.controller('myCtrl', function($scope) {
+			// on click action
+			$scope.clicked = function() {
+				//perform the request
+				var req = ocpu.rpc(
+					"getDF",
+					{},
+					function(df) {
+						// send the table as JSON to the scope
+						$scope.$apply(function() {
+							// sort options
+							$scope.sortReverse = false;
+							$scope.sortTable = function(header) {
+								$scope.sortReverse = !$scope.sortReverse;
+								$scope.sortType = header;
+							}
+							// table
+							$scope.columns = Object.keys(df[0]);
+							$scope.jsonTable = df;
+						});
+					}
+				);
+				//if R returns an error, alert the error message
+				req.fail(function() {
+					alert("Server error: " + req.responseText);
+				});
+
+			}
+		});
+	</script>
+
+</body>
+</html>
+```
+
+The output:
+
+![](./assets/img/opencpu_angulartable.png)
+
