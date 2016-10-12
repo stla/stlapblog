@@ -11,9 +11,7 @@ output:
 # use highlight
 option_packages <- "-package-db /home/stla/.cabal-sandbox/x86_64-linux-ghc-7.10.3-packages.conf.d"
 knitr::opts_chunk$set(echo = TRUE, collapse=TRUE, prompt=TRUE)
-PATH <- Sys.getenv()["PATH"] 
-ghc.path <- "/opt/ghc/7.10.3/bin"
-Sys.setenv(PATH = paste0(PATH,":", ghc.path))
+Sys.setenv(PATH = "/opt/ghc/7.10.3/bin:/home/stla/bin:/bin:/usr/bin")
 knitr::opts_knit$set(root.dir = "./tests/testfolder/")
 # set global chunk options
 options(replace.assign=TRUE, width=90)
@@ -260,7 +258,7 @@ import System.FilePath.Glob (glob)
 glob "*.hs"
 ```
 
-La fonction `glob` retourne des chemins absolus. Si nous les utilisons avec `grep`, on obtiendra des chemins absolus aussi pour les fichiers trouvés, ce qui encombre la visibilité. On peut les transformer en chemins relatifs à l'aide module `Path` de la librairie `path` :
+La fonction `glob` retourne des chemins absolus. Si nous les utilisons avec `grep`, on obtiendra des chemins absolus aussi pour les fichiers trouvés, ce qui encombre la visibilité. On peut les transformer en chemins relatifs à l'aide du module `Path` de la librairie `path` :
 
 ```{r engine='haskell', engine.path='ghc', engine.opts=option_packages}
 import System.FilePath.Glob (glob)
@@ -411,3 +409,21 @@ testsubfolder/testfile01.txt:1:hello world
 La sortie est en réalité en couleur :
 
 ![](./assets/img/findPatternInFiles.png)
+
+
+## Note (2016-10-12)
+
+Plutôt que d'utiliser les jokers, on peut utiliser le module `System.FilePath.Find` de la librairie `filemanip`. 
+
+Pour chercher récursivement :
+
+```{r engine='haskell', engine.path='ghc', engine.opts=option_packages}
+import System.FilePath.Find
+find always (extension ==? ".hs") "./"
+```
+
+Pour chercher jusqu'à une profondeur donnée :
+```{r engine='haskell', engine.path='ghc', engine.opts=option_packages}
+import System.FilePath.Find
+find (depth <=? 1) (extension ==? ".hs") "./"
+```

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Script shell en Haskell</title>
+  <title>Créer un exécutable avec arguments avec Haskell</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="" />
@@ -11,7 +11,7 @@
   <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
   <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
   <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
-  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+
   <!-- IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -78,7 +78,7 @@
           <ol id="posts">
             <li class="post">
               <h3>
-                <a href="#">Script shell en Haskell</a>
+                <a href="#">Créer un exécutable avec arguments avec Haskell</a>
               </h3>
               <span>2016-08-16</span><br/>
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/HaskellExecutable.Rmd'>Source</a>
@@ -161,6 +161,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Pour les illustrations, nous nous plaçons dans un répertoire avec ce contenu:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tree</span>
 <span class="kw">.</span>
+├── <span class="kw">haskell2fa660ff0110.txt</span>
 ├── <span class="kw">testfile1.hs</span>
 ├── <span class="kw">testfile1.txt</span>
 ├── <span class="kw">testfile2.hs</span>
@@ -176,7 +177,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         ├── <span class="kw">testfile002.hs</span>
         └── <span class="kw">testfile002.txt</span>
 
-<span class="kw">2</span> directories, 12 files</code></pre></div>
+<span class="kw">2</span> directories, 13 files</code></pre></div>
 </div>
 <div id="executer-une-commande-systeme-dans-haskell" class="section level2">
 <h2>Exécuter une commande système dans Haskell</h2>
@@ -222,6 +223,7 @@ r
 <p>Les jokers sont aussi utilisés par la commande <code>ls</code>. Rappelons la structure du répertoire courant:</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">tree</span>
 <span class="kw">.</span>
+├── <span class="kw">haskell2fa660ff0110.txt</span>
 ├── <span class="kw">testfile1.hs</span>
 ├── <span class="kw">testfile1.txt</span>
 ├── <span class="kw">testfile2.hs</span>
@@ -237,7 +239,7 @@ r
         ├── <span class="kw">testfile002.hs</span>
         └── <span class="kw">testfile002.txt</span>
 
-<span class="kw">2</span> directories, 12 files</code></pre></div>
+<span class="kw">2</span> directories, 13 files</code></pre></div>
 <p>Le joker <code>*.hs</code> correspond à tous les fichiers <code>hs</code> dans le répertoire courant :</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="kw">ls</span> *.hs
 <span class="kw">testfile1.hs</span>
@@ -277,8 +279,12 @@ $ <span class="kw">ls</span> *.!(txt)
 <p>Revenons à Haskell. Les jokers sont implémentés dans le module <code>System.FilePath.Glob</code> de la librairie <code>glob</code>.</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.FilePath.Glob</span> (glob)
 glob <span class="st">&quot;*.hs&quot;</span>
-<span class="st">## [&quot;/home/stla/Github/stlapblog/posts/tests/testfolder/testfile2.hs&quot;,&quot;/home/stla/Github/stlapblog/posts/tests/testfolder/testfile1.hs&quot;]</span></code></pre></div>
-<p>La fonction <code>glob</code> retourne des chemins absolus. Si nous les utilisons avec <code>grep</code>, on obtiendra des chemins absolus aussi pour les fichiers trouvés, ce qui encombre la visibilité. On peut les transformer en chemins relatifs à l’aide module <code>Path</code> de la librairie <code>path</code> :</p>
+<span class="st">## </span>
+<span class="st">## &lt;no location info&gt;:</span>
+<span class="st">##     Ambiguous module name ‘System.FilePath.Glob’:</span>
+<span class="st">##       it was found in multiple packages:</span>
+<span class="st">##       Glob-0.7.11@Glob_7Y8nfrHts1W2PKmDbb6BTr filemanip-0.3.6.3@filem_A0TpQXIIDuPEjHKyznzEs3</span></code></pre></div>
+<p>La fonction <code>glob</code> retourne des chemins absolus. Si nous les utilisons avec <code>grep</code>, on obtiendra des chemins absolus aussi pour les fichiers trouvés, ce qui encombre la visibilité. On peut les transformer en chemins relatifs à l’aide du module <code>Path</code> de la librairie <code>path</code> :</p>
 <div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.FilePath.Glob</span> (glob)
 <span class="kw">import </span><span class="dt">System.Directory</span> (getCurrentDirectory)
 <span class="kw">import </span><span class="dt">Path</span> (parseAbsFile, parseAbsDir, stripDir, fromRelFile)
@@ -294,7 +300,11 @@ glob <span class="st">&quot;*.hs&quot;</span>
 <span class="fu">:</span>}
 absFiles <span class="ot">&lt;-</span> glob <span class="st">&quot;*/*.hs&quot;</span>
 mapM absoluteFilePathToRelativeFilePath absFiles
-<span class="st">## [&quot;testsubfolder/testfile01.hs&quot;,&quot;testsubfolder/testfile02.hs&quot;]</span></code></pre></div>
+<span class="st">## </span>
+<span class="st">## &lt;no location info&gt;:</span>
+<span class="st">##     Ambiguous module name ‘System.FilePath.Glob’:</span>
+<span class="st">##       it was found in multiple packages:</span>
+<span class="st">##       Glob-0.7.11@Glob_7Y8nfrHts1W2PKmDbb6BTr filemanip-0.3.6.3@filem_A0TpQXIIDuPEjHKyznzEs3</span></code></pre></div>
 </div>
 <div id="implementation-dans-haskell" class="section level2">
 <h2>Implémentation dans Haskell</h2>
@@ -399,6 +409,18 @@ main <span class="fu">=</span> execParser opts <span class="fu">&gt;&gt;=</span>
 <span class="kw">testsubfolder</span>/testfile01.txt:<span class="kw">1</span>:hello world</code></pre></div>
 <p>La sortie est en réalité en couleur :</p>
 <p><img src="assets/img/findPatternInFiles.png" alt="" /></p>
+</div>
+<div id="note-2016-10-12" class="section level2">
+<h2>Note (2016-10-12)</h2>
+<p>Plutôt que d’utiliser les jokers, on peut utiliser le module <code>System.FilePath.Find</code> de la librairie <code>filemanip</code>.</p>
+<p>Pour chercher récursivement :</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.FilePath.Find</span>
+find always (extension <span class="fu">==?</span> <span class="st">&quot;.hs&quot;</span>) <span class="st">&quot;./&quot;</span>
+<span class="st">## [&quot;./testfile1.hs&quot;,&quot;./testfile2.hs&quot;,&quot;./testsubfolder/testfile01.hs&quot;,&quot;./testsubfolder/testfile02.hs&quot;,&quot;./testsubfolder/testsubsubfolder/testfile001.hs&quot;,&quot;./testsubfolder/testsubsubfolder/testfile002.hs&quot;]</span></code></pre></div>
+<p>Pour chercher jusqu’à une profondeur donnée :</p>
+<div class="sourceCode"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="kw">import </span><span class="dt">System.FilePath.Find</span>
+find (depth <span class="fu">&lt;=?</span> <span class="dv">1</span>) (extension <span class="fu">==?</span> <span class="st">&quot;.hs&quot;</span>) <span class="st">&quot;./&quot;</span>
+<span class="st">## [&quot;./testfile1.hs&quot;,&quot;./testfile2.hs&quot;,&quot;./testsubfolder/testfile01.hs&quot;,&quot;./testsubfolder/testfile02.hs&quot;]</span></code></pre></div>
 </div>
 
 
