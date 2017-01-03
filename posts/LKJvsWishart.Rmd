@@ -13,7 +13,7 @@ library(ggplot2)
 fscale <- 1
 ```
 
-As I noted at then end of [this  article](http://stla.github.io/stlapblog/posts/MixedRepeatModel.html), JAGS returned an overestimate of the between-standard deviation $\sigma_{b_2}$. 
+As I noted at the end of [this  article](http://stla.github.io/stlapblog/posts/MixedRepeatModel.html), JAGS returned an overestimate of the between-standard deviation $\sigma_{b_2}$. 
 This is how I simulated the data, with `I=3` (number of groups) and `J=4` (number of replicates per group):
 
 ```{r data}
