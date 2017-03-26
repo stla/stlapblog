@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generalized confidence intervals in the 'BAV1R'</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="" />
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="assets/img/07-10-06_2241.jpg">
+  <link rel="alternate" type="application/rss+xml" href="">
+  <link href="../libraries/frameworks/purus/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/bootstrap-responsive.min.css" rel="stylesheet" />
+  <link href="../libraries/frameworks/purus/css/main.css" rel="stylesheet" />
+  <link href="../libraries/highlighters/prettify/css/twitter-bootstrap.css" rel="stylesheet">
+  <!-- IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,200,800' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <style>
+  	#disqus_thread {
+		margin-top: 140px;
+	}
+	  #sidebar .sidebar-nav .info h3 a:hover, a:hover { color: #01A9DB; }
+	  #sidebar .sidebar-nav #avatar img, #sidebar .sidebar-nav ul#links li.active a { border-color: #01A9DB; }
+	  #sidebar .sidebar-nav ul#links li a:hover { background: #01A9DB; }
+    p {text-align: justify;}
+  </style>
+    <link rel="stylesheet" href = "../assets/css/image.css">
+  <link rel="stylesheet" href = "../assets/css/box_with_title.css">
+<link rel="stylesheet" href = "../assets/css/custom.css">
+<link rel="stylesheet" href = "../assets/css/ribbons.css">
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="sidebar" class="span2">
+			  <div class="sidebar-nav sidebar-nav-fixed">
+				  <div class="info">
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <h3><a href="/">stlaPblog </a></h3>
+					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
+					</div>
+					<ul id="links">
+			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+      
+				  <br/>
+				  <div style="padding-left: 5px;">
+					<h3>Some links</h3>
+					<h4>&#9654 R links</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://github.com/ramnathv/poirot/"><u>Poirot</u></a>Reproducible Blogging with R Markdown</li>
+			          <li><a href="http://slidify.org/"><u>Slidify</u></a>Reproducible html5 slides from R markdown</li>
+			          <li><a href="http://www.r-bloggers.com/"><u>R-bloggers</u></a>Blog posts about R, contributed by R bloggers worldwide.</li>
+					    </ul>
+				    </div>
+			    <br/>
+			  	<h4>&#9654 Blogs</h4>
+						<div style="padding-left: 5px;">
+					    <ul>
+					      <li><a href="http://stla.overblog.com/"><u>stla.overblog</u></a>My previous blog</li>
+			          <li><a href="http://timelyportfolio.blogspot.be/"><u>Timely Portfolio</u>
+			</a>A great blog about R, Javascript, and more</li>
+					    </ul>
+				    </div>
+					</div>
+			    </ul>
+				</div>
+			</div>
+						<div id="content" class='span10'>
+				<div id="post-wrapper">
+          <ol id="posts">
+            <li class="post">
+              <h3>
+                <a href="#">Generalized confidence intervals in the 'BAV1R'</a>
+              </h3>
+              <span>2017-03-26</span><br/>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/GeneralizedCI_BAV1R.Rmd'>Source</a>
+              <div class='lead'>
+
+<p>Let us consider the balanced one-way random effect ANOVA model, that we already discussed in a <a href="http://stla.github.io/stlapblog/posts/Anova1random.html">previous article</a>.</p>
+<p>In this previous article, I provided a confidence interval about the total coefficient of variation, and I claimed I didn’t remember how I derived it. Now I remember. It is a so-called <em>generalized confidence interval</em>.</p>
+<p>We denote by <span class="math inline">\(y_{ij}\)</span> the <span class="math inline">\(j\)</span>-th observation in group <span class="math inline">\(i\)</span>, for <span class="math inline">\(1 \leqslant i \leqslant I\)</span> and <span class="math inline">\(1 \leqslant j \leqslant J\)</span>, and we denote by <span class="math inline">\(Y_{ij}\)</span> the random variable modelling <span class="math inline">\(y_{ij}\)</span>.</p>
+<p>Recall that the three summary statistics <span class="math inline">\(\bar Y_{\bullet\bullet}\)</span> (overall mean), <span class="math inline">\({\mathrm{SS}}_b\)</span> (between sum-of-squares) and <span class="math inline">\({\mathrm{SS}}_w\)</span> (within sum-of-squares) are independent and their distributions are given by <span class="math display">\[
+Z \sim {\cal N}(0,1), \quad 
+U^2_b \sim \chi^2_{I-1}, \quad 
+U^2_w \sim \chi^2_{I(J-1)}
+\]</span> where <span class="math display">\[
+\begin{align}
+Z &amp; =  \sqrt{IJ} \frac{\bar Y_{\bullet\bullet}-\mu}{\sqrt{J\sigma^2_b+\sigma^2_w}},\\
+U^2_b &amp; = \frac{{\mathrm{SS}}_b}{J\sigma^2_b+\sigma^2_w},\\
+U^2_w &amp; = \frac{{\mathrm{SS}}_w}{\sigma^2_w}. 
+\end{align}
+\]</span></p>
+<p>We use notations <span class="math inline">\(\bar y_{\bullet\bullet}\)</span>, <span class="math inline">\({\mathrm{ss}}_b\)</span>, <span class="math inline">\({\mathrm{ss}}_w\)</span> to denote the actual observations of these three summary statistics. They are considered as non-random.</p>
+<p>Define the three following strange random variables: <span class="math display">\[
+\begin{align}
+G_\mu &amp; = \bar y_{\bullet\bullet} - 
+\sqrt{IJ} \frac{\bar Y_{\bullet\bullet}-\mu}{\sqrt{{\mathrm{SS}}_b}}
+ \sqrt{\frac{{\mathrm{ss}}_b}{IJ}}, \\
+G_{\sigma^2_b} &amp; = \frac{J\sigma^2_b+\sigma^2_w}{J {\mathrm{SS}}_b} {\mathrm{ss}}_b
+ - \frac{\sigma^2_w}{J {\mathrm{SS}}_w}{\mathrm{ss}}_w, \\
+G_{\sigma^2_w} &amp; = \frac{\sigma^2_w}{{\mathrm{SS}}_w}{\mathrm{ss}}_w.
+\end{align}
+\]</span></p>
+<p>They are strange because they involve the actual observations.</p>
+<p>They enjoy the two following properties. Firstly, it is very easy to check that, if <span class="math inline">\((\bar Y_{\bullet\bullet}, {\mathrm{SS}}_b, {\mathrm{SS}}_w) = (\bar y_{\bullet\bullet}, {\mathrm{ss}}_b, {\mathrm{ss}}_w)\)</span>, then <span class="math display">\[
+(G_\mu, G_{\sigma^2_b}, G_{\sigma^2_w}) 
+= (\mu, \sigma^2_b, \sigma^2_w).
+\]</span></p>
+<p>Secondly, it is not difficult to check that, while the expressions of these three strange random variables involve the unknown parameters, the distributions of these random variables does not involve any unknown parameter. Indeed, with the previous notations, <span class="math display">\[
+\begin{align}
+G_\mu &amp; = \bar y_{\bullet\bullet} -\frac{Z}{U^2_b}\sqrt{\frac{{\mathrm{ss}}_b}{IJ}}, \\
+G_{\sigma^2_b} &amp; = \frac{1}{J}\left(\frac{{\mathrm{ss}}_b}{U^2_b} - \frac{{\mathrm{ss}}_w}{U^2_w}\right), \\ 
+G_{\sigma^2_w} &amp; = \frac{{\mathrm{ss}}_w}{U^2_w}.
+\end{align}
+\]</span></p>
+<p>Therefore, these variables can be easily simulated, and it is known that (see <a href="http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0470380268.html" title="Kalimuthu Krishnamoorthy, Thomas Mathew. *Statistical Tolerance Regions: Theory, Applications, and Computation*. Wiley 2009.">Krishnamoorthy &amp; Mathew</a>’s book), if <span class="math inline">\(f\)</span> is a suitable function, then <em>the quantiles of <span class="math inline">\(f(\bar Y_{\bullet\bullet}, {\mathrm{SS}}_b, {\mathrm{SS}}_w)\)</span> are confidence bounds of <span class="math inline">\(f(\mu, \sigma^2_b, \sigma^2_w)\)</span></em>. More precisely, if we denote by <span class="math inline">\(q_f(p)\)</span> the <span class="math inline">\(100p\%\)</span>-quantile of <span class="math inline">\(f(\bar Y_{\bullet\bullet}, {\mathrm{SS}}_b, {\mathrm{SS}}_w)\)</span>, then, for instance, <span class="math inline">\(\left[q_f\left(\frac{\alpha}{2}\right), q_f\left(1-\frac{\alpha}{2}\right)\right]\)</span> is a <span class="math inline">\(100(1-\alpha)\%\)</span>-confidence interval about <span class="math inline">\(f(\mu, \sigma^2_b, \sigma^2_w)\)</span>.</p>
+<p>This is a so-called <em>generalized confidence interval</em>. Such confidence intervals are not exact, but it is known that they are asymptotically exact, and their coverage is often close to the nominal level.</p>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<p>Let’s write a function simulating a dataset.</p>
+<pre class="r"><code>library(data.table)
+Sim &lt;- function(I, J, mu, sigmab, sigmaw){
+  group &lt;- gl(I, J, labels=LETTERS[1:I])
+  DT &lt;- data.table(group = group, 
+                   y = mu + rep(rnorm(I, sd=sigmab), each=J) + rnorm(I*J, sd=sigmaw),
+                   key = &quot;group&quot;)
+  return(DT)
+}
+I &lt;- 2L; J &lt;- 3L
+mu &lt;- 0; sigmab &lt;- 1; sigmaw &lt;- 2
+set.seed(666L)
+( DT &lt;- Sim(I, J, mu, sigmab, sigmaw) )
+##    group           y
+## 1:     A  0.04304213
+## 2:     A  4.80964673
+## 3:     A -3.68043786
+## 4:     B  3.53114702
+## 5:     B -0.59801585
+## 6:     B  0.40931553</code></pre>
+<p>And let’s write a function calculating the summary statistics from such a dataset.</p>
+<pre class="r"><code>summaryStats &lt;- function(DT){
+  DT[, `:=`(means = rep(mean(y), each=.N)), by=group]
+  ssw &lt;- DT[, { squares = (y-means)^2
+                .(ssw = sum(squares))}]$ssw
+  ybar &lt;- mean(DT$y)
+  DT[, `:=`(Mean = rep(ybar, I*J))]
+  ssb &lt;- DT[, { squares = (means-Mean)^2
+                .(ssb = sum(squares))}]$ssb
+  return(c(ybar=ybar, ssb=ssb, ssw=ssw))
+}
+( stats &lt;- summaryStats(DT) )
+##       ybar        ssb        ssw 
+##  0.7524496  0.7849582 45.4922978
+ybar &lt;- stats[&quot;ybar&quot;]
+ssb &lt;- stats[&quot;ssb&quot;]
+ssw &lt;- stats[&quot;ssw&quot;]</code></pre>
+<p>Consider a crazy parameter of interest <span class="math display">\[
+\theta = \mu + \sigma^2_b + \log(\sigma^2_w).
+\]</span></p>
+<pre class="r"><code>f &lt;- function(mu, sigma2b, sigma2w) mu + sigma2b + log(sigma2w)</code></pre>
+<p>In our example, the true value of <span class="math inline">\(\theta\)</span> is:</p>
+<pre class="r"><code>( theta0 &lt;- f(mu, sigmab^2, sigmaw^2) )
+## [1] 2.386294</code></pre>
+<p>We get a confidence interval about <span class="math inline">\(\theta\)</span> as follows:</p>
+<pre class="r"><code>n &lt;- 500000L
+Z &lt;- rnorm(n)
+U2b &lt;- rchisq(n, I-1)
+U2w &lt;- rchisq(n, I*(J-1))
+Gmu &lt;- ybar - Z/U2b*sqrt(ssb/I/J)
+Gsigma2b &lt;- 1/J*(ssb/U2b - ssw/U2w)
+Gsigma2w &lt;- ssw/U2w
+quantile(f(Gmu, Gsigma2b, Gsigma2w), c(0.025, 0.975))
+##      2.5%     97.5% 
+## -38.56313 206.77664</code></pre>
+</div>
+<div id="checking-the-coverage" class="section level2">
+<h2>Checking the coverage</h2>
+<p>Let’s check the coverage probability of this interval for our scenario.</p>
+<pre class="r"><code>nsims &lt;- 20000
+SIMS &lt;- t(vapply(1:nsims, function(i){
+   summaryStats(Sim(I, J, mu, sigmab, sigmaw))
+  }, 
+  FUN.VALUE=numeric(3)))
+lower &lt;- upper &lt;- numeric(nsims)
+for(i in 1:nsims){
+  ybar &lt;- SIMS[i,&quot;ybar&quot;]
+  ssb &lt;- SIMS[i,&quot;ssb&quot;]
+  ssw &lt;- SIMS[i,&quot;ssw&quot;]
+  Gmu &lt;- ybar - Z/U2b*sqrt(ssb/I/J)
+  Gsigma2b &lt;- 1/J*(ssb/U2b - ssw/U2w)
+  Gsigma2w &lt;- ssw/U2w
+  theta &lt;- f(Gmu, Gsigma2b, Gsigma2w)
+  lower[i] &lt;- quantile(theta, 0.025)
+  upper[i] &lt;- quantile(theta, 0.975)
+}
+mean(theta0 &gt; lower)
+## [1] 0.98555
+mean(theta0 &lt; upper)
+## [1] 0.98865
+mean(theta0 &gt; lower &amp; theta0 &lt; upper)
+## [1] 0.9742</code></pre>
+<p>Thus, the generalized confidence interval is a bit conservative in this example (really far from the asymptoticness).</p>
+</div>
+
+
+          </div> 
+              <div id="disqus_thread"></div>
+            </li>
+          </ol>
+          <div class="pagination">
+            <ul>
+              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+            </ul>
+          </div> 
+        </div>
+			</div>
+		</div>
+  </div>
+</body>
+  <script src='../libraries/frameworks/purus/js/bootstrap.min.js'></script>
+  <script>
+      var disqus_developer = 1;
+      var disqus_shortname = 'stlapblog'; 
+      // required: replace example with your forum shortname
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); 
+          dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || 
+           document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      }
+    });
+  </script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script> -->
+  <script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="../libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='../libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

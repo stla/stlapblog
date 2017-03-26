@@ -1,1 +1,12 @@
+.Rhistory
+.V8history
+*tikzDictionary
+*.txt
+/tests
+ztemp*
+zz_*
+z_*
 .cache/
+assets/haskell/*.hs
+*_cache
+/Removed
