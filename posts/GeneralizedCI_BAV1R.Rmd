@@ -2,7 +2,9 @@
 title: "Generalized confidence intervals in the 'BAV1R'"
 author: "Stéphane Laurent"
 date: "2017-03-26"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -101,7 +103,7 @@ summaryStats <- function(DT){
   ssw <- DT[, { squares = (y-means)^2
                 .(ssw = sum(squares))}]$ssw
   ybar <- mean(DT$y)
-  DT[, `:=`(Mean = rep(ybar, I*J))]
+  DT[, `:=`(Mean = ybar)]
   ssb <- DT[, { squares = (means-Mean)^2
                 .(ssb = sum(squares))}]$ssb
   return(c(ybar=ybar, ssb=ssb, ssw=ssw))

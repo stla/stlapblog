@@ -151,7 +151,7 @@ set.seed(666L)
   ssw &lt;- DT[, { squares = (y-means)^2
                 .(ssw = sum(squares))}]$ssw
   ybar &lt;- mean(DT$y)
-  DT[, `:=`(Mean = rep(ybar, I*J))]
+  DT[, `:=`(Mean = ybar)]
   ssb &lt;- DT[, { squares = (means-Mean)^2
                 .(ssb = sum(squares))}]$ssb
   return(c(ybar=ybar, ssb=ssb, ssw=ssw))
