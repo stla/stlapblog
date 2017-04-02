@@ -96,13 +96,13 @@ SimData &lt;- function(I, J, mu, sigmab, sigmaw){
   return(DT)
 }
 ( DT &lt;- SimData(I=2, J=3, mu=0, sigmab=1, sigmaw=2) )
-##    group           y
-## 1:     A -2.28672582
-## 2:     A -4.94563223
-## 3:     A -2.70205730
-## 4:     B  3.32696539
-## 5:     B  0.82692703
-## 6:     B -0.09389862</code></pre>
+##    group          y
+## 1:     A -0.3734198
+## 2:     A  1.6443825
+## 3:     A  0.8613981
+## 4:     B -6.6141322
+## 5:     B -0.3080895
+## 6:     B -3.6330317</code></pre>
 <p>The <code>summaryStats</code> function below calculates the three summary statistics <span class="math inline">\(\bar y\)</span>, <span class="math inline">\({\mathrm{ss}}_b\)</span> and <span class="math inline">\({\mathrm{ss}}_w\)</span>.</p>
 <pre class="r"><code>summaryStats &lt;- function(DT){
   DT[, `:=`(means = rep(mean(y), each=.N)), by=group]
@@ -115,8 +115,8 @@ SimData &lt;- function(I, J, mu, sigmab, sigmaw){
   return(c(ybar=ybar, ssb=ssb, ssw=ssw))
 }
 summaryStats(DT)
-##       ybar        ssb        ssw 
-## -0.9790703 32.6405812 10.3587781</code></pre>
+##      ybar       ssb       ssw 
+## -1.403815 26.829259 21.972580</code></pre>
 <p>The distribution of the generalized pivotal quantity <span class="math inline">\(G_{\sigma^2_b}\)</span> (see previous article) can be seen as a “posterior distribution” of <span class="math inline">\(\sigma^2_b\)</span>:</p>
 <pre class="r"><code>set.seed(666)
 I &lt;- 3L; J &lt;- 4L
@@ -180,7 +180,7 @@ abline(0, 1, lty=&quot;dashed&quot;, col=&quot;blue&quot;)</code></pre>
 </div>
 <div id="one-sided-confidence-intervals" class="section level2">
 <h2>One-sided confidence intervals</h2>
-<p>I do not know whether this is exactly true, but, in view of simulations, the above property also seems to work for the null hypothesis <span class="math inline">\(H_0\colon\{\sigma^2_b=\theta_0\}\)</span> for any <span class="math inline">\(\theta_0\)</span>, versus the one-sided alternative hypothesis <span class="math inline">\(H_1\colon\{\sigma^2_b&gt;\theta_0\}\)</span> or <span class="math inline">\(H_1\colon\{\sigma^2_b&lt;\theta_0\}\)</span>. That would mean that the one-sided generalized confidence intervals about <span class="math inline">\(\sigma^2_b\)</span> are exact.</p>
+<p>Simulations also show that the above property almost holds for the null hypothesis <span class="math inline">\(H_0\colon\{\sigma^2_b=\theta_0\}\)</span> for any <span class="math inline">\(\theta_0\)</span>, versus the one-sided alternative hypothesis <span class="math inline">\(H_1\colon\{\sigma^2_b&gt;\theta_0\}\)</span> or <span class="math inline">\(H_1\colon\{\sigma^2_b&lt;\theta_0\}\)</span>. That would mean that the one-sided generalized confidence intervals about <span class="math inline">\(\sigma^2_b\)</span> are almost exact confidence intervals.</p>
 <pre class="r"><code>sigmab &lt;- 2
 SIMS &lt;- t(vapply(1:nsims, function(i){
    summaryStats(SimData(I, J, mu, sigmab, sigmaw))

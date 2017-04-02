@@ -136,9 +136,8 @@ The result follows from the fact that $\frac{\SS_w}{\SS_b}$ has the same distrib
 
 ## One-sided confidence intervals
 
-I do not know whether this is exactly true, but, in view of simulations, the above property also 
-seems to work for the null hypothesis $H_0\colon\{\sigma^2_b=\theta_0\}$ for any $\theta_0$, versus the one-sided alternative hypothesis $H_1\colon\{\sigma^2_b>\theta_0\}$ or $H_1\colon\{\sigma^2_b<\theta_0\}$. 
-That would mean that the one-sided generalized confidence intervals about $\sigma^2_b$ are exact.
+Simulations also show that the above property almost holds for the null hypothesis $H_0\colon\{\sigma^2_b=\theta_0\}$ for any $\theta_0$, versus the one-sided alternative hypothesis $H_1\colon\{\sigma^2_b>\theta_0\}$ or $H_1\colon\{\sigma^2_b<\theta_0\}$. 
+That would mean that the one-sided generalized confidence intervals about $\sigma^2_b$ are almost exact confidence intervals.
 
 ```{r sims2, cache=TRUE}
 sigmab <- 2
