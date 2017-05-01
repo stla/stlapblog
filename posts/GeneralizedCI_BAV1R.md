@@ -1,23 +1,15 @@
----
-title: "Generalized confidence intervals in the 'BAV1R'"
-author: "Stéphane Laurent"
-date: "2017-03-26"
-output: 
-  html_document: 
-    keep_md: yes
----
+# Generalized confidence intervals in the 'BAV1R'
+Stéphane Laurent  
+2017-03-26  
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      collapse = TRUE)
-```
+
 
 \newcommand{\SS}{\mathrm{SS}}
 \newcommand{\ss}{\mathrm{ss}}
 
-Let us consider the balanced one-way random effect ANOVA model, that we already discussed in two previous articles, [here](http://stla.github.io/stlapblog/posts/Anova1random_inference.html) and [here](http://stla.github.io/stlapblog/posts/Anova1random.html). 
+Let us consider the balanced one-way random effect ANOVA model, that we already discussed in a [previous article](http://stla.github.io/stlapblog/posts/Anova1random.html). 
 
-In the former, I provided a confidence interval about the total coefficient of variation, and I claimed I didn't remember how I derived it. Now I remember. It is a so-called *generalized confidence interval*. 
+In this previous article, I provided a confidence interval about the total coefficient of variation, and I claimed I didn't remember how I derived it. Now I remember. It is a so-called *generalized confidence interval*. 
 
 We denote by $y_{ij}$ the $j$-th observation in group $i$, for $1 \leqslant i \leqslant I$ and $1 \leqslant j \leqslant J$, and we denote by $Y_{ij}$ the random variable modelling $y_{ij}$.
 
@@ -80,7 +72,8 @@ This is a so-called *generalized confidence interval*. Such confidence intervals
 
 Let's write a function simulating a dataset.
 
-```{r, message=FALSE}
+
+```r
 library(data.table)
 Sim <- function(I, J, mu, sigmab, sigmaw){
   group <- gl(I, J, labels=LETTERS[1:I])
@@ -93,11 +86,19 @@ I <- 2L; J <- 3L
 mu <- 0; sigmab <- 1; sigmaw <- 2
 set.seed(666L)
 ( DT <- Sim(I, J, mu, sigmab, sigmaw) )
+##    group           y
+## 1:     A  0.04304213
+## 2:     A  4.80964673
+## 3:     A -3.68043786
+## 4:     B  3.53114702
+## 5:     B -0.59801585
+## 6:     B  0.40931553
 ```
 
 And let's write a function calculating the summary statistics from such a dataset.
 
-```{r}
+
+```r
 summaryStats <- function(DT){
   DT[, `:=`(means = rep(mean(y), each=.N)), by=group]
   ssw <- DT[, { squares = (y-means)^2
@@ -109,6 +110,8 @@ summaryStats <- function(DT){
   return(c(ybar=ybar, ssb=ssb, ssw=ssw))
 }
 ( stats <- summaryStats(DT) )
+##       ybar        ssb        ssw 
+##  0.7524496  0.7849582 45.4922978
 ybar <- stats["ybar"]
 ssb <- stats["ssb"]
 ssw <- stats["ssw"]
@@ -119,19 +122,23 @@ $$
 \theta = \mu + \sigma^2_b + \log(\sigma^2_w).
 $$
 
-```{r}
+
+```r
 f <- function(mu, sigma2b, sigma2w) mu + sigma2b + log(sigma2w)
 ```
 
 In our example, the true value of $\theta$ is:
 
-```{r}
+
+```r
 ( theta0 <- f(mu, sigmab^2, sigmaw^2) )
+## [1] 2.386294
 ```
 
 We get a confidence interval about $\theta$ as follows:
 
-```{r}
+
+```r
 n <- 50000L
 Z <- rnorm(n)
 U2b <- rchisq(n, I-1)
@@ -140,6 +147,8 @@ Gmu <- ybar - Z/sqrt(U2b)*sqrt(ssb/I/J)
 Gsigma2b <- 1/J*(ssb/U2b - ssw/U2w)
 Gsigma2w <- ssw/U2w
 quantile(f(Gmu, Gsigma2b, Gsigma2w), c(0.025, 0.975))
+##      2.5%     97.5% 
+## -23.55456 252.50211
 ```
 
 
@@ -147,7 +156,8 @@ quantile(f(Gmu, Gsigma2b, Gsigma2w), c(0.025, 0.975))
 
 Let's check the coverage probability of this interval for our scenario.
 
-```{r sims, cache=TRUE}
+
+```r
 nsims <- 20000
 SIMS <- t(vapply(1:nsims, function(i){
    summaryStats(Sim(I, J, mu, sigmab, sigmaw))
@@ -166,8 +176,11 @@ for(i in 1:nsims){
   upper[i] <- quantile(theta, 0.975)
 }
 mean(theta0 > lower)
+## [1] 0.98875
 mean(theta0 < upper)
+## [1] 0.9728
 mean(theta0 > lower & theta0 < upper)
+## [1] 0.96155
 ```
 
 Thus, the generalized confidence interval is a bit conservative in this example (really far from the asymptoticness).

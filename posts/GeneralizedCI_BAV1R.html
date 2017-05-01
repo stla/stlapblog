@@ -84,8 +84,8 @@
                <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/GeneralizedCI_BAV1R.Rmd'>Source</a>
               <div class='lead'>
 
-<p>Let us consider the balanced one-way random effect ANOVA model, that we already discussed in a <a href="http://stla.github.io/stlapblog/posts/Anova1random.html">previous article</a>.</p>
-<p>In this previous article, I provided a confidence interval about the total coefficient of variation, and I claimed I didn’t remember how I derived it. Now I remember. It is a so-called <em>generalized confidence interval</em>.</p>
+<p>Let us consider the balanced one-way random effect ANOVA model, that we already discussed in two previous articles, <a href="http://stla.github.io/stlapblog/posts/Anova1random_inference.html">here</a> and <a href="http://stla.github.io/stlapblog/posts/Anova1random.html">here</a>.</p>
+<p>In the former, I provided a confidence interval about the total coefficient of variation, and I claimed I didn’t remember how I derived it. Now I remember. It is a so-called <em>generalized confidence interval</em>.</p>
 <p>We denote by <span class="math inline">\(y_{ij}\)</span> the <span class="math inline">\(j\)</span>-th observation in group <span class="math inline">\(i\)</span>, for <span class="math inline">\(1 \leqslant i \leqslant I\)</span> and <span class="math inline">\(1 \leqslant j \leqslant J\)</span>, and we denote by <span class="math inline">\(Y_{ij}\)</span> the random variable modelling <span class="math inline">\(y_{ij}\)</span>.</p>
 <p>Recall that the three summary statistics <span class="math inline">\(\bar Y_{\bullet\bullet}\)</span> (overall mean), <span class="math inline">\({\mathrm{SS}}_b\)</span> (between sum-of-squares) and <span class="math inline">\({\mathrm{SS}}_w\)</span> (within sum-of-squares) are independent and their distributions are given by <span class="math display">\[
 Z \sim {\cal N}(0,1), \quad 
@@ -116,7 +116,7 @@ G_{\sigma^2_w} &amp; = \frac{\sigma^2_w}{{\mathrm{SS}}_w}{\mathrm{ss}}_w.
 \]</span></p>
 <p>Secondly, it is not difficult to check that, while the expressions of these three strange random variables involve the unknown parameters, the distributions of these random variables does not involve any unknown parameter. Indeed, with the previous notations, <span class="math display">\[
 \begin{align}
-G_\mu &amp; = \bar y_{\bullet\bullet} -\frac{Z}{U^2_b}\sqrt{\frac{{\mathrm{ss}}_b}{IJ}}, \\
+G_\mu &amp; = \bar y_{\bullet\bullet} -\frac{Z}{\sqrt{U^2_b}}\sqrt{\frac{{\mathrm{ss}}_b}{IJ}}, \\
 G_{\sigma^2_b} &amp; = \frac{1}{J}\left(\frac{{\mathrm{ss}}_b}{U^2_b} - \frac{{\mathrm{ss}}_w}{U^2_w}\right), \\ 
 G_{\sigma^2_w} &amp; = \frac{{\mathrm{ss}}_w}{U^2_w}.
 \end{align}
@@ -170,16 +170,16 @@ ssw &lt;- stats[&quot;ssw&quot;]</code></pre>
 <pre class="r"><code>( theta0 &lt;- f(mu, sigmab^2, sigmaw^2) )
 ## [1] 2.386294</code></pre>
 <p>We get a confidence interval about <span class="math inline">\(\theta\)</span> as follows:</p>
-<pre class="r"><code>n &lt;- 500000L
+<pre class="r"><code>n &lt;- 50000L
 Z &lt;- rnorm(n)
 U2b &lt;- rchisq(n, I-1)
 U2w &lt;- rchisq(n, I*(J-1))
-Gmu &lt;- ybar - Z/U2b*sqrt(ssb/I/J)
+Gmu &lt;- ybar - Z/sqrt(U2b)*sqrt(ssb/I/J)
 Gsigma2b &lt;- 1/J*(ssb/U2b - ssw/U2w)
 Gsigma2w &lt;- ssw/U2w
 quantile(f(Gmu, Gsigma2b, Gsigma2w), c(0.025, 0.975))
 ##      2.5%     97.5% 
-## -38.56313 206.77664</code></pre>
+## -23.55456 252.50211</code></pre>
 </div>
 <div id="checking-the-coverage" class="section level2">
 <h2>Checking the coverage</h2>
@@ -194,7 +194,7 @@ for(i in 1:nsims){
   ybar &lt;- SIMS[i,&quot;ybar&quot;]
   ssb &lt;- SIMS[i,&quot;ssb&quot;]
   ssw &lt;- SIMS[i,&quot;ssw&quot;]
-  Gmu &lt;- ybar - Z/U2b*sqrt(ssb/I/J)
+  Gmu &lt;- ybar - Z/sqrt(U2b)*sqrt(ssb/I/J)
   Gsigma2b &lt;- 1/J*(ssb/U2b - ssw/U2w)
   Gsigma2w &lt;- ssw/U2w
   theta &lt;- f(Gmu, Gsigma2b, Gsigma2w)
@@ -202,11 +202,11 @@ for(i in 1:nsims){
   upper[i] &lt;- quantile(theta, 0.975)
 }
 mean(theta0 &gt; lower)
-## [1] 0.98555
+## [1] 0.98875
 mean(theta0 &lt; upper)
-## [1] 0.98865
+## [1] 0.9728
 mean(theta0 &gt; lower &amp; theta0 &lt; upper)
-## [1] 0.9742</code></pre>
+## [1] 0.96155</code></pre>
 <p>Thus, the generalized confidence interval is a bit conservative in this example (really far from the asymptoticness).</p>
 </div>
 
