@@ -10,8 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, collapse=TRUE, fig.path="./assets/fig/expansi
 ```
 
 
-I released the `expansions` package for R [on github](https://github.com/stla/expansions). 
-It works on Linux only. 
+I released the `expansions` package for R. To install it, follow the instructions given on [my repo](https://stlarepo.github.io/drat/).
 
 ## Expansions of integer and real numbers
 
