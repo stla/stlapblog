@@ -6,7 +6,7 @@ output: html_document
 
 Consider the following problem: a point $a$ in the three-dimensional Euclidean space is given by its spherical coordinates, and you want the spherical coordinates of its image $a'$ by a rotation of a given angle $\alpha$ around a given axis passing through the origin.
 
-I assume the system of spherical coordinates is the one shown on this figure:
+I assume the system of spherical coordinates is the one shown on this figure (the one used in physics):
 
 ![](http://i.stack.imgur.com/eff2d.png)
 
@@ -63,7 +63,7 @@ $$
 where $X$, $Y$, $Z$ are the Pauli matrices 
 $$
 X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad 
-Y = \begin{pmatrix} 0 & i \\ -i & 0 \end{pmatrix}, \quad 
+Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad 
 Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}.
 $$
 

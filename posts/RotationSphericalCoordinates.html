@@ -81,12 +81,15 @@
                 <a href="#">Rotation in spherical coordinates</a>
               </h3>
               <span>2016-07-06</span><br/>
-               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/RotationSphericalCoordinates.Rmd'>Source</a>
+               <a class='label label-success' href='https://raw.github.com/stla/stlapblog/gh-pages/posts/posts/RotationSphericalCoordinates.Rmd'>Source</a>
               <div class='lead'>
 
+
+
+
 <p>Consider the following problem: a point <span class="math inline">\(a\)</span> in the three-dimensional Euclidean space is given by its spherical coordinates, and you want the spherical coordinates of its image <span class="math inline">\(a&#39;\)</span> by a rotation of a given angle <span class="math inline">\(\alpha\)</span> around a given axis passing through the origin.</p>
-<p>I assume the system of spherical coordinates is the one shown on this figure:</p>
-<p><img src="http://i.stack.imgur.com/eff2d.png" alt="" /></p>
+<p>I assume the system of spherical coordinates is the one shown on this figure (the one used in physics):</p>
+<p><img src="http://i.stack.imgur.com/eff2d.png" /></p>
 <p>The angle <span class="math inline">\(\theta \in [0, \pi]\)</span> is the colatitude and the angle <span class="math inline">\(\varphi\)</span> is the longitude.</p>
 <p>The action of the rotation does not change the radial distance <span class="math inline">\(r\)</span>, and one can restrict the aforementioned problem to the case when <span class="math inline">\(a\)</span> is on the unit sphere. We say that <span class="math inline">\(a\)</span> is a vector rather than a point.</p>
 <p>The solution we propose, to be detailed below, has three steps:</p>
@@ -109,11 +112,11 @@
 <ul>
 <li><em>If the rotation axis is one of the three Cartesian axes</em>, then take <span class="math inline">\(R\)</span> as the following matrix, according to whether the axis is the <span class="math inline">\(x\)</span>-axis, the <span class="math inline">\(y\)</span>-axis or the <span class="math inline">\(z\)</span>-axis:</li>
 </ul>
-\begin{gather}
+<span class="math display">\[\begin{gather}
 R_x(\alpha) = \begin{pmatrix} \cos\frac{\alpha}{2} &amp; -i\sin\frac{\alpha}{2} \\ -i\sin\frac{\alpha}{2} &amp; \cos\frac{\alpha}{2} \end{pmatrix}, \\
 R_y(\alpha) = \begin{pmatrix} \cos\frac{\alpha}{2} &amp; -\sin\frac{\alpha}{2} \\ \sin\frac{\alpha}{2} &amp; \cos\frac{\alpha}{2} \end{pmatrix}, \\
 R_z(\alpha) = \begin{pmatrix} e^{-i\frac{\alpha}{2}} &amp; 0 \\ 0 &amp; e^{i\frac{\alpha}{2}}. \end{pmatrix}
-\end{gather}
+\end{gather}\]</span>
 <ul>
 <li><p><em>If the rotation axis in an arbitrary axis</em>, directed by a unit vector <span class="math inline">\(\vec{n}\)</span>, then take <span class="math inline">\(R\)</span> as the following matrix, according to whether <span class="math inline">\(\vec{n}\)</span> is given by its spherical coordinates or its Cartesian coordinates.</p>
 <ul>
@@ -126,7 +129,7 @@ R_{\vec{n}}(\alpha) = R_z(\Phi)R_y(\Theta)R_z(\alpha){R_y(\Theta)}^\dagger{R_z(\
 R_{\vec{n}}(\alpha) = \cos\frac{\alpha}{2} I  - i \sin\frac{\alpha}{2}(n_x X + n_y Y + n_z Z)
 \]</span> where <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, <span class="math inline">\(Z\)</span> are the Pauli matrices <span class="math display">\[
 X = \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; 0 \end{pmatrix}, \quad 
-Y = \begin{pmatrix} 0 &amp; i \\ -i &amp; 0 \end{pmatrix}, \quad 
+Y = \begin{pmatrix} 0 &amp; -i \\ i &amp; 0 \end{pmatrix}, \quad 
 Z = \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; -1 \end{pmatrix}.
 \]</span></p></li>
 </ul></li>
