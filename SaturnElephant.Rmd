@@ -1,0 +1,7 @@
+---
+title: "My next blog: Saturn Elephant"
+date: "2018-10-16"
+output: html_document
+---
+
+***Saturn Elephant*** is the name of my next blob. Please visit it <https://laustep.github.io/stlahblog/>.
