@@ -40,13 +40,13 @@
 			<div id="sidebar" class="span2">
 			  <div class="sidebar-nav sidebar-nav-fixed">
 				  <div class="info">
-				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.io/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
 				    <h3><a href="/">stlaPblog </a></h3>
 					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
 					</div>
 					<ul id="links">
-			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
-        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+			        <li><a href="http://stla.github.io/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.io/stlapblog/about.html">About</a></li>
       
 				  <br/>
 				  <div style="padding-left: 5px;">
@@ -168,7 +168,7 @@ for(k in 1:K){
 }</code></pre>
 <p>At the end, we store the outputs in vectors, discarding the indexes <span class="math">\((k,m)\)</span> for which there is no solution to the system of structural equations:</p>
 <pre class="r"><code>keep &lt;- which(!is.na(J))
-length(keep) # should be ≈ 6*10000/2=30000
+length(keep) # should be ??? 6*10000/2=30000
 ## [1] 29700
 W &lt;- J[keep]/sum(J[keep])
 Mu &lt;- Mu[keep]
@@ -177,7 +177,7 @@ Sigma &lt;- Sigma[keep]</code></pre>
 <div id="fiducial-inference" class="section level4">
 <h4>Fiducial inference</h4>
 <p>The approximated generalized fiducial <em>cdf</em> of one parameter is exactly obtained as a weighted empirical <em>cdf</em>, taking the <span class="math">\(W_{k,m}\)</span> as weights. Below we get it with the help of the <code>ewcdf</code> function of the <code>spatstat</code> package. The exact joint fiducial distribution is known, it is the same as the Jeffreys posterior distribution. Below we compare the approximate fiducial distribution of <span class="math">\(\mu\)</span> with its exact fiducial distribution, which is a shifted and scaled Student distribution</p>
-<pre class="r"><code>### approximate fiducial distribution of µ ###
+<pre class="r"><code>### approximate fiducial distribution of ?? ###
 F_mu &lt;- spatstat::ewcdf(Mu, weights=W)
 curve(F_mu, from=0, to=2.5, col=&quot;blue&quot;, lwd=2)
 ### exact fiducial distribution ###
@@ -189,7 +189,7 @@ abline(h=0.5, lty=&quot;dotted&quot;)
 abline(v=mean(x), lty=&quot;dotted&quot;)</code></pre>
 <p><img src="assets/fig/fiducial_nonintrusive-unnamed-chunk-5-1.png" title="" alt="" width="672" /></p>
 <p>The approximation is quite perfect. Below we do the same comparison for the fiducial distribution of <span class="math">\(\sigma\)</span>, and we also see a quite perfect approximation.</p>
-<pre class="r"><code>### approximate fiducial distribution of σ ###
+<pre class="r"><code>### approximate fiducial distribution of ?? ###
 F_sigma &lt;- spatstat::ewcdf(Sigma,W)
 curve(F_sigma, from=0, to=2.5, ylim=c(0,1), col=&quot;blue&quot;, lwd=2)
 ### exact fiducial distribution ###
@@ -385,7 +385,7 @@ return(List::create(Named(&quot;ncol&quot;)=Theta.size(), Named(&quot;ncol2&quot
 Fiducial &lt;- cxxfunction(signature(Xr=&quot;numeric&quot;, Yr=&quot;numeric&quot;, Ir=&quot;integer&quot;, Gridr=&quot;numeric&quot;), body=src, plugin=&quot;RcppArmadillo&quot;)</code></pre>
 <p>Note the logical test <code>arma::all(vectorise(U) == U(0,0))</code> in the code. It tests whether the coordinates of a point <span class="math">\({\boldsymbol u}\)</span> of the grid are all equal. In such a case, the matrix <code>H</code> would not be of full rank, because the column <code>G</code> would be a multiple of the intercept column of ones.</p>
 <p>Also note the two commented lines <code>\\ Theta ...</code>. I used this code first, but the <code>joint_rows</code> is very time-consuming.</p>
-<p>Let’s try our first example to compare the results.</p>
+<p>Let???s try our first example to compare the results.</p>
 <pre class="r"><code>set.seed(666)
 n &lt;- 4
 Yr &lt;- rnorm(n, mean=0.4, sd=0.8)

@@ -41,13 +41,13 @@
 			<div id="sidebar" class="span2">
 			  <div class="sidebar-nav sidebar-nav-fixed">
 				  <div class="info">
-				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.com/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
+				    <p id="avatar"><a href="#"><img alt="Title" src="http://stla.github.io/stlapblog/assets/img/07-10-06_2241.jpg " style="width:250px" /></a></p>
 				    <h3><a href="/">stlaPblog </a></h3>
 					  <p class="description">a blog about Mathematics, R, Statistics, ...</p>
 					</div>
 					<ul id="links">
-			        <li><a href="http://stla.github.com/stlapblog/index.html">Home</a></li>
-        <li><a href="http://stla.github.com/stlapblog/about.html">About</a></li>
+			        <li><a href="http://stla.github.io/stlapblog/index.html">Home</a></li>
+        <li><a href="http://stla.github.io/stlapblog/about.html">About</a></li>
       
 				  <br/>
 				  <div style="padding-left: 5px;">
@@ -186,13 +186,13 @@ g &lt;- ggobi_longitudinal(ggdata1, id=experiment)</code></pre>
 <img src="assets/img/ggobi/ggobi1_brush.png" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink"> <img src="assets/img/ggobi/ggobi1_identify.png" style="float: left; width: 45%; margin-right: 1%; margin-bottom: 0.5em; border:3px solid pink">
 <p style="clear: both;">
 </div>
-<p>Now, let’s look at the parameters in function of the date:</p>
+<p>Now, let???s look at the parameters in function of the date:</p>
 <pre class="r"><code>lParams &lt;- Params %&gt;% gather(parameter, value, -experiment, -date)
 ggplot(lParams, aes(x=date, y=value)) +  geom_point() + 
   facet_grid(parameter~., scales=&quot;free_y&quot;) +
   scale_x_date(labels = date_format(&quot;%m-%Y&quot;))</code></pre>
 <p><img src="assets/fig/GGobi_FPL-paramsvsdate-1.png" title="" alt="" width="672" /></p>
-<p>And let’s plot each parameter vs each other on a scatter matrix:</p>
+<p>And let???s plot each parameter vs each other on a scatter matrix:</p>
 <pre class="r"><code>library(GGally)
 ggpairs(Params[, list(phi1,phi2,phi3,phi4)])</code></pre>
 <p><img src="assets/fig/GGobi_FPL-scatterparams-1.png" title="" alt="" width="576" /></p>
@@ -216,7 +216,7 @@ This is fallback content
 </div>
 <div id="using-cranvas" class="section level2">
 <h2>Using Cranvas</h2>
-<p>Now let’s do the same with <em>Cranvas</em> instead of <em>GGobi</em>, except that scatter matrices are not implemented yet in <em>Cranvas</em>.</p>
+<p>Now let???s do the same with <em>Cranvas</em> instead of <em>GGobi</em>, except that scatter matrices are not implemented yet in <em>Cranvas</em>.</p>
 <pre class="r"><code>library(cranvas)
 qdata1 &lt;- qdata(data.frame(Curves))
 qdata2 &lt;- qdata(data.frame(Params)) 
@@ -237,7 +237,7 @@ id &lt;- link_cat(qdata1, &quot;experiment&quot;, qdata2, &quot;experiment&quot;
           </ol>
           <div class="pagination">
             <ul>
-              <li><a href="http://stla.github.com/stlapblog/">&#171; Back Home</a></li>
+              <li><a href="http://stla.github.io/stlapblog/">&#171; Back Home</a></li>
             </ul>
           </div> 
         </div>
