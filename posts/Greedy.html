@@ -180,7 +180,7 @@ N = \epsilon_0 + \epsilon_1 \times 3 + \epsilon_2 \times (3\times 4)
 }</code></pre>
 <p>This nested loop can be reduced to only one loop with the <span class="math">\((3,4,5)\)</span>-ary representation:</p>
 <pre class="r"><code>for(n in 1:(3*4*5)){
-  doSomething(intToAry(n)+1, c(3,4,5))
+  doSomething(intToAry(n, c(3,4,5)) + 1)
 }</code></pre>
 </div>
 <div id="a-rcpp-implementation" class="section level2">
